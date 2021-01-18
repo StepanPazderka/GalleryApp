@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import UniformTypeIdentifiers
 
 enum SidebarSection: String {
     case tabs
@@ -41,11 +42,15 @@ let playlistItems = [SidebarItem(title: "All Playlists", image: UIImage(systemNa
 class SidebarViewController: UIViewController {
     private var dataSource: UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>! = nil
     private var collectionView: UICollectionView! = nil
-    private var secondaryViewControllers: [UIViewController] = [UINavigationController(rootViewController: AllPhotos()), UINavigationController(rootViewController: InsertImage())]
+    private var navigation = UINavigationController(rootViewController: AllPhotos())
+    private var secondaryViewControllers: [UIViewController] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigation.popToRootViewController(animated: true)
+        secondaryViewControllers.append(navigation)
+        
         navigationItem.title = nil
         navigationController?.navigationBar.prefersLargeTitles = false
         
@@ -128,14 +133,38 @@ class SidebarViewController: UIViewController {
 }
 
 extension SidebarViewController: UICollectionViewDelegate {
-    // User selected item
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.row == 1 {
-            print("Vybral import")
-        }
-        
         guard indexPath.section == 0 else { return }
-        splitViewController?.setViewController(secondaryViewControllers[indexPath.row], for: .secondary)
+                
+        if indexPath.row == 1 {
+            let allowedTypes: [UTType] = [UTType.image]
+            
+            let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: allowedTypes, asCopy: true)
+            
+            documentPicker.delegate = self
+            documentPicker.allowsMultipleSelection = true
+            self.present(documentPicker, animated: true)
+
+            print("Vybral import")
+        } else {
+            splitViewController?.setViewController(secondaryViewControllers[indexPath.row], for: .secondary)
+        }
+    }
+}
+
+extension SidebarViewController: UIDocumentPickerDelegate {
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+                
+        for url in urls {
+            do {
+                try FileManager().moveItem(at: url, to: documentDirectory.first!.appendingPathComponent(url.lastPathComponent))
+                print("Copied to \(url)")
+                print("Document directory \(documentDirectory.first!)")
+                
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
 }

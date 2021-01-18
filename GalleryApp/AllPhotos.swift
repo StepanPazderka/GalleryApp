@@ -19,8 +19,9 @@ struct GalleryItem: Hashable {
 
 let testGalleryImages = [GalleryItem(title: "name1", image: UIImage(named: "sampleImage"))]
 
-class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ListsImages {
     let cellName = "GalleryCell"
+    public let listedImages = GalleryManager.listImages()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,6 +53,10 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        
+        for file in GalleryManager.listImages() {
+            print("File at: \(file.absoluteURL)")
+        }
     }
     
     @objc func longPressed(_ gesture: UILongPressGestureRecognizer) {
@@ -88,13 +93,13 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     var collectionView: UICollectionView! = nil
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return listedImages.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellName, for: indexPath) as! GalleryImageCell
-        cell.image.image = UIImage(named: "sampleImage")
-        cell.textLabel.text = "Ahoj"
+        cell.image.image = UIImage(contentsOfFile: listedImages[indexPath.row].relativePath)
+        cell.index = indexPath.row
         cell.delegate = self
         return cell
     }
@@ -123,7 +128,8 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 class GalleryImageCell: UICollectionViewCell {
     weak var textLabel: UILabel!
     weak var image: UIImageView!
-    var delegate: UIViewController!
+    var delegate: AllPhotos!
+    var index: Int!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -167,6 +173,7 @@ class GalleryImageCell: UICollectionViewCell {
         let PhotoDetailScreen = PhotoDetailViewController(nibName: "PhotoDetailViewController", bundle: nil)
         PhotoDetailScreen.modalPresentationStyle = .fullScreen
         PhotoDetailScreen.delegate = self.delegate
+        PhotoDetailScreen.selectedIndex = self.index
         delegate.present(PhotoDetailScreen, animated: true, completion: nil)
     }
     

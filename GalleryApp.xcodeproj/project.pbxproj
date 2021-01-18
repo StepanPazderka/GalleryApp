@@ -17,10 +17,10 @@
 		7F235E142585B856007BD075 /* SidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F235E122585B856007BD075 /* SidebarViewController.swift */; };
 		7F2CF04D2586A52E009A459D /* AllPhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2CF04B2586A52E009A459D /* AllPhotos.swift */; };
 		7F2CF04E2586A52E009A459D /* AllPhotos.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F2CF04C2586A52E009A459D /* AllPhotos.xib */; };
-		7F9E98D42591F73A0037D83C /* InsertImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F9E98D32591F73A0037D83C /* InsertImage.swift */; };
+		7F67EFDE25B502FA00435148 /* GalleryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F67EFDD25B502FA00435148 /* GalleryManager.swift */; };
+		7F67EFE225B50BEE00435148 /* ListsImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F67EFE125B50BEE00435148 /* ListsImages.swift */; };
 		7FC5503B258EE7C2000290F6 /* GalleryPicture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC5503A258EE7C2000290F6 /* GalleryPicture.swift */; };
 		7FC55041258F24F3000290F6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7FC55043258F24F3000290F6 /* Localizable.strings */; };
-		7FD09A0425B3B3A9009BB5D0 /* DocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD09A0325B3B3A9009BB5D0 /* DocumentPicker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,10 +37,10 @@
 		7F235E122585B856007BD075 /* SidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
 		7F2CF04B2586A52E009A459D /* AllPhotos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllPhotos.swift; sourceTree = "<group>"; };
 		7F2CF04C2586A52E009A459D /* AllPhotos.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AllPhotos.xib; sourceTree = "<group>"; };
-		7F9E98D32591F73A0037D83C /* InsertImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsertImage.swift; sourceTree = "<group>"; };
+		7F67EFDD25B502FA00435148 /* GalleryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryManager.swift; sourceTree = "<group>"; };
+		7F67EFE125B50BEE00435148 /* ListsImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListsImages.swift; sourceTree = "<group>"; };
 		7FC5503A258EE7C2000290F6 /* GalleryPicture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryPicture.swift; sourceTree = "<group>"; };
 		7FC55042258F24F3000290F6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		7FD09A0325B3B3A9009BB5D0 /* DocumentPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,8 +87,8 @@
 				7F10F361258EA59E000B6075 /* PhotoDetailViewController.xib */,
 				7FC5503A258EE7C2000290F6 /* GalleryPicture.swift */,
 				7FC55043258F24F3000290F6 /* Localizable.strings */,
-				7F9E98D32591F73A0037D83C /* InsertImage.swift */,
-				7FD09A0325B3B3A9009BB5D0 /* DocumentPicker.swift */,
+				7F67EFDD25B502FA00435148 /* GalleryManager.swift */,
+				7F67EFE125B50BEE00435148 /* ListsImages.swift */,
 			);
 			path = GalleryApp;
 			sourceTree = "<group>";
@@ -167,11 +167,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				7F235DFE2585B73C007BD075 /* AppDelegate.swift in Sources */,
+				7F67EFE225B50BEE00435148 /* ListsImages.swift in Sources */,
 				7F235E002585B73C007BD075 /* SceneDelegate.swift in Sources */,
+				7F67EFDE25B502FA00435148 /* GalleryManager.swift in Sources */,
 				7F2CF04D2586A52E009A459D /* AllPhotos.swift in Sources */,
 				7FC5503B258EE7C2000290F6 /* GalleryPicture.swift in Sources */,
-				7FD09A0425B3B3A9009BB5D0 /* DocumentPicker.swift in Sources */,
-				7F9E98D42591F73A0037D83C /* InsertImage.swift in Sources */,
 				7F10F362258EA59E000B6075 /* PhotoDetailViewController.swift in Sources */,
 				7F235E142585B856007BD075 /* SidebarViewController.swift in Sources */,
 			);

@@ -31,7 +31,7 @@
                             </constraints>
                             <state key="normal" title="Close"/>
                             <connections>
-                                <action selector="closeScreen:" destination="-1" eventType="touchUpInside" id="ho2-1Y-zrE"/>
+                                <action selector="didInvokeCancel" destination="-1" eventType="touchUpInside" id="250-gI-76P"/>
                             </connections>
                         </button>
                     </subviews>

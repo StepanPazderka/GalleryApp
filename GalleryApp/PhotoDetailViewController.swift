@@ -8,7 +8,8 @@
 import UIKit
 
 class PhotoDetailViewController: UIViewController {
-    var delegate: UIViewController!
+    var delegate: AllPhotos!
+    var selectedIndex: Int!
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var imageView: UIImageView!
@@ -20,6 +21,7 @@ class PhotoDetailViewController: UIViewController {
         scrollView.minimumZoomScale = 1
         
         scrollView.delegate = self
+        imageView.image = UIImage(contentsOfFile: delegate.listedImages[selectedIndex].relativePath)
         
         addKeyCommand(UIKeyCommand(
             title: NSLocalizedString("CANCEL", comment: "Cancel"),
@@ -27,15 +29,37 @@ class PhotoDetailViewController: UIViewController {
             input: UIKeyCommand.inputEscape
         ))
         
+        addKeyCommand(UIKeyCommand(
+            title: NSLocalizedString("LEFT", comment: "Previous item"),
+            action: #selector(selectPreviousItem),
+            input: UIKeyCommand.inputLeftArrow
+        ))
+        
+        addKeyCommand(UIKeyCommand(
+            title: NSLocalizedString("RIGHT", comment: "Next item"),
+            action: #selector(selectNextItem),
+            input: UIKeyCommand.inputRightArrow
+        ))
+        
         // Do any additional setup after loading the view.
     }
     
-    @objc func didInvokeCancel() {
+    @IBAction @objc func didInvokeCancel() {
         delegate.dismiss(animated: true, completion: nil)
     }
 
-    @IBAction func closeScreen(_ sender: Any) {
-        delegate.dismiss(animated: true, completion: nil)
+    @IBAction func selectPreviousItem(_ sender: Any) {
+        if selectedIndex > 0 {
+            selectedIndex = selectedIndex-1
+        }
+        imageView.image = UIImage(contentsOfFile: delegate.listedImages[selectedIndex].relativePath)
+    }
+    
+    @IBAction func selectNextItem(_ sender: Any) {
+        if selectedIndex < delegate.listedImages.count-1 {
+            selectedIndex = selectedIndex+1
+        }
+        imageView.image = UIImage(contentsOfFile: delegate.listedImages[selectedIndex].relativePath)
     }
 }
 

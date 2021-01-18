@@ -20,11 +20,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let splitView = UISplitViewController(style: .doubleColumn)
         splitView.preferredDisplayMode = .oneBesideSecondary
         splitView.presentsWithGesture = true
-        splitView.preferredSplitBehavior = .displace
+        splitView.preferredSplitBehavior = .tile
 
         splitView.setViewController(SidebarViewController(), for: .primary)
         let window = UIWindow(windowScene: windowScene)
-        window.backgroundColor = .red
+        window.backgroundColor = .black
         
         window.rootViewController = splitView
         self.window = window
@@ -58,7 +58,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-
-
 }
 
