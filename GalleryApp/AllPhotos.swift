@@ -21,7 +21,7 @@ let testGalleryImages = [GalleryItem(title: "name1", image: UIImage(named: "samp
 
 class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ListsImages {
     let cellName = "GalleryCell"
-    public let listedImages = GalleryManager.listImages()
+    public var listedImages = GalleryManager.listImages()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,7 +46,7 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         let gestureRecongizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(_:)))
         collectionView.addGestureRecognizer(gestureRecongizer)
         
-        collectionView.backgroundColor = .white
+//        collectionView.backgroundColor = .white
         collectionView.register(GalleryImageCell.self, forCellWithReuseIdentifier: self.cellName)
     }
     
@@ -57,6 +57,11 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         for file in GalleryManager.listImages() {
             print("File at: \(file.absoluteURL)")
         }
+    }
+    
+    public func reloadData() {
+        self.listedImages = GalleryManager.listImages()
+        collectionView.reloadData()
     }
     
     @objc func longPressed(_ gesture: UILongPressGestureRecognizer) {
@@ -123,6 +128,8 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         1
     }
+    
+    
 }
 
 class GalleryImageCell: UICollectionViewCell {
@@ -136,10 +143,23 @@ class GalleryImageCell: UICollectionViewCell {
         
         let label = UILabel()
         let imageView = UIImageView()
+        
+        let button = CheckBox(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        button.backgroundColor = .red
+        button.setTitle("Not checked", for: .normal)
+        button.isHidden = true
+
         label.translatesAutoresizingMaskIntoConstraints = false
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
         contentView.addSubview(label)
         contentView.addSubview(imageView)
+        contentView.addSubview(button)
+        
+        NSLayoutConstraint.activate([
+            button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+        ])
         
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -163,8 +183,11 @@ class GalleryImageCell: UICollectionViewCell {
         image.addGestureRecognizer(tapRecognizer)
         
         imageView.contentMode = .scaleAspectFit
-        contentView.backgroundColor = .lightGray
         textLabel.textAlignment = .center
+        
+//        image.addBlurEffect()
+        image.backgroundColor = .none
+        self.backgroundColor = .none
     }
     
     @objc func galleryImageTapped(_ sender: UITapGestureRecognizer) {

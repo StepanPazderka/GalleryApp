@@ -42,11 +42,13 @@ let playlistItems = [SidebarItem(title: "All Playlists", image: UIImage(systemNa
 class SidebarViewController: UIViewController {
     private var dataSource: UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>! = nil
     private var collectionView: UICollectionView! = nil
-    private var navigation = UINavigationController(rootViewController: AllPhotos())
+    private var AllPhotosScreen: AllPhotos = AllPhotos()
     private var secondaryViewControllers: [UIViewController] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let navigation = UINavigationController(rootViewController: AllPhotosScreen)
 
         navigation.popToRootViewController(animated: true)
         secondaryViewControllers.append(navigation)
@@ -161,6 +163,7 @@ extension SidebarViewController: UIDocumentPickerDelegate {
                 try FileManager().moveItem(at: url, to: documentDirectory.first!.appendingPathComponent(url.lastPathComponent))
                 print("Copied to \(url)")
                 print("Document directory \(documentDirectory.first!)")
+                AllPhotosScreen.reloadData()
                 
             } catch {
                 print(error.localizedDescription)

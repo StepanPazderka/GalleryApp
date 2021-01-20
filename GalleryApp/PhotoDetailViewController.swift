@@ -7,21 +7,21 @@
 
 import UIKit
 
-class PhotoDetailViewController: UIViewController {
+class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var delegate: AllPhotos!
     var selectedIndex: Int!
+    var initialScrollDone: Bool = false
     
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        scrollView.maximumZoomScale = 10
-        scrollView.minimumZoomScale = 1
+        self.collectionView?.addObserver(self, forKeyPath: "contentSize", options: NSKeyValueObservingOptions.old, context: nil)
         
-        scrollView.delegate = self
-        imageView.image = UIImage(contentsOfFile: delegate.listedImages[selectedIndex].relativePath)
+        collectionView.delegate = self
+        collectionView.dataSource = self
+
+//        imageView.image = UIImage(contentsOfFile: delegate.listedImages[selectedIndex].relativePath)
         
         addKeyCommand(UIKeyCommand(
             title: NSLocalizedString("CANCEL", comment: "Cancel"),
@@ -41,7 +41,40 @@ class PhotoDetailViewController: UIViewController {
             input: UIKeyCommand.inputRightArrow
         ))
         
-        // Do any additional setup after loading the view.
+        let nib = UINib(nibName: "InteractiveImageViewCell", bundle: Bundle.main)
+        self.collectionView.register(nib, forCellWithReuseIdentifier: "ImageViewCell")
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if let observedObject = object as? UICollectionView, observedObject == collectionView {
+            let indexPath = IndexPath(item: selectedIndex, section: 0)
+            self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+        }
+        self.collectionView?.removeObserver(self, forKeyPath: "contentSize")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+//        self.collectionView?.removeObserver(self, forKeyPath: "contentSize")
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        
+        guard let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {
+            return
+        }
+        
+        
+        if let interfaceOrientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation {
+         // Use interfaceOrientation
+        }
+        
+        flowLayout.invalidateLayout()
+
+        let indexPath = IndexPath(item: selectedIndex, section: 0)
+        self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }
     
     @IBAction @objc func didInvokeCancel() {
@@ -52,41 +85,32 @@ class PhotoDetailViewController: UIViewController {
         if selectedIndex > 0 {
             selectedIndex = selectedIndex-1
         }
-        imageView.image = UIImage(contentsOfFile: delegate.listedImages[selectedIndex].relativePath)
+        
+        let indexPath = IndexPath(item: selectedIndex, section: 0)
+        self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
     }
     
     @IBAction func selectNextItem(_ sender: Any) {
         if selectedIndex < delegate.listedImages.count-1 {
             selectedIndex = selectedIndex+1
         }
-        imageView.image = UIImage(contentsOfFile: delegate.listedImages[selectedIndex].relativePath)
-    }
-}
-
-extension PhotoDetailViewController: UIScrollViewDelegate {
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return imageView
+        
+        let indexPath = IndexPath(item: selectedIndex, section: 0)
+        self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
     }
     
-    func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        if scrollView.zoomScale > 1.0 {
-            if let image = imageView.image {
-                let ratioW = imageView.frame.width / image.size.width
-                let ratioH = imageView.frame.height / image.size.height
-
-                let ratio = ratioW < ratioH ? ratioW : ratioH
-                let newWidth = image.size.width * ratio
-                let newHeight = image.size.height * ratio
-                
-                let conditionLeft = newWidth*scrollView.zoomScale > imageView.frame.width
-                let left = 0.5 * (conditionLeft ? newWidth - imageView.frame.width : (scrollView.frame.width - scrollView.contentSize.width))
-                
-                let conditionTop = newHeight * scrollView.zoomScale > imageView.frame.height
-                
-                let top = 0.5 * (conditionTop ? newHeight - imageView.frame.height : (scrollView.frame.height - scrollView.contentSize.height))
-                
-                scrollView.contentInset = UIEdgeInsets(top: top, left: left, bottom: top, right: left)
-            }
-        }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return view.bounds.size
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("Number of images fetched to collectionView \(delegate.listedImages.count)")
+        return delegate.listedImages.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageViewCell", for: indexPath as IndexPath) as! InteractiveImageViewCell
+        cell.imageView.image = UIImage(contentsOfFile: delegate.listedImages[indexPath.row].relativePath)
+        return cell
     }
 }
