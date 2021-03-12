@@ -81,6 +81,10 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         delegate.dismiss(animated: true, completion: nil)
     }
 
+    @IBAction func didTapDelete(_ sender: Any) {
+        
+    }
+
     @IBAction func selectPreviousItem(_ sender: Any) {
         if selectedIndex > 0 {
             selectedIndex = selectedIndex-1
@@ -111,6 +115,7 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageViewCell", for: indexPath as IndexPath) as! InteractiveImageViewCell
         cell.imageView.image = UIImage(contentsOfFile: delegate.listedImages[indexPath.row].relativePath)
+        cell.scrollView.delegate = cell
         return cell
     }
 }

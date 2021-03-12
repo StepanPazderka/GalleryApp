@@ -43,10 +43,23 @@
                                 <action selector="didInvokeCancel" destination="-1" eventType="touchUpInside" id="250-gI-76P"/>
                             </connections>
                         </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8s8-y4-QdU" userLabel="Delete">
+                            <rect key="frame" x="964" y="10" width="50" height="50"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="50" id="a6M-X4-s6a"/>
+                                <constraint firstAttribute="width" constant="50" id="aKc-si-To0"/>
+                            </constraints>
+                            <state key="normal" title="Delete"/>
+                            <connections>
+                                <action selector="didTapDelete:" destination="-1" eventType="touchUpInside" id="OLH-HD-9Ec"/>
+                            </connections>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="60" id="5JI-7i-Ruf"/>
+                        <constraint firstAttribute="trailing" secondItem="8s8-y4-QdU" secondAttribute="trailing" constant="10" id="ItB-SB-swp"/>
+                        <constraint firstItem="8s8-y4-QdU" firstAttribute="top" secondItem="Sl3-Yl-au4" secondAttribute="top" constant="10" id="V4g-7R-zXX"/>
                         <constraint firstItem="Y67-q6-ffK" firstAttribute="leading" secondItem="Sl3-Yl-au4" secondAttribute="leading" constant="10" id="gIg-Wa-QOE"/>
                         <constraint firstItem="Y67-q6-ffK" firstAttribute="top" secondItem="Sl3-Yl-au4" secondAttribute="top" constant="10" id="tSf-FN-qDx"/>
                     </constraints>

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7F0031CE25B7A21B00D93B75 /* ImageView+BlurEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0031CD25B7A21B00D93B75 /* ImageView+BlurEffect.swift */; };
+		7F0031D125B7AC7400D93B75 /* UIWindow+isLandscape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0031D025B7AC7400D93B75 /* UIWindow+isLandscape.swift */; };
 		7F10F362258EA59E000B6075 /* PhotoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F10F360258EA59E000B6075 /* PhotoDetailViewController.swift */; };
 		7F10F363258EA59E000B6075 /* PhotoDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F10F361258EA59E000B6075 /* PhotoDetailViewController.xib */; };
 		7F235DFE2585B73C007BD075 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F235DFD2585B73C007BD075 /* AppDelegate.swift */; };
@@ -28,6 +29,7 @@
 
 /* Begin PBXFileReference section */
 		7F0031CD25B7A21B00D93B75 /* ImageView+BlurEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageView+BlurEffect.swift"; sourceTree = "<group>"; };
+		7F0031D025B7AC7400D93B75 /* UIWindow+isLandscape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+isLandscape.swift"; sourceTree = "<group>"; };
 		7F10F360258EA59E000B6075 /* PhotoDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailViewController.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		7F10F361258EA59E000B6075 /* PhotoDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoDetailViewController.xib; sourceTree = "<group>"; };
 		7F10F365258EA938000B6075 /* GalleryApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GalleryApp.entitlements; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 		7F235DFC2585B73C007BD075 /* GalleryApp */ = {
 			isa = PBXGroup;
 			children = (
+				7FCB40B925FAF1AC007ADF35 /* SubScreens */,
 				7F10F365258EA938000B6075 /* GalleryApp.entitlements */,
 				7F235DFD2585B73C007BD075 /* AppDelegate.swift */,
 				7F235DFF2585B73C007BD075 /* SceneDelegate.swift */,
@@ -86,10 +89,6 @@
 				7F235E082585B73F007BD075 /* LaunchScreen.storyboard */,
 				7F235E0B2585B73F007BD075 /* Info.plist */,
 				7F235E122585B856007BD075 /* SidebarViewController.swift */,
-				7F2CF04B2586A52E009A459D /* AllPhotos.swift */,
-				7F2CF04C2586A52E009A459D /* AllPhotos.xib */,
-				7F10F360258EA59E000B6075 /* PhotoDetailViewController.swift */,
-				7F10F361258EA59E000B6075 /* PhotoDetailViewController.xib */,
 				7FC5503A258EE7C2000290F6 /* GalleryPicture.swift */,
 				7FC55043258F24F3000290F6 /* Localizable.strings */,
 				7F67EFDD25B502FA00435148 /* GalleryManager.swift */,
@@ -98,8 +97,36 @@
 				7F479F1625B64963005AFB97 /* InteractiveImageViewCell.swift */,
 				7F479F1925B6496E005AFB97 /* InteractiveImageViewCell.xib */,
 				7F0031CD25B7A21B00D93B75 /* ImageView+BlurEffect.swift */,
+				7F0031D025B7AC7400D93B75 /* UIWindow+isLandscape.swift */,
 			);
 			path = GalleryApp;
+			sourceTree = "<group>";
+		};
+		7FCB40B925FAF1AC007ADF35 /* SubScreens */ = {
+			isa = PBXGroup;
+			children = (
+				7FCB40BC25FAF1C1007ADF35 /* PhotoDetail */,
+				7FCB40BA25FAF1BC007ADF35 /* AllPhotos */,
+			);
+			path = SubScreens;
+			sourceTree = "<group>";
+		};
+		7FCB40BA25FAF1BC007ADF35 /* AllPhotos */ = {
+			isa = PBXGroup;
+			children = (
+				7F2CF04B2586A52E009A459D /* AllPhotos.swift */,
+				7F2CF04C2586A52E009A459D /* AllPhotos.xib */,
+			);
+			path = AllPhotos;
+			sourceTree = "<group>";
+		};
+		7FCB40BC25FAF1C1007ADF35 /* PhotoDetail */ = {
+			isa = PBXGroup;
+			children = (
+				7F10F360258EA59E000B6075 /* PhotoDetailViewController.swift */,
+				7F10F361258EA59E000B6075 /* PhotoDetailViewController.xib */,
+			);
+			path = PhotoDetail;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -180,6 +207,7 @@
 				7F86A6F525B5DD0700428F92 /* CheckBox.swift in Sources */,
 				7F235E002585B73C007BD075 /* SceneDelegate.swift in Sources */,
 				7F0031CE25B7A21B00D93B75 /* ImageView+BlurEffect.swift in Sources */,
+				7F0031D125B7AC7400D93B75 /* UIWindow+isLandscape.swift in Sources */,
 				7F67EFDE25B502FA00435148 /* GalleryManager.swift in Sources */,
 				7F2CF04D2586A52E009A459D /* AllPhotos.swift in Sources */,
 				7FC5503B258EE7C2000290F6 /* GalleryPicture.swift in Sources */,
