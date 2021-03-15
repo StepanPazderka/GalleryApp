@@ -21,10 +21,11 @@ let testGalleryImages = [GalleryItem(title: "name1", image: UIImage(named: "samp
 
 class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ListsImages {
     let cellName = "GalleryCell"
-    public var listedImages = GalleryManager.listImages()
+    public var listedImages = GalleryManager.loadIndex(folder: GalleryManager.documentDirectory).images
     
     override func viewDidLoad() {
         super.viewDidLoad()
+//        GalleryManager.rebuildIndex(folder: GalleryManager.documentDirectory)
         
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: view.frame.size.width / 3.3, height: view.frame.size.height / 3.3)
@@ -65,13 +66,14 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     }
     
     @objc func longPressed(_ gesture: UILongPressGestureRecognizer) {
+
         switch gesture.state {
         case .began:
-            guard let targetInexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else {
+            guard let targetIndexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else {
                 return
             }
             
-            collectionView.beginInteractiveMovementForItem(at: targetInexPath)
+            collectionView.beginInteractiveMovementForItem(at: targetIndexPath)
         case .changed:
             collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: collectionView))
         case .ended:
@@ -92,6 +94,12 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let temp = listedImages.remove(at: sourceIndexPath.item)
+        listedImages.insert(temp, at: destinationIndexPath.item)
+        
+        let newGalleryFolder = GalleryFolder(name: GalleryManager.documentDirectory.lastPathComponent, images: listedImages)
+        GalleryManager.saveNewIndex(folder: GalleryManager.documentDirectory, index: newGalleryFolder)
+        collectionView.reloadData()
         return
     }
     
@@ -113,14 +121,11 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         super.viewDidLayoutSubviews()
         collectionView.frame = view.bounds
     }
-    
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        return CGSize(width: (collectionView.bounds.size.width/4), height: (view.frame.size.width/4))
-//    }
-//
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         0
     }
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         UIEdgeInsets.init(top: 0, left: 0, bottom: 0, right: 0)
     }
@@ -195,7 +200,7 @@ class GalleryImageCell: UICollectionViewCell {
         
         let PhotoDetailScreen = PhotoDetailViewController(nibName: "PhotoDetailViewController", bundle: nil)
         PhotoDetailScreen.modalPresentationStyle = .fullScreen
-        PhotoDetailScreen.delegate = self.delegate
+        PhotoDetailScreen.imageSource = self.delegate
         PhotoDetailScreen.selectedIndex = self.index
         delegate.present(PhotoDetailScreen, animated: true, completion: nil)
     }

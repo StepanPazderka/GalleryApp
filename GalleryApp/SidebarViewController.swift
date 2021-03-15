@@ -146,8 +146,6 @@ extension SidebarViewController: UICollectionViewDelegate {
             documentPicker.delegate = self
             documentPicker.allowsMultipleSelection = true
             self.present(documentPicker, animated: true)
-
-            print("Vybral import")
         } else {
             splitViewController?.setViewController(secondaryViewControllers[indexPath.row], for: .secondary)
         }

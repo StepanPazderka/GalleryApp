@@ -8,7 +8,7 @@
 import UIKit
 
 class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    var delegate: AllPhotos!
+    var imageSource: AllPhotos!
     var selectedIndex: Int!
     var initialScrollDone: Bool = false
     
@@ -78,7 +78,7 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     @IBAction @objc func didInvokeCancel() {
-        delegate.dismiss(animated: true, completion: nil)
+        imageSource.dismiss(animated: true, completion: nil)
     }
 
     @IBAction func didTapDelete(_ sender: Any) {
@@ -95,7 +95,7 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     @IBAction func selectNextItem(_ sender: Any) {
-        if selectedIndex < delegate.listedImages.count-1 {
+        if selectedIndex < imageSource.listedImages.count-1 {
             selectedIndex = selectedIndex+1
         }
         
@@ -108,13 +108,13 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("Number of images fetched to collectionView \(delegate.listedImages.count)")
-        return delegate.listedImages.count
+        print("Number of images fetched to collectionView \(imageSource.listedImages.count)")
+        return imageSource.listedImages.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageViewCell", for: indexPath as IndexPath) as! InteractiveImageViewCell
-        cell.imageView.image = UIImage(contentsOfFile: delegate.listedImages[indexPath.row].relativePath)
+        cell.imageView.image = UIImage(contentsOfFile: imageSource.listedImages[indexPath.row].relativePath)
         cell.scrollView.delegate = cell
         return cell
     }

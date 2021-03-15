@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7F0031CE25B7A21B00D93B75 /* ImageView+BlurEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0031CD25B7A21B00D93B75 /* ImageView+BlurEffect.swift */; };
 		7F0031D125B7AC7400D93B75 /* UIWindow+isLandscape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0031D025B7AC7400D93B75 /* UIWindow+isLandscape.swift */; };
+		7F0E0AC625FEC87900961256 /* GalleryFolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0E0AC525FEC87900961256 /* GalleryFolder.swift */; };
 		7F10F362258EA59E000B6075 /* PhotoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F10F360258EA59E000B6075 /* PhotoDetailViewController.swift */; };
 		7F10F363258EA59E000B6075 /* PhotoDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F10F361258EA59E000B6075 /* PhotoDetailViewController.xib */; };
 		7F235DFE2585B73C007BD075 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F235DFD2585B73C007BD075 /* AppDelegate.swift */; };
@@ -30,6 +31,7 @@
 /* Begin PBXFileReference section */
 		7F0031CD25B7A21B00D93B75 /* ImageView+BlurEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageView+BlurEffect.swift"; sourceTree = "<group>"; };
 		7F0031D025B7AC7400D93B75 /* UIWindow+isLandscape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+isLandscape.swift"; sourceTree = "<group>"; };
+		7F0E0AC525FEC87900961256 /* GalleryFolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryFolder.swift; sourceTree = "<group>"; };
 		7F10F360258EA59E000B6075 /* PhotoDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailViewController.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		7F10F361258EA59E000B6075 /* PhotoDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoDetailViewController.xib; sourceTree = "<group>"; };
 		7F10F365258EA938000B6075 /* GalleryApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GalleryApp.entitlements; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 				7F479F1925B6496E005AFB97 /* InteractiveImageViewCell.xib */,
 				7F0031CD25B7A21B00D93B75 /* ImageView+BlurEffect.swift */,
 				7F0031D025B7AC7400D93B75 /* UIWindow+isLandscape.swift */,
+				7F0E0AC525FEC87900961256 /* GalleryFolder.swift */,
 			);
 			path = GalleryApp;
 			sourceTree = "<group>";
@@ -210,6 +213,7 @@
 				7F0031D125B7AC7400D93B75 /* UIWindow+isLandscape.swift in Sources */,
 				7F67EFDE25B502FA00435148 /* GalleryManager.swift in Sources */,
 				7F2CF04D2586A52E009A459D /* AllPhotos.swift in Sources */,
+				7F0E0AC625FEC87900961256 /* GalleryFolder.swift in Sources */,
 				7FC5503B258EE7C2000290F6 /* GalleryPicture.swift in Sources */,
 				7F10F362258EA59E000B6075 /* PhotoDetailViewController.swift in Sources */,
 				7F235E142585B856007BD075 /* SidebarViewController.swift in Sources */,

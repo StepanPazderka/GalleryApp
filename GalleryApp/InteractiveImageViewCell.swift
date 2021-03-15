@@ -15,7 +15,6 @@ class InteractiveImageViewCell: UICollectionViewCell, UIScrollViewDelegate {
     
     override class func awakeFromNib() {
         super.awakeFromNib()
-        
     }
     
     required init?(coder: NSCoder) {
