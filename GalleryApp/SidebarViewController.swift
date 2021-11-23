@@ -39,7 +39,7 @@ let playlistItems = [SidebarItem(title: "All Playlists", image: UIImage(systemNa
                      SidebarItem(title: "Replay 2018", image: UIImage(systemName: "music.note.list")),
                      SidebarItem(title: "Replay 2019", image: UIImage(systemName: "music.note.list")),]
 
-class SidebarViewController: UIViewController {
+class SidebarViewController: UIViewController, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     private var dataSource: UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>! = nil
     private var collectionView: UICollectionView! = nil
     private var AllPhotosScreen: AllPhotos = AllPhotos()
@@ -132,6 +132,22 @@ class SidebarViewController: UIViewController {
             }
         }
     }
+
+    func showDocumentPicker() {
+        let allowedTypes: [UTType] = [UTType.image]
+        let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: allowedTypes, asCopy: true)
+
+        documentPicker.delegate = self
+        documentPicker.allowsMultipleSelection = true
+        self.present(documentPicker, animated: true)
+    }
+
+    func showImagePicker() {
+        let picker = UIImagePickerController()
+        picker.allowsEditing = true
+        picker.delegate = self
+        self.present(picker, animated: true)
+    }
 }
 
 extension SidebarViewController: UICollectionViewDelegate {
@@ -139,13 +155,14 @@ extension SidebarViewController: UICollectionViewDelegate {
         guard indexPath.section == 0 else { return }
                 
         if indexPath.row == 1 {
-            let allowedTypes: [UTType] = [UTType.image]
-            
-            let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: allowedTypes, asCopy: true)
-            
-            documentPicker.delegate = self
-            documentPicker.allowsMultipleSelection = true
-            self.present(documentPicker, animated: true)
+            let alert = UIAlertController(title: "My Alert", message: "This is an alert.", preferredStyle: .actionSheet)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Select from Files", comment: "Default action"), style: .default) { [weak self] _ in
+                self?.showDocumentPicker()
+            })
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Select from Gallery", comment: "Default action"), style: .default) { [weak self] _ in
+                self?.showImagePicker()
+            })
+            self.present(alert, animated: true, completion: nil)
         } else {
             splitViewController?.setViewController(secondaryViewControllers[indexPath.row], for: .secondary)
         }
@@ -162,7 +179,6 @@ extension SidebarViewController: UIDocumentPickerDelegate {
                 print("Copied to \(url)")
                 print("Document directory \(documentDirectory.first!)")
                 AllPhotosScreen.reloadData()
-                
             } catch {
                 print(error.localizedDescription)
             }

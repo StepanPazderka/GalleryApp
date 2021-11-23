@@ -21,6 +21,7 @@
 		7F2CF04E2586A52E009A459D /* AllPhotos.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F2CF04C2586A52E009A459D /* AllPhotos.xib */; };
 		7F479F1725B64963005AFB97 /* InteractiveImageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F479F1625B64963005AFB97 /* InteractiveImageViewCell.swift */; };
 		7F479F1A25B6496F005AFB97 /* InteractiveImageViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F479F1925B6496E005AFB97 /* InteractiveImageViewCell.xib */; };
+		7F4BFCCE2602AB3B0058C051 /* ImageResizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4BFCCD2602AB3B0058C051 /* ImageResizer.swift */; };
 		7F67EFDE25B502FA00435148 /* GalleryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F67EFDD25B502FA00435148 /* GalleryManager.swift */; };
 		7F67EFE225B50BEE00435148 /* ListsImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F67EFE125B50BEE00435148 /* ListsImages.swift */; };
 		7F86A6F525B5DD0700428F92 /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F86A6F425B5DD0700428F92 /* CheckBox.swift */; };
@@ -46,6 +47,7 @@
 		7F2CF04C2586A52E009A459D /* AllPhotos.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AllPhotos.xib; sourceTree = "<group>"; };
 		7F479F1625B64963005AFB97 /* InteractiveImageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveImageViewCell.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		7F479F1925B6496E005AFB97 /* InteractiveImageViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InteractiveImageViewCell.xib; sourceTree = "<group>"; };
+		7F4BFCCD2602AB3B0058C051 /* ImageResizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageResizer.swift; sourceTree = "<group>"; };
 		7F67EFDD25B502FA00435148 /* GalleryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryManager.swift; sourceTree = "<group>"; };
 		7F67EFE125B50BEE00435148 /* ListsImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListsImages.swift; sourceTree = "<group>"; };
 		7F86A6F425B5DD0700428F92 /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 		7F235DF12585B73C007BD075 = {
 			isa = PBXGroup;
 			children = (
+				7F4BFCCD2602AB3B0058C051 /* ImageResizer.swift */,
 				7F235DFC2585B73C007BD075 /* GalleryApp */,
 				7F235DFB2585B73C007BD075 /* Products */,
 			);
@@ -207,6 +210,7 @@
 			files = (
 				7F235DFE2585B73C007BD075 /* AppDelegate.swift in Sources */,
 				7F67EFE225B50BEE00435148 /* ListsImages.swift in Sources */,
+				7F4BFCCE2602AB3B0058C051 /* ImageResizer.swift in Sources */,
 				7F86A6F525B5DD0700428F92 /* CheckBox.swift in Sources */,
 				7F235E002585B73C007BD075 /* SceneDelegate.swift in Sources */,
 				7F0031CE25B7A21B00D93B75 /* ImageView+BlurEffect.swift in Sources */,

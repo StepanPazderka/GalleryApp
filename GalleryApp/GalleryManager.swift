@@ -33,16 +33,35 @@ class GalleryManager {
         return outputImageList
     }
     
+    static func buildThumbs() {
+        let images = listImages()
+        for image in images {
+            let newFilename = image.lastPathComponent
+            let newImage = ImageResizer.resizeImage(image: UIImage(contentsOfFile: image.path)!, targetSize: CGSize(width: 200, height: 200))
+            if let jpegImage = newImage?.jpegData(compressionQuality: 1.0) {
+                if FileManager.default.fileExists(atPath: documentDirectory.appendingPathComponent("thumbs").path) == false {
+                    try? FileManager.default.createDirectory(atPath: documentDirectory.appendingPathComponent("thumbs").path, withIntermediateDirectories: false)
+                }
+                let filePath = documentDirectory.appendingPathComponent("thumbs").appendingPathComponent(newFilename)
+                try? jpegImage.write(to: filePath)
+            }
+        }
+    }
+    
+    static func writeThumb(image: UIImage) {
+        
+    }
+    
     static func rebuildIndex(folder: URL) {
         let jsonTest = GalleryFolder(name: folder.lastPathComponent, images: self.listImages())
-        
+        buildThumbs()
         let json = try! JSONEncoder().encode(jsonTest)
         print(json)
         let url = folder.appendingPathComponent("index.json")
         try? json.write(to: url)
     }
     
-    static func saveNewIndex(folder: URL, index: GalleryFolder) {
+    static func updateIndex(folder: URL, index: GalleryFolder) {
         let jsonTest = index
         
         let json = try! JSONEncoder().encode(jsonTest)
