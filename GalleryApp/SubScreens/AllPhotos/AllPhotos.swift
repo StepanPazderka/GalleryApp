@@ -25,7 +25,11 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        GalleryManager.rebuildIndex(folder: GalleryManager.documentDirectory)
+        if FileManager.default.fileExists(atPath: GalleryManager.documentDirectory.appendingPathComponent("index.json").path) == true {
+            print("Index exists")
+        } else {
+            GalleryManager.rebuildIndex(folder: GalleryManager.documentDirectory)
+        }
         
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: view.frame.size.width / 3.3, height: view.frame.size.height / 3.3)
@@ -56,7 +60,7 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
         for file in GalleryManager.listImages() {
-            print("File at: \(file.absoluteURL)")
+//            print("File at: \(file.absoluteURL)")
         }
     }
     
@@ -98,7 +102,7 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         listedImages.insert(temp, at: destinationIndexPath.item)
         
         let newGalleryFolder = GalleryFolder(name: GalleryManager.documentDirectory.lastPathComponent, images: listedImages)
-        GalleryManager.saveNewIndex(folder: GalleryManager.documentDirectory, index: newGalleryFolder)
+        GalleryManager.updateIndex(folder: GalleryManager.documentDirectory, index: newGalleryFolder)
         collectionView.reloadData()
         return
     }

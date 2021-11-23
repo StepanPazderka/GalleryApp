@@ -132,6 +132,16 @@ class SidebarViewController: UIViewController {
             }
         }
     }
+
+    func showDocumentPicker() {
+        let allowedTypes: [UTType] = [UTType.image]
+
+        let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: allowedTypes, asCopy: true)
+
+        documentPicker.delegate = self
+        documentPicker.allowsMultipleSelection = true
+        self.present(documentPicker, animated: true)
+    }
 }
 
 extension SidebarViewController: UICollectionViewDelegate {
@@ -139,13 +149,14 @@ extension SidebarViewController: UICollectionViewDelegate {
         guard indexPath.section == 0 else { return }
                 
         if indexPath.row == 1 {
-            let allowedTypes: [UTType] = [UTType.image]
-            
-            let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: allowedTypes, asCopy: true)
-            
-            documentPicker.delegate = self
-            documentPicker.allowsMultipleSelection = true
-            self.present(documentPicker, animated: true)
+            let alert = UIAlertController(title: "My Alert", message: "This is an alert.", preferredStyle: .actionSheet)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default) { [weak self] _ in
+                self?.showDocumentPicker()
+            })
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                NSLog("The \"OK\" alert occured.")
+            }))
+            self.present(alert, animated: true, completion: nil)
         } else {
             splitViewController?.setViewController(secondaryViewControllers[indexPath.row], for: .secondary)
         }
@@ -162,7 +173,6 @@ extension SidebarViewController: UIDocumentPickerDelegate {
                 print("Copied to \(url)")
                 print("Document directory \(documentDirectory.first!)")
                 AllPhotosScreen.reloadData()
-                
             } catch {
                 print(error.localizedDescription)
             }
