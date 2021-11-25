@@ -20,6 +20,7 @@ struct GalleryItem: Hashable {
 let testGalleryImages = [GalleryItem(title: "name1", image: UIImage(named: "sampleImage"))]
 
 class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ListsImages {
+    var collectionView: UICollectionView? = nil
     let cellName = "GalleryCell"
     public var listedImages = GalleryManager.loadIndex(folder: GalleryManager.documentDirectory).images
     
@@ -30,29 +31,34 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         } else {
             GalleryManager.rebuildIndex(folder: GalleryManager.documentDirectory)
         }
-        
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: view.frame.size.width / 3.3, height: view.frame.size.height / 3.3)
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        self.listedImages = GalleryManager.listImages()
+        let collectionLayout = UICollectionViewFlowLayout()
+        collectionLayout.itemSize = CGSize(width: view.frame.size.width / 3.3, height: view.frame.size.height / 3.3)
+        collectionLayout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
 
-        view.addSubview(collectionView)
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        
-        NSLayoutConstraint.activate([
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionLayout)
+        collectionView?.translatesAutoresizingMaskIntoConstraints = false
+
+        if let collectionView = self.collectionView {
+            view.addSubview(collectionView)
+
+            collectionView.delegate = self
+            collectionView.dataSource = self
+
+            NSLayoutConstraint.activate([
+                collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+                collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            ])
+        }
+
         
         let gestureRecongizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(_:)))
-        collectionView.addGestureRecognizer(gestureRecongizer)
+        collectionView?.addGestureRecognizer(gestureRecongizer)
         
 //        collectionView.backgroundColor = .white
-        collectionView.register(GalleryImageCell.self, forCellWithReuseIdentifier: self.cellName)
+        collectionView?.register(GalleryImageCell.self, forCellWithReuseIdentifier: self.cellName)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -60,30 +66,30 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
         for file in GalleryManager.listImages() {
-//            print("File at: \(file.absoluteURL)")
+            print("File at: \(file.absoluteURL)")
         }
     }
     
     public func reloadData() {
         self.listedImages = GalleryManager.listImages()
-        collectionView.reloadData()
+        collectionView?.reloadData()
     }
     
     @objc func longPressed(_ gesture: UILongPressGestureRecognizer) {
 
         switch gesture.state {
         case .began:
-            guard let targetIndexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else {
+            guard let targetIndexPath = collectionView?.indexPathForItem(at: gesture.location(in: collectionView)) else {
                 return
             }
             
-            collectionView.beginInteractiveMovementForItem(at: targetIndexPath)
+            collectionView?.beginInteractiveMovementForItem(at: targetIndexPath)
         case .changed:
-            collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: collectionView))
+            collectionView?.updateInteractiveMovementTargetPosition(gesture.location(in: collectionView))
         case .ended:
-            collectionView.endInteractiveMovement()
+            collectionView?.endInteractiveMovement()
         case .cancelled:
-            collectionView.cancelInteractiveMovement()
+            collectionView?.cancelInteractiveMovement()
         default:
             print("Default")
         }
@@ -106,9 +112,7 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         collectionView.reloadData()
         return
     }
-    
-    var collectionView: UICollectionView! = nil
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return listedImages.count
     }
@@ -123,7 +127,7 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        collectionView.frame = view.bounds
+        collectionView?.frame = view.bounds
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

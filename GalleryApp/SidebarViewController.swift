@@ -39,15 +39,21 @@ let playlistItems = [SidebarItem(title: "All Playlists", image: UIImage(systemNa
                      SidebarItem(title: "Replay 2018", image: UIImage(systemName: "music.note.list")),
                      SidebarItem(title: "Replay 2019", image: UIImage(systemName: "music.note.list")),]
 
-class SidebarViewController: UIViewController, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     private var dataSource: UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>! = nil
     private var collectionView: UICollectionView! = nil
     private var AllPhotosScreen: AllPhotos = AllPhotos()
     private var secondaryViewControllers: [UIViewController] = []
+    private var previouslySelectedIndex = IndexPath(row: 0, section: 0)
+    let imagePicker: UIImagePickerController = {
+        let view = UIImagePickerController()
+        view.allowsEditing = true
+        return view
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        imagePicker.delegate = self
         let navigation = UINavigationController(rootViewController: AllPhotosScreen)
 
         navigation.popToRootViewController(animated: true)
@@ -143,26 +149,39 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate &
     }
 
     func showImagePicker() {
-        let picker = UIImagePickerController()
-        picker.allowsEditing = true
-        picker.delegate = self
-        self.present(picker, animated: true)
+        self.present(self.imagePicker, animated: true)
+    }
+
+    func selectPreviousItem() {
+        print(previouslySelectedIndex.row)
+        self.collectionView.selectItem(at: previouslySelectedIndex, animated: false, scrollPosition: .top)
     }
 }
 
 extension SidebarViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.row != 1 {
+            self.previouslySelectedIndex = indexPath
+        }
         guard indexPath.section == 0 else { return }
                 
         if indexPath.row == 1 {
-            let alert = UIAlertController(title: "My Alert", message: "This is an alert.", preferredStyle: .actionSheet)
+            let alert = UIAlertController(title: "Select source", message: nil, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: NSLocalizedString("Select from Files", comment: "Default action"), style: .default) { [weak self] _ in
                 self?.showDocumentPicker()
             })
             alert.addAction(UIAlertAction(title: NSLocalizedString("Select from Gallery", comment: "Default action"), style: .default) { [weak self] _ in
                 self?.showImagePicker()
             })
+
+            if let presenter = alert.popoverPresentationController {
+                presenter.sourceView = collectionView.cellForItem(at: IndexPath(row: 1, section: 0))
+                presenter.sourceRect = collectionView.cellForItem(at: IndexPath(row: 1, section: 0))!.bounds
+                presenter.delegate = self
+            }
+
             self.present(alert, animated: true, completion: nil)
+
         } else {
             splitViewController?.setViewController(secondaryViewControllers[indexPath.row], for: .secondary)
         }
@@ -183,5 +202,20 @@ extension SidebarViewController: UIDocumentPickerDelegate {
                 print(error.localizedDescription)
             }
         }
+    }
+
+    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+        selectPreviousItem()
+    }
+
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        selectPreviousItem()
+        self.presentedViewController?.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension SidebarViewController: UIPopoverPresentationControllerDelegate {
+    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
+        selectPreviousItem()
     }
 }
