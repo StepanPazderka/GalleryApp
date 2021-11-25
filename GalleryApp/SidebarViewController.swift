@@ -141,6 +141,7 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
 
     func showDocumentPicker() {
         let allowedTypes: [UTType] = [UTType.image]
+
         let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: allowedTypes, asCopy: true)
 
         documentPicker.delegate = self
@@ -181,7 +182,6 @@ extension SidebarViewController: UICollectionViewDelegate {
             }
 
             self.present(alert, animated: true, completion: nil)
-
         } else {
             splitViewController?.setViewController(secondaryViewControllers[indexPath.row], for: .secondary)
         }

@@ -53,7 +53,7 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
             ])
         }
 
-        
+
         let gestureRecongizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(_:)))
         collectionView?.addGestureRecognizer(gestureRecongizer)
         
@@ -66,7 +66,7 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
         for file in GalleryManager.listImages() {
-            print("File at: \(file.absoluteURL)")
+//            print("File at: \(file.absoluteURL)")
         }
     }
     
