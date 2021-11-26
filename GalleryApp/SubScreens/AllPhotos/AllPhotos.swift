@@ -22,7 +22,7 @@ let testGalleryImages = [GalleryItem(title: "name1", image: UIImage(named: "samp
 class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ListsImages {
     var collectionView: UICollectionView? = nil
     let cellName = "GalleryCell"
-    public var listedImages = GalleryManager.loadIndex(folder: GalleryManager.documentDirectory).images
+    public var listedImages = GalleryManager.loadIndex(folder: GalleryManager.documentDirectory).images.map { GalleryManager.documentDirectory.appendingPathComponent($0) }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,7 +31,8 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         } else {
             GalleryManager.rebuildIndex(folder: GalleryManager.documentDirectory)
         }
-        self.listedImages = GalleryManager.listImages()
+//        self.listedImages = GalleryManager.listImages().map { URL(string: $0)! }
+        self.listedImages = GalleryManager.loadIndex(folder: GalleryManager.documentDirectory).images.map { URL(string: $0)! }
         let collectionLayout = UICollectionViewFlowLayout()
         collectionLayout.itemSize = CGSize(width: view.frame.size.width / 3.3, height: view.frame.size.height / 3.3)
         collectionLayout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -56,8 +57,6 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 
         let gestureRecongizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(_:)))
         collectionView?.addGestureRecognizer(gestureRecongizer)
-        
-//        collectionView.backgroundColor = .white
         collectionView?.register(GalleryImageCell.self, forCellWithReuseIdentifier: self.cellName)
     }
     
@@ -71,7 +70,7 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     }
     
     public func reloadData() {
-        self.listedImages = GalleryManager.listImages()
+        self.listedImages = GalleryManager.listImages().map { GalleryManager.documentDirectory.appendingPathComponent($0) }
         collectionView?.reloadData()
     }
     
@@ -107,8 +106,8 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         let temp = listedImages.remove(at: sourceIndexPath.item)
         listedImages.insert(temp, at: destinationIndexPath.item)
         
-        let newGalleryFolder = GalleryFolder(name: GalleryManager.documentDirectory.lastPathComponent, images: listedImages)
-        GalleryManager.updateIndex(folder: GalleryManager.documentDirectory, index: newGalleryFolder)
+        let newGalleryIndex = GalleryIndex(name: GalleryManager.documentDirectory.lastPathComponent, images: listedImages.map { $0.lastPathComponent })
+        GalleryManager.updateIndex(folder: GalleryManager.documentDirectory, index: newGalleryIndex)
         collectionView.reloadData()
         return
     }
@@ -119,7 +118,8 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellName, for: indexPath) as! GalleryImageCell
-        cell.image.image = UIImage(contentsOfFile: listedImages[indexPath.row].relativePath)
+        let fullImageURL = GalleryManager.documentDirectory.appendingPathComponent(listedImages[indexPath.row].absoluteString).relativePath
+        cell.image.image = UIImage(contentsOfFile: fullImageURL)
         cell.index = indexPath.row
         cell.delegate = self
         return cell

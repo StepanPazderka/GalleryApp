@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct GalleryFolder: Codable {
+struct GalleryIndex: Codable {
     var name: String
-    var images: [URL]
+    var images: [String]
 }

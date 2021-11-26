@@ -7,10 +7,12 @@
 
 import UIKit
 import UniformTypeIdentifiers
+import RxSwift
+import RxCocoa
 
 enum SidebarSection: String {
     case tabs
-    case library = "Library"
+    case albums = "Albums"
     case playlists = "Playlists"
 }
 
@@ -110,7 +112,7 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
             }
         }
         
-        let sections: [SidebarSection] = [.tabs, .library, .playlists]
+        let sections: [SidebarSection] = [.tabs, .albums, .playlists]
         var snapshot = NSDiffableDataSourceSnapshot<SidebarSection, SidebarItem>()
         snapshot.appendSections(sections)
         dataSource.apply(snapshot, animatingDifferences: false)
@@ -121,7 +123,7 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
                 var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
                 sectionSnapshot.append(tabsItems)
                 dataSource.apply(sectionSnapshot, to: section)
-            case .library:
+            case .albums:
                 let headerItem = SidebarItem(title: section.rawValue, image: nil)
                 var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
                 sectionSnapshot.append([headerItem])

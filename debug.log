@@ -1,0 +1,25 @@
+2021-11-25 23:30:41,808 [WARNING] Request name missing.
+2021-11-25 23:30:41,809 [WARNING] Request description missing.
+2021-11-25 23:30:41,809 [INFO] Reading curl from --curl option
+2021-11-25 23:30:41,809 [INFO] --curl option not used
+2021-11-25 23:30:41,809 [INFO] Reading curl from clipboard
+2021-11-25 23:30:41,848 [INFO] cURL after cleanup: https://instagram.com/aidana.assylkhan?utm_medium=copy_link
+2021-11-25 23:30:41,848 [INFO] Parsing cURL
+2021-11-25 23:30:41,850 [ERROR] Parsing failed (see usage above)
+2021-11-25 23:30:41,850 [INFO] Falling back to test cURL
+2021-11-25 23:30:41,850 [INFO] Transforming cURL to Python request object
+2021-11-25 23:30:41,850 [INFO] URL: https://api.github.com
+2021-11-25 23:30:41,850 [INFO] Found method: get
+2021-11-25 23:30:41,850 [INFO] Found path: /users/defunkt
+2021-11-25 23:30:41,850 [INFO] Found query params: None
+2021-11-25 23:30:41,850 [INFO] Found headers: OrderedDict()
+2021-11-25 23:30:41,850 [INFO] Found body params: []
+2021-11-25 23:30:42,191 [INFO] Preparing enum cases for enum type header with names []
+2021-11-25 23:30:42,191 [INFO] Created body param rows: []
+2021-11-25 23:30:42,191 [INFO] Preparing enum cases for enum type param with names []
+2021-11-25 23:30:42,191 [INFO] Created body param rows: []
+2021-11-25 23:30:42,192 [INFO] Content parsed.
+2021-11-25 23:30:42,192 [INFO] Creating response model for Response
+2021-11-25 23:30:42,192 [INFO] Processing request template
+2021-11-25 23:30:42,192 [INFO] Processing query params: None
+2021-11-25 23:30:44,751 [INFO] Processing unit test templacte

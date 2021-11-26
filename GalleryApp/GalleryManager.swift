@@ -16,11 +16,11 @@ class GalleryManager {
         return outputImage
     }
     
-    static func listImages() -> [URL] {
+    static func listImages() -> [String] {
         var outputImageList: [URL] = []
         
         do {
-            let files = try FileManager.default.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
+            let files = try FileManager.default.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
             print("Document Directory: \(documentDirectory)")
             
             for file in files {
@@ -30,14 +30,14 @@ class GalleryManager {
             print(error.localizedDescription)
         }
 
-        return outputImageList
+        return outputImageList.filter { $0.hasDirectoryPath == false }.map { $0.absoluteURL.lastPathComponent }
     }
     
     static func buildThumbs() {
         let images = listImages()
         for image in images {
-            let newFilename = image.lastPathComponent
-            let newImage = ImageResizer.resizeImage(image: UIImage(contentsOfFile: image.path)!, targetSize: CGSize(width: 200, height: 200))
+            let newFilename = image
+            let newImage = ImageResizer.resizeImage(image: UIImage(contentsOfFile: documentDirectory.appendingPathComponent(image).relativePath)!, targetSize: CGSize(width: 200, height: 200))
             if let jpegImage = newImage?.jpegData(compressionQuality: 1.0) {
                 if FileManager.default.fileExists(atPath: documentDirectory.appendingPathComponent("thumbs").path) == false {
                     try? FileManager.default.createDirectory(atPath: documentDirectory.appendingPathComponent("thumbs").path, withIntermediateDirectories: false)
@@ -53,7 +53,7 @@ class GalleryManager {
     }
     
     static func rebuildIndex(folder: URL) {
-        let jsonTest = GalleryFolder(name: folder.lastPathComponent, images: self.listImages())
+        let jsonTest = GalleryIndex(name: folder.lastPathComponent, images: self.listImages())
         buildThumbs()
         let json = try! JSONEncoder().encode(jsonTest)
         print(json)
@@ -61,7 +61,7 @@ class GalleryManager {
         try? json.write(to: url)
     }
     
-    static func updateIndex(folder: URL, index: GalleryFolder) {
+    static func updateIndex(folder: URL, index: GalleryIndex) {
         let jsonTest = index
         
         let json = try! JSONEncoder().encode(jsonTest)
@@ -70,13 +70,13 @@ class GalleryManager {
         try? json.write(to: url)
     }
     
-    static func loadIndex(folder: URL) -> GalleryFolder {
+    static func loadIndex(folder: URL) -> GalleryIndex {
         if !FileManager.default.fileExists(atPath: folder.appendingPathComponent("index.json").relativePath) {
             rebuildIndex(folder: folder)
         }
-        let jsonDATA = try! String(contentsOfFile: folder.appendingPathComponent("index.json").relativePath).data(using: .utf8)
+        let jsonDATA = try! String(contentsOfFile: folder.appendingPathComponent("index.json").relativePath).data(using: .unicode)
         print("JSON Data: \(String(describing: jsonDATA))")
-        let json = try! JSONDecoder().decode(GalleryFolder.self, from: jsonDATA!)
-        return json
+        let decodedData = try! JSONDecoder().decode(GalleryIndex.self, from: jsonDATA!)
+        return decodedData
     }
 }
