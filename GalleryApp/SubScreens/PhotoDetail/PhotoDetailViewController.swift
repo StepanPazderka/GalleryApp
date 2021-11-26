@@ -114,7 +114,9 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageViewCell", for: indexPath as IndexPath) as! InteractiveImageViewCell
-        cell.imageView.image = UIImage(contentsOfFile: GalleryManager.documentDirectory.appendingPathComponent(imageSource.listedImages[indexPath.row].lastPathComponent).absoluteString)
+        let fullImageURL = GalleryManager.documentDirectory.appendingPathComponent(imageSource.listedImages[indexPath.row].absoluteString).relativePath
+        cell.imageView.image = UIImage(contentsOfFile: fullImageURL)
+//        cell.imageView.image = UIImage(contentsOfFile: GalleryManager.documentDirectory.appendingPathComponent(imageSource.listedImages[indexPath.row].lastPathComponent).absoluteString)
         cell.scrollView.delegate = cell
         return cell
     }
