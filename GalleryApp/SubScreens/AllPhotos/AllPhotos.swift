@@ -20,19 +20,26 @@ struct GalleryItem: Hashable {
 let testGalleryImages = [GalleryItem(title: "name1", image: UIImage(named: "sampleImage"))]
 
 class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ListsImages {
-    var collectionView: UICollectionView? = nil
+    var collectionView: UICollectionView?
     let cellName = "GalleryCell"
-    public var listedImages = GalleryManager.loadIndex(folder: GalleryManager.documentDirectory).images.map { GalleryManager.documentDirectory.appendingPathComponent($0) }
+    public var listedImages: [String] = GalleryManager.loadIndex(folder: GalleryManager.documentDirectory).images
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         if FileManager.default.fileExists(atPath: GalleryManager.documentDirectory.appendingPathComponent("index.json").path) == true {
             print("Index exists")
         } else {
             GalleryManager.rebuildIndex(folder: GalleryManager.documentDirectory)
         }
-//        self.listedImages = GalleryManager.listImages().map { URL(string: $0)! }
-        self.listedImages = GalleryManager.loadIndex(folder: GalleryManager.documentDirectory).images.map { URL(string: $0)! }
+        self.listedImages = GalleryManager.loadIndex(folder: GalleryManager.documentDirectory).images
+        let editButton = UIButton(type: .system)
+        editButton.titleLabel?.text = "Edit"
+        editButton.setTitle("Edit", for: .normal)
+        editButton.frame = CGRect(x: 0, y: 0, width: 40, height: 20)
+        self.navigationItem.title = "Gallery"
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: editButton)
+
         let collectionLayout = UICollectionViewFlowLayout()
         collectionLayout.itemSize = CGSize(width: view.frame.size.width / 3.3, height: view.frame.size.height / 3.3)
         collectionLayout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -54,34 +61,37 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
             ])
         }
 
-
         let gestureRecongizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(_:)))
         collectionView?.addGestureRecognizer(gestureRecongizer)
-        collectionView?.register(GalleryImageCell.self, forCellWithReuseIdentifier: self.cellName)
+        collectionView?.register(AlbumImageCell.self, forCellWithReuseIdentifier: self.cellName)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-        
-        for file in GalleryManager.listImages() {
-//            print("File at: \(file.absoluteURL)")
-        }
+    }
+
+    func importPhoto(filename: String) {
+        self.listedImages.append(filename)
+        GalleryManager.rebuildIndex(folder: GalleryManager.documentDirectory)
+        collectionView?.reloadData()
     }
     
     public func reloadData() {
-        self.listedImages = GalleryManager.listImages().map { GalleryManager.documentDirectory.appendingPathComponent($0) }
+        self.listedImages = GalleryManager.listImages()
         collectionView?.reloadData()
     }
     
     @objc func longPressed(_ gesture: UILongPressGestureRecognizer) {
+        guard let targetIndexPath = collectionView?.indexPathForItem(at: gesture.location(in: collectionView)) else {
+            return
+        }
 
         switch gesture.state {
         case .began:
-            guard let targetIndexPath = collectionView?.indexPathForItem(at: gesture.location(in: collectionView)) else {
-                return
-            }
-            
+            UIView.animate(withDuration: 0.1, animations: {
+                (self.collectionView!.cellForItem(at: targetIndexPath) as! AlbumImageCell).transform = CGAffineTransform(scaleX: 1.25, y: 1.25)
+            })
             collectionView?.beginInteractiveMovementForItem(at: targetIndexPath)
         case .changed:
             collectionView?.updateInteractiveMovementTargetPosition(gesture.location(in: collectionView))
@@ -97,7 +107,7 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.size.width / 3.3, height: view.frame.size.height / 3.3)
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
         true
     }
@@ -106,7 +116,7 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         let temp = listedImages.remove(at: sourceIndexPath.item)
         listedImages.insert(temp, at: destinationIndexPath.item)
         
-        let newGalleryIndex = GalleryIndex(name: GalleryManager.documentDirectory.lastPathComponent, images: listedImages.map { $0.lastPathComponent })
+        let newGalleryIndex = AlbumIndex(name: GalleryManager.documentDirectory.lastPathComponent, images: listedImages, thumbnail: listedImages.first ?? "")
         GalleryManager.updateIndex(folder: GalleryManager.documentDirectory, index: newGalleryIndex)
         collectionView.reloadData()
         return
@@ -117,9 +127,11 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellName, for: indexPath) as! GalleryImageCell
-        let fullImageURL = GalleryManager.documentDirectory.appendingPathComponent(listedImages[indexPath.row].absoluteString).relativePath
-        cell.image.image = UIImage(contentsOfFile: fullImageURL)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellName, for: indexPath) as! AlbumImageCell
+        if let image = URL(string: listedImages[indexPath.row]) {
+            let fullImageURL = GalleryManager.documentDirectory.appendingPathComponent(image.absoluteString).relativePath
+            cell.albumImage.image = UIImage(contentsOfFile: fullImageURL)
+        }
         cell.index = indexPath.row
         cell.delegate = self
         return cell
@@ -141,79 +153,6 @@ class AllPhotos: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         1
     }
-    
-    
 }
 
-class GalleryImageCell: UICollectionViewCell {
-    weak var textLabel: UILabel!
-    weak var image: UIImageView!
-    var delegate: AllPhotos!
-    var index: Int!
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        let label = UILabel()
-        let imageView = UIImageView()
-        
-        let button = CheckBox(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-        button.backgroundColor = .red
-        button.setTitle("Not checked", for: .normal)
-        button.isHidden = true
 
-        label.translatesAutoresizingMaskIntoConstraints = false
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        contentView.addSubview(label)
-        contentView.addSubview(imageView)
-        contentView.addSubview(button)
-        
-        NSLayoutConstraint.activate([
-            button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            label.topAnchor.constraint(equalTo: contentView.topAnchor),
-            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
-        
-        textLabel = label
-        image = imageView
-        
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(galleryImageTapped(_:)))
-        image.isUserInteractionEnabled = true
-        image.addGestureRecognizer(tapRecognizer)
-        
-        imageView.contentMode = .scaleAspectFit
-        textLabel.textAlignment = .center
-        
-//        image.addBlurEffect()
-        image.backgroundColor = .none
-        self.backgroundColor = .none
-    }
-    
-    @objc func galleryImageTapped(_ sender: UITapGestureRecognizer) {
-        print("Image tapped \(Date())")
-        
-        let PhotoDetailScreen = PhotoDetailViewController(nibName: "PhotoDetailViewController", bundle: nil)
-        PhotoDetailScreen.modalPresentationStyle = .fullScreen
-        PhotoDetailScreen.imageSource = self.delegate
-        PhotoDetailScreen.selectedIndex = self.index
-        delegate.present(PhotoDetailScreen, animated: true, completion: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}

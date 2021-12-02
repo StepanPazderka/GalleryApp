@@ -16,13 +16,15 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let deleteImageButton = UIButton(type: .system)
+        deleteImageButton.setImage(UIImage(systemName: "trash"), for: .normal)
+        deleteImageButton.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: deleteImageButton)
         self.collectionView?.addObserver(self, forKeyPath: "contentSize", options: NSKeyValueObservingOptions.old, context: nil)
-        
+
         collectionView.delegate = self
         collectionView.dataSource = self
 
-//        imageView.image = UIImage(contentsOfFile: delegate.listedImages[selectedIndex].relativePath)
-        
         addKeyCommand(UIKeyCommand(
             title: NSLocalizedString("CANCEL", comment: "Cancel"),
             action: #selector(didInvokeCancel),
@@ -40,6 +42,8 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
             action: #selector(selectNextItem),
             input: UIKeyCommand.inputRightArrow
         ))
+
+        navigationItem.title = imageSource.listedImages[selectedIndex]
         
         let nib = UINib(nibName: "InteractiveImageViewCell", bundle: Bundle.main)
         self.collectionView.register(nib, forCellWithReuseIdentifier: "ImageViewCell")
@@ -78,7 +82,7 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     @IBAction @objc func didInvokeCancel() {
-        imageSource.dismiss(animated: true, completion: nil)
+        imageSource.navigationController?.popViewController(animated: true)
     }
 
     @IBAction func didTapDelete(_ sender: Any) {
@@ -114,8 +118,10 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageViewCell", for: indexPath as IndexPath) as! InteractiveImageViewCell
-        let fullImageURL = GalleryManager.documentDirectory.appendingPathComponent(imageSource.listedImages[indexPath.row].absoluteString).relativePath
-        cell.imageView.image = UIImage(contentsOfFile: fullImageURL)
+        if let image = URL(string: imageSource.listedImages[indexPath.row]) {
+            cell.imageView.image = UIImage(contentsOfFile: GalleryManager.documentDirectory.appendingPathComponent(image.absoluteString).relativePath)
+        }
+
 //        cell.imageView.image = UIImage(contentsOfFile: GalleryManager.documentDirectory.appendingPathComponent(imageSource.listedImages[indexPath.row].lastPathComponent).absoluteString)
         cell.scrollView.delegate = cell
         return cell

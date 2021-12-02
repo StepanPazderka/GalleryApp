@@ -8,5 +8,5 @@
 import Foundation
 
 protocol ListsImages {
-    var listedImages: [URL] { get }
+    var listedImages: [String] { get }
 }

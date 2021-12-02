@@ -47,6 +47,7 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
     private var AllPhotosScreen: AllPhotos = AllPhotos()
     private var secondaryViewControllers: [UIViewController] = []
     private var previouslySelectedIndex = IndexPath(row: 0, section: 0)
+    let disposeBag = DisposeBag()
     let imagePicker: UIImagePickerController = {
         let view = UIImagePickerController()
         view.allowsEditing = true
@@ -57,13 +58,39 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
         super.viewDidLoad()
         imagePicker.delegate = self
         let navigation = UINavigationController(rootViewController: AllPhotosScreen)
-
-        navigation.popToRootViewController(animated: true)
+//        navigation.popToRootViewController(animated: true)
         secondaryViewControllers.append(navigation)
+
+        let addAlbumButton = UIButton(type: .system)
+        addAlbumButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        addAlbumButton.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+        addAlbumButton.rx.tap.subscribe(onNext: { [weak self] in
+            let alertController = UIAlertController(title: "Enter Album name", message: nil, preferredStyle: .alert)
+
+            alertController.addTextField { textField in
+                textField.placeholder = "Album name"
+            }
+
+            let confirmAction = UIAlertAction(title: "OK", style: .default) { [weak alertController] _ in
+                guard let alertController = alertController, let textField = alertController.textFields?.first else { return }
+                if let albumName = alertController.textFields?.first?.text {
+                    MainIndexManager.createAlbum(name: albumName)
+                }
+            }
+            alertController.addAction(confirmAction)
+
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+            alertController.addAction(cancelAction)
+
+            self?.present(alertController, animated: true, completion: nil)
+        }, onError: nil, onCompleted: nil, onDisposed: nil).disposed(by: disposeBag)
         
-        navigationItem.title = nil
+        navigationItem.title = "Hey"
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: addAlbumButton)
+//        navigationController?.navigationItem.
         navigationController?.navigationBar.prefersLargeTitles = false
-        
+
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: self.createLayout())
         collectionView.delegate = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false // This line fixes issue with incorrect highlighting
@@ -76,8 +103,9 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
             collectionView.topAnchor.constraint(equalTo: view.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+        collectionView.selectItem(at: IndexPath(row: 0, section: 0), animated: true, scrollPosition: .top)
+        splitViewController?.setViewController(secondaryViewControllers[0], for: .secondary)
     }
-    
 
     private func createLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { section, layoutEnvironment in
@@ -199,7 +227,7 @@ extension SidebarViewController: UIDocumentPickerDelegate {
                 try FileManager().moveItem(at: url, to: documentDirectory.first!.appendingPathComponent(url.lastPathComponent))
                 print("Copied to \(url)")
                 print("Document directory \(documentDirectory.first!)")
-                AllPhotosScreen.reloadData()
+                AllPhotosScreen.importPhoto(filename: url.lastPathComponent)
             } catch {
                 print(error.localizedDescription)
             }

@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct GalleryIndex: Codable {
+struct AlbumIndex: Codable {
     var name: String
     var images: [String]
+    var thumbnail: String
 }

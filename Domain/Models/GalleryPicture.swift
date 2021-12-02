@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class GalleryPicture {
-    var fullImageSize: UIImage!
-    var imageThumbnail: UIImage!
+struct GalleryPicture {
+    var fullImageSize: UIImage
+    var imageThumbnail: UIImage
 }
