@@ -8,7 +8,7 @@
 import UIKit
 
 class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    var imageSource: AllPhotos!
+    var imageSource: AlbumScreen!
     var selectedIndex: Int!
     var initialScrollDone: Bool = false
     
@@ -43,7 +43,7 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
             input: UIKeyCommand.inputRightArrow
         ))
 
-        navigationItem.title = imageSource.listedImages[selectedIndex]
+        navigationItem.title = imageSource.listedImages?[selectedIndex] ?? ""
         
         let nib = UINib(nibName: "InteractiveImageViewCell", bundle: Bundle.main)
         self.collectionView.register(nib, forCellWithReuseIdentifier: "ImageViewCell")
@@ -64,13 +64,11 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        
-        
+
         guard let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {
             return
         }
-        
-        
+
         if let interfaceOrientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation {
          // Use interfaceOrientation
         }
@@ -99,7 +97,7 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     @IBAction func selectNextItem(_ sender: Any) {
-        if selectedIndex < imageSource.listedImages.count-1 {
+        if selectedIndex < imageSource.listedImages!.count-1 {
             selectedIndex = selectedIndex+1
         }
         
@@ -112,18 +110,24 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("Number of images fetched to collectionView \(imageSource.listedImages.count)")
-        return imageSource.listedImages.count
+        print("Number of images fetched to collectionView \(imageSource.listedImages?.count ?? 0)")
+        return imageSource.listedImages?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageViewCell", for: indexPath as IndexPath) as! InteractiveImageViewCell
-        if let image = URL(string: imageSource.listedImages[indexPath.row]) {
-            cell.imageView.image = UIImage(contentsOfFile: GalleryManager.documentDirectory.appendingPathComponent(image.absoluteString).relativePath)
+        if let imageURL = imageSource.listedImages?[indexPath.row] {
+            if let image = URL(string: imageURL) {
+                cell.imageView.image = UIImage(contentsOfFile: IndexInteractor.documentDirectory.appendingPathComponent(image.absoluteString).relativePath)
+            }
         }
-
 //        cell.imageView.image = UIImage(contentsOfFile: GalleryManager.documentDirectory.appendingPathComponent(imageSource.listedImages[indexPath.row].lastPathComponent).absoluteString)
         cell.scrollView.delegate = cell
+//        cell.
         return cell
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print("Did scroll")
     }
 }

@@ -10,7 +10,7 @@ import UIKit
 import UniformTypeIdentifiers
 import RxSwift
 
-class GalleryManager {
+class IndexInteractor {
 //    let allowedTypes = [UTType.image]
 
     static let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -88,15 +88,19 @@ class GalleryManager {
         try? json.write(to: url)
     }
     
-    static func loadIndex(folder: URL) -> AlbumIndex {
-        if !FileManager.default.fileExists(atPath: folder.appendingPathComponent("index.json").relativePath) {
+    static func loadIndex(folder: URL) -> AlbumIndex? {
+        let indexPath = folder.lastPathComponent == "index.json" ? folder.relativePath : folder.appendingPathComponent("index.json").relativePath
+        if !FileManager.default.fileExists(atPath: indexPath) {
             rebuildIndex(folder: folder)
         }
-        let jsonDATA = try! String(contentsOfFile: folder.appendingPathComponent("index.json").relativePath).data(using: .unicode)
+        let jsonDATA = try? String(contentsOfFile: indexPath).data(using: .unicode)
         print("JSON Data: \(String(describing: jsonDATA))")
-        print(GalleryManager.documentDirectory)
-        let decodedData = try! JSONDecoder().decode(AlbumIndex.self, from: jsonDATA!)
-        return decodedData
+        print(IndexInteractor.documentDirectory)
+        if let jsonData = jsonDATA {
+            let decodedData = try! JSONDecoder().decode(AlbumIndex.self, from: jsonData)
+            return decodedData
+        }
+        return nil
     }
 
     static func loadIndexRX(folder: URL) -> Observable<AlbumIndex> {

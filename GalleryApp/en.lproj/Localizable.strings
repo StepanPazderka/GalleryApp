@@ -7,3 +7,5 @@
 */
 
 "CANCEL" = "Cancel";
+"SELECTFROMFILES" = "Select from Files";
+"CreateSubAlbum" = "Create SubAlbum";

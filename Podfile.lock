@@ -2,20 +2,24 @@ PODS:
   - RxCocoa (4.5.0):
     - RxSwift (>= 4.4.2, ~> 4.4)
   - RxSwift (4.5.0)
+  - Swinject (2.8.1)
 
 DEPENDENCIES:
   - RxCocoa (~> 4.0)
   - RxSwift (~> 4.0)
+  - Swinject
 
 SPEC REPOS:
   trunk:
     - RxCocoa
     - RxSwift
+    - Swinject
 
 SPEC CHECKSUMS:
   RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
   RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
+  Swinject: 97112918bd7e0785dc2df7036213f3c8cbba6586
 
-PODFILE CHECKSUM: 4cee6bcd5cb8c9e69cd64e2e0ee88b1bb34276c5
+PODFILE CHECKSUM: 16bd570ebec8944f1d4290d34a2bf6273410ffa3
 
 COCOAPODS: 1.10.1

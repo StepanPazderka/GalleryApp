@@ -20,6 +20,17 @@ struct SidebarItem: Hashable {
     let title: String?
     let image: UIImage?
     private let identifier = UUID()
+
+    internal init(title: String?, image: UIImage?) {
+        self.title = title
+        self.image = image
+    }
+
+    init?(from: AlbumIndex) {
+        self.title = from.name
+        let thumbnailImage: UIImage? = UIImage(contentsOfFile: IndexInteractor.documentDirectory.appendingPathComponent(from.thumbnail).relativePath)?.resized(to: CGSize(width: 30, height: 30))
+        self.image = thumbnailImage
+    }
 }
 
 let tabsItems = [SidebarItem(title: "All Photos", image: UIImage(systemName: "photo.on.rectangle.angled")),
@@ -27,15 +38,12 @@ let tabsItems = [SidebarItem(title: "All Photos", image: UIImage(systemName: "ph
                  SidebarItem(title: "Radio", image: UIImage(systemName: "dot.radiowaves.left.and.right")),
                  SidebarItem(title: "Search", image: UIImage(systemName: "magnifyingglass"))]
 
-let libraryItems = [SidebarItem(title: "Recently Added", image: UIImage(systemName: "clock")),
-                    SidebarItem(title: "Artists", image: UIImage(systemName: "music.mic")),
-                    SidebarItem(title: "Albums", image: UIImage(systemName: "rectangle.stack")),
-                    SidebarItem(title: "Songs", image: UIImage(systemName: "music.note")),
-                    SidebarItem(title: "Music Videos", image: UIImage(systemName: "tv.music.note")),
-                    SidebarItem(title: "TV & Movies", image: UIImage(systemName: "tv"))]
+let Albums = GalleryInteractor.listAlbums().map { album in
+    SidebarItem(title: album.name, image: UIImage(contentsOfFile: IndexInteractor.documentDirectory.appendingPathComponent(album.thumbnail).relativePath)?.resized(to: CGSize(width: 30, height: 30)))
+}
 
-let playlistItems = [SidebarItem(title: "All Playlists", image: UIImage(systemName: "music.note.list")),
-                     SidebarItem(title: "Replay 2015", image: UIImage(systemName: "music.note.list")),
+let SmartAlbums = [SidebarItem(title: "Smart Albums", image: UIImage(systemName: "music.note.list")),
+                     SidebarItem(title: "Replay 2015", image: UIImage(systemName: "folder.badge.gearshape")),
                      SidebarItem(title: "Replay 2016", image: UIImage(systemName: "music.note.list")),
                      SidebarItem(title: "Replay 2017", image: UIImage(systemName: "music.note.list")),
                      SidebarItem(title: "Replay 2018", image: UIImage(systemName: "music.note.list")),
@@ -44,8 +52,9 @@ let playlistItems = [SidebarItem(title: "All Playlists", image: UIImage(systemNa
 class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     private var dataSource: UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>! = nil
     private var collectionView: UICollectionView! = nil
-    private var AllPhotosScreen: AllPhotos = AllPhotos()
+    private var AllPhotosScreen: AlbumScreen = AlbumScreen()
     private var secondaryViewControllers: [UIViewController] = []
+    private var screens: [IndexPath: UIViewController] = [:]
     private var previouslySelectedIndex = IndexPath(row: 0, section: 0)
     let disposeBag = DisposeBag()
     let imagePicker: UIImagePickerController = {
@@ -53,12 +62,13 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
         view.allowsEditing = true
         return view
     }()
+    let router = MainRouter()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         imagePicker.delegate = self
         let navigation = UINavigationController(rootViewController: AllPhotosScreen)
-//        navigation.popToRootViewController(animated: true)
+        self.screens.updateValue(navigation, forKey: IndexPath(row: 0, section: 0))
         secondaryViewControllers.append(navigation)
 
         let addAlbumButton = UIButton(type: .system)
@@ -74,7 +84,7 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
             let confirmAction = UIAlertAction(title: "OK", style: .default) { [weak alertController] _ in
                 guard let alertController = alertController, let textField = alertController.textFields?.first else { return }
                 if let albumName = alertController.textFields?.first?.text {
-                    MainIndexManager.createAlbum(name: albumName)
+                    try! GalleryInteractor.createAlbum(name: albumName)
                 }
             }
             alertController.addAction(confirmAction)
@@ -86,9 +96,22 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
         }, onError: nil, onCompleted: nil, onDisposed: nil).disposed(by: disposeBag)
         
         navigationItem.title = "Hey"
+        let selectGalleryButton: UIButton = { let view = UIButton()
+//            view.backgroundColor = .green
+            view.setTitle("Hey", for: .normal)
+            view.setTitleColor(.black, for: .normal)
+            view.frame = .zero
+            view.frame = CGRect(x: 0, y: 0, width: 100, height: 50)
+            return view
+        }()
+        selectGalleryButton.rx.tap.subscribe(onNext: { [weak self] in
+            let newController = UIViewController()
+            newController.view.backgroundColor = .systemBackground
+            self?.present(newController, animated: true, completion: nil)
+        }).disposed(by: disposeBag)
+        navigationItem.titleView = selectGalleryButton
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: addAlbumButton)
-//        navigationController?.navigationItem.
         navigationController?.navigationBar.prefersLargeTitles = false
 
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: self.createLayout())
@@ -104,7 +127,7 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         collectionView.selectItem(at: IndexPath(row: 0, section: 0), animated: true, scrollPosition: .top)
-        splitViewController?.setViewController(secondaryViewControllers[0], for: .secondary)
+        splitViewController?.setViewController(screens[IndexPath(row: 0, section: 0)], for: .secondary)
     }
 
     private func createLayout() -> UICollectionViewLayout {
@@ -126,7 +149,7 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
             var content = cell.defaultContentConfiguration()
             content.text = item.title
-            content.image = item.image
+            content.image = item.image?.roundedImage
             cell.contentConfiguration = content
             cell.accessories = []
         }
@@ -155,14 +178,14 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
                 let headerItem = SidebarItem(title: section.rawValue, image: nil)
                 var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
                 sectionSnapshot.append([headerItem])
-                sectionSnapshot.append(libraryItems, to: headerItem)
+                sectionSnapshot.append(Albums, to: headerItem)
                 sectionSnapshot.expand([headerItem])
                 dataSource.apply(sectionSnapshot, to: section)
             case .playlists:
                 let headerItem = SidebarItem(title: section.rawValue, image: nil)
                 var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
                 sectionSnapshot.append([headerItem])
-                sectionSnapshot.append(playlistItems, to: headerItem)
+                sectionSnapshot.append(SmartAlbums, to: headerItem)
                 sectionSnapshot.expand([headerItem])
                 dataSource.apply(sectionSnapshot, to: section)
             }
@@ -196,9 +219,9 @@ extension SidebarViewController: UICollectionViewDelegate {
         }
         guard indexPath.section == 0 else { return }
                 
-        if indexPath.row == 1 {
+        if indexPath.row == 1 && indexPath.section == 0 {
             let alert = UIAlertController(title: "Select source", message: nil, preferredStyle: .actionSheet)
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Select from Files", comment: "Default action"), style: .default) { [weak self] _ in
+            alert.addAction(UIAlertAction(title: NSLocalizedString("SELECTFROMFILES", comment: "Default action"), style: .default) { [weak self] _ in
                 self?.showDocumentPicker()
             })
             alert.addAction(UIAlertAction(title: NSLocalizedString("Select from Gallery", comment: "Default action"), style: .default) { [weak self] _ in
@@ -213,7 +236,7 @@ extension SidebarViewController: UICollectionViewDelegate {
 
             self.present(alert, animated: true, completion: nil)
         } else {
-            splitViewController?.setViewController(secondaryViewControllers[indexPath.row], for: .secondary)
+            splitViewController?.setViewController(screens[indexPath], for: .secondary)
         }
     }
 }
@@ -227,7 +250,7 @@ extension SidebarViewController: UIDocumentPickerDelegate {
                 try FileManager().moveItem(at: url, to: documentDirectory.first!.appendingPathComponent(url.lastPathComponent))
                 print("Copied to \(url)")
                 print("Document directory \(documentDirectory.first!)")
-                AllPhotosScreen.importPhoto(filename: url.lastPathComponent)
+                AllPhotosScreen.importPhoto(filename: url.lastPathComponent, to: "Test")
             } catch {
                 print(error.localizedDescription)
             }
@@ -241,6 +264,31 @@ extension SidebarViewController: UIDocumentPickerDelegate {
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         selectPreviousItem()
         self.presentedViewController?.dismiss(animated: true, completion: nil)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil,
+                                          previewProvider: nil,
+                                          actionProvider: {
+            suggestedActions in
+            let inspectAction =
+            UIAction(title: NSLocalizedString("CreateSubAlbum", comment: ""),
+                     image: UIImage(systemName: "plus.square")) { action in
+                //                self.performInspect(indexPath)
+            }
+            let duplicateAction =
+            UIAction(title: NSLocalizedString("DuplicateTitle", comment: ""),
+                     image: UIImage(systemName: "plus.square.on.square")) { action in
+                //                self.performDuplicate(indexPath)
+            }
+            let deleteAction =
+            UIAction(title: NSLocalizedString("DeleteTitle", comment: ""),
+                     image: UIImage(systemName: "trash"),
+                     attributes: .destructive) { action in
+                //                self.performDelete(indexPath)
+            }
+            return UIMenu(title: "", children: [inspectAction, duplicateAction, deleteAction])
+        })
     }
 }
 
