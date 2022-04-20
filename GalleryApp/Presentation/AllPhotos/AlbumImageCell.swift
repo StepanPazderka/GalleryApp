@@ -10,11 +10,11 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class AlbumImageCell: UICollectionViewCell, UIContextMenuInteractionDelegate {
+class AlbumImageCell: UICollectionViewCell {
 
     weak var textLabel: UILabel!
     weak var albumImage: UIImageView!
-    var delegate: AlbumScreen!
+    var delegate: AlbumScreenViewController!
     let checkBox = CheckBox(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
     var index: Int!
     var isEditing: Bool = false {
@@ -25,34 +25,6 @@ class AlbumImageCell: UICollectionViewCell, UIContextMenuInteractionDelegate {
     var isEditingRX: BehaviorRelay = BehaviorRelay<Bool>(value: false)
     var disposeBag = DisposeBag()
 
-    func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
-                                configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        return UIContextMenuConfiguration(identifier: nil,
-                                          previewProvider: nil,
-                                          actionProvider: {
-            suggestedActions in
-            let inspectAction =
-            UIAction(title: NSLocalizedString("InspectTitle", comment: ""),
-                     image: UIImage(systemName: "arrow.up.square")) { action in
-                //                self.performInspect()
-            }
-
-            let duplicateAction =
-            UIAction(title: NSLocalizedString("DuplicateTitle", comment: ""),
-                     image: UIImage(systemName: "plus.square.on.square")) { action in
-                //                self.performDuplicate()
-            }
-
-            let deleteAction =
-            UIAction(title: NSLocalizedString("DeleteTitle", comment: ""),
-                     image: UIImage(systemName: "trash"),
-                     attributes: .destructive) { action in
-                //                self.performDelete()
-            }
-
-            return UIMenu(title: "", children: [inspectAction, duplicateAction, deleteAction])
-        })
-    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -97,8 +69,6 @@ class AlbumImageCell: UICollectionViewCell, UIContextMenuInteractionDelegate {
         let checkImageRecognizer = UITapGestureRecognizer(target: self, action: #selector(galleryImageCheckboxTapped(_:)))
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(galleryImageLongPress(_:)))
         albumImage.isUserInteractionEnabled = true
-        let interaction = UIContextMenuInteraction(delegate: self)
-//        albumImage.addInteraction(interaction)
 
         self.isEditingRX.subscribe(onNext: { [weak self] value in
             if value {
@@ -109,7 +79,6 @@ class AlbumImageCell: UICollectionViewCell, UIContextMenuInteractionDelegate {
                 self?.albumImage.addGestureRecognizer(navigateToImageRecognizer)
             }
         }).disposed(by: disposeBag)
-//        image.addGestureRecognizer(longPressRecognizer)
 
         imageView.contentMode = .scaleAspectFit
         textLabel.textAlignment = .center
@@ -120,17 +89,15 @@ class AlbumImageCell: UICollectionViewCell, UIContextMenuInteractionDelegate {
     }
 
     @objc func galleryImageTapped(_ sender: UITapGestureRecognizer) {
-        print("Image tapped \(Date())")
-
-        let PhotoDetailScreen = PhotoDetailViewController(nibName: "PhotoDetailViewController", bundle: nil)
-        PhotoDetailScreen.modalPresentationStyle = .none
-        PhotoDetailScreen.imageSource = self.delegate
-        PhotoDetailScreen.selectedIndex = self.index
-        delegate.navigationController?.pushViewController(PhotoDetailScreen, animated: true)
+        let container = ContainerBuilder.build()
+        
+        let vc = container.resolve(PhotoDetailViewControllerNew.self, argument: PhotoDetailViewControllerSettings(selectedImages: delegate.listedImages, selectedIndex: self.index))!
+        vc.modalPresentationStyle = .none
+        delegate.navigationController?.pushViewController(vc, animated: true)
     }
 
     @objc func galleryImageCheckboxTapped(_ sender: UITapGestureRecognizer) {
-
+        print("")
     }
 
     @objc func galleryImageLongPress(_ sender: UITapGestureRecognizer) {

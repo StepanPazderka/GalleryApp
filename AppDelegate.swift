@@ -7,12 +7,14 @@
 
 import UIKit
 import Photos
+import Swinject
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
+        print("App Document Directory: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!)")
         return true
     }
 
@@ -32,4 +34,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 }
-

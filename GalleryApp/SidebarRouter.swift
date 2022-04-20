@@ -7,8 +7,12 @@
 
 import Foundation
 
-class MainRouter {
-    func showGallerySelection() {
+class SidebarRouter {
+    func showAlbum(albumName: String) {
+        
+    }
+    
+    func showAllPhotos() {
         
     }
 }

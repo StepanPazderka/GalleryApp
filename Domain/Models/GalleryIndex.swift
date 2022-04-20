@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MainIndex {
+struct GalleryIndex: Codable {
     var mainGalleryName: String
     var albums: [AlbumIndex]
 }
