@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "DirectoryWatcher",
+        "repositoryURL": "https://github.com/GianniCarlo/DirectoryWatcher",
+        "state": {
+          "branch": null,
+          "revision": "76af69f1d19146b0c5d3e38747bb5eabe547143b",
+          "version": "2.7.3"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
