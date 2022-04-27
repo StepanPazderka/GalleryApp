@@ -7,11 +7,12 @@
 
 import Foundation
 import Swinject
+import UIKit
 
 class ContainerBuilder {
+    static let container = Container(parent: nil, defaultObjectScope: .container)
+    
     static func build() -> Container {
-        let container = Container(parent: nil, defaultObjectScope: .container)
-        
         container.register(Config.self) { r in
             return Config()
         }
@@ -21,33 +22,38 @@ class ContainerBuilder {
         }
         
         container.register(AlbumScreenViewController.self) { (r, albumName: String) in
-            return AlbumScreenViewController(galleryInteractor: r.resolve(GalleryManager.self)!, albumName: albumName)
+            return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!, galleryInteractor: r.resolve(GalleryManager.self)!, albumName: albumName)
         }
         
         container.register(AlbumScreenViewController.self) { r in
-            return AlbumScreenViewController(galleryInteractor: r.resolve(GalleryManager.self)!)
+            return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!, galleryInteractor: r.resolve(GalleryManager.self)!)
         }
         
         container.register(PhotoDetailViewController.self) { r in
             return PhotoDetailViewController(nibName: "PhotoDetailViewController", bundle: nil, galleryInteractor: r.resolve(GalleryManager.self)!)
         }
         
-        container.register(PhotoDetailViewControllerNew.self) { (r, photoDetailSettings: PhotoDetailViewControllerSettings) in
-            return PhotoDetailViewControllerNew(galleryInteractor: r.resolve(GalleryManager.self)!, sidebar: r.resolve(SidebarViewController.self)!, settings: photoDetailSettings)
+        container.register(SidebarRouter.self) { r in
+            return SidebarRouter(container: container)
+        }
+        
+        container.register(AlbumScreenRouter.self) { r in
+            return AlbumScreenRouter(sidebarRouter: r.resolve(SidebarRouter.self)!)
         }
         
         container.register(SidebarViewController.self) { r in
-            return SidebarViewController(galleryInteractor: r.resolve(GalleryManager.self)!, container: container)
+            return SidebarViewController(router: r.resolve(SidebarRouter.self)!, galleryInteractor: r.resolve(GalleryManager.self)!, container: container)
         }
         
-        container.register(SidebarRouter.self) { r in
-            return SidebarRouter()
+        container.register(AlbumsListViewController.self) { (r, selectedImages: [String]) in
+            return AlbumsListViewController(galleryInteractor: r.resolve(GalleryManager.self)!,container: container, selectedImages: selectedImages)
         }
         
-        container.register(AlbumsViewController.self) { r in
-            return AlbumsViewController(galleryInteractor: r.resolve(GalleryManager.self)!,container: container)
+        let transientContainer = Container(parent: container, defaultObjectScope: .transient)
+        transientContainer.register(PhotoDetailViewControllerNew.self) { (r, photoDetailSettings: PhotoDetailViewControllerSettings) in
+            return PhotoDetailViewControllerNew(galleryInteractor: r.resolve(GalleryManager.self)!, sidebar: r.resolve(SidebarViewController.self)!, settings: photoDetailSettings)
         }
-                
-        return container
+
+        return transientContainer
     }
 }

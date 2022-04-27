@@ -25,9 +25,11 @@ class AlbumImageCell: UICollectionViewCell {
     var isEditingRX: BehaviorRelay = BehaviorRelay<Bool>(value: false)
     var disposeBag = DisposeBag()
 
-
     override init(frame: CGRect) {
+        
         super.init(frame: frame)
+        
+        
 
         let label = UILabel()
         let imageView = UIImageView()
@@ -89,9 +91,8 @@ class AlbumImageCell: UICollectionViewCell {
     }
 
     @objc func galleryImageTapped(_ sender: UITapGestureRecognizer) {
-        let container = ContainerBuilder.build()
         
-        let vc = container.resolve(PhotoDetailViewControllerNew.self, argument: PhotoDetailViewControllerSettings(selectedImages: delegate.listedImages, selectedIndex: self.index))!
+        let vc = ContainerBuilder.build().resolve(PhotoDetailViewControllerNew.self, argument: PhotoDetailViewControllerSettings(selectedImages: delegate.listedImages, selectedIndex: self.index))!
         vc.modalPresentationStyle = .none
         delegate.navigationController?.pushViewController(vc, animated: true)
     }

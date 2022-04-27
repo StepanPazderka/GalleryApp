@@ -27,7 +27,7 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
     private var secondaryViewControllers: [UIViewController] = []
     let disposeBag = DisposeBag()
 
-    let router = SidebarRouter()
+    let router: SidebarRouter
     
     var screens: [String: UIViewController]
     
@@ -61,11 +61,13 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
     var mainButtonsRX = PublishSubject<[SidebarItem]>()
     var albumRX = PublishSubject<[SidebarItem]>()
     
-    init(galleryInteractor: GalleryManager, container: Container) {
+    init(router: SidebarRouter, galleryInteractor: GalleryManager, container: Container) {
         self.galleryInteractor = galleryInteractor
         self.container = container
         screens = ["allPhotos": UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self)!),
                    "search": UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self)!)]
+//        self.router = SidebarRouter(splitViewController: self.splitViewController!)
+        self.router = router
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -165,7 +167,7 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
         ConfigureDataSource()
         
         collectionView.selectItem(at: IndexPath(row: 0, section: 0), animated: false, scrollPosition: .top)
-        splitViewController?.setViewController(UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self)!), for: .secondary)
+        router.showAllPhotos()
     }
 
     private func createLayout() -> UICollectionViewLayout {
@@ -174,19 +176,6 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
             config.headerMode = section == 0 ? .none : .firstItemInSection
             return NSCollectionLayoutSection.list(using: config, layoutEnvironment: layoutEnvironment)
         }
-    }
-    
-    func displayAlbums() {
-        let sections: [SidebarSection] = [.tabs, .albums, .smartAlbums]
-        var snapshot = NSDiffableDataSourceSnapshot<SidebarSection, SidebarItem>()
-        snapshot.appendSections(sections)
-        
-        let headerItem = SidebarItem(title: SidebarSection.albums.rawValue, image: nil)
-        var albumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
-        albumsSnapshot.append([headerItem])
-        albumsSnapshot.append(albums, to: headerItem)
-        albumsSnapshot.expand([headerItem])
-        self.dataSource.apply(albumsSnapshot, to: .albums)
     }
     
     func ConfigureDataSource() {
@@ -280,13 +269,12 @@ class SidebarViewController: UIViewController, UIImagePickerControllerDelegate, 
 extension SidebarViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.section == 0 {
-            let albumName = mainbuttons[indexPath.row].title
-            splitViewController?.setViewController(screens.first(where: { $0.key == "allPhotos"})?.value, for: .secondary)
+            router.showAllPhotos()
         }
         
         if indexPath.section == 1 {
             if let albumName = albums[indexPath.row-1].title {
-                splitViewController?.setViewController(UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self, argument: albumName)!), for: .secondary)
+                router.show(album: albumName)
             }
         }
     }

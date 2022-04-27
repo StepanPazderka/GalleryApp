@@ -25,14 +25,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        
         let splitView = UISplitViewController(style: .doubleColumn)
-        splitView.preferredDisplayMode = .oneBesideSecondary
+//        splitView.preferredDisplayMode = .oneBesideSecondary
+        splitView.preferredDisplayMode = .automatic
         splitView.presentsWithGesture = true
-        splitView.preferredSplitBehavior = .tile
+        splitView.preferredSplitBehavior = .displace
         
-        let mainrouter = MainRouter(splitViewController: splitView, container: container)
-        mainrouter.start()
+        let mainrouter = container.resolve(SidebarRouter.self)!
+        
+        mainrouter.start(splitViewController: splitView)
         let window = UIWindow(windowScene: windowScene)
         window.backgroundColor = .black
         

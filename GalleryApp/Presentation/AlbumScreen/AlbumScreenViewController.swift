@@ -10,6 +10,8 @@ import RxSwift
 import RxCocoa
 import UniformTypeIdentifiers
 import simd
+import SnapKit
+import CoreAudio
 
 enum GallerySection: String {
     case main
@@ -35,6 +37,8 @@ class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UIC
     let cellName = "AlbumImageCell"
     
     let disposeBag = DisposeBag()
+    
+    let router: AlbumScreenRouter
 
     public var listedImages: [AlbumImage] = []
         
@@ -84,10 +88,11 @@ class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UIC
         self.present(self.imagePicker, animated: true)
     }
     
-    init(galleryInteractor: GalleryManager, albumName: String? = nil) {
+    init(router: AlbumScreenRouter, galleryInteractor: GalleryManager, albumName: String? = nil) {
         if let albumName = albumName {
             self.albumName = albumName
         }
+        self.router = router
         self.galleryManager = galleryInteractor
         super.init(nibName: nil, bundle: nil)
     }
@@ -147,6 +152,7 @@ class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UIC
         let gestureRecongizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(_:)))
             screenView.collectionView.addGestureRecognizer(gestureRecongizer)
             screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: self.cellName)
+        
         self.refreshData()
     }
     
@@ -155,7 +161,7 @@ class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UIC
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
     }
 
-    func importPhoto(filename: AlbumImage, to album: String) {
+    func addPhoto(filename: AlbumImage, to album: String) {
         self.listedImages.append(filename)
         if let albumName = albumName {
             galleryManager.rebuildAlbumIndex(folder: galleryManager.selectedGalleryPath.appendingPathComponent(albumName))
@@ -226,20 +232,28 @@ class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UIC
         return
     }
 
+    // Long Press Menu
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil,
                                           previewProvider: nil,
                                           actionProvider: {
             suggestedActions in
             let inspectAction =
-            UIAction(title: NSLocalizedString("InspectTitle", comment: ""),
-                     image: UIImage(systemName: "arrow.up.square")) { action in
+            UIAction(title: NSLocalizedString("kDETAILS", comment: ""),
+                     image: UIImage(systemName: "info.circle")) { action in
 //                self.performInspect(indexPath)
+                let newView = UIView(frame: CGRect(x: 400, y: 20, width: 500, height: 500))
+                newView.backgroundColor = .blue
+                
+                self.view.addSubview(newView)
+//                newView.snp.makeConstraints { (make) -> Void in
+//                    make.rightMargin.equalTo(self.view)
+//                }
             }
             let moveToAlbum = UIAction(title: NSLocalizedString("MoveToAlbum", comment: ""),
                                        image: UIImage(systemName: "square.and.arrow.down")) { [weak self] action in
                 let container = ContainerBuilder.build()
-                let albumsVC = container.resolve(AlbumsViewController.self)!
+                let albumsVC = container.resolve(AlbumsListViewController.self, argument: ["Test"])!
                 let newController = UINavigationController(rootViewController: albumsVC)
                 newController.view.backgroundColor = .systemBackground
                 self?.present(newController, animated: true, completion: nil)
@@ -259,14 +273,16 @@ class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UIC
         })
     }
 
+    // Setup number of cells
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return listedImages.count ?? 0
     }
     
+    // Fill Collection View With Data
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellName, for: indexPath) as! AlbumImageCell
         if let albumName = albumName {
-            let fullImageURL = galleryManager.selectedGalleryPath.appendingPathComponent(self.albumName ?? "").appendingPathComponent(listedImages[indexPath.row].fileName)
+            let fullImageURL = galleryManager.selectedGalleryPath.appendingPathComponent(listedImages[indexPath.row].fileName)
             let path = fullImageURL.path
             cell.albumImage.image = UIImage(contentsOfFile: path)
             print("")
@@ -305,7 +321,7 @@ extension AlbumScreenViewController: UIDocumentPickerDelegate {
         for url in urls {
             do {
                 try FileManager.default.moveItem(at: url, to: d.appendingPathComponent(albumName ?? "").appendingPathComponent(url.lastPathComponent))
-                self.importPhoto(filename: AlbumImage(fileName: url.lastPathComponent, date: Date()), to: albumName ?? "")
+                self.addPhoto(filename: AlbumImage(fileName: url.lastPathComponent, date: Date()), to: albumName ?? "")
             } catch {
                 print(error.localizedDescription)
             }
@@ -327,7 +343,7 @@ extension AlbumScreenViewController: UIImagePickerControllerDelegate, UINavigati
             print(imageURL)
             do {
                 try FileManager().moveItem(at: imageURL, to: galleryManager.selectedGalleryPath.appendingPathComponent(albumName ?? "").appendingPathComponent(imageURL.lastPathComponent))
-                self.importPhoto(filename: AlbumImage(fileName: imageURL.lastPathComponent, date: Date()), to: albumName ?? "")
+                self.addPhoto(filename: AlbumImage(fileName: imageURL.lastPathComponent, date: Date()), to: albumName ?? "")
             } catch {
                 print(error.localizedDescription)
             }

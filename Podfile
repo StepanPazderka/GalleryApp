@@ -12,5 +12,6 @@ target 'GalleryApp' do
   pod 'RxDataSources'
   pod 'Swinject'
   pod 'DirectoryWatcher'
+  pod 'SwiftLint'
 
 end

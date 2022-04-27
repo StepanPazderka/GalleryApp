@@ -14,7 +14,7 @@ import RxDataSources
 import Swinject
 import DirectoryWatcher
 
-class AlbumsViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UISplitViewControllerDelegate {
+class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UISplitViewControllerDelegate {
     
     var container: Container!
     var galleryInteractor: GalleryManager
@@ -23,17 +23,9 @@ class AlbumsViewController: UIViewController, UIImagePickerControllerDelegate, U
     private var secondaryViewControllers: [UIViewController] = []
     let disposeBag = DisposeBag()
 
-    let router = SidebarRouter()
+//    let router = SidebarRouter()
     
     var screens: [String: UIViewController]
-    
-    var mainbuttons: [SidebarItem] {
-        get {
-            [SidebarItem(title: "All Photos", image: UIImage(systemName: "photo.on.rectangle.angled")),
-             SidebarItem(title: "Radio", image: UIImage(systemName: "dot.radiowaves.left.and.right")),
-             SidebarItem(title: "Search", image: UIImage(systemName: "magnifyingglass"))]
-        }
-    }
     
     var albums: [SidebarItem] {
         get {
@@ -47,11 +39,15 @@ class AlbumsViewController: UIViewController, UIImagePickerControllerDelegate, U
         }
     }
     
+    var selectedAlbum: String?
+    var selectedImages: [String]
+    
     var mainButtonsRX = PublishSubject<[SidebarItem]>()
     var albumRX = PublishSubject<[SidebarItem]>()
     
-    init(galleryInteractor: GalleryManager, container: Container) {
+    init(galleryInteractor: GalleryManager, container: Container, selectedImages: [String]) {
         self.galleryInteractor = galleryInteractor
+        self.selectedImages = selectedImages
         self.container = container
         screens = ["allPhotos": UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self)!),
                    "search": UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self)!)]
@@ -62,26 +58,8 @@ class AlbumsViewController: UIViewController, UIImagePickerControllerDelegate, U
         fatalError("init(coder:) has not been implemented")
     }
     
-    func showCreateAlbumPopover() {
-        let alertController = UIAlertController(title: "Enter Album name", message: nil, preferredStyle: .alert)
-
-        alertController.addTextField { textField in
-            textField.placeholder = "Album name"
-        }
+    func moveToAlbum(images: [String], album: String) {
         
-        let confirmAction = UIAlertAction(title: "OK", style: .default) { [weak alertController] _ in
-            guard let alertController = alertController, let textField = alertController.textFields?.first else { return }
-            if let albumName = alertController.textFields?.first?.text {
-                try! self.galleryInteractor.createAlbum(name: albumName)
-                self.albums.append(SidebarItem(title: albumName, image: nil))
-            }
-        }
-        alertController.addAction(confirmAction)
-
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        alertController.addAction(cancelAction)
-
-        self.present(alertController, animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
@@ -107,7 +85,9 @@ class AlbumsViewController: UIViewController, UIImagePickerControllerDelegate, U
         selectAlbum.tintColor = .systemBlue
         selectAlbum.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
         selectAlbum.rx.tap.subscribe(onNext: { [weak self] in
-            self?.showCreateAlbumPopover()
+            if let selectedAlbum = self?.selectedAlbum, let selectedImages = self?.selectedImages {
+                self?.moveToAlbum(images: selectedImages, album: selectedAlbum)
+            }
         }, onError: nil, onCompleted: nil, onDisposed: nil).disposed(by: disposeBag)
         
         navigationItem.title = "Hey"
@@ -126,7 +106,7 @@ class AlbumsViewController: UIViewController, UIImagePickerControllerDelegate, U
         
 //        navigationItem.titleView = selectGalleryButton
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: selectAlbum)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: nil, action: nil)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: #selector(closeWindow))
         navigationController?.navigationBar.prefersLargeTitles = false
 
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: self.createLayout())
@@ -155,9 +135,10 @@ class AlbumsViewController: UIViewController, UIImagePickerControllerDelegate, U
         }).dispose()
         
         ConfigureDataSource()
-        
-        collectionView.selectItem(at: IndexPath(row: 0, section: 0), animated: false, scrollPosition: .top)
-        splitViewController?.setViewController(UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self)!), for: .secondary)
+    }
+    
+    @objc func closeWindow(sender: Any) {
+        self.dismiss(animated: true)
     }
 
     private func createLayout() -> UICollectionViewLayout {
@@ -167,19 +148,7 @@ class AlbumsViewController: UIViewController, UIImagePickerControllerDelegate, U
             return NSCollectionLayoutSection.list(using: config, layoutEnvironment: layoutEnvironment)
         }
     }
-    
-    func displayAlbums() {
-        let sections: [SidebarSection] = [.tabs, .albums, .smartAlbums]
-        var snapshot = NSDiffableDataSourceSnapshot<SidebarSection, SidebarItem>()
-        snapshot.appendSections(sections)
-        
-        let headerItem = SidebarItem(title: SidebarSection.albums.rawValue, image: nil)
-        var albumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
-        albumsSnapshot.append([headerItem])
-        albumsSnapshot.append(albums, to: headerItem)
-        albumsSnapshot.expand([headerItem])
-        self.dataSource.apply(albumsSnapshot, to: .albums)
-    }
+
     
     func ConfigureDataSource() {
         let headerRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
@@ -212,59 +181,21 @@ class AlbumsViewController: UIViewController, UIImagePickerControllerDelegate, U
     func refreshMenu() {
         let sections: [SidebarSection] = [.albums]
         var snapshot = NSDiffableDataSourceSnapshot<SidebarSection, SidebarItem>()
-        snapshot.appendSections(sections)
         dataSource.apply(snapshot, animatingDifferences: true)
         
         for section in sections {
-            let headerItem = SidebarItem(title: section.rawValue, image: nil)
+            let headerItem = SidebarItem(title: sections.first?.rawValue, image: nil)
             var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
-            sectionSnapshot.append([headerItem])
-            sectionSnapshot.append(albums, to: headerItem)
-            sectionSnapshot.expand([headerItem])
+            sectionSnapshot.append(albums)
             dataSource.apply(sectionSnapshot, to: section)
         }
     }
-    
-    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        return UIContextMenuConfiguration(identifier: nil,
-                                          previewProvider: nil,
-                                          actionProvider: {
-            suggestedActions in
-            let inspectAction =
-            UIAction(title: NSLocalizedString("CreateSubAlbum", comment: ""),
-                     image: UIImage(systemName: "plus.square")) { action in
-                
-            }
-            let duplicateAction =
-            UIAction(title: NSLocalizedString("DuplicateTitle", comment: ""),
-                     image: UIImage(systemName: "plus.square.on.square")) { action in
-                //                self.performDuplicate(indexPath)
-            }
-            let deleteAction =
-            UIAction(title: NSLocalizedString("DeleteTitle", comment: ""),
-                     image: UIImage(systemName: "trash"),
-                     attributes: .destructive) { action in
-                if let albumName = self.albums[indexPath.item-1].title {
-                    self.galleryInteractor.removeAlbum(AlbumName: albumName)
-                }
-            }
-            return UIMenu(title: "", children: [inspectAction, duplicateAction, deleteAction])
-        })
-    }
 }
 
-extension AlbumsViewController: UICollectionViewDelegate {
+extension AlbumsListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
-            let albumName = mainbuttons[indexPath.row].title
-            splitViewController?.setViewController(screens.first(where: { $0.key == "allPhotos"})?.value, for: .secondary)
-        }
-        
-        if indexPath.section == 1 {
-            if let albumName = albums[indexPath.row-1].title {
-                splitViewController?.setViewController(UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self, argument: albumName)!), for: .secondary)
-            }
-        }
+        print(albums[indexPath.row].title ?? "")
+        self.selectedAlbum = albums[indexPath.row].title
     }
 }
 

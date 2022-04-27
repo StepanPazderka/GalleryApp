@@ -12,11 +12,19 @@ import UniformTypeIdentifiers
 class GalleryManager {
     var config: Config
     var libraryPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+    var userDefaults: UserDefaults = UserDefaults.standard
     var selectedGalleryPath: URL
     
     init(config: Config) {
         self.config = config
         self.selectedGalleryPath = config.libraryPath.appendingPathComponent(config.selectedGallery)
+        moveImagesFromAlbumFoldersToMainGalleryFolder()
+        loadLastSettings()
+    }
+    
+    func loadLastSettings() {
+        var selectedGallery = userDefaults.string(forKey: "selectedGallery")
+        print("Selected Gallery: \(selectedGallery)")
     }
     
     func createAlbum(name: String, parentAlbum: URL? = nil) throws {
@@ -58,6 +66,19 @@ class GalleryManager {
         }
     }
     
+    func addImage(photoID: UUID, toAlbum: String) {
+        do {
+            let albumIndex = try loadAlbumIndex(folder: URL(string: toAlbum)!)
+            if var albumIndex = albumIndex {
+                albumIndex.images.append(AlbumImage(fileName: photoID.uuidString, date: Date()))
+                self.updateAlbumIndex(folder: URL(string: toAlbum)!, index: albumIndex)
+            }
+        } catch {
+            
+        }
+        
+    }
+    
     func loadImage() -> UIImage {
         let outputImage: UIImage = UIImage()
         return outputImage
@@ -65,7 +86,7 @@ class GalleryManager {
     
     func scanFolderForImages(album: String) -> [AlbumImage] {
         var outputImageList: [AlbumImage] = []
-
+        
         do {
             var files: [URL] = [URL]()
             files = try FileManager.default.contentsOfDirectory(at: selectedGalleryPath.appendingPathComponent(album), includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants]).filter { $0.pathExtension == "jpeg" }
@@ -75,33 +96,40 @@ class GalleryManager {
                 return AlbumImage(fileName: $0.lastPathComponent,
                                   date: fileAttributes?[.creationDate] as? Date ?? Date())
                 
-                }
+            }
         } catch {
             print(error.localizedDescription)
         }
-
-//        return outputImageList.filter { $0.hasDirectoryPath == false }.map { $0.absoluteURL.lastPathComponent }
-//        return outputImageList.map { AlbumImage(fileName: $0.fileName, date: $0.date) }
-        if outputImageList.isEmpty {
-            rebuildGallery()
-        }
         return outputImageList
+    }
+    
+    func moveImagesFromAlbumFoldersToMainGalleryFolder() {
+        let albumNames = listAlbums(url: selectedGalleryPath).map { albumIndex in
+            albumIndex.name
+        }
+        
+        var imageURLs = [URL]()
+        for albumName in albumNames {
+            let images = scanFolderForImages(album: albumName)
+            let newImageURLs = images.map { imageName in
+                return selectedGalleryPath.appendingPathComponent(albumName).appendingPathComponent(imageName.fileName)
+            }
+            imageURLs.append(contentsOf: newImageURLs)
+            
+        }
+        
+        for url in imageURLs {
+            do {
+                try FileManager.default.moveItem(at: url, to: selectedGalleryPath.appendingPathComponent(url.lastPathComponent))
+            } catch {
+                
+            }
+        }
     }
     
     func listAllImages() -> [AlbumImage] {
         var outputImageList: [AlbumImage] = []
         let indexes = listAlbums(url: nil)
-
-        
-//        for index in indexes {
-//            let images = index.images
-//            outputImageList.append(contentsOf: images.map { image in
-//                var newFilename = URL(fileURLWithPath: index.name).appendingPathComponent(image.fileName).relativeString
-//                var newDate = image.date
-//
-//                return AlbumImage(fileName: newFilename, date: newDate)
-//            })
-//        }
         
         do {
             var files: [URL] = [URL]()
@@ -111,7 +139,6 @@ class GalleryManager {
                 
                 return AlbumImage(fileName: $0.lastPathComponent,
                                   date: fileAttributes?[.creationDate] as? Date ?? Date())
-                
                 }
         } catch {
             print(error.localizedDescription)
@@ -148,10 +175,6 @@ class GalleryManager {
         try? json.write(to: folder.lastPathComponent == "index.json" ? folder : folder.appendingPathComponent("index.json"))
         
         return AlbumIndex(from: folder)!
-    }
-    
-    func rebuildGallery() {
-        
     }
     
     @discardableResult func rebuildGalleryIndex(gallery: GalleryIndex) -> GalleryIndex {
