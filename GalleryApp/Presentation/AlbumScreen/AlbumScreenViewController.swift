@@ -23,7 +23,7 @@ struct GalleryItem: Hashable {
     private let identifier = UUID()
 }
 
-class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ListsImages {
+class AlbumScreenViewController: UIViewController, ListsImages {
     var galleryManager: GalleryManager
     
     var screenView = AlbumScreenView()
@@ -31,38 +31,17 @@ class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UIC
     var albumName: String?
     
     var viewModel = AlbumScreenViewModel(albumName: "Test")
-    
-    var collectionView: UICollectionView?
-    
+        
     let cellName = "AlbumImageCell"
     
     let disposeBag = DisposeBag()
     
     let router: AlbumScreenRouter
-
+    
     public var listedImages: [AlbumImage] = []
         
     var editingRx = BehaviorRelay<Bool>(value: false)
-    
-    let doneButton: UIButton = { let button = UIButton(type: .system)
-        button.setTitle("Done", for: .normal)
-        return button
-    }()
-    
-    let editButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Edit", for: .normal)
-        button.sizeToFit()
-        return button
-    }()
-    
-    let addImageButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Add", for: .normal)
-        button.sizeToFit()
-        return button
-    }()
-    
+
     let imagePicker: UIImagePickerController = {
         let view = UIImagePickerController()
         view.allowsEditing = false
@@ -105,17 +84,19 @@ class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UIC
             galleryManager.buildThumbs(forAlbum: albumName)
         }
         
-        editButton.rx.tap.subscribe(onNext: { [weak self] in
+        self.screenView.editButton.rx.tap.subscribe(onNext: { [weak self] in
             self?.editingRx.accept(true)
-
         }).disposed(by: disposeBag)
 
-        doneButton.rx.tap.subscribe(onNext: { [weak self] in
+        self.screenView.doneButton.rx.tap.subscribe(onNext: { [weak self] in
             self?.editingRx.accept(false)
+            
         }).disposed(by: disposeBag)
         
-        addImageButton.rx.tap.subscribe(onNext: { [weak self] in
-            let alert = UIAlertController(title: "Select source", message: nil, preferredStyle: .actionSheet)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.screenView.rightStackView)
+        
+        self.screenView.addImageButton.rx.tap.subscribe(onNext: { [weak self] in
+            let alert = UIAlertController(title: NSLocalizedString("IMPORTFROM", comment: "Select import location"), message: nil, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: NSLocalizedString("SELECTFROMFILES", comment: "Default action"), style: .default) { [weak self] _ in
                 self?.showDocumentPicker()
             })
@@ -124,8 +105,8 @@ class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UIC
             })
 
             if let presenter = alert.popoverPresentationController {
-                presenter.sourceView = self?.addImageButton
-                presenter.sourceRect = self?.addImageButton.bounds ?? CGRect(origin: .zero, size: .zero)
+                presenter.sourceView = self?.screenView.addImageButton
+                presenter.sourceRect = self?.screenView.addImageButton.bounds ?? CGRect(origin: .zero, size: .zero)
                 presenter.delegate = self
             }
 
@@ -133,14 +114,13 @@ class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UIC
         }).disposed(by: disposeBag)
 
         self.navigationItem.title = albumName ?? "All Photos"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: addImageButton)
+        
+        self.screenView.collectionView.delegate = self
+        self.screenView.collectionView.dataSource = self
 
-        screenView.collectionView.delegate = self
-        screenView.collectionView.dataSource = self
-
-        editingRx.bind(onNext: { [weak self] value in
+        self.editingRx.bind(onNext: { [weak self] value in
             self?.setEditing(value, animated: true)
-            if let doneButton = self?.doneButton, let editButton = self?.editButton {
+            if let doneButton = self?.screenView.doneButton, let editButton = self?.screenView.editButton {
                 if value {
                     self?.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: doneButton)
                 } else {
@@ -148,12 +128,18 @@ class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UIC
                 }
             }
         }).disposed(by: disposeBag)
-
-        let gestureRecongizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(_:)))
-            screenView.collectionView.addGestureRecognizer(gestureRecongizer)
-            screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: self.cellName)
         
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(_:)))
+        longPressRecognizer.numberOfTapsRequired = 1
+
+        self.screenView.collectionView.addGestureRecognizer(longPressRecognizer)
+        self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: self.cellName)
+        self.screenView.collectionView.register(AlbumScreenFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenFooter.identifier)
         self.refreshData()
+    }
+    
+    @objc func tappedCell(sender: UITapGestureRecognizer) {
+        print("Tapped \(Date())")
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -180,36 +166,36 @@ class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UIC
         } else {
             self.listedImages = galleryManager.listAllImages()
         }
-        screenView.collectionView.reloadData()
+        self.screenView.collectionView.reloadData()
     }
     
     @objc func longPressed(_ gesture: UILongPressGestureRecognizer) {
-        guard let targetIndexPath = collectionView?.indexPathForItem(at: gesture.location(in: collectionView)) else {
+        guard let targetIndexPath = self.screenView.collectionView.indexPathForItem(at: gesture.location(in: self.screenView.collectionView)) else {
             return
         }
 
         switch gesture.state {
         case .began:
             UIView.animate(withDuration: 0.1, animations: {
-                (self.collectionView!.cellForItem(at: targetIndexPath) as! AlbumImageCell).transform = CGAffineTransform(scaleX: 1.25, y: 1.25)
+                (self.screenView.collectionView.cellForItem(at: targetIndexPath) as! AlbumImageCell).transform = CGAffineTransform(scaleX: 1.25, y: 1.25)
             })
-            collectionView?.beginInteractiveMovementForItem(at: targetIndexPath)
+            self.screenView.collectionView.beginInteractiveMovementForItem(at: targetIndexPath)
         case .changed:
-            collectionView?.updateInteractiveMovementTargetPosition(gesture.location(in: collectionView))
+            self.screenView.collectionView.updateInteractiveMovementTargetPosition(gesture.location(in:self.screenView.collectionView))
         case .ended:
-            collectionView?.endInteractiveMovement()
+            self.screenView.collectionView.endInteractiveMovement()
         case .cancelled:
-            collectionView?.cancelInteractiveMovement()
+            self.screenView.collectionView.cancelInteractiveMovement()
         default:
             print("Default")
         }
     }
-
+    
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
-        self.collectionView?.allowsMultipleSelection = editing
-        self.collectionView?.indexPathsForVisibleItems.forEach { (indexPath) in
-            let cell = collectionView?.cellForItem(at: indexPath) as! AlbumImageCell
+        self.screenView.collectionView.allowsMultipleSelection = editing
+        self.screenView.collectionView.indexPathsForVisibleItems.forEach { (indexPath) in
+            let cell = screenView.collectionView.cellForItem(at: indexPath) as! AlbumImageCell
             cell.isEditing = editing
         }
     }
@@ -218,15 +204,19 @@ class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UIC
         return CGSize(width: view.frame.size.width / 3.3, height: view.frame.size.height / 3.3)
     }
 
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        CGSize(width: view.frame.width, height: 200)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
         true
     }
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        var temp = listedImages.remove(at: sourceIndexPath.item)
+        let temp = listedImages.remove(at: sourceIndexPath.item)
         listedImages.insert(temp, at: destinationIndexPath.item)
 
-        let newGalleryIndex = AlbumIndex(name: galleryManager.selectedGalleryPath.lastPathComponent, images: listedImages ?? [AlbumImage](), thumbnail: listedImages.first?.fileName ?? "")
+        let newGalleryIndex = AlbumIndex(name: galleryManager.selectedGalleryPath.lastPathComponent, images: listedImages, thumbnail: listedImages.first?.fileName ?? "")
         galleryManager.updateAlbumIndex(folder: galleryManager.selectedGalleryPath, index: newGalleryIndex)
         collectionView.reloadData()
         return
@@ -272,33 +262,27 @@ class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UIC
             return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, deleteAction])
         })
     }
-
-    // Setup number of cells
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return listedImages.count ?? 0
-    }
     
     // Fill Collection View With Data
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellName, for: indexPath) as! AlbumImageCell
-        if let albumName = albumName {
-            let fullImageURL = galleryManager.selectedGalleryPath.appendingPathComponent(listedImages[indexPath.row].fileName)
-            let path = fullImageURL.path
-            cell.albumImage.image = UIImage(contentsOfFile: path)
-            print("")
-        } else {
-            let fullImageURL = galleryManager.selectedGalleryPath.appendingPathComponent(listedImages[indexPath.row].fileName)
-            let path = fullImageURL.path
-            cell.albumImage.image = UIImage(contentsOfFile: path)
-        }
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.tappedCell))
+        tapGesture.numberOfTapsRequired = 1
+        let fullImageURL = galleryManager.selectedGalleryPath.appendingPathComponent(listedImages[indexPath.row].fileName)
+        let path = fullImageURL.path
+        cell.albumImage.image = UIImage(contentsOfFile: path)
         cell.index = indexPath.row
         cell.delegate = self
         editingRx.subscribe(onNext: { value in
             cell.isEditingRX.accept(value)
-        }).dispose()
+        }).disposed(by: disposeBag)
+        cell.addGestureRecognizer(tapGesture)
         return cell
     }
+}
 
+extension AlbumScreenViewController: UICollectionViewDelegate {
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         0
     }
@@ -307,15 +291,29 @@ class AlbumScreenViewController: UIViewController, UICollectionViewDelegate, UIC
         UIEdgeInsets.init(top: 0, left: 0, bottom: 0, right: 0)
     }
     
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let footer = screenView.collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenFooter.identifier, for: indexPath) as! AlbumScreenFooter
+        return footer
+    }
+}
+
+extension AlbumScreenViewController: UICollectionViewDelegateFlowLayout {
+    
+}
+
+extension AlbumScreenViewController: UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return listedImages.count
+    }
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         1
     }
-
 }
 
 extension AlbumScreenViewController: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         let d = galleryManager.selectedGalleryPath
                 
         for url in urls {

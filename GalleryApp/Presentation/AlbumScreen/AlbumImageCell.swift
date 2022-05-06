@@ -12,10 +12,10 @@ import RxCocoa
 
 class AlbumImageCell: UICollectionViewCell {
 
-    weak var textLabel: UILabel!
-    weak var albumImage: UIImageView!
+    var textLabel: UILabel = UILabel()
+    var albumImage: UIImageView = UIImageView()
     var delegate: AlbumScreenViewController!
-    let checkBox = CheckBox(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+    let checkBox = UICheckBox(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
     var index: Int!
     var isEditing: Bool = false {
         didSet {
@@ -26,79 +26,75 @@ class AlbumImageCell: UICollectionViewCell {
     var disposeBag = DisposeBag()
 
     override init(frame: CGRect) {
-        
         super.init(frame: frame)
         
-        
-
-        let label = UILabel()
-        let imageView = UIImageView()
-
-
-        checkBox.backgroundColor = .red
         checkBox.isHidden = true
 
-        label.translatesAutoresizingMaskIntoConstraints = false
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        checkBox.translatesAutoresizingMaskIntoConstraints = false
-
-        contentView.addSubview(label)
-        contentView.addSubview(imageView)
+        contentView.addSubview(textLabel)
+        contentView.addSubview(albumImage)
         contentView.addSubview(checkBox)
-
-        NSLayoutConstraint.activate([
-            checkBox.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
-
-        NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            label.topAnchor.constraint(equalTo: contentView.topAnchor),
-            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
-
-        NSLayoutConstraint.activate([
-            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
-
-        textLabel = label
-        albumImage = imageView
+        
+        checkBox.snp.makeConstraints { make in
+            make.bottom.equalToSuperview()
+            make.trailing.equalToSuperview()
+//            make.right.equalToSuperview()
+//            make.right.equalTo(albumImage.image)
+        }
+        
+        textLabel.snp.makeConstraints { make in
+            make.bottom.equalTo(contentView)
+            make.width.equalTo(contentView)
+        }
+        
+        albumImage.snp.makeConstraints { make in
+            make.edges.equalTo(contentView)
+        }
 
         let navigateToImageRecognizer = UITapGestureRecognizer(target: self, action: #selector(galleryImageTapped(_:)))
+        navigateToImageRecognizer.numberOfTapsRequired = 1
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTap(_:)))
+        doubleTap.numberOfTapsRequired = 2
+        
         let checkImageRecognizer = UITapGestureRecognizer(target: self, action: #selector(galleryImageCheckboxTapped(_:)))
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(galleryImageLongPress(_:)))
         albumImage.isUserInteractionEnabled = true
 
         self.isEditingRX.subscribe(onNext: { [weak self] value in
             if value {
-                self?.albumImage.removeGestureRecognizer(navigateToImageRecognizer)
-                self?.albumImage.addGestureRecognizer(checkImageRecognizer)
+//                self?.albumImage.removeGestureRecognizer(navigateToImageRecognizer)
+//                self?.albumImage.addGestureRecognizer(checkImageRecognizer)
             } else {
-                self?.albumImage.removeGestureRecognizer(checkImageRecognizer)
-                self?.albumImage.addGestureRecognizer(navigateToImageRecognizer)
+//                self?.albumImage.removeGestureRecognizer(checkImageRecognizer)
+//                self?.albumImage.addGestureRecognizer(doubleTap)
+//                self?.albumImage.addGestureRecognizer(navigateToImageRecognizer)
             }
         }).disposed(by: disposeBag)
-
-        imageView.contentMode = .scaleAspectFit
-        textLabel.textAlignment = .center
-
-        //        image.addBlurEffect()
-        albumImage.backgroundColor = .none
+        
+        self.albumImage.contentMode = .scaleAspectFit
+        self.textLabel.textAlignment = .center
+        self.textLabel.text = "ahoj!"
+        self.albumImage.backgroundColor = .none
         self.backgroundColor = .none
     }
-
+    
+    @objc func doubleTap(_ sender: UITapGestureRecognizer) {
+        print("Double tap")
+    }
+    
     @objc func galleryImageTapped(_ sender: UITapGestureRecognizer) {
-        
+        if sender.numberOfTouches == 2 {
+            delegate.isEditing = true
+            return
+        }
         let vc = ContainerBuilder.build().resolve(PhotoDetailViewControllerNew.self, argument: PhotoDetailViewControllerSettings(selectedImages: delegate.listedImages, selectedIndex: self.index))!
         vc.modalPresentationStyle = .none
         delegate.navigationController?.pushViewController(vc, animated: true)
     }
 
     @objc func galleryImageCheckboxTapped(_ sender: UITapGestureRecognizer) {
-        print("")
+        self.checkBox.checker.toggle()
+        self.checkBox.isEnabled = false
+//        self.checkBox.backgroundColor = .blue
     }
 
     @objc func galleryImageLongPress(_ sender: UITapGestureRecognizer) {
