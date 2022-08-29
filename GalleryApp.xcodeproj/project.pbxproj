@@ -189,6 +189,7 @@
 		7F04C60F2760F63B001CD45F /* MainSidebar */ = {
 			isa = PBXGroup;
 			children = (
+				7F39161A27814EB2003D688D /* SidebarRouter.swift */,
 				7F235E122585B856007BD075 /* SidebarViewController.swift */,
 				7F1267AC2777D612002A7038 /* SidebarViewModel.swift */,
 				7FFF484D27A05E3900DDABB4 /* SidebarItem.swift */,
@@ -258,7 +259,6 @@
 				7F04C60F2760F63B001CD45F /* MainSidebar */,
 				7FCB40BC25FAF1C1007ADF35 /* PhotoDetail */,
 				7FCB40BA25FAF1BC007ADF35 /* AlbumScreen */,
-				7F39161A27814EB2003D688D /* SidebarRouter.swift */,
 				7F72D66A285908480016FC2A /* ItemDetailViewController.swift */,
 			);
 			path = Presentation;
