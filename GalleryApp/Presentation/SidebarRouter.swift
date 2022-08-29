@@ -17,14 +17,16 @@ class SidebarRouter {
         return view
     }()
     var container: Container
+    let galleryManager: GalleryManager
     
-    init(container: Container) {
+    init(container: Container, galleryManager: GalleryManager) {
         self.container = container
+        self.galleryManager = galleryManager
     }
     
     func start(splitViewController: UISplitViewController) {
         self.splitViewController = splitViewController
-        splitViewController.setViewController(SidebarViewController(router: self, galleryInteractor: container.resolve(GalleryManager.self)!, container: self.container), for: .primary)
+        splitViewController.setViewController(container.resolve(SidebarViewController.self)!, for: .primary)
     }
     
     func showAllPhotos() {
@@ -33,11 +35,16 @@ class SidebarRouter {
 
     }
     
-    func show(album: String) {
-        let albumVC = container.resolve(AlbumScreenViewController.self, argument: album)!
+    func show(album albumID: UUID) {
+        let albumVC = container.resolve(AlbumScreenViewController.self, argument: albumID)!
 //        splitViewController.setViewController(albumVC, for: .secondary)
         splitViewController.setViewController(UINavigationController(rootViewController: albumVC), for: .secondary)
     }
+    
+//    func show(album: UUID) {
+//        let albumIndex = galleryManager.loadAlbumIndex(id: album)
+//        let albumVC = container.resolve(AlbumScreenViewController.self, argument: albumIndex)!
+//    }
     
     func showDetails() {
 //        splitViewController.preferredSupplementaryColumnWidth = CGFloat(250.0)

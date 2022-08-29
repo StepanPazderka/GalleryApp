@@ -9,6 +9,24 @@
 			<key>orderHint</key>
 			<integer>9</integer>
 		</dict>
+		<key>GalleryAppUITests.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>10</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>7F235DF92585B73C007BD075</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>7FCD295D2824692B005ECEF6</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 	</dict>
 </dict>
 </plist>

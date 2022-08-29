@@ -8,7 +8,6 @@ target 'GalleryApp' do
   # Pods for GalleryApp
   pod 'RxSwift',    '~> 4.0'
   pod 'RxCocoa',    '~> 4.0'
-  pod 'SnapKit', '~> 5.0.0'
   pod 'RxDataSources'
   pod 'Swinject'
   pod 'DirectoryWatcher'

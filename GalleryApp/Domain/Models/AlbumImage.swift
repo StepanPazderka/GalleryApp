@@ -9,11 +9,13 @@ import Foundation
 import UIKit
 
 struct AlbumImage: Codable {
-    internal init(fileName: String, date: Date) {
-        self.fileName = fileName
-        self.date = date
-    }
-    
     var fileName: String
     var date: Date
+    var title: String?
+    
+    internal init(fileName: String, date: Date, title: String? = nil) {
+        self.fileName = fileName
+        self.date = date
+        self.title = title
+    }
 }

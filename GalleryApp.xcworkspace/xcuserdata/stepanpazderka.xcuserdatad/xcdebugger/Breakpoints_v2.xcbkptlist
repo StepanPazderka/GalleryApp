@@ -7,95 +7,95 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "D4FBF03D-9017-42DE-BFCE-EA3B8200C7B6"
+            uuid = "3F8EC46E-CF9F-433B-8453-62CF6F5033D1"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GalleryApp/GalleryManager.swift"
+            filePath = "GalleryApp/Presentation/MainSidebar/SidebarViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "101"
-            endingLineNumber = "101"
-            landmarkName = "loadIndex(folder:)"
+            startingLineNumber = "222"
+            endingLineNumber = "222"
+            landmarkName = "collectionView(_:didSelectItemAt:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "EB47E750-A5D5-4D16-9E15-FDA66C782F9C"
+            uuid = "B1B652CB-BD36-4B34-8DC0-A7E8A90F34C4"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GalleryApp/FolderMonitor.swift"
+            filePath = "GalleryApp/Utilies/ContainerBuilder.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "30"
-            endingLineNumber = "30"
-            landmarkName = "startMonitoring()"
+            startingLineNumber = "82"
+            endingLineNumber = "82"
+            landmarkName = "registerPresentationLayer()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "0D9AAAA3-1BC4-4E9F-9C78-8BE0616DED44"
+            uuid = "37114F9D-BECB-4370-9A1F-DFCE96DCEE7A"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Domain/Models/AlbumIndex.swift"
+            filePath = "GalleryApp/Presentation/SidebarRouter.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "25"
-            endingLineNumber = "25"
-            landmarkName = "init?(from:)"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "show(album:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "0D9AAAA3-1BC4-4E9F-9C78-8BE0616DED44 - f01a68d931223423"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "GalleryApp.AlbumIndex.init(from: Foundation.URL) -&gt; Swift.Optional&lt;GalleryApp.AlbumIndex&gt;"
-                  moduleName = "GalleryApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/Domain/Models/AlbumIndex.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "25"
-                  endingLineNumber = "25"
-                  offsetFromSymbolStart = "1304">
-               </Location>
-               <Location
-                  uuid = "0D9AAAA3-1BC4-4E9F-9C78-8BE0616DED44 - f01a68d931223423"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "GalleryApp.AlbumIndex.init(from: Foundation.URL) -&gt; Swift.Optional&lt;GalleryApp.AlbumIndex&gt;"
-                  moduleName = "GalleryApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/Domain/Models/AlbumIndex.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "25"
-                  endingLineNumber = "25"
-                  offsetFromSymbolStart = "1368">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "DABFFBFA-591A-4818-9E83-7F1A09508004"
+            uuid = "94D46A81-2492-453D-AD54-C948292915D0"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Presentation/AllPhotos/AlbumImageCell.swift"
+            filePath = "GalleryApp/Presentation/SidebarRouter.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "100"
-            endingLineNumber = "100"
+            startingLineNumber = "41"
+            endingLineNumber = "41"
+            landmarkName = "show(album:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F5CF93CB-D1AE-4749-838A-2B077D48755E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GalleryApp/Utilies/ContainerBuilder.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
+            landmarkName = "registerPresentationLayer()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5DD138D1-2409-42E2-9096-EB660033EADA"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GalleryApp/Presentation/AlbumScreen/AlbumImageCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "111"
+            endingLineNumber = "111"
             landmarkName = "galleryImageCheckboxTapped(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -103,32 +103,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "DD229302-493A-469E-9E0F-ADB79E68D984"
+            uuid = "40265C85-F816-4CDE-A00C-F80F59457584"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Presentation/Albums/AlbumsViewController.swift"
+            filePath = "GalleryApp/Presentation/MainSidebar/SidebarViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "182"
-            endingLineNumber = "182"
-            landmarkName = "displayAlbums()"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
+            landmarkName = "fetchAlbumButtons()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "468C80DF-6A23-435C-A470-0E9A57B97CD4"
-            shouldBeEnabled = "No"
+            uuid = "ABBEE2FB-7F44-4032-96F4-E622FBBEDC67"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Interactors/GalleryManager.swift"
+            filePath = "GalleryApp/Data/GalleryManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "101"
-            endingLineNumber = "101"
-            landmarkName = "scanFolderForImages(album:)"
+            startingLineNumber = "166"
+            endingLineNumber = "166"
+            landmarkName = "rebuildAlbumIndex(folder:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

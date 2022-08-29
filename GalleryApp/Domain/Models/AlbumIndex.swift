@@ -8,18 +8,22 @@
 import Foundation
 
 struct AlbumIndex: Codable {
+    var id: UUID = UUID()
     var name: String
     var images: [AlbumImage]
     var thumbnail: String
+    var thumbnailsSize: Float = 200
 
-    internal init(name: String, images: [AlbumImage], thumbnail: String) {
+    internal init(id: UUID = UUID() ,name: String, images: [AlbumImage], thumbnail: String) {
+        self.id = id
         self.name = name
         self.images = images
         self.thumbnail = thumbnail
+        self.thumbnailsSize = 200
     }
 
     init?(from entity: URL) {
-        let indexPath = entity.lastPathComponent == "index.json" ? entity.relativePath : entity.appendingPathComponent("index.json").relativePath
+        let indexPath = entity.lastPathComponent == kAlbumIndex ? entity.relativePath : entity.appendingPathComponent(kAlbumIndex).relativePath
         
         let jsonDATA = try? String(contentsOfFile: indexPath).data(using: .unicode)
         if let jsonData = jsonDATA {
@@ -28,6 +32,8 @@ struct AlbumIndex: Codable {
                 self.name = album.name
                 self.images = album.images
                 self.thumbnail = album.thumbnail
+                self.id = album.id
+                self.thumbnailsSize = album.thumbnailsSize
                 return 
             }
         }

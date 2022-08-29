@@ -9,6 +9,7 @@ import UIKit
 import UniformTypeIdentifiers
 import RxSwift
 import RxCocoa
+import RxDataSources
 import SnapKit
 import RxDataSources
 import Swinject
@@ -29,8 +30,8 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     
     var albums: [SidebarItem] {
         get {
-            galleryInteractor.listAlbums(url: nil).map { album in
-                SidebarItem(title: album.name, image: UIImage(contentsOfFile: galleryInteractor.selectedGalleryPath.appendingPathComponent(album.thumbnail).relativePath)?.resized(to: CGSize(width: 30, height: 30)))
+            galleryInteractor.scanFolderForAlbums(url: nil).map { album in
+                SidebarItem(id: album.id, title: album.name, image: UIImage(contentsOfFile: galleryInteractor.selectedGalleryPath.appendingPathComponent(album.thumbnail).relativePath)?.resized(to: CGSize(width: 30, height: 30)))
             }
         }
         
@@ -104,7 +105,6 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
             self?.present(newController, animated: true, completion: nil)
         }).disposed(by: disposeBag)
         
-//        navigationItem.titleView = selectGalleryButton
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: selectAlbum)
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: #selector(closeWindow))
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -133,6 +133,8 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
             sectionSnapshot.append(mainButtons)
             self.dataSource.apply(sectionSnapshot, to: .tabs)
         }).dispose()
+        
+        
         
         ConfigureDataSource()
     }
@@ -184,7 +186,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         dataSource.apply(snapshot, animatingDifferences: true)
         
         for section in sections {
-            let headerItem = SidebarItem(title: sections.first?.rawValue, image: nil)
+            let headerItem = SidebarItem(id: UUID(), title: sections.first?.rawValue, image: nil)
             var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
             sectionSnapshot.append(albums)
             dataSource.apply(sectionSnapshot, to: section)

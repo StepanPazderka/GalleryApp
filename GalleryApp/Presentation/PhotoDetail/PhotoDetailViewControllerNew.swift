@@ -28,7 +28,7 @@ class PhotoDetailViewControllerNew: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print("Settings Album: \(self.photoDetailView.selectedImages), selected index: \(self.photoDetailView.selectedIndex)")
-        
+        self.view.backgroundColor = .none
         self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(didPanWith(gestureRecognizer:)))
         self.panGestureRecognizer.delegate = self
         
@@ -107,7 +107,7 @@ class PhotoDetailViewControllerNew: UIViewController {
         imageView.snp.makeConstraints { (make) -> Void in
             make.edges.equalTo(self.view)
         }
-        var listedImages = galleryInteractor.listAllImages()
+        var listedImages = galleryInteractor.lostAllImagesInGalleryFolder()
     }
     
     required init?(coder: NSCoder) {

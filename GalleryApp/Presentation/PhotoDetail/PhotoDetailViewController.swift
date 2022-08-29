@@ -9,7 +9,7 @@ import UIKit
 
 class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var galleryInteractor: GalleryManager
-    var imageSource: AlbumScreenViewController!
+    var delegate: AlbumScreenViewController!
     var selectedIndex: Int!
     var initialScrollDone: Bool = false
     
@@ -41,7 +41,7 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
         collectionView.dataSource = self
 
         addKeyCommand(UIKeyCommand(
-            title: NSLocalizedString("CANCEL", comment: "Cancel"),
+            title: NSLocalizedString("kCANCEL", comment: "Cancel"),
             action: #selector(didInvokeCancel),
             input: UIKeyCommand.inputEscape
         ))
@@ -58,7 +58,7 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
             input: UIKeyCommand.inputRightArrow
         ))
 
-        navigationItem.title = imageSource.listedImages[selectedIndex].fileName ?? ""
+        navigationItem.title = delegate.viewModel.listedImages[selectedIndex].fileName ?? ""
         
         let nib = UINib(nibName: "InteractiveImageViewCell", bundle: Bundle.main)
         self.collectionView.register(nib, forCellWithReuseIdentifier: "ImageViewCell")
@@ -95,7 +95,7 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     @IBAction @objc func didInvokeCancel() {
-        imageSource.navigationController?.popViewController(animated: true)
+        delegate.navigationController?.popViewController(animated: true)
     }
 
     @IBAction func didTapDelete(_ sender: Any) {
@@ -112,7 +112,7 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     @IBAction func selectNextItem(_ sender: Any) {
-        if selectedIndex < imageSource.listedImages.count-1 {
+        if selectedIndex < delegate.viewModel.listedImages.count-1 {
             selectedIndex = selectedIndex+1
         }
         
@@ -125,13 +125,13 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("Number of images fetched to collectionView \(imageSource.listedImages.count ?? 0)")
-        return imageSource.listedImages.count ?? 0
+//        print("Number of images fetched to collectionView \(delegate.listedImages.count ?? 0)")
+        return delegate.viewModel.listedImages.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageViewCell", for: indexPath as IndexPath) as! InteractiveImageViewCell
-        cell.imageView.image = UIImage(contentsOfFile: galleryInteractor.selectedGalleryPath.appendingPathComponent(imageSource.albumName ?? "").appendingPathComponent(imageSource.listedImages[indexPath.row].fileName).relativePath)
+        cell.imageView.image = UIImage(contentsOfFile: galleryInteractor.selectedGalleryPath.appendingPathComponent(delegate.viewModel.albumIndex?.name ?? "").appendingPathComponent(delegate.viewModel.listedImages[indexPath.row].fileName).relativePath)
         
 //        cell.imageView.image = UIImage(contentsOfFile: GalleryManager.documentDirectory.appendingPathComponent(imageSource.listedImages[indexPath.row].lastPathComponent).absoluteString)
         cell.scrollView.delegate = cell

@@ -13,36 +13,14 @@ class ContainerBuilder {
     static let container = Container(parent: nil, defaultObjectScope: .container)
     
     static func build() -> Container {
-        container.register(Config.self) { r in
-            return Config()
-        }
         
-        container.register(GalleryManager.self) { r in
-            return GalleryManager(config: r.resolve(Config.self)!)
-        }
-        
-        container.register(AlbumScreenViewController.self) { (r, albumName: String) in
-            return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!, galleryInteractor: r.resolve(GalleryManager.self)!, albumName: albumName)
-        }
-        
-        container.register(AlbumScreenViewController.self) { r in
-            return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!, galleryInteractor: r.resolve(GalleryManager.self)!)
-        }
+        registerDataLayer()
+        registerPresentationLayer()
         
         container.register(PhotoDetailViewController.self) { r in
-            return PhotoDetailViewController(nibName: "PhotoDetailViewController", bundle: nil, galleryInteractor: r.resolve(GalleryManager.self)!)
-        }
-        
-        container.register(SidebarRouter.self) { r in
-            return SidebarRouter(container: container)
-        }
-        
-        container.register(AlbumScreenRouter.self) { r in
-            return AlbumScreenRouter(sidebarRouter: r.resolve(SidebarRouter.self)!)
-        }
-        
-        container.register(SidebarViewController.self) { r in
-            return SidebarViewController(router: r.resolve(SidebarRouter.self)!, galleryInteractor: r.resolve(GalleryManager.self)!, container: container)
+//            return PhotoDetailViewController(nibName: "PhotoDetailViewController", bundle: nil, galleryInteractor: r.resolve(GalleryManager.self)!)
+            return PhotoDetailViewController(galleryInteractor: r.resolve(GalleryManager.self)!)
+
         }
         
         container.register(AlbumsListViewController.self) { (r, selectedImages: [String]) in
@@ -55,5 +33,65 @@ class ContainerBuilder {
         }
 
         return transientContainer
+    }
+    
+    static func registerDataLayer() {
+        container.register(UnsecureStorage.self) { r in
+            return UnsecureStorage()
+        }
+        
+        container.register(SettingsManager.self) { r in
+            return SettingsManager(unsecureStorage: r.resolve(UnsecureStorage.self)!)
+        }
+        
+        container.register(FileScannerManager.self) { r in
+            return FileScannerManager(settings: r.resolve(SettingsManager.self)!)
+        }
+        
+        container.register(GalleryManager.self) { r in
+            return GalleryManager(settingsManager: r.resolve(SettingsManager.self)!,
+                                  fileScannerManger: r.resolve(FileScannerManager.self)!)
+        }
+    }
+    
+    static func registerPresentationLayer() {
+        container.register(SidebarRouter.self) { r in
+            return SidebarRouter(container: container, galleryManager: r.resolve(GalleryManager.self)!)
+        }
+        
+        container.register(SidebarViewModel.self) { r in
+            return SidebarViewModel(galleryInteractor: r.resolve(GalleryManager.self)!)
+        }
+        
+        container.register(SidebarViewController.self) { r in
+            return SidebarViewController(router: r.resolve(SidebarRouter.self)!,
+                                         container: container,
+                                         viewModel: r.resolve(SidebarViewModel.self)!)
+        }
+        
+        container.register(AlbumScreenRouter.self) { r in
+            return AlbumScreenRouter(sidebarRouter: r.resolve(SidebarRouter.self)!)
+        }
+        
+        container.register(AlbumScreenViewModel.self) { r in
+            return AlbumScreenViewModel(albumID: nil,
+                                        galleryManager: r.resolve(GalleryManager.self)!)
+        }
+        
+        container.register(AlbumScreenViewModel.self) { (r, albumID: UUID) in
+            return AlbumScreenViewModel(albumID: albumID,
+                                        galleryManager: r.resolve(GalleryManager.self)!)
+        }
+        
+        container.register(AlbumScreenViewController.self) { (r, albumID: UUID) in
+            return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!,
+                                             viewModel: r.resolve(AlbumScreenViewModel.self,
+                                                                  argument: albumID)!)
+        }
+        
+        container.register(AlbumScreenViewController.self) { r in
+            return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!,
+                                             viewModel: r.resolve(AlbumScreenViewModel.self)!)
+        }
     }
 }

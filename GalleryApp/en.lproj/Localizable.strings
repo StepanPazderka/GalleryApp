@@ -6,10 +6,13 @@
   
 */
 
-"CANCEL" = "Cancel";
+"kCANCEL" = "Cancel";
 "SELECTFROMFILES" = "Select from Files";
 "CreateSubAlbum" = "Create SubAlbum";
-"DeleteImage" = "Delete Image";
+"DUPLICATEALBUM" = "Duplicate Album";
+"kDELETEIMAGE" = "Delete Image";
 "DeleteTitle" = "Delete";
 "kDETAILS" = "Details";
 "IMPORTFROM" = "Import photo from";
+"kEDIT" = "Edit";
+"kDONE" = "Done";

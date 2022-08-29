@@ -8,17 +8,68 @@
 import Foundation
 import RxSwift
 
-class SideBarViewModel {
-    var galleryInteractor: GalleryManager
+class SidebarViewModel {
+    
+    // MARK: -- Properties
+    private var galleryManager: GalleryManager
+    var albumButtons = [SidebarItem]()
+    
+    let disposeBag = DisposeBag()
     
     init(galleryInteractor: GalleryManager) {
-        self.galleryInteractor = galleryInteractor
+        self.galleryManager = galleryInteractor
     }
     
-    func getAlbums() -> Observable<[SidebarItem]> {
-        Observable.create { observer in
-            observer.onNext([])
-            return Disposables.create()
+    func fetchAlbums() -> Observable<[UUID]> {
+        return galleryManager.loadGalleryIndex().map { galleryIndex in
+            return galleryIndex.albums
         }
+    }
+    
+    func fetchAlbumButtons() {
+        fetchAlbums().subscribe(onNext: { albumsIDs in
+            self.albumButtons.append(contentsOf: albumsIDs.map { id in
+                if let album = self.galleryManager.loadAlbumIndex(id: id) {
+                    return SidebarItem(id: album.id, title: album.name, image: nil)
+                } else {
+                    return SidebarItem.empty
+                }
+            })
+        }).disposed(by: disposeBag)
+    }
+    
+    func fetchAlbumButtons() -> Observable<[SidebarItem]> {
+        self.fetchAlbums().map { albumIDsArray in
+            return albumIDsArray.map { albumID in
+                if let album = self.galleryManager.loadAlbumIndex(id: albumID) {
+                    return SidebarItem(id: album.id, title: album.name, image: nil)
+                }
+                else {
+                    return SidebarItem.empty
+                }
+            }
+        }
+    }
+    
+    func loadGalleryName() -> Observable<String> {
+        return galleryManager.loadGalleryIndex().map { galleryIndex in
+            return galleryIndex.mainGalleryName
+        }
+    }
+    
+    func createAlbum(name: String, parentAlbumID: UUID? = nil,  ID: UUID? = nil) {
+        do {
+            if let parentAlbumID = parentAlbumID {
+                try galleryManager.createAlbum(name: name, parentAlbum: parentAlbumID)
+            } else {
+                try galleryManager.createAlbum(name: name)
+            }
+        } catch {
+            
+        }
+    }
+    
+    func deleteAlbum(index: Int) {
+        
     }
 }

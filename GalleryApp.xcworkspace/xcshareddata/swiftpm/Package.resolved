@@ -1,16 +1,23 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "DirectoryWatcher",
-        "repositoryURL": "https://github.com/GianniCarlo/DirectoryWatcher",
-        "state": {
-          "branch": null,
-          "revision": "76af69f1d19146b0c5d3e38747bb5eabe547143b",
-          "version": "2.7.3"
-        }
+  "pins" : [
+    {
+      "identity" : "foldermonitorkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stoqn4opm/FolderMonitorKit",
+      "state" : {
+        "revision" : "43eb9715e4710406d8bdc7919e0c0e1e3bb796c6",
+        "version" : "2.0.0"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "snapkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SnapKit/SnapKit.git",
+      "state" : {
+        "branch" : "develop",
+        "revision" : "07c5d1f6044701d97e94dc11157259e8811977be"
+      }
+    }
+  ],
+  "version" : 2
 }

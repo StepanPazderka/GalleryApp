@@ -7,6 +7,7 @@
 
 import UIKit
 import Swinject
+import SnapKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     let container: Container
@@ -26,8 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let splitView = UISplitViewController(style: .doubleColumn)
-//        splitView.preferredDisplayMode = .oneBesideSecondary
-        splitView.preferredDisplayMode = .automatic
+        splitView.preferredDisplayMode = .oneBesideSecondary
         splitView.presentsWithGesture = true
         splitView.preferredSplitBehavior = .displace
         
@@ -35,8 +35,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         mainrouter.start(splitViewController: splitView)
         let window = UIWindow(windowScene: windowScene)
-        window.backgroundColor = .black
-        
+//        window.backgroundColor = .black
         window.rootViewController = splitView
         self.window = window
         window.makeKeyAndVisible()
