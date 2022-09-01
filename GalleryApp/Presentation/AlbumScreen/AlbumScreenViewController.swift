@@ -39,6 +39,48 @@ class AlbumScreenViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.setupViews()
+        self.bindInteractions()
+                
+        self.editingRx.bind(onNext: { [weak self] value in
+            self?.setEditing(value, animated: true)
+            if let editButton = self?.screenView.editButton {
+                if value {
+                    self?.screenView.editButton.setTitle(NSLocalizedString("kDONE", comment: ""), for: .normal)
+                } else {
+                    self?.screenView.editButton.setTitle(NSLocalizedString("kEDIT", comment: ""), for: .normal)
+                }
+            }
+        }).disposed(by: disposeBag)
+        
+        self.screenView.slider.rx.value.changed.subscribe(onNext: { value in
+            let newValue = CGFloat(value)
+            self.screenView.collectionLayout.itemSize = CGSize(width: newValue, height: newValue)
+//            print(value) // Prints current slider value to console
+        }).disposed(by: disposeBag)
+        
+        self.refreshData()
+    }
+    
+    func setupViews() {
+        self.view = screenView
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.screenView.rightStackView)
+        
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(_:)))
+        longPressRecognizer.numberOfTapsRequired = 1
+        
+        self.screenView.collectionView.delegate = self
+        self.screenView.collectionView.dataSource = self
+        
+        self.screenView.collectionView.addGestureRecognizer(longPressRecognizer)
+        self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
+        self.screenView.collectionView.register(AlbumScreenFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenFooter.identifier)
+    }
+    
     func showDocumentPicker() {
         self.screenView.documentPicker.delegate = self
         self.screenView.documentPicker.allowsMultipleSelection = true
@@ -69,6 +111,14 @@ class AlbumScreenViewController: UIViewController {
     }
     
     func bindInteractions() {
+        self.screenView.editButton.rx.tap.subscribe(onNext: { [weak self] in
+            if self?.editingRx.value == false {
+                self?.editingRx.accept(true)
+            } else {
+                self?.editingRx.accept(false)
+            }
+        }).disposed(by: disposeBag)
+        
         self.screenView.addImageButton.rx.tap.subscribe(onNext: { [weak self] in
             let alert = UIAlertController(title: NSLocalizedString("IMPORTFROM", comment: "Select import location"), message: nil, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: NSLocalizedString("SELECTFROMFILES", comment: "Default action"), style: .default) { [weak self] _ in
@@ -87,42 +137,7 @@ class AlbumScreenViewController: UIViewController {
             self?.present(alert, animated: true, completion: nil)
         }).disposed(by: disposeBag)
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.setupViews()
-        
-        self.screenView.editButton.rx.tap.subscribe(onNext: { [weak self] in
-            if self?.editingRx.value == false {
-                self?.editingRx.accept(true)
-            } else {
-                self?.editingRx.accept(false)
-            }
-        }).disposed(by: disposeBag)
-                
-        self.bindInteractions()
-                
-        self.editingRx.bind(onNext: { [weak self] value in
-            self?.setEditing(value, animated: true)
-            if let editButton = self?.screenView.editButton {
-                if value {
-                    self?.screenView.editButton.setTitle(NSLocalizedString("kDONE", comment: ""), for: .normal)
-                } else {
-                    self?.screenView.editButton.setTitle(NSLocalizedString("kEDIT", comment: ""), for: .normal)
-                }
-            }
-        }).disposed(by: disposeBag)
-        
-        self.screenView.slider.rx.value.changed.subscribe(onNext: { value in
-            let newValue = CGFloat(value)
-            self.screenView.collectionLayout.itemSize = CGSize(width: newValue, height: newValue)
-//            print(value) // Prints current slider value to console
-        }).disposed(by: disposeBag)
-        
-        self.refreshData()
-    }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
@@ -131,23 +146,7 @@ class AlbumScreenViewController: UIViewController {
     func addPhoto(filename: AlbumImage, to album: UUID? = nil) {
         self.viewModel.galleryManager.addImage(photoID: filename.fileName)
     }
-    
-    func setupViews() {
-        self.view = screenView
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.screenView.rightStackView)
-        
-        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(_:)))
-        longPressRecognizer.numberOfTapsRequired = 1
-        
-        self.screenView.collectionView.delegate = self
-        self.screenView.collectionView.dataSource = self
-        
-        self.screenView.collectionView.addGestureRecognizer(longPressRecognizer)
-        self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
-        self.screenView.collectionView.register(AlbumScreenFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenFooter.identifier)
-    }
-    
+
     public func refreshData() {
         self.screenView.collectionView.reloadData()
     }
@@ -182,12 +181,6 @@ class AlbumScreenViewController: UIViewController {
             cell.isEditing = editing
         }
     }
-    
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-////        return CGSize(width: view.frame.size.width / 3.3, height: view.frame.size.height / 3.3)
-//    }
-
-    
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let temp = self.viewModel.listedImages.remove(at: sourceIndexPath.item)
