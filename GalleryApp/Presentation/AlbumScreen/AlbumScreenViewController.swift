@@ -68,19 +68,7 @@ class AlbumScreenViewController: UIViewController {
         screenView.collectionViewLayout2.invalidateLayout()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.setupViews()
-        
-        self.screenView.editButton.rx.tap.subscribe(onNext: { [weak self] in
-            if self?.editingRx.value == false {
-                self?.editingRx.accept(true)
-            } else {
-                self?.editingRx.accept(false)
-            }
-        }).disposed(by: disposeBag)
-                
+    func bindInteractions() {
         self.screenView.addImageButton.rx.tap.subscribe(onNext: { [weak self] in
             let alert = UIAlertController(title: NSLocalizedString("IMPORTFROM", comment: "Select import location"), message: nil, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: NSLocalizedString("SELECTFROMFILES", comment: "Default action"), style: .default) { [weak self] _ in
@@ -98,6 +86,22 @@ class AlbumScreenViewController: UIViewController {
 
             self?.present(alert, animated: true, completion: nil)
         }).disposed(by: disposeBag)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.setupViews()
+        
+        self.screenView.editButton.rx.tap.subscribe(onNext: { [weak self] in
+            if self?.editingRx.value == false {
+                self?.editingRx.accept(true)
+            } else {
+                self?.editingRx.accept(false)
+            }
+        }).disposed(by: disposeBag)
+                
+        self.bindInteractions()
                 
         self.editingRx.bind(onNext: { [weak self] value in
             self?.setEditing(value, animated: true)
