@@ -250,25 +250,29 @@ class GalleryManager {
     }
     
     func loadGalleryIndex(named: String? = nil) -> Observable<GalleryIndex> {
-        return Observable.create { [weak self] observer in
-            var galleryMonitor: FolderMonitor?
-            if let galleryIndex = self?.loadGalleryIndex() {
+        return Observable.create { observer in
+            var galleryIndexMonitor: FolderMonitor?
+            if let galleryIndex = self.loadGalleryIndex() {
                 observer.onNext(galleryIndex)
             }
-            if let url = self?.selectedGalleryPath.appendingPathComponent(kGalleryIndex) {
-                galleryMonitor = try! FolderMonitor(url: url, trackingEvent: .all, onChange: { [weak self] in
-                    if let galleryIndex = self?.loadGalleryIndex() {
-                        observer.onNext(galleryIndex)
-                    }
-                })
-                do {
-                    try galleryMonitor?.start()
-                } catch {
-                    observer.onError(GalleryManagerError.cantStartMonitor)
-                }
+            if !FileManager.default.fileExists(atPath: self.selectedGalleryPath.appendingPathComponent(kGalleryIndex).relativePath) {
+                self.rebuildGalleryIndex()
             }
+            let url = self.selectedGalleryPath.appendingPathComponent(kGalleryIndex)
+            galleryIndexMonitor = try? FolderMonitor(url: url, trackingEvent: .all, onChange: {
+                if let galleryIndex = self.loadGalleryIndex() {
+                    print("Index changed")
+                    observer.onNext(galleryIndex)
+                }
+            })
+            do {
+                try galleryIndexMonitor?.start()
+            } catch {
+                observer.onError(GalleryManagerError.cantStartMonitor)
+            }
+        
             return Disposables.create {
-                galleryMonitor?.stop()
+//                galleryMonitor?.stop()
             }
         }
     }

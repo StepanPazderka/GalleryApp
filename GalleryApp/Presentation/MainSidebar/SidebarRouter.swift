@@ -32,7 +32,6 @@ class SidebarRouter {
     func showAllPhotos() {
         let allPhotosVC = container.resolve(AlbumScreenViewController.self)!
         splitViewController.setViewController(UINavigationController(rootViewController: allPhotosVC), for: .secondary)
-
     }
     
     func show(album albumID: UUID) {

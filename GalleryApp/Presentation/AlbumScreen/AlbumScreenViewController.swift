@@ -113,7 +113,7 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.slider.rx.value.changed.subscribe(onNext: { value in
             let newValue = CGFloat(value)
             self.screenView.collectionLayout.itemSize = CGSize(width: newValue, height: newValue)
-            print(value)
+//            print(value) // Prints current slider value to console
         }).disposed(by: disposeBag)
         
         self.refreshData()

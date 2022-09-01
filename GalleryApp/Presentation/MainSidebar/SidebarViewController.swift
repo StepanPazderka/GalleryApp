@@ -41,13 +41,6 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
     let disposeBag = DisposeBag()
     let viewModel: SidebarViewModel
     
-    var addAlbumButton: UIButton {
-        let view = UIButton(type: .system)
-        view.setImage(UIImage(systemName: "plus"), for: .normal)
-        view.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
-        return view
-    }
-    
     // MARK: -- Views
     let screenView = SidebarView()
     
@@ -110,7 +103,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
             self?.present(newController, animated: true, completion: nil)
         }).disposed(by: disposeBag)
 
-        self.screenView.addAlbumButton.rx.tap.subscribe(onNext: { [weak self] _ in
+        self.screenView.addAlbumButton.rx.tap.subscribe(onNext: { [weak self] in
             print("Tapped")
             self?.showCreateAlbumPopover()
         }).disposed(by: disposeBag)
@@ -124,7 +117,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         self.bindActions()
         
         navigationItem.titleView = self.screenView.selectGalleryButton
-        navigationItem.rightBarButtonItem = self.screenView.addAlbumButton
+        navigationItem.rightBarButtonItem = self.screenView.addAlbumBarItem
         navigationController?.navigationBar.prefersLargeTitles = false
         
         self.screenView.collectionView.delegate = self

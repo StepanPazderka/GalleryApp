@@ -8,16 +8,22 @@
 import Foundation
 import UIKit
 import SnapKit
+import RxCocoa
 
 class SidebarView: UIView {
     
     public var collectionView: UICollectionView!
     
-    var addAlbumButton: UIBarButtonItem {
+    var addAlbumButton: UIButton {
         let view = UIButton(type: .system)
         view.setImage(UIImage(systemName: "plus"), for: .normal)
-        view.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
-        return UIBarButtonItem(customView: view)
+        view.sizeToFit()
+        return view
+    }
+    
+    var addAlbumBarItem: UIBarButtonItem {
+        let view = UIBarButtonItem(customView: self.addAlbumButton)
+        return view
     }
     
     let selectGalleryButton: UIButton = {
