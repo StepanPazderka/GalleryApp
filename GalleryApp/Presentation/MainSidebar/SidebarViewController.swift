@@ -20,6 +20,9 @@ enum MainScreens: String, CaseIterable {
 
 class SidebarViewController: UIViewController, UINavigationControllerDelegate, UISplitViewControllerDelegate {
     
+    // MARK: -- Views
+    let screenView = SidebarView()
+    
     // MARK: -- Properties
     private var dataSource: UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>!
     private var secondaryViewControllers: [UIViewController] = []
@@ -41,15 +44,13 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
     let disposeBag = DisposeBag()
     let viewModel: SidebarViewModel
     
-    // MARK: -- Views
-    let screenView = SidebarView()
-    
     // MARK: -- Init
     init(router: SidebarRouter, container: Container, viewModel: SidebarViewModel) {
         screens = ["allPhotos": UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self)!),
                    "search": UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self)!)]
         self.router = router
         self.viewModel = viewModel
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -63,7 +64,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         
         self.setupViews()
         self.bindData()
-        self.bindActions()
+        self.bindInteractions()
 
         ConfigureDataSource()
         router.showAllPhotos()
@@ -112,7 +113,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         screenView.layoutViews()
     }
     
-    func bindActions() {
+    func bindInteractions() {
         self.screenView.selectGalleryButton.rx.tap.subscribe(onNext: { [weak self] in
             let newController = UIViewController()
             newController.view.backgroundColor = .systemBackground
@@ -120,7 +121,6 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         }).disposed(by: disposeBag)
 
         self.screenView.addAlbumButton.rx.tap.subscribe(onNext: { [weak self] in
-            print("Tapped")
             self?.showCreateAlbumPopover()
         }).disposed(by: disposeBag)
     }
@@ -131,9 +131,10 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         self.screenView.collectionView.delegate = self
         self.screenView.collectionView.translatesAutoresizingMaskIntoConstraints = false
         
-        navigationItem.titleView = self.screenView.selectGalleryButton
-        navigationItem.rightBarButtonItem = self.screenView.addAlbumBarItem
-        navigationController?.navigationBar.prefersLargeTitles = false
+        self.navigationController?.navigationBar.prefersLargeTitles = false
+        self.navigationItem.titleView = self.screenView.selectGalleryButton
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: screenView.addAlbumButton)
+        
     }
 
     func ConfigureDataSource() {

@@ -14,17 +14,12 @@ class SidebarView: UIView {
     
     public var collectionView: UICollectionView!
     
-    var addAlbumButton: UIButton {
+    var addAlbumButton: UIButton = {
         let view = UIButton(type: .system)
         view.setImage(UIImage(systemName: "plus"), for: .normal)
         view.sizeToFit()
         return view
-    }
-    
-    var addAlbumBarItem: UIBarButtonItem {
-        let view = UIBarButtonItem(customView: self.addAlbumButton)
-        return view
-    }
+    }()
     
     let selectGalleryButton: UIButton = {
         let view = UIButton()
