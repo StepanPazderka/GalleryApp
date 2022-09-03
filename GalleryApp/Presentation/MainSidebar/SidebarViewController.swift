@@ -57,6 +57,22 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: -- Lifecycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.setupViews()
+        self.bindData()
+        self.bindActions()
+
+        ConfigureDataSource()
+        router.showAllPhotos()
+        
+        self.viewModel.fetchAlbumButtons().subscribe(onNext: { albumButtons in
+            self.viewModel.albumButtons = albumButtons
+        }).disposed(by: disposeBag)
+    }
+    
     @objc func showCreateAlbumPopover() {
         let alertController = UIAlertController(title: "Enter Album name", message: nil, preferredStyle: .alert)
 
@@ -109,26 +125,15 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         }).disposed(by: disposeBag)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    func setupViews() {
         self.view = screenView
-        
-        self.bindData()
-        self.bindActions()
-        
-        navigationItem.titleView = self.screenView.selectGalleryButton
-        navigationItem.rightBarButtonItem = self.screenView.addAlbumBarItem
-        navigationController?.navigationBar.prefersLargeTitles = false
         
         self.screenView.collectionView.delegate = self
         self.screenView.collectionView.translatesAutoresizingMaskIntoConstraints = false
         
-        ConfigureDataSource()
-        router.showAllPhotos()
-        
-        self.viewModel.fetchAlbumButtons().subscribe(onNext: { albumButtons in
-            self.viewModel.albumButtons = albumButtons
-        }).disposed(by: disposeBag)
+        navigationItem.titleView = self.screenView.selectGalleryButton
+        navigationItem.rightBarButtonItem = self.screenView.addAlbumBarItem
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
 
     func ConfigureDataSource() {

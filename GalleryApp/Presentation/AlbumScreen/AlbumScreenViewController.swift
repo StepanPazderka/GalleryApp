@@ -35,6 +35,13 @@ class AlbumScreenViewController: UIViewController {
     let disposeBag = DisposeBag()
     var editingRx = BehaviorRelay<Bool>(value: false)
     
+    // MARK: - Init
+    init(router: AlbumScreenRouter, viewModel: AlbumScreenViewModel) {
+        self.router = router
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -90,12 +97,6 @@ class AlbumScreenViewController: UIViewController {
     func showImagePicker() {
         self.screenView.imagePicker.delegate = self
         self.present(self.screenView.imagePicker, animated: true)
-    }
-    
-    init(router: AlbumScreenRouter, viewModel: AlbumScreenViewModel) {
-        self.router = router
-        self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
