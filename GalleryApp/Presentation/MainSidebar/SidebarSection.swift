@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum SidebarSection: String {
+enum SidebarSection: String, CaseIterable {
     case tabs
     case albums = "Albums"
     case smartAlbums = "Smart Albums"

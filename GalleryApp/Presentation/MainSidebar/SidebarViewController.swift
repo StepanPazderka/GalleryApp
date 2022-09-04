@@ -36,11 +36,11 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         }
     }
     let smartalbums = [SidebarItem(id: UUID(), title: "Smart Albums", image: UIImage(systemName: "music.note.list")),
-                         SidebarItem(id: UUID(), title: "Replay 2015", image: UIImage(systemName: "folder.badge.gearshape")),
-                         SidebarItem(id: UUID(), title: "Replay 2016", image: UIImage(systemName: "music.note.list")),
-                         SidebarItem(id: UUID(), title: "Replay 2017", image: UIImage(systemName: "music.note.list")),
-                         SidebarItem(id: UUID(), title: "Replay 2018", image: UIImage(systemName: "music.note.list")),
-                         SidebarItem(id: UUID(), title: "Replay 2019", image: UIImage(systemName: "music.note.list"))]
+                       SidebarItem(id: UUID(), title: "Replay 2015", image: UIImage(systemName: "folder.badge.gearshape")),
+                       SidebarItem(id: UUID(), title: "Replay 2016", image: UIImage(systemName: "music.note.list")),
+                       SidebarItem(id: UUID(), title: "Replay 2017", image: UIImage(systemName: "music.note.list")),
+                       SidebarItem(id: UUID(), title: "Replay 2018", image: UIImage(systemName: "music.note.list")),
+                       SidebarItem(id: UUID(), title: "Replay 2019", image: UIImage(systemName: "music.note.list"))]
     let disposeBag = DisposeBag()
     let viewModel: SidebarViewModel
     
@@ -74,6 +74,13 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         }).disposed(by: disposeBag)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        view.addSubview(self.screenView.collectionView)
+        screenView.layoutViews()
+    }
+    
     @objc func showCreateAlbumPopover() {
         let alertController = UIAlertController(title: "Enter Album name", message: nil, preferredStyle: .alert)
 
@@ -95,6 +102,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         self.present(alertController, animated: true, completion: nil)
     }
     
+    // MARK: - Data Binding
     private func bindData() {
         viewModel.fetchAlbumButtons().subscribe(onNext: { [weak self] albumButtons in
             self?.viewModel.albumButtons = albumButtons
@@ -106,13 +114,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
             .disposed(by: disposeBag)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        view.addSubview(self.screenView.collectionView)
-        screenView.layoutViews()
-    }
-    
+    // MARK: - Interaction Bindings
     func bindInteractions() {
         self.screenView.selectGalleryButton.rx.tap.subscribe(onNext: { [weak self] in
             let newController = UIViewController()
@@ -125,6 +127,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         }).disposed(by: disposeBag)
     }
     
+    // MARK: - Setup
     func setupViews() {
         self.view = screenView
         
@@ -166,12 +169,11 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
     }
 
     func refreshMenu() {
-        let sections: [SidebarSection] = [.tabs, .albums, .smartAlbums]
         var snapshot = NSDiffableDataSourceSnapshot<SidebarSection, SidebarItem>()
-        snapshot.appendSections(sections)
-        dataSource.apply(snapshot, animatingDifferences: false)
-        
-        for section in sections {
+        snapshot.appendSections(SidebarSection.allCases)
+        dataSource.apply(snapshot, animatingDifferences: true)
+                
+        for section in SidebarSection.allCases {
             switch section {
             case .tabs:
                 var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
