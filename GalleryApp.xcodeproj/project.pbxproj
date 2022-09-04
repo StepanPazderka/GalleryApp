@@ -165,8 +165,8 @@
 		7F04C60B2760E2DC001CD45F /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				7F521C4928C520D400655FBB /* Enums */,
 				7F0938AF2842B86900F29123 /* SettingsManager.swift */,
-				7FA6762F284E367200B685F4 /* SettingsKey.swift */,
 				7FA67631284E479900B685F4 /* UnsecureStorage.swift */,
 				7F72D6682854E4A20016FC2A /* FileScannerManager.swift */,
 				7F8A167D27568BE900F4CB50 /* GalleryManager.swift */,
@@ -250,6 +250,14 @@
 				7F2A612A280AFAD200245032 /* AlbumsView.swift */,
 			);
 			path = Albums;
+			sourceTree = "<group>";
+		};
+		7F521C4928C520D400655FBB /* Enums */ = {
+			isa = PBXGroup;
+			children = (
+				7FA6762F284E367200B685F4 /* SettingsKey.swift */,
+			);
+			path = Enums;
 			sourceTree = "<group>";
 		};
 		7FCB40B925FAF1AC007ADF35 /* Presentation */ = {
