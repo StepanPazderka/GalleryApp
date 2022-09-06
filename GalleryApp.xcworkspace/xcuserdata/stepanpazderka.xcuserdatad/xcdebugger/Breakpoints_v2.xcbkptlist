@@ -88,15 +88,15 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "ABBEE2FB-7F44-4032-96F4-E622FBBEDC67"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GalleryApp/Data/GalleryManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "166"
-            endingLineNumber = "166"
-            landmarkName = "rebuildAlbumIndex(folder:)"
+            startingLineNumber = "167"
+            endingLineNumber = "167"
+            landmarkName = "rebuildAlbumIndex(folder:albumName:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

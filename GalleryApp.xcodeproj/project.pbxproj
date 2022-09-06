@@ -14,7 +14,6 @@
 		7F0938B02842B86900F29123 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0938AF2842B86900F29123 /* SettingsManager.swift */; };
 		7F0E0AC625FEC87900961256 /* AlbumIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0E0AC525FEC87900961256 /* AlbumIndex.swift */; };
 		7F10F362258EA59E000B6075 /* PhotoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F10F360258EA59E000B6075 /* PhotoDetailViewController.swift */; };
-		7F10F363258EA59E000B6075 /* PhotoDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F10F361258EA59E000B6075 /* PhotoDetailViewController.xib */; };
 		7F1267AD2777D612002A7038 /* SidebarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F1267AC2777D612002A7038 /* SidebarViewModel.swift */; };
 		7F1267AF2777EEC3002A7038 /* AlbumsMenuIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F1267AE2777EEC3002A7038 /* AlbumsMenuIndex.swift */; };
 		7F1C1C88275F8B3200929C95 /* UIImage+imageWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F1C1C87275F8B3200929C95 /* UIImage+imageWidth.swift */; };
@@ -26,7 +25,6 @@
 		7F2A6129280AF53400245032 /* AlbumsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2A6128280AF53400245032 /* AlbumsListViewController.swift */; };
 		7F2A612B280AFAD200245032 /* AlbumsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2A612A280AFAD200245032 /* AlbumsView.swift */; };
 		7F2CF04D2586A52E009A459D /* AlbumScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2CF04B2586A52E009A459D /* AlbumScreenViewController.swift */; };
-		7F2CF04E2586A52E009A459D /* AllPhotos.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F2CF04C2586A52E009A459D /* AllPhotos.xib */; };
 		7F39161B27814EB2003D688D /* SidebarRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F39161A27814EB2003D688D /* SidebarRouter.swift */; };
 		7F479F1725B64963005AFB97 /* InteractiveImageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F479F1625B64963005AFB97 /* InteractiveImageViewCell.swift */; };
 		7F479F1A25B6496F005AFB97 /* InteractiveImageViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F479F1925B6496E005AFB97 /* InteractiveImageViewCell.xib */; };
@@ -80,7 +78,6 @@
 		7F0938AF2842B86900F29123 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		7F0E0AC525FEC87900961256 /* AlbumIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumIndex.swift; sourceTree = "<group>"; };
 		7F10F360258EA59E000B6075 /* PhotoDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailViewController.swift; sourceTree = "<group>"; wrapsLines = 0; };
-		7F10F361258EA59E000B6075 /* PhotoDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoDetailViewController.xib; sourceTree = "<group>"; };
 		7F10F365258EA938000B6075 /* GalleryApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GalleryApp.entitlements; sourceTree = "<group>"; };
 		7F1267AC2777D612002A7038 /* SidebarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewModel.swift; sourceTree = "<group>"; };
 		7F1267AE2777EEC3002A7038 /* AlbumsMenuIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsMenuIndex.swift; sourceTree = "<group>"; };
@@ -95,7 +92,6 @@
 		7F2A6128280AF53400245032 /* AlbumsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsListViewController.swift; sourceTree = "<group>"; };
 		7F2A612A280AFAD200245032 /* AlbumsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsView.swift; sourceTree = "<group>"; };
 		7F2CF04B2586A52E009A459D /* AlbumScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumScreenViewController.swift; sourceTree = "<group>"; };
-		7F2CF04C2586A52E009A459D /* AllPhotos.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AllPhotos.xib; sourceTree = "<group>"; };
 		7F39161A27814EB2003D688D /* SidebarRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarRouter.swift; sourceTree = "<group>"; };
 		7F479F1625B64963005AFB97 /* InteractiveImageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveImageViewCell.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		7F479F1925B6496E005AFB97 /* InteractiveImageViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InteractiveImageViewCell.xib; sourceTree = "<group>"; };
@@ -277,7 +273,6 @@
 			children = (
 				7F2CF04B2586A52E009A459D /* AlbumScreenViewController.swift */,
 				7F941A5127740F880080C189 /* AlbumScreenViewModel.swift */,
-				7F2CF04C2586A52E009A459D /* AllPhotos.xib */,
 				7FFD64C42759318C00189AC4 /* AlbumImageCell.swift */,
 				7FEE73E327AC664400B8E02E /* AlbumScreenView.swift */,
 				7F6F6725281884D8000AA747 /* AlbumScreenRouter.swift */,
@@ -290,7 +285,6 @@
 			isa = PBXGroup;
 			children = (
 				7F10F360258EA59E000B6075 /* PhotoDetailViewController.swift */,
-				7F10F361258EA59E000B6075 /* PhotoDetailViewController.xib */,
 				7FC96D5927A74B9800690CFB /* PhotoDetailViewControllerNew.swift */,
 				7FC96D5B27A76DA900690CFB /* PhotoDetailViewControllerSettings.swift */,
 				7FC96D6527A9555100690CFB /* PhotoZoomViewController.swift */,
@@ -427,12 +421,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7F10F363258EA59E000B6075 /* PhotoDetailViewController.xib in Resources */,
 				7FC55041258F24F3000290F6 /* Localizable.strings in Resources */,
 				7F235E0A2585B73F007BD075 /* LaunchScreen.storyboard in Resources */,
 				7F235E072585B73F007BD075 /* Assets.xcassets in Resources */,
 				7F479F1A25B6496F005AFB97 /* InteractiveImageViewCell.xib in Resources */,
-				7F2CF04E2586A52E009A459D /* AllPhotos.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

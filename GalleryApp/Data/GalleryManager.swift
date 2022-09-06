@@ -37,13 +37,15 @@ class GalleryManager {
         } else {
             selectedGallery = "Default Gallery"
         }
-        
+
 //        self.galleryIndex.onNext(loadGalleryIndex(named: selectedGallery) ?? GalleryIndex.empty)
     }
     
     func createAlbum(name: String, parentAlbum: UUID? = nil) throws {
-        try? FileManager.default.createDirectory(at: selectedGalleryPath.appendingPathComponent(name), withIntermediateDirectories: true, attributes: nil)
-        rebuildAlbumIndex(folder: selectedGalleryPath.appendingPathComponent(name))
+        let albumID = UUID()
+        try? FileManager.default.createDirectory(at: selectedGalleryPath.appendingPathComponent(albumID.uuidString), withIntermediateDirectories: true, attributes: nil)
+        rebuildAlbumIndex(folder: selectedGalleryPath.appendingPathComponent(albumID.uuidString), albumName: name)
+        rebuildGalleryIndex()
     }
 
     func scanFolderForAlbums(url: URL? = nil) -> [AlbumIndex] {
@@ -62,7 +64,7 @@ class GalleryManager {
         
         return detectedAlbums
             .filter { $0.lastPathComponent == kAlbumIndex }
-            .map { AlbumIndex(from: $0) ?? rebuildAlbumIndex(folder: $0) }
+            .map { AlbumIndex(from: $0) ?? rebuildAlbumIndex(folder: $0, albumName: "Rebuilded Album") }
     }
     
     func removeAlbum(AlbumName: String) {
@@ -160,12 +162,11 @@ class GalleryManager {
         
     }
     
-    @discardableResult func rebuildAlbumIndex(folder: URL) -> AlbumIndex {
-        var folderPath = folder
-        let folderName =  folderPath.lastPathComponent == kAlbumIndex ? folderPath.deletingLastPathComponent().lastPathComponent : folderPath.lastPathComponent
-        let updatedAlbumIndex = AlbumIndex(id: UUID(), name: folderName, images: self.fileScannerManager.scanAlbumFolderForImages(albumName: folder.lastPathComponent), thumbnail: self.fileScannerManager.scanAlbumFolderForImages(albumName: folder.lastPathComponent).first?.fileName ?? "")
+    @discardableResult func rebuildAlbumIndex(folder: URL, albumName: String) -> AlbumIndex {
+        let folderName =  folder.lastPathComponent == kAlbumIndex ? folder.deletingLastPathComponent().lastPathComponent : folder.lastPathComponent
+        let albumIndex = AlbumIndex(id: UUID(uuidString: folder.lastPathComponent) ?? UUID(), name: albumName, images: self.fileScannerManager.scanAlbumFolderForImages(albumName: folder.lastPathComponent), thumbnail: self.fileScannerManager.scanAlbumFolderForImages(albumName: folder.lastPathComponent).first?.fileName ?? "")
         buildThumbs(forAlbum: folder.lastPathComponent)
-        let json = try! JSONEncoder().encode(updatedAlbumIndex)
+        let json = try! JSONEncoder().encode(albumIndex)
         try? json.write(to: folder.lastPathComponent == kAlbumIndex ? folder : folder.appendingPathComponent(kAlbumIndex))
         
         return AlbumIndex(from: folder)!
@@ -191,7 +192,7 @@ class GalleryManager {
         let jsonDATA = try? String(contentsOfFile: indexPath).data(using: .unicode)
         if let jsonData = jsonDATA {
             let decodedData = try? JSONDecoder().decode(AlbumIndex.self, from: jsonData)
-            guard (decodedData != nil) else { rebuildAlbumIndex(folder: folder); return decodedData }
+            guard (decodedData != nil) else { rebuildAlbumIndex(folder: folder, albumName: "Rebuilded Album"); return decodedData }
             if var decodedData = decodedData {
                 if decodedData.images.isEmpty {
                     decodedData.images = fileScannerManager.scanAlbumFolderForImages(albumName: folder.absoluteString)
@@ -206,7 +207,7 @@ class GalleryManager {
     func loadAlbumIndex(id: UUID) -> Observable<AlbumIndex> {
         return Observable.create { observer in
             let albumIndex: AlbumIndex? = self.loadAlbumIndex(id: id)
-            let albumMonitor = try! FolderMonitor(url: self.selectedGalleryPath.appendingPathComponent(albumIndex?.name ?? ""), trackingEvent: .all, onChange: { [weak self] in
+            let albumMonitor = try! FolderMonitor(url: self.selectedGalleryPath.appendingPathComponent(albumIndex?.id.uuidString ?? UUID().uuidString), trackingEvent: .all, onChange: { [weak self] in
                 if let albumIndex = self?.loadAlbumIndex(id: id) {
                     observer.onNext(albumIndex)
                 }

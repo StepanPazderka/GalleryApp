@@ -28,16 +28,10 @@ class AlbumScreenViewModel {
                 self?.albumIndex = albumIndex
             }).disposed(by: disposeBag)
         } else {
-            galleryManager.loadGalleryIndex().subscribe(onNext: { galleryIndex in
+            galleryManager.loadGalleryIndex()
+                .subscribe(onNext: { galleryIndex in
                 self.listedImages.append(contentsOf: galleryIndex.images)
             }).disposed(by: disposeBag)
-        }
-    }
-    
-    func importPhoto() {
-        if let albumID = albumID {
-            guard let albumName = loadAlbum(by: albumID)?.name else { return }
-            galleryManager.rebuildAlbumIndex(folder: galleryManager.selectedGalleryPath.appendingPathComponent(albumName))
         }
     }
     
@@ -61,7 +55,11 @@ class AlbumScreenViewModel {
         self.galleryManager.deleteImage(imageName: imageName)
     }
     
-    func addPhoto(image: AlbumImage) {
+    func addPhoto(image: AlbumImage, callback: (() -> Void)? = nil) {
         self.galleryManager.addImage(photoID: image.fileName, toAlbum: albumID ?? nil)
+        self.listedImages = self.galleryManager.loadGalleryIndex()?.images ?? []
+        if let callback = callback {
+            callback()
+        }
     }
 }

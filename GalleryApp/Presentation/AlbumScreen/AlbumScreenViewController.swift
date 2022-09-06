@@ -66,12 +66,17 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.slider.rx.value.changed.subscribe(onNext: { value in
             let newValue = CGFloat(value)
             self.screenView.collectionLayout.itemSize = CGSize(width: newValue, height: newValue)
-//            print(value) // Prints current slider value to console
         }).disposed(by: disposeBag)
         
         self.refreshData()
     }
-    
+
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        screenView.collectionViewLayout2.itemSize = CGSize(width: self.screenView.frame.width / 3.3, height: self.screenView.frame.height / 3.3)
+        screenView.collectionViewLayout2.invalidateLayout()
+    }
+
     func setupViews() {
         self.view = screenView
         
@@ -87,26 +92,20 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
         self.screenView.collectionView.register(AlbumScreenFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenFooter.identifier)
     }
-    
+
     func showDocumentPicker() {
         self.screenView.documentPicker.delegate = self
         self.screenView.documentPicker.allowsMultipleSelection = true
         self.present(self.screenView.documentPicker, animated: true)
     }
-    
+
     func showImagePicker() {
         self.screenView.imagePicker.delegate = self
         self.present(self.screenView.imagePicker, animated: true)
     }
-    
+
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        screenView.collectionViewLayout2.itemSize = CGSize(width: self.screenView.frame.width / 3.3, height: self.screenView.frame.height / 3.3)
-        screenView.collectionViewLayout2.invalidateLayout()
-    }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
         screenView.collectionViewLayout2.itemSize = CGSize(width: self.screenView.frame.width / 3.3, height: self.screenView.frame.height / 3.3)
         screenView.collectionViewLayout2.invalidateLayout()
     }
@@ -145,7 +144,9 @@ class AlbumScreenViewController: UIViewController {
     }
 
     func addPhoto(filename: AlbumImage, to album: UUID? = nil) {
-        self.viewModel.galleryManager.addImage(photoID: filename.fileName)
+        self.viewModel.addPhoto(image: filename) {
+            self.refreshData()
+        }
     }
 
     public func refreshData() {

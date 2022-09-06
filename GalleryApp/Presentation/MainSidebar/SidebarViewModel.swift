@@ -38,6 +38,13 @@ class SidebarViewModel {
         }).disposed(by: disposeBag)
     }
     
+    func fetchAlbums() {
+        guard let galleryIndex: GalleryIndex = self.galleryManager.loadGalleryIndex() else { return }
+        self.albumButtons = galleryIndex.albums.compactMap {
+            SidebarItem(from: AlbumIndex(from: galleryManager.selectedGalleryPath.appendingPathComponent($0.uuidString))!)
+        }
+    }
+    
     func fetchAlbumButtons() -> Observable<[SidebarItem]> {
         self.fetchAlbums().map { albumIDsArray in
             return albumIDsArray.map { albumID in

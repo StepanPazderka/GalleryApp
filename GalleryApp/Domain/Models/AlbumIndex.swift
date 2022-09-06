@@ -34,7 +34,7 @@ struct AlbumIndex: Codable {
                 self.thumbnail = album.thumbnail
                 self.id = album.id
                 self.thumbnailsSize = album.thumbnailsSize
-                return 
+                return
             }
         }
         
