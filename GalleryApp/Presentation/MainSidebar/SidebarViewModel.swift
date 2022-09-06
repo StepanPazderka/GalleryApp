@@ -79,7 +79,11 @@ class SidebarViewModel {
         }
     }
     
-    func deleteAlbum(index: Int) {
-        
+    func deleteAlbum(index: Int, callback: (() -> Void)? = nil) {
+        let selectedAlbumForDeletion = self.albumButtons[index - 1]
+        self.galleryManager.delete(album: selectedAlbumForDeletion.identifier)
+        if let callback = callback {
+            callback()
+        }
     }
 }

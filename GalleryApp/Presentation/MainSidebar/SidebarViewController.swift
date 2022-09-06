@@ -247,8 +247,11 @@ extension SidebarViewController: UICollectionViewDelegate {
             UIAction(title: NSLocalizedString("DeleteTitle", comment: ""),
                      image: UIImage(systemName: "trash"),
                      attributes: .destructive) { action in
-                self.viewModel.deleteAlbum(index: indexPath.row)
-                print(indexPath.row)
+                self.viewModel.deleteAlbum(index: indexPath.row) {
+                    self.viewModel.loadAlbums()
+                    self.refreshAlbums()
+                    self.refreshMenu()
+                }
             }
             return UIMenu(title: "", children: [inspectAction, duplicateAction, deleteAction])
         })

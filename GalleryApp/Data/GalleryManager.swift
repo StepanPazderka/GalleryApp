@@ -307,4 +307,13 @@ class GalleryManager {
         
         return newIndex
     }
+    
+    func delete(album: UUID) {
+        do {
+            try FileManager.default.removeItem(at: selectedGalleryPath.appendingPathComponent(album.uuidString))
+            self.rebuildGalleryIndex()
+        } catch { 
+            print(error)
+        }
+    }
 }
