@@ -38,7 +38,7 @@ class SidebarViewModel {
         }).disposed(by: disposeBag)
     }
     
-    func fetchAlbums() {
+    func loadAlbums() {
         guard let galleryIndex: GalleryIndex = self.galleryManager.loadGalleryIndex() else { return }
         self.albumButtons = galleryIndex.albums.compactMap {
             SidebarItem(from: AlbumIndex(from: galleryManager.selectedGalleryPath.appendingPathComponent($0.uuidString))!)
@@ -64,7 +64,7 @@ class SidebarViewModel {
         }
     }
     
-    func createAlbum(name: String, parentAlbumID: UUID? = nil,  ID: UUID? = nil) {
+    func createAlbum(name: String, parentAlbumID: UUID? = nil,  ID: UUID? = nil, callback: (() -> Void)? = nil) {
         do {
             if let parentAlbumID = parentAlbumID {
                 try galleryManager.createAlbum(name: name, parentAlbum: parentAlbumID)
@@ -73,6 +73,9 @@ class SidebarViewModel {
             }
         } catch {
             
+        }
+        if let callback = callback {
+            callback()
         }
     }
     

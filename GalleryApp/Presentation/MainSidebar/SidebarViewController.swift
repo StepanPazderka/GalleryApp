@@ -91,7 +91,11 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         let confirmAction = UIAlertAction(title: "OK", style: .default) { [weak alertController] _ in
             guard let alertController = alertController, let textField = alertController.textFields?.first else { return }
             if let albumName = textField.text {
-                self.viewModel.createAlbum(name: albumName)
+                self.viewModel.createAlbum(name: albumName, callback: {
+                    self.viewModel.loadAlbums()
+                    self.refreshMenu()
+                    self.refreshAlbums()
+                })
             }
         }
         alertController.addAction(confirmAction)
