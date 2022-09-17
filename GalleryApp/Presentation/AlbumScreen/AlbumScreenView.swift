@@ -75,7 +75,7 @@ class AlbumScreenView: UIView {
     
     let bottomToolbar: UIView = {
         let view = UIView()
-        view.backgroundColor = .green
+        view.backgroundColor = .lightGray
         view.frame.size.height = 200
         return view
     }()

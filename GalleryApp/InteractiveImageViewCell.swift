@@ -19,7 +19,7 @@ class InteractiveImageViewCell: UICollectionViewCell, UIScrollViewDelegate {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-//        fatalError("init(coder:) has not been implemented")
+        fatalError("init(coder:) has not been implemented")
     }
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {

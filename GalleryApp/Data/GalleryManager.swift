@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import UniformTypeIdentifiers
 import RxSwift
+import RxCocoa
 import FolderMonitorKit
 
 enum GalleryManagerError: Error {
@@ -17,16 +18,18 @@ enum GalleryManagerError: Error {
 
 class GalleryManager {
     
+    // MARK: -- Properties
     var libraryPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     var userDefaults: UserDefaults = UserDefaults.standard
     var selectedGalleryPath: URL {
         return libraryPath.appendingPathComponent(selectedGallery)
     }
     var selectedGallery: String
-    
     var galleryIndexMonitor: FolderMonitor!
     let settingsManager: SettingsManager
     let fileScannerManager: FileScannerManager
+    
+    let selectedGalleryIndexRelay = PublishSubject<GalleryIndex>()
     
     init(settingsManager: SettingsManager, fileScannerManger: FileScannerManager) {
         self.settingsManager = settingsManager
@@ -37,10 +40,10 @@ class GalleryManager {
         } else {
             selectedGallery = "Default Gallery"
         }
-
-//        self.galleryIndex.onNext(loadGalleryIndex(named: selectedGallery) ?? GalleryIndex.empty)
+        
+        selectedGalleryIndexRelay.onNext(loadGalleryIndex()!)
     }
-    
+        
     func createAlbum(name: String, parentAlbum: UUID? = nil) throws {
         let albumID = UUID()
         try? FileManager.default.createDirectory(at: selectedGalleryPath.appendingPathComponent(albumID.uuidString), withIntermediateDirectories: true, attributes: nil)
@@ -64,7 +67,7 @@ class GalleryManager {
         
         return detectedAlbums
             .filter { $0.lastPathComponent == kAlbumIndex }
-            .map { AlbumIndex(from: $0) ?? rebuildAlbumIndex(folder: $0, albumName: "Rebuilded Album") }
+            .compactMap { AlbumIndex(from: $0) ?? rebuildAlbumIndex(folder: $0, albumName: "Rebuilded Album")}
     }
     
     func removeAlbum(AlbumName: String) {
@@ -162,14 +165,15 @@ class GalleryManager {
         
     }
     
-    @discardableResult func rebuildAlbumIndex(folder: URL, albumName: String) -> AlbumIndex {
-        let folderName =  folder.lastPathComponent == kAlbumIndex ? folder.deletingLastPathComponent().lastPathComponent : folder.lastPathComponent
-        let albumIndex = AlbumIndex(id: UUID(uuidString: folder.lastPathComponent) ?? UUID(), name: albumName, images: self.fileScannerManager.scanAlbumFolderForImages(albumName: folder.lastPathComponent), thumbnail: self.fileScannerManager.scanAlbumFolderForImages(albumName: folder.lastPathComponent).first?.fileName ?? "")
+    @discardableResult func rebuildAlbumIndex(folder: URL, albumName: String) -> AlbumIndex? {
+        let scannedImagesFromFolder = self.fileScannerManager.scanAlbumFolderForImages(albumName: folder.lastPathComponent)
+        
+        let albumIndex = AlbumIndex(id: UUID(uuidString: folder.lastPathComponent) ?? UUID(), name: albumName, images: scannedImagesFromFolder, thumbnail: scannedImagesFromFolder.first?.fileName ?? "")
         buildThumbs(forAlbum: folder.lastPathComponent)
         let json = try! JSONEncoder().encode(albumIndex)
         try? json.write(to: folder.lastPathComponent == kAlbumIndex ? folder : folder.appendingPathComponent(kAlbumIndex))
         
-        return AlbumIndex(from: folder)!
+        return AlbumIndex(from: folder) ?? nil
     }
     
     @discardableResult func rebuildGalleryIndex(gallery: GalleryIndex) -> GalleryIndex {

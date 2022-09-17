@@ -25,14 +25,14 @@ class AlbumImageCell: UICollectionViewCell {
     }
     
     var navigateToImageRecognizer: UITapGestureRecognizer {
-        var recognizer = UITapGestureRecognizer(target: self, action: #selector(galleryImageTapped(_:)))
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector(galleryImageTapped(_:)))
         recognizer.numberOfTapsRequired = 1
         return recognizer
     }
-    let checkImageRecognizer = UITapGestureRecognizer(target: self, action: #selector(galleryImageCheckboxTapped(_:)))
+    let checkImageRecognizer = UITapGestureRecognizer(target: AlbumImageCell.self, action: #selector(galleryImageCheckboxTapped(_:)))
     var checkBoxTapped: UITapGestureRecognizer?
     let disposeBag = DisposeBag()
-    static let identifier: String = String(describing: type(of: self))
+    static let identifier: String = String(describing: type(of: AlbumImageCell.self))
     
     override init(frame: CGRect) {
         self.index = 0

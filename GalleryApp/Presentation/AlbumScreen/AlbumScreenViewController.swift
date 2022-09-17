@@ -14,16 +14,6 @@ import SnapKit
 import LocalAuthentication
 import Swinject
 
-enum GallerySection: String {
-    case main
-}
-
-struct GalleryItem: Hashable {
-    let title: String?
-    let image: UIImage
-    private let identifier = UUID()
-}
-
 class AlbumScreenViewController: UIViewController {
     
     // -- MARK: Views
@@ -73,8 +63,8 @@ class AlbumScreenViewController: UIViewController {
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        screenView.collectionViewLayout2.itemSize = CGSize(width: self.screenView.frame.width / 3.3, height: self.screenView.frame.height / 3.3)
-        screenView.collectionViewLayout2.invalidateLayout()
+        screenView.collectionLayout.itemSize = CGSize(width: self.screenView.frame.width / 3.3, height: self.screenView.frame.height / 3.3)
+        screenView.collectionLayout.invalidateLayout()
     }
 
     func setupViews() {
@@ -106,8 +96,8 @@ class AlbumScreenViewController: UIViewController {
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        screenView.collectionViewLayout2.itemSize = CGSize(width: self.screenView.frame.width / 3.3, height: self.screenView.frame.height / 3.3)
-        screenView.collectionViewLayout2.invalidateLayout()
+        screenView.collectionLayout.itemSize = CGSize(width: self.screenView.frame.width / 3.3, height: self.screenView.frame.height / 3.3)
+        screenView.collectionLayout.invalidateLayout()
     }
     
     func bindInteractions() {
