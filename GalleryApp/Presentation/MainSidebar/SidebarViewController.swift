@@ -191,11 +191,11 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
                 dataSource.apply(sectionSnapshot, to: section, animatingDifferences: true)
             case .albums:
                 let headerItem = SidebarItem(id: UUID(), title: section.rawValue, image: nil)
-                var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
-                sectionSnapshot.append([headerItem])
-                sectionSnapshot.append(self.viewModel.albumButtons, to: headerItem)
-                sectionSnapshot.expand([headerItem])
-                dataSource.apply(sectionSnapshot, to: section, animatingDifferences: true)
+                albumsSnapshot.deleteAll()
+                albumsSnapshot.append([headerItem])
+                albumsSnapshot.append(self.viewModel.albumButtons, to: headerItem)
+                albumsSnapshot.expand([headerItem])
+                dataSource.apply(albumsSnapshot, to: section, animatingDifferences: true)
             case .smartAlbums:
                 let headerItem = SidebarItem(id: UUID(), title: section.rawValue, image: nil)
                 var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
