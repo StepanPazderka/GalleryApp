@@ -80,7 +80,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        view.addSubview(self.screenView.collectionView)
+        view.addSubview(self.screenView.sidebarMenu)
         screenView.layoutViews()
     }
     
@@ -142,8 +142,8 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
     func setupViews() {
         self.view = screenView
         
-        self.screenView.collectionView.delegate = self
-        self.screenView.collectionView.translatesAutoresizingMaskIntoConstraints = false
+        self.screenView.sidebarMenu.delegate = self
+        self.screenView.sidebarMenu.translatesAutoresizingMaskIntoConstraints = false
         
         self.navigationController?.navigationBar.prefersLargeTitles = false
         self.navigationItem.titleView = self.screenView.selectGalleryButton
@@ -166,7 +166,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
             cell.accessories = []
         }
         
-        dataSource = UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>(collectionView: self.screenView.collectionView) {
+        dataSource = UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>(collectionView: self.screenView.sidebarMenu) {
             (collectionView: UICollectionView, indexPath: IndexPath, item: SidebarItem) -> UICollectionViewCell? in
             if indexPath.item == 0 && indexPath.section != 0 {
                 return collectionView.dequeueConfiguredReusableCell(using: headerRegistration, for: indexPath, item: item)
@@ -182,7 +182,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         var snapshot = NSDiffableDataSourceSnapshot<SidebarSection, SidebarItem>()
         snapshot.appendSections(SidebarSection.allCases)
         dataSource.apply(snapshot, animatingDifferences: true)
-                
+        
         for section in SidebarSection.allCases {
             switch section {
             case .tabs:

@@ -12,7 +12,7 @@ import RxCocoa
 
 class SidebarView: UIView {
     
-    public var collectionView: UICollectionView!
+    public var sidebarMenu: UICollectionView!
     
     var addAlbumButton: UIButton = {
         let view = UIButton(type: .system)
@@ -36,12 +36,12 @@ class SidebarView: UIView {
     
     // MARK: -- Setup Views
     func setupViews() {
-        self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
+        self.sidebarMenu = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
     }
     
     // MARK: -- Layout Views
     func layoutViews() {
-        self.collectionView.snp.makeConstraints { (make) -> Void in
+        self.sidebarMenu.snp.makeConstraints { (make) -> Void in
             make.edges.equalToSuperview()
         }
     }
