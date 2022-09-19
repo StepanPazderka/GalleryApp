@@ -9,7 +9,7 @@ import UIKit
 import simd
 import RxSwift
 
-class PhotoDetailViewControllerNew: UIViewController {
+class PhotoDetailViewController: UIViewController {
 
     var singleTapGestureRecognizer: UITapGestureRecognizer!
     
@@ -115,7 +115,7 @@ class PhotoDetailViewControllerNew: UIViewController {
     }
 }
 
-extension PhotoDetailViewControllerNew: UIGestureRecognizerDelegate {
+extension PhotoDetailViewController: UIGestureRecognizerDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         
         if let gestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
@@ -138,6 +138,6 @@ extension PhotoDetailViewControllerNew: UIGestureRecognizerDelegate {
     }
 }
 
-extension PhotoDetailViewControllerNew: UIPageViewControllerDelegate {
+extension PhotoDetailViewController: UIPageViewControllerDelegate {
         
 }

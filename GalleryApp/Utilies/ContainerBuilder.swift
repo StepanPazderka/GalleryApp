@@ -22,8 +22,8 @@ class ContainerBuilder {
         }
         
         let transientContainer = Container(parent: container, defaultObjectScope: .transient)
-        transientContainer.register(PhotoDetailViewControllerNew.self) { (r, photoDetailSettings: PhotoDetailViewControllerSettings) in
-            return PhotoDetailViewControllerNew(galleryInteractor: r.resolve(GalleryManager.self)!, sidebar: r.resolve(SidebarViewController.self)!, settings: photoDetailSettings)
+        transientContainer.register(PhotoDetailViewController.self) { (r, photoDetailSettings: PhotoDetailViewControllerSettings) in
+            return PhotoDetailViewController(galleryInteractor: r.resolve(GalleryManager.self)!, sidebar: r.resolve(SidebarViewController.self)!, settings: photoDetailSettings)
         }
 
         return transientContainer

@@ -99,7 +99,7 @@ class AlbumImageCell: UICollectionViewCell {
                 delegate.isEditing = true
                 return
             }
-            let vc = ContainerBuilder.build().resolve(PhotoDetailViewControllerNew.self, argument: PhotoDetailViewControllerSettings(selectedImages: delegate.viewModel.shownImagesPaths, selectedIndex: self.index))!
+            let vc = ContainerBuilder.build().resolve(PhotoDetailViewController.self, argument: PhotoDetailViewControllerSettings(selectedImages: delegate.viewModel.shownImagesPaths, selectedIndex: self.index))!
             vc.modalPresentationStyle = .none
             delegate.navigationController?.pushViewController(vc, animated: true)
         }

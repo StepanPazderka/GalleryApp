@@ -29,7 +29,7 @@ class AlbumScreenRouter {
     }
     
     func showPhotoDetail(images: [AlbumImage], index: Int) {
-        let vc = ContainerBuilder.build().resolve(PhotoDetailViewControllerNew.self, argument: PhotoDetailViewControllerSettings(selectedImages: images, selectedIndex: index))!
+        let vc = ContainerBuilder.build().resolve(PhotoDetailViewController.self, argument: PhotoDetailViewControllerSettings(selectedImages: images, selectedIndex: index))!
         vc.modalPresentationStyle = .none
         self.navigationController?.pushViewController(vc, animated: true)
     }
