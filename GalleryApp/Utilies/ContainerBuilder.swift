@@ -17,12 +17,6 @@ class ContainerBuilder {
         registerDataLayer()
         registerPresentationLayer()
         
-        container.register(PhotoDetailViewController.self) { r in
-//            return PhotoDetailViewController(nibName: "PhotoDetailViewController", bundle: nil, galleryInteractor: r.resolve(GalleryManager.self)!)
-            return PhotoDetailViewController(galleryInteractor: r.resolve(GalleryManager.self)!)
-
-        }
-        
         container.register(AlbumsListViewController.self) { (r, selectedImages: [String]) in
             return AlbumsListViewController(galleryInteractor: r.resolve(GalleryManager.self)!,container: container, selectedImages: selectedImages)
         }
