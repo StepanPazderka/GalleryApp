@@ -25,12 +25,13 @@ class GalleryManager {
         return libraryPath.appendingPathComponent(selectedGallery)
     }
     var selectedGallery: String
-    var galleryIndexMonitor: FolderMonitor!
     let settingsManager: SettingsManager
     let fileScannerManager: FileScannerManager
     
     let selectedGalleryIndexRelay = PublishSubject<GalleryIndex>()
     
+    
+    // MARK: -- Init
     init(settingsManager: SettingsManager, fileScannerManger: FileScannerManager) {
         self.settingsManager = settingsManager
         self.fileScannerManager = fileScannerManger
@@ -41,14 +42,26 @@ class GalleryManager {
             selectedGallery = "Default Gallery"
         }
         
-        selectedGalleryIndexRelay.onNext(loadGalleryIndex()!)
+        if let galleryIndex = loadGalleryIndex() {
+            selectedGalleryIndexRelay.onNext(galleryIndex)
+        }
     }
-        
+    
+    // MARK: -- Basics
     func createAlbum(name: String, parentAlbum: UUID? = nil) throws {
         let albumID = UUID()
         try? FileManager.default.createDirectory(at: selectedGalleryPath.appendingPathComponent(albumID.uuidString), withIntermediateDirectories: true, attributes: nil)
         rebuildAlbumIndex(folder: selectedGalleryPath.appendingPathComponent(albumID.uuidString), albumName: name)
         rebuildGalleryIndex()
+    }
+    
+    func delete(album: UUID) {
+        do {
+            try FileManager.default.removeItem(at: selectedGalleryPath.appendingPathComponent(album.uuidString))
+            self.rebuildGalleryIndex()
+        } catch {
+            print(error)
+        }
     }
 
     func scanFolderForAlbums(url: URL? = nil) -> [AlbumIndex] {
@@ -176,14 +189,6 @@ class GalleryManager {
         return AlbumIndex(from: folder) ?? nil
     }
     
-    @discardableResult func rebuildGalleryIndex(gallery: GalleryIndex) -> GalleryIndex {
-        let jsonEncoded = try? JSONEncoder().encode(gallery)
-        let url = selectedGalleryPath.appendingPathComponent(kGalleryIndex)
-        try? jsonEncoded?.write(to: url)
-        
-        return GalleryIndex(mainGalleryName: gallery.mainGalleryName, images: self.lostAllImagesInGalleryFolder(), albums: gallery.albums)
-    }
-    
     func updateAlbumIndex(folder: URL, index: AlbumIndex) {
         let json = try! JSONEncoder().encode(index)
         let url = folder.appendingPathComponent(kAlbumIndex)
@@ -282,6 +287,8 @@ class GalleryManager {
         }
     }
     
+    // MARK: -- Rebuilding Gallery Index
+    
     /**
         Will rebuild gallery index based on files in Gallery folder
      */
@@ -290,14 +297,16 @@ class GalleryManager {
         
         if FileManager.default.fileExists(atPath: selectedGalleryPath.appendingPathComponent(kGalleryIndex).relativePath) {
             if let oldIndex = loadGalleryIndex(named: nil) {
-                oldAlbums.append(contentsOf: oldIndex.albums)
+                oldAlbums = oldIndex.albums
             }
         }
         
         var newIndex = GalleryIndex(mainGalleryName: selectedGallery, images: self.fileScannerManager.scanAlbumFolderForImages(), albums: scanFolderForAlbums().map { $0.id })
-        let newAlbums = scanFolderForAlbums().map { $0.id }
+        var newAlbums = scanFolderForAlbums().map { $0.id }
+
+        oldAlbums.append(contentsOf: newAlbums.removingDuplicates())
         
-        let combinedAlbums = Array(Set(oldAlbums + newAlbums))
+        let combinedAlbums: [UUID] = oldAlbums.removingDuplicates()
         
         newIndex.albums = combinedAlbums.filter { loadAlbumIndex(id: $0) != nil }
         
@@ -308,16 +317,16 @@ class GalleryManager {
         }
         
         try! jsonEncoded?.write(to: url)
-        
+        self.selectedGalleryIndexRelay.onNext(newIndex)
         return newIndex
     }
     
-    func delete(album: UUID) {
-        do {
-            try FileManager.default.removeItem(at: selectedGalleryPath.appendingPathComponent(album.uuidString))
-            self.rebuildGalleryIndex()
-        } catch { 
-            print(error)
-        }
+    
+    @discardableResult func rebuildGalleryIndex(gallery: GalleryIndex) -> GalleryIndex {
+        let jsonEncoded = try? JSONEncoder().encode(gallery)
+        let url = selectedGalleryPath.appendingPathComponent(kGalleryIndex)
+        try? jsonEncoded?.write(to: url)
+        
+        return GalleryIndex(mainGalleryName: gallery.mainGalleryName, images: self.lostAllImagesInGalleryFolder(), albums: gallery.albums)
     }
 }

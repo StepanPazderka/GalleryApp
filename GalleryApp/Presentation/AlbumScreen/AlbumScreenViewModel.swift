@@ -15,7 +15,7 @@ class AlbumScreenViewModel {
     var albumID: UUID?
     var albumIndex: AlbumIndex?
     let galleryManager: GalleryManager
-    var listedImages = [AlbumImage]()
+    var shownImagesPaths = [AlbumImage]()
     let disposeBag = DisposeBag()
     let thumbnailSize: Float = 200
     
@@ -30,7 +30,7 @@ class AlbumScreenViewModel {
         } else {
             galleryManager.loadGalleryIndex()
                 .subscribe(onNext: { galleryIndex in
-                self.listedImages.append(contentsOf: galleryIndex.images)
+                self.shownImagesPaths.append(contentsOf: galleryIndex.images)
             }).disposed(by: disposeBag)
         }
     }
@@ -57,7 +57,7 @@ class AlbumScreenViewModel {
     
     func addPhoto(image: AlbumImage, callback: (() -> Void)? = nil) {
         self.galleryManager.addImage(photoID: image.fileName, toAlbum: albumID ?? nil)
-        self.listedImages = self.galleryManager.loadGalleryIndex()?.images ?? []
+        self.shownImagesPaths = self.galleryManager.loadGalleryIndex()?.images ?? []
         if let callback = callback {
             callback()
         }

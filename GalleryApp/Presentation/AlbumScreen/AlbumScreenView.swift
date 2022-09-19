@@ -18,13 +18,6 @@ class AlbumScreenView: UIView {
     
     lazy var collectionLayout = UICollectionViewFlowLayout()
     
-    var collectionViewLayout2: UICollectionViewFlowLayout {
-        let view = UICollectionViewFlowLayout()
-        view.itemSize = CGSize(width: self.frame.size.width / 3, height: self.frame.size.height / 3)
-        view.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        return view
-    }
-    
     let editButton: UIButton = {
         let button = UIButton(type: .system)
         button.sizeToFit()

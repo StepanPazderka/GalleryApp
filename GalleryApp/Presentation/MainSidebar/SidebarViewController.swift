@@ -41,8 +41,11 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
                        SidebarItem(id: UUID(), title: "Replay 2017", image: UIImage(systemName: "music.note.list")),
                        SidebarItem(id: UUID(), title: "Replay 2018", image: UIImage(systemName: "music.note.list")),
                        SidebarItem(id: UUID(), title: "Replay 2019", image: UIImage(systemName: "music.note.list"))]
+
     let disposeBag = DisposeBag()
     let viewModel: SidebarViewModel
+    
+    var albumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
     
     // MARK: -- Init
     init(router: SidebarRouter, container: Container, viewModel: SidebarViewModel) {
@@ -116,6 +119,10 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
             .asDriver(onErrorJustReturn: "")
             .drive(self.screenView.selectGalleryButton.rx.title())
             .disposed(by: disposeBag)
+        
+        viewModel.galleryIndex().subscribe(onNext: { galleryIndex in
+            self.refreshAlbums()
+        }).disposed(by: disposeBag)
     }
     
     // MARK: - Interaction Bindings
@@ -141,7 +148,6 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         self.navigationController?.navigationBar.prefersLargeTitles = false
         self.navigationItem.titleView = self.screenView.selectGalleryButton
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: screenView.addAlbumButton)
-        
     }
 
     func ConfigureDataSource() {
@@ -205,11 +211,12 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
     
     func refreshAlbums() {
         let headerItem = SidebarItem(id: UUID(), title: "Albums", image: nil)
-        var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
-        sectionSnapshot.append([headerItem])
-        sectionSnapshot.append(viewModel.albumButtons, to: headerItem)
-        sectionSnapshot.expand([headerItem])
-        dataSource.apply(sectionSnapshot, to: .albums, animatingDifferences: true)
+        
+        albumsSnapshot.deleteAll()
+        albumsSnapshot.append([headerItem])
+        albumsSnapshot.append(viewModel.albumButtons, to: headerItem)
+        albumsSnapshot.expand([headerItem])
+        dataSource.apply(albumsSnapshot, to: .albums, animatingDifferences: true)
     }
 }
 

@@ -58,7 +58,7 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
             input: UIKeyCommand.inputRightArrow
         ))
 
-        navigationItem.title = delegate.viewModel.listedImages[selectedIndex].fileName ?? ""
+        navigationItem.title = delegate.viewModel.shownImagesPaths[selectedIndex].fileName ?? ""
         
         let nib = UINib(nibName: "InteractiveImageViewCell", bundle: Bundle.main)
         self.collectionView.register(nib, forCellWithReuseIdentifier: "ImageViewCell")
@@ -112,7 +112,7 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     @IBAction func selectNextItem(_ sender: Any) {
-        if selectedIndex < delegate.viewModel.listedImages.count-1 {
+        if selectedIndex < delegate.viewModel.shownImagesPaths.count-1 {
             selectedIndex = selectedIndex+1
         }
         
@@ -126,12 +126,12 @@ class PhotoDetailViewController: UIViewController, UICollectionViewDelegate, UIC
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 //        print("Number of images fetched to collectionView \(delegate.listedImages.count ?? 0)")
-        return delegate.viewModel.listedImages.count ?? 0
+        return delegate.viewModel.shownImagesPaths.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageViewCell", for: indexPath as IndexPath) as! InteractiveImageViewCell
-        cell.imageView.image = UIImage(contentsOfFile: galleryInteractor.selectedGalleryPath.appendingPathComponent(delegate.viewModel.albumIndex?.name ?? "").appendingPathComponent(delegate.viewModel.listedImages[indexPath.row].fileName).relativePath)
+        cell.imageView.image = UIImage(contentsOfFile: galleryInteractor.selectedGalleryPath.appendingPathComponent(delegate.viewModel.albumIndex?.name ?? "").appendingPathComponent(delegate.viewModel.shownImagesPaths[indexPath.row].fileName).relativePath)
         
 //        cell.imageView.image = UIImage(contentsOfFile: GalleryManager.documentDirectory.appendingPathComponent(imageSource.listedImages[indexPath.row].lastPathComponent).absoluteString)
         cell.scrollView.delegate = cell

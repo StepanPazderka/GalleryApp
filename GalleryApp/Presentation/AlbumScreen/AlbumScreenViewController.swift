@@ -40,8 +40,9 @@ class AlbumScreenViewController: UIViewController {
         super.viewDidLoad()
         
         self.setupViews()
+        self.layoutViews()
         self.bindInteractions()
-                
+        
         self.editingRx.bind(onNext: { [weak self] value in
             self?.setEditing(value, animated: true)
             if let editButton = self?.screenView.editButton {
@@ -81,6 +82,13 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.collectionView.addGestureRecognizer(longPressRecognizer)
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
         self.screenView.collectionView.register(AlbumScreenFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenFooter.identifier)
+    }
+    
+    func layoutViews() {
+        screenView.slider.snp.makeConstraints { make in
+            make.leftMargin.equalToSuperview().offset(50)
+            make.top.equalToSuperview().offset(20)
+        }
     }
 
     func showDocumentPicker() {
@@ -175,10 +183,10 @@ class AlbumScreenViewController: UIViewController {
     }
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let temp = self.viewModel.listedImages.remove(at: sourceIndexPath.item)
-        self.viewModel.listedImages.insert(temp, at: destinationIndexPath.item)
+        let temp = self.viewModel.shownImagesPaths.remove(at: sourceIndexPath.item)
+        self.viewModel.shownImagesPaths.insert(temp, at: destinationIndexPath.item)
 
-        let newGalleryIndex = AlbumIndex(name: self.viewModel.galleryManager.selectedGalleryPath.lastPathComponent, images: self.viewModel.listedImages, thumbnail: self.viewModel.listedImages.first?.fileName ?? "")
+        let newGalleryIndex = AlbumIndex(name: self.viewModel.galleryManager.selectedGalleryPath.lastPathComponent, images: self.viewModel.shownImagesPaths, thumbnail: self.viewModel.shownImagesPaths.first?.fileName ?? "")
         self.viewModel.galleryManager.updateAlbumIndex(folder: self.viewModel.galleryManager.selectedGalleryPath, index: newGalleryIndex)
         collectionView.reloadData()
         return
@@ -204,17 +212,17 @@ class AlbumScreenViewController: UIViewController {
                 let newController = UINavigationController(rootViewController: albumsVC)
                 newController.view.backgroundColor = .systemBackground
                 self?.present(newController, animated: true, completion: nil)
-                              }
+            }
             let duplicateAction =
             UIAction(title: NSLocalizedString("DuplicateTitle", comment: ""),
                      image: UIImage(systemName: "plus.square.on.square")) { action in
-//                self.performDuplicate(indexPath)
+                //                self.performDuplicate(indexPath)
             }
             let deleteAction =
             UIAction(title: NSLocalizedString("kDELETEIMAGE", comment: ""),
                      image: UIImage(systemName: "trash"),
                      attributes: .destructive) { action in
-                let imageName = self.viewModel.listedImages[indexPath.row].fileName
+                let imageName = self.viewModel.shownImagesPaths[indexPath.row].fileName
                 self.viewModel.deleteImage(imageName: imageName)
             }
             return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, deleteAction])
@@ -239,13 +247,13 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
-        let fullImageURL = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(self.viewModel.listedImages[indexPath.row].fileName)
+        let fullImageURL = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(self.viewModel.shownImagesPaths[indexPath.row].fileName)
         let path = fullImageURL.path
         cell.imageView.image = UIImage(contentsOfFile: path)
         cell.router = self.router
         cell.index = indexPath.row
         cell.delegate = self
-        cell.configure(imageData: self.viewModel.listedImages[indexPath.row])
+        cell.configure(imageData: self.viewModel.shownImagesPaths[indexPath.row])
         return cell
     }
     
@@ -265,7 +273,7 @@ extension AlbumScreenViewController: UICollectionViewDelegateFlowLayout {
 extension AlbumScreenViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.viewModel.listedImages.count
+        return self.viewModel.shownImagesPaths.count
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {

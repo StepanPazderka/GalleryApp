@@ -18,12 +18,23 @@ class SidebarViewModel {
     
     init(galleryInteractor: GalleryManager) {
         self.galleryManager = galleryInteractor
+        
+        bindAlbums()
     }
     
-    func albums() -> Observable<[UUID]> {
-        return self.galleryManager.selectedGalleryIndexRelay.map { index in
-            return index.albums
-        }
+    func galleryIndex() -> Observable<GalleryIndex> {
+        galleryManager.selectedGalleryIndexRelay
+    }
+    
+    func bindAlbums() {
+        galleryManager.selectedGalleryIndexRelay.subscribe(onNext: { gallery in
+            self.albumButtons = gallery.albums.compactMap { albumID in
+                if let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
+                    return SidebarItem(from: albumIndex)
+                }
+                return nil
+            }
+        }).disposed(by: disposeBag)
     }
     
     func fetchAlbums() -> Observable<[UUID]> {

@@ -1,6 +1,9 @@
 PODS:
   - Differentiator (3.1.0)
   - DirectoryWatcher (2.7.3)
+  - ImageSlideshow (1.9.2):
+    - ImageSlideshow/Core (= 1.9.2)
+  - ImageSlideshow/Core (1.9.2)
   - RxCocoa (4.5.0):
     - RxSwift (>= 4.4.2, ~> 4.4)
   - RxDataSources (3.1.0):
@@ -13,6 +16,7 @@ PODS:
 
 DEPENDENCIES:
   - DirectoryWatcher
+  - ImageSlideshow (~> 1.9.0)
   - RxCocoa (~> 4.0)
   - RxDataSources
   - RxSwift (~> 4.0)
@@ -23,6 +27,7 @@ SPEC REPOS:
   trunk:
     - Differentiator
     - DirectoryWatcher
+    - ImageSlideshow
     - RxCocoa
     - RxDataSources
     - RxSwift
@@ -32,12 +37,13 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Differentiator: be49ca3408f0ecfc761e4c7763d20c62be01b9ad
   DirectoryWatcher: 43e1ae45c7539d3deeea9db4384ab158bae368e3
+  ImageSlideshow: be305b54eaf2b2cfc7a7141c7c734605d44dc07d
   RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
   RxDataSources: a843bad90c29817f5923ec8163f4af2de084ceb3
   RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
   SwiftLint: f80f1be7fa96d30e0aa68e58d45d4ea1ccaac519
   Swinject: 97112918bd7e0785dc2df7036213f3c8cbba6586
 
-PODFILE CHECKSUM: 4c7164a8e7e0126bd01649c52204e7db39242d46
+PODFILE CHECKSUM: 3503ead85ae66ff1861cc6e27e8000fd52d36b94
 
 COCOAPODS: 1.11.3
