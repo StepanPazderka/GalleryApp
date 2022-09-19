@@ -103,7 +103,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         }
         alertController.addAction(confirmAction)
 
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: NSLocalizedString("kCANCEL", comment: ""), style: .cancel, handler: nil)
         alertController.addAction(cancelAction)
 
         self.present(alertController, animated: true, completion: nil)
