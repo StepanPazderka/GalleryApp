@@ -11,8 +11,8 @@ PODS:
     - RxCocoa (~> 4.0)
     - RxSwift (~> 4.0)
   - RxSwift (4.5.0)
-  - SwiftLint (0.47.1)
-  - Swinject (2.8.1)
+  - SwiftLint (0.49.1)
+  - Swinject (2.8.2)
 
 DEPENDENCIES:
   - DirectoryWatcher
@@ -41,8 +41,8 @@ SPEC CHECKSUMS:
   RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
   RxDataSources: a843bad90c29817f5923ec8163f4af2de084ceb3
   RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
-  SwiftLint: f80f1be7fa96d30e0aa68e58d45d4ea1ccaac519
-  Swinject: 97112918bd7e0785dc2df7036213f3c8cbba6586
+  SwiftLint: 32ee33ded0636d0905ef6911b2b67bbaeeedafa5
+  Swinject: b4a11b31992e8668308dc594ba1cb9b3164a37ab
 
 PODFILE CHECKSUM: 3503ead85ae66ff1861cc6e27e8000fd52d36b94
 

@@ -25,9 +25,26 @@ class PhotoDetailViewController: UIViewController {
     }
     var currentMode: ScreenMode = .normal
     
+    
+    internal init(galleryInteractor: GalleryManager, sidebar: SidebarViewController, settings: PhotoDetailViewControllerSettings) {
+        self.galleryManager = galleryInteractor
+        self.photoDetailView = settings
+        self.sidebar = sidebar
+        super.init(nibName: nil, bundle: nil)
+        self.view.backgroundColor = .white
+        self.view.addSubview(imageView)
+        imageView.snp.makeConstraints { (make) -> Void in
+            make.edges.equalTo(self.view)
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Settings Album: \(self.photoDetailView.selectedImages), selected index: \(self.photoDetailView.selectedIndex)")
+
         self.view.backgroundColor = .none
         self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(didPanWith(gestureRecognizer:)))
         self.panGestureRecognizer.delegate = self
@@ -40,10 +57,6 @@ class PhotoDetailViewController: UIViewController {
         let selectedImage = photoDetailView.selectedImages[photoDetailView.selectedIndex].fileName
         let imagePath =  galleryManager.selectedGalleryPath.appendingPathComponent(selectedImage)
         self.imageView.image = UIImage(contentsOfFile: imagePath.path)
-    }
-    
-    var pageViewController: UIPageViewController {
-        return self.children[0] as! UIPageViewController
     }
     
     @objc func didSingleTapWith(gestureRecognizer: UITapGestureRecognizer) {
@@ -95,23 +108,6 @@ class PhotoDetailViewController: UIViewController {
             }, completion: { completed in
             })
         }
-    }
-    
-    internal init(galleryInteractor: GalleryManager, sidebar: SidebarViewController, settings: PhotoDetailViewControllerSettings) {
-        self.galleryManager = galleryInteractor
-        self.photoDetailView = settings
-        self.sidebar = sidebar
-        super.init(nibName: nil, bundle: nil)
-        self.view.backgroundColor = .white
-        self.view.addSubview(imageView)
-        imageView.snp.makeConstraints { (make) -> Void in
-            make.edges.equalTo(self.view)
-        }
-        var listedImages = galleryInteractor.lostAllImagesInGalleryFolder()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 
