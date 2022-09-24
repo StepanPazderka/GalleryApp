@@ -131,7 +131,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         mainButtonsRX.subscribe(onNext: { mainButtons in
             var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
             sectionSnapshot.append(mainButtons)
-            self.dataSource.apply(sectionSnapshot, to: .tabs)
+            self.dataSource.apply(sectionSnapshot, to: .mainButtons)
         }).dispose()
         
         
@@ -181,7 +181,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     }
 
     func refreshMenu() {
-        let sections: [SidebarSection] = [.albums]
+        let sections: [SidebarSection] = [.albumsButtons]
         var snapshot = NSDiffableDataSourceSnapshot<SidebarSection, SidebarItem>()
         dataSource.apply(snapshot, animatingDifferences: true)
         

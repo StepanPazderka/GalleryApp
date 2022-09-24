@@ -42,10 +42,13 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
                        SidebarItem(id: UUID(), title: "Replay 2018", image: UIImage(systemName: "music.note.list")),
                        SidebarItem(id: UUID(), title: "Replay 2019", image: UIImage(systemName: "music.note.list"))]
 
-    let disposeBag = DisposeBag()
     let viewModel: SidebarViewModel
+    let disposeBag = DisposeBag()
     
+    // MARK: -- Sidebar Snapshots
+    var mainButtonsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
     var albumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
+    var smartAlbumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
     
     // MARK: -- Init
     init(router: SidebarRouter, container: Container, viewModel: SidebarViewModel) {
@@ -92,9 +95,18 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         }
         
         let confirmAction = UIAlertAction(title: "OK", style: .default) { [weak alertController] _ in
-            guard let alertController = alertController, let textField = alertController.textFields?.first else { return }
-//            guard let !textField.text?.isEmpty else { return }
-            if let albumName = textField.text {
+            guard let alertController = alertController, let textField = alertController.textFields?.first, let text = textField.text else { return }
+            
+            if text.isEmpty {
+                let okAction = UIAlertAction(title: "OK", style: .destructive)
+                
+                let noAlbumAlert = UIAlertController(title: "No name provided", message: nil, preferredStyle: .alert)
+                noAlbumAlert.addAction(okAction)
+                self.present(noAlbumAlert, animated: true)
+                return
+            }
+            
+            if let albumName = textField.text, !text.isEmpty {
                 self.viewModel.createAlbum(name: albumName, callback: {
                     self.viewModel.loadAlbums()
                     self.refreshMenu()
@@ -186,38 +198,40 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         
         for section in SidebarSection.allCases {
             switch section {
-            case .tabs:
-                var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
-                sectionSnapshot.append(mainbuttons)
-                dataSource.apply(sectionSnapshot, to: section, animatingDifferences: true)
-            case .albums:
-                let headerItem = SidebarItem(id: UUID(), title: section.rawValue, image: nil)
-                albumsSnapshot.deleteAll()
-                albumsSnapshot.append([headerItem])
-                albumsSnapshot.append(self.viewModel.albumButtons, to: headerItem)
-                albumsSnapshot.expand([headerItem])
-                dataSource.apply(albumsSnapshot, to: section, animatingDifferences: true)
-            case .smartAlbums:
-                let headerItem = SidebarItem(id: UUID(), title: section.rawValue, image: nil)
-                var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
-                sectionSnapshot.append([headerItem])
-                sectionSnapshot.append(smartalbums, to: headerItem)
-                sectionSnapshot.append([SidebarItem(id: UUID(), title: "Test", image: UIImage(systemName: "folder.badge.gearshape"))], to: smartalbums[1])
-                sectionSnapshot.expand([smartalbums[1]])
-                sectionSnapshot.expand([headerItem])
-                dataSource.apply(sectionSnapshot, to: section)
+            case .mainButtons:
+                refreshMainButtons()
+            case .smartAlbumsButtons:
+                refreshSmartAlbums()
+            case .albumsButtons:
+                refreshAlbums()
             }
         }
     }
     
+    func refreshMainButtons() {
+        mainButtonsSnapshot.deleteAll()
+        mainButtonsSnapshot.append(mainbuttons)
+        dataSource.apply(mainButtonsSnapshot, to: .mainButtons, animatingDifferences: true)
+    }
+    
+    func refreshSmartAlbums() {
+        let headerItem = SidebarItem(id: UUID(), title: SidebarSection.smartAlbumsButtons.rawValue, image: nil)
+        smartAlbumsSnapshot.deleteAll()
+        smartAlbumsSnapshot.append([headerItem])
+        smartAlbumsSnapshot.append(smartalbums, to: headerItem)
+        smartAlbumsSnapshot.append([SidebarItem(id: UUID(), title: "Test", image: UIImage(systemName: "folder.badge.gearshape"))], to: smartalbums[1])
+        smartAlbumsSnapshot.expand([smartalbums[1]])
+        smartAlbumsSnapshot.expand([headerItem])
+        dataSource.apply(smartAlbumsSnapshot, to: .smartAlbumsButtons)
+    }
+    
     func refreshAlbums() {
-        let headerItem = SidebarItem(id: UUID(), title: "Albums", image: nil)
-        
+        let headerItem = SidebarItem(id: UUID(), title: SidebarSection.albumsButtons.rawValue, image: nil)
         albumsSnapshot.deleteAll()
         albumsSnapshot.append([headerItem])
         albumsSnapshot.append(viewModel.albumButtons, to: headerItem)
         albumsSnapshot.expand([headerItem])
-        dataSource.apply(albumsSnapshot, to: .albums, animatingDifferences: true)
+        dataSource.apply(albumsSnapshot, to: .albumsButtons, animatingDifferences: true)
     }
 }
 

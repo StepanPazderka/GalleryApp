@@ -8,7 +8,7 @@
 import Foundation
 
 enum SidebarSection: String, CaseIterable {
-    case tabs
-    case albums = "Albums"
-    case smartAlbums = "Smart Albums"
+    case mainButtons
+    case albumsButtons = "Albums"
+    case smartAlbumsButtons = "Smart Albums"
 }
