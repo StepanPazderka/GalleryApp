@@ -8,17 +8,13 @@
 import UIKit
 import simd
 import RxSwift
+import ImageSlideshow
 
 class PhotoDetailViewController: UIViewController {
-
+    
     var singleTapGestureRecognizer: UITapGestureRecognizer!
     
-    let imageView: UIImageView = {
-        let view = UIImageView()
-        view.frame = .zero
-        view.contentMode = .scaleAspectFit
-        return view
-    }()
+    let screenView = PhotoDetailView()
     
     enum ScreenMode {
         case full, normal
@@ -32,10 +28,11 @@ class PhotoDetailViewController: UIViewController {
         self.sidebar = sidebar
         super.init(nibName: nil, bundle: nil)
         self.view.backgroundColor = .white
-        self.view.addSubview(imageView)
-        imageView.snp.makeConstraints { (make) -> Void in
-            make.edges.equalTo(self.view)
-        }
+        
+    }
+    
+    private func setupViews() {
+        self.view = screenView
     }
     
     required init?(coder: NSCoder) {
@@ -44,6 +41,7 @@ class PhotoDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.setupViews()
 
         self.view.backgroundColor = .none
         self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(didPanWith(gestureRecognizer:)))
@@ -54,9 +52,24 @@ class PhotoDetailViewController: UIViewController {
         self.view.addGestureRecognizer(self.singleTapGestureRecognizer)
         let images = photoDetailView.selectedImages
         
+        let firstImages = photoDetailView.selectedImages[0..<photoDetailView.selectedIndex]
+        let endingImages = photoDetailView.selectedImages[photoDetailView.selectedIndex..<photoDetailView.selectedImages.endIndex]
+        
+        let newArray = Array(endingImages + firstImages)
+        
         let selectedImage = photoDetailView.selectedImages[photoDetailView.selectedIndex].fileName
         let imagePath =  galleryManager.selectedGalleryPath.appendingPathComponent(selectedImage)
-        self.imageView.image = UIImage(contentsOfFile: imagePath.path)
+
+        let imagesSources: [ImageSource] = newArray.compactMap {
+            let image = UIImage(contentsOfFile: galleryManager.selectedGalleryPath.appendingPathComponent($0.fileName).relativePath)
+            if let image = image {
+                let imageSource = ImageSource(image: image)
+                return imageSource
+            }
+            return nil
+        }
+        
+        self.screenView.imageSlideShow.setImageInputs(imagesSources)
     }
     
     @objc func didSingleTapWith(gestureRecognizer: UITapGestureRecognizer) {
