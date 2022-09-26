@@ -87,20 +87,21 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         screenView.layoutViews()
     }
     
+    // MARK: -- Create Album Popover
     @objc func showCreateAlbumPopover() {
-        let alertController = UIAlertController(title: "Enter Album name", message: nil, preferredStyle: .alert)
+        let createAlbumAlert = UIAlertController(title: NSLocalizedString("kEnterAlbumName", comment: ""), message: nil, preferredStyle: .alert)
 
-        alertController.addTextField { textField in
+        createAlbumAlert.addTextField { textField in
             textField.placeholder = "Album name"
         }
-        
-        let confirmAction = UIAlertAction(title: "OK", style: .default) { [weak alertController] _ in
-            guard let alertController = alertController, let textField = alertController.textFields?.first, let text = textField.text else { return }
+                
+        let confirmAction = UIAlertAction(title: NSLocalizedString("kOK", comment: ""), style: .default) { [weak createAlbumAlert] _ in
+            guard let alertController = createAlbumAlert, let textField = alertController.textFields?.first, let text = textField.text else { return }
             
             if text.isEmpty {
-                let okAction = UIAlertAction(title: "OK", style: .destructive)
+                let okAction = UIAlertAction(title: NSLocalizedString("kOK", comment: ""), style: .destructive)
                 
-                let noAlbumAlert = UIAlertController(title: "No name provided", message: nil, preferredStyle: .alert)
+                let noAlbumAlert = UIAlertController(title: NSLocalizedString("kAlbumNameCantBeEmpty", comment: ""), message: nil, preferredStyle: .alert)
                 noAlbumAlert.addAction(okAction)
                 self.present(noAlbumAlert, animated: true)
                 return
@@ -114,12 +115,12 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
                 })
             }
         }
-        alertController.addAction(confirmAction)
+        createAlbumAlert.addAction(confirmAction)
 
         let cancelAction = UIAlertAction(title: NSLocalizedString("kCANCEL", comment: ""), style: .cancel, handler: nil)
-        alertController.addAction(cancelAction)
+        createAlbumAlert.addAction(cancelAction)
 
-        self.present(alertController, animated: true, completion: nil)
+        self.present(createAlbumAlert, animated: true, completion: nil)
     }
     
     // MARK: - Data Binding

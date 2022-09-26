@@ -11,7 +11,7 @@ class InteractiveImageViewCell: UICollectionViewCell, UIScrollViewDelegate {
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var scrollView: UIScrollView!
     
-    let pinchGesture = UIPinchGestureRecognizer(target: self, action: Selector("handlePinch:"))
+    let pinchGesture = UIPinchGestureRecognizer(target: InteractiveImageViewCell.self, action: Selector("handlePinch:"))
     
     override class func awakeFromNib() {
         super.awakeFromNib()
