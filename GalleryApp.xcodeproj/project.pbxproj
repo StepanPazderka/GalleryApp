@@ -173,6 +173,8 @@
 		7F04C60C2760F03C001CD45F /* Utilies */ = {
 			isa = PBXGroup;
 			children = (
+				7F1C1C87275F8B3200929C95 /* UIImage+imageWidth.swift */,
+				7F0031D025B7AC7400D93B75 /* UIWindow+isLandscape.swift */,
 				7F0031CD25B7A21B00D93B75 /* ImageView+BlurEffect.swift */,
 				7F04C60D2760F04B001CD45F /* UIImage+roundedImage.swift */,
 				7F9F0742277BB6D400503612 /* ContainerBuilder.swift */,
@@ -234,8 +236,6 @@
 				7F86A6F425B5DD0700428F92 /* UICheckBox.swift */,
 				7F479F1625B64963005AFB97 /* InteractiveImageViewCell.swift */,
 				7F479F1925B6496E005AFB97 /* InteractiveImageViewCell.xib */,
-				7F0031D025B7AC7400D93B75 /* UIWindow+isLandscape.swift */,
-				7F1C1C87275F8B3200929C95 /* UIImage+imageWidth.swift */,
 			);
 			path = GalleryApp;
 			sourceTree = "<group>";
