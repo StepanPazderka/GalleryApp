@@ -11,13 +11,15 @@ import RxCocoa
 
 class AlbumScreenViewModel {
     
+    // MARK: -- Properties
     var isEditing = BehaviorSubject(value: false)
     var albumID: UUID?
     var albumIndex: AlbumIndex?
     let galleryManager: GalleryManager
     var shownImagesPaths = [AlbumImage]()
-    let disposeBag = DisposeBag()
     let thumbnailSize: Float = 200
+    
+    let disposeBag = DisposeBag()
     
     internal init(albumID: UUID? = nil, galleryManager: GalleryManager) {
         self.albumID = albumID
@@ -28,11 +30,17 @@ class AlbumScreenViewModel {
                 self?.albumIndex = albumIndex
             }).disposed(by: disposeBag)
         } else {
-            galleryManager.loadGalleryIndex()
-                .subscribe(onNext: { galleryIndex in
-                self.shownImagesPaths.append(contentsOf: galleryIndex.images)
+            if let images = galleryManager.loadGalleryIndex()?.images {
+                shownImagesPaths = images
+            }
+            galleryManager.selectedGalleryIndexRelay.subscribe(onNext: { galleryIndex in
+                self.shownImagesPaths = galleryIndex.images
             }).disposed(by: disposeBag)
         }
+    }
+    
+    func loadGalleryIndex() -> Observable<GalleryIndex> {
+        self.galleryManager.selectedGalleryIndexRelay
     }
     
     func loadAlbumImages() -> Observable<AlbumImage> {

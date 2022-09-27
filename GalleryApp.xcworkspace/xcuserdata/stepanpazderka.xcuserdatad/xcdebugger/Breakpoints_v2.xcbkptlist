@@ -7,16 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "2C9B400D-9EF1-4105-8976-A016F8FEC7E7"
-            shouldBeEnabled = "Yes"
+            uuid = "1C603A83-ADC1-42C8-8605-20712368D57E"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Presentation/AlbumScreen/AlbumScreenRouter.swift"
+            filePath = "GalleryApp/Data/GalleryManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "32"
-            endingLineNumber = "32"
-            landmarkName = "showPhotoDetail(images:index:)"
+            startingLineNumber = "254"
+            endingLineNumber = "254"
+            landmarkName = "deleteImage(imageName:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

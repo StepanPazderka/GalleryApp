@@ -54,7 +54,6 @@ class PhotoDetailViewController: UIViewController {
         
         let firstImages = photoDetailView.selectedImages[0..<photoDetailView.selectedIndex]
         let endingImages = photoDetailView.selectedImages[photoDetailView.selectedIndex..<photoDetailView.selectedImages.endIndex]
-        
         let newArray = Array(endingImages + firstImages)
         
         let selectedImage = photoDetailView.selectedImages[photoDetailView.selectedIndex].fileName

@@ -100,7 +100,7 @@ class GalleryManager {
         if let toAlbum = toAlbum {
             if var album = loadAlbumIndex(id: toAlbum) {
                 album.images.append(AlbumImage(fileName: photoID, date: Date()))
-                self.updateAlbumIndex(folder: URL(string: album.name)!, index: album)
+                self.updateAlbumIndex(folder: self.selectedGalleryPath, index: album)
             }
         }
     }
@@ -251,7 +251,7 @@ class GalleryManager {
             galleryIndex.images = newImageList
             do {
                 try FileManager.default.removeItem(atPath: self.selectedGalleryPath.appendingPathComponent(imageName).relativePath)
-                self.rebuildGalleryIndex(gallery: galleryIndex)
+                self.rebuildGalleryIndex()
             } catch {
                 
             }
