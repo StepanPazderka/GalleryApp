@@ -70,7 +70,7 @@ class AlbumImageCell: UICollectionViewCell {
         
         self.imageView.contentMode = .scaleAspectFit
         self.textLabel.textAlignment = .center
-        self.textLabel.text = "ahoj!"
+//        self.textLabel.text = "ahoj!"
         self.imageView.backgroundColor = .none
         self.backgroundColor = .none
 
@@ -99,9 +99,8 @@ class AlbumImageCell: UICollectionViewCell {
                 delegate.isEditing = true
                 return
             }
-            let vc = ContainerBuilder.build().resolve(PhotoDetailViewController.self, argument: PhotoDetailViewControllerSettings(selectedImages: delegate.viewModel.shownImagesPaths, selectedIndex: self.index))!
-            vc.modalPresentationStyle = .none
-            delegate.navigationController?.pushViewController(vc, animated: true)
+            delegate.router.showPhotoDetail(images: delegate.viewModel.shownImagesPaths, index: self.index)
+            
         }
     }
 

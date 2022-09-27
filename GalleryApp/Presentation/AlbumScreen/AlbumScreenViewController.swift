@@ -38,6 +38,7 @@ class AlbumScreenViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.router.start(navigationController: navigationController)
         
         self.setupViews()
         self.layoutViews()
@@ -106,6 +107,12 @@ class AlbumScreenViewController: UIViewController {
         super.viewWillTransition(to: size, with: coordinator)
         screenView.collectionLayout.itemSize = CGSize(width: self.screenView.frame.width / 3.3, height: self.screenView.frame.height / 3.3)
         screenView.collectionLayout.invalidateLayout()
+    }
+    
+    func bindData() {
+        self.viewModel.loadGalleryIndex().subscribe(onNext: { galleryIndex in
+            self.refreshData()
+        }).disposed(by: disposeBag)
     }
     
     func bindInteractions() {
