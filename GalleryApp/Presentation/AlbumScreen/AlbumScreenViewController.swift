@@ -42,6 +42,7 @@ class AlbumScreenViewController: UIViewController {
         
         self.setupViews()
         self.layoutViews()
+        self.bindData()
         self.bindInteractions()
         
         self.editingRx.bind(onNext: { [weak self] value in
@@ -110,7 +111,7 @@ class AlbumScreenViewController: UIViewController {
     }
     
     func bindData() {
-        self.viewModel.loadGalleryIndex().subscribe(onNext: { galleryIndex in
+        self.viewModel.galleryIndexRelay().subscribe(onNext: { galleryIndex in
             self.refreshData()
         }).disposed(by: disposeBag)
     }

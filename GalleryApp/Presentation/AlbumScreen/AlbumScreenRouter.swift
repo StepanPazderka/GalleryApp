@@ -11,12 +11,16 @@ import Swinject
 import RxCocoa
 
 class AlbumScreenRouter {
+    
+    // MARK: -- Properties
     let sidebarRouter: SidebarRouter
     var navigationController: UINavigationController?
     var isEditing = BehaviorRelay<Bool>.init(value: false)
+    let container: Container
     
-    internal init(sidebarRouter: SidebarRouter) {
+    internal init(sidebarRouter: SidebarRouter, container: Container) {
         self.sidebarRouter = sidebarRouter
+        self.container = container
     }
     
     func start(navigationController: UINavigationController?) {
@@ -29,7 +33,7 @@ class AlbumScreenRouter {
     }
     
     func showPhotoDetail(images: [AlbumImage], index: Int) {
-        let vc = ContainerBuilder.build().resolve(PhotoDetailViewController.self, argument: PhotoDetailViewControllerSettings(selectedImages: images, selectedIndex: index))!
+        let vc = container.resolve(PhotoDetailViewController.self, argument: PhotoDetailViewControllerSettings(selectedImages: images, selectedIndex: index))!
         self.navigationController?.pushViewController(vc, animated: true)
     }
     

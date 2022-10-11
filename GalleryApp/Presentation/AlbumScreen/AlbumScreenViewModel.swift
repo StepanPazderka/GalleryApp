@@ -43,6 +43,10 @@ class AlbumScreenViewModel {
         self.galleryManager.selectedGalleryIndexRelay
     }
     
+    func galleryIndexRelay() -> PublishSubject<GalleryIndex> {
+        self.galleryManager.selectedGalleryIndexRelay
+    }
+    
     func loadAlbumImages() -> Observable<AlbumImage> {
         return galleryManager.loadAlbumIndex(id: albumID!).flatMap { Observable.from($0.images) }
     }

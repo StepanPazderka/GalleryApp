@@ -11,6 +11,7 @@ import UIKit
 
 class ContainerBuilder {
     static let container = Container(parent: nil, defaultObjectScope: .container)
+    static var linkTransientContainer: Container = Container()
     
     static func build() -> Container {
         
@@ -26,6 +27,7 @@ class ContainerBuilder {
             return PhotoDetailViewController(galleryInteractor: r.resolve(GalleryManager.self)!, sidebar: r.resolve(SidebarViewController.self)!, settings: photoDetailSettings)
         }
 
+        linkTransientContainer = transientContainer
         return transientContainer
     }
     
@@ -64,7 +66,8 @@ class ContainerBuilder {
         }
         
         container.register(AlbumScreenRouter.self) { r in
-            return AlbumScreenRouter(sidebarRouter: r.resolve(SidebarRouter.self)!)
+            return AlbumScreenRouter(sidebarRouter: r.resolve(SidebarRouter.self)!,
+                                     container: linkTransientContainer)
         }
         
         container.register(AlbumScreenViewModel.self) { r in
