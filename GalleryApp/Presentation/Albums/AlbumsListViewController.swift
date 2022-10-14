@@ -23,8 +23,6 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     private var collectionView: UICollectionView!
     private var secondaryViewControllers: [UIViewController] = []
     let disposeBag = DisposeBag()
-
-//    let router = SidebarRouter()
     
     var screens: [String: UIViewController]
     
@@ -52,7 +50,9 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     }
     
     func moveToAlbum(images: [String], album: UUID) {
-        self.galleryInteractor.moveImage(image: AlbumImage(fileName: images.first!, date: Date()), toAlbum: album)
+        self.galleryInteractor.moveImage(image: AlbumImage(fileName: images.first!, date: Date()), toAlbum: album) {
+            self.dismiss(animated: true)
+        }
     }
     
     func bindAlbums() {

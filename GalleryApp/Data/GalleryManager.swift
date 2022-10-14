@@ -90,12 +90,14 @@ class GalleryManager {
         }
     }
     
-    func moveImage(image: AlbumImage, toAlbum: UUID) {
+    func moveImage(image: AlbumImage, toAlbum: UUID, callback: (() -> ())? = nil) {
         guard var albumIndex = loadAlbumIndex(id: toAlbum) else { return }
-
         var newIndex = albumIndex
         newIndex.images.append(image)
         self.updateAlbumIndex(folder: selectedGalleryPath.appendingPathComponent(toAlbum.uuidString), index: newIndex)
+        if let callback = callback {
+            callback()
+        }
     }
     
     func addImage(photoID: String, toAlbum: UUID? = nil) {
