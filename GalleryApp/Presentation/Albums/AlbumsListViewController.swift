@@ -28,23 +28,15 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     
     var screens: [String: UIViewController]
     
-    var albums: [SidebarItem] {
-        get {
-            galleryInteractor.scanFolderForAlbums(url: nil).map { album in
-                SidebarItem(id: album.id, title: album.name, image: UIImage(contentsOfFile: galleryInteractor.selectedGalleryPath.appendingPathComponent(album.thumbnail).relativePath)?.resized(to: CGSize(width: 30, height: 30)))
-            }
-        }
-        
-        set {
-            self.refreshMenu()
-        }
-    }
+    var albums = [SidebarItem]()
     
-    var selectedAlbum: String?
+    var selectedAlbum: UUID?
     var selectedImages: [String]
     
     var mainButtonsRX = PublishSubject<[SidebarItem]>()
     var albumRX = PublishSubject<[SidebarItem]>()
+    
+    var albumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
     
     init(galleryInteractor: GalleryManager, container: Container, selectedImages: [String]) {
         self.galleryInteractor = galleryInteractor
@@ -59,8 +51,32 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         fatalError("init(coder:) has not been implemented")
     }
     
-    func moveToAlbum(images: [String], album: String) {
+    func moveToAlbum(images: [String], album: UUID) {
+        self.galleryInteractor.moveImage(image: AlbumImage(fileName: images.first!, date: Date()), toAlbum: album)
+    }
+    
+    func bindAlbums() {
+        let index: GalleryIndex? = self.galleryInteractor.loadGalleryIndex()
         
+        if let index = index {
+            self.albums = index.albums.compactMap { albumID in
+                if let albumIndex = self.galleryInteractor.loadAlbumIndex(id: albumID) {
+                    return SidebarItem(from: albumIndex)
+                }
+                return nil
+            }
+            self.refreshMenu()
+        }
+        
+        self.galleryInteractor.selectedGalleryIndexRelay.subscribe(onNext: { gallery in
+            self.albums = gallery.albums.compactMap { albumID in
+                if let albumIndex = self.galleryInteractor.loadAlbumIndex(id: albumID) {
+                    return SidebarItem(from: albumIndex)
+                }
+                return nil
+            }
+            self.refreshMenu()
+        }).disposed(by: disposeBag)
     }
     
     override func viewDidLoad() {
@@ -81,7 +97,6 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         }
         
         let selectAlbum = UIButton(type: .system)
-//        selectAlbum.setImage(UIImage(systemName: "plus"), for: .normal)
         selectAlbum.setTitle("Select Album", for: .normal)
         selectAlbum.tintColor = .systemBlue
         selectAlbum.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
@@ -89,7 +104,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
             if let selectedAlbum = self?.selectedAlbum, let selectedImages = self?.selectedImages {
                 self?.moveToAlbum(images: selectedImages, album: selectedAlbum)
             }
-        }, onError: nil, onCompleted: nil, onDisposed: nil).disposed(by: disposeBag)
+        }).disposed(by: disposeBag)
         
         navigationItem.title = "Hey"
         let selectGalleryButton: UIButton = { let view = UIButton()
@@ -118,7 +133,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         collectionView.snp.makeConstraints { (make) -> Void in
             make.edges.equalTo(self.view)
         }
-                
+
         dataSource = UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>(collectionView: collectionView) {
             (collectionView: UICollectionView, indexPath: IndexPath, item: SidebarItem) -> UICollectionViewCell? in
             if indexPath.item == 0 && indexPath.section != 0 {
@@ -127,15 +142,14 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
                 return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
             }
         }
-        
+
         mainButtonsRX.subscribe(onNext: { mainButtons in
             var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
             sectionSnapshot.append(mainButtons)
             self.dataSource.apply(sectionSnapshot, to: .mainButtons)
         }).dispose()
-        
-        
-        
+
+        bindAlbums()
         ConfigureDataSource()
     }
     
@@ -151,7 +165,6 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         }
     }
 
-    
     func ConfigureDataSource() {
         let headerRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
             var content = cell.defaultContentConfiguration()
@@ -188,6 +201,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         for section in sections {
             let headerItem = SidebarItem(id: UUID(), title: sections.first?.rawValue, image: nil)
             var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
+            sectionSnapshot.deleteAll()
             sectionSnapshot.append(albums)
             dataSource.apply(sectionSnapshot, to: section)
         }
@@ -197,7 +211,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
 extension AlbumsListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print(albums[indexPath.row].title ?? "")
-        self.selectedAlbum = albums[indexPath.row].title
+        self.selectedAlbum = albums[indexPath.row].identifier
     }
 }
 

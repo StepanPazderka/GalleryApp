@@ -24,10 +24,17 @@ class AlbumScreenViewModel {
     internal init(albumID: UUID? = nil, galleryManager: GalleryManager) {
         self.albumID = albumID
         self.galleryManager = galleryManager
-        
+
         if let albumID = albumID {
+            if let index: AlbumIndex = galleryManager.loadAlbumIndex(id: albumID) {
+                self.shownImagesPaths = index.images
+            } else {
+                self.shownImagesPaths = [AlbumImage]()
+            }
+            
             galleryManager.loadAlbumIndex(id: albumID).subscribe(onNext: { [weak self] albumIndex in
                 self?.albumIndex = albumIndex
+                self?.shownImagesPaths = albumIndex.images
             }).disposed(by: disposeBag)
         } else {
             if let images = galleryManager.loadGalleryIndex()?.images {
@@ -40,10 +47,6 @@ class AlbumScreenViewModel {
     }
     
     func loadGalleryIndex() -> Observable<GalleryIndex> {
-        self.galleryManager.selectedGalleryIndexRelay
-    }
-    
-    func galleryIndexRelay() -> PublishSubject<GalleryIndex> {
         self.galleryManager.selectedGalleryIndexRelay
     }
     

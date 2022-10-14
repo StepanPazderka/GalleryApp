@@ -111,7 +111,7 @@ class AlbumScreenViewController: UIViewController {
     }
     
     func bindData() {
-        self.viewModel.galleryIndexRelay().subscribe(onNext: { galleryIndex in
+        self.viewModel.loadGalleryIndex().subscribe(onNext: { galleryIndex in
             self.refreshData()
         }).disposed(by: disposeBag)
     }
@@ -204,19 +204,21 @@ class AlbumScreenViewController: UIViewController {
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil,
                                           previewProvider: nil,
-                                          actionProvider: {
-            suggestedActions in
-            let inspectAction =
-            UIAction(title: NSLocalizedString("kDETAILS", comment: ""),
+                                          actionProvider: { suggestedActions in
+            let inspectAction = UIAction(title: NSLocalizedString("kDETAILS", comment: ""),
                      image: UIImage(systemName: "info.circle")) { action in
                 let newView = UIView()
                 newView.backgroundColor = .green
                 self.router.showDetails(images: [UUID()])
             }
+            
+            let selectedImage = self.viewModel.shownImagesPaths[indexPath.row]
+            
+            
             let moveToAlbum = UIAction(title: NSLocalizedString("MoveToAlbum", comment: ""),
                                        image: UIImage(systemName: "square.and.arrow.down")) { [weak self] action in
                 let container = ContainerBuilder.build()
-                let albumsVC = container.resolve(AlbumsListViewController.self, argument: ["Test"])!
+                let albumsVC = container.resolve(AlbumsListViewController.self, argument: [selectedImage.fileName])! // TODO: Send actual picture names
                 let newController = UINavigationController(rootViewController: albumsVC)
                 newController.view.backgroundColor = .systemBackground
                 self?.present(newController, animated: true, completion: nil)

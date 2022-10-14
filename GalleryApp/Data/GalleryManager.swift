@@ -28,8 +28,7 @@ class GalleryManager {
     let settingsManager: SettingsManager
     let fileScannerManager: FileScannerManager
     
-    let selectedGalleryIndexRelay = PublishSubject<GalleryIndex>()
-    
+    let selectedGalleryIndexRelay = PublishSubject<GalleryIndex>()    
     
     // MARK: -- Init
     init(settingsManager: SettingsManager, fileScannerManger: FileScannerManager) {
@@ -89,6 +88,14 @@ class GalleryManager {
         } catch {
             print("Error while removing album: \(error)")
         }
+    }
+    
+    func moveImage(image: AlbumImage, toAlbum: UUID) {
+        guard var albumIndex = loadAlbumIndex(id: toAlbum) else { return }
+
+        var newIndex = albumIndex
+        newIndex.images.append(image)
+        self.updateAlbumIndex(folder: selectedGalleryPath.appendingPathComponent(toAlbum.uuidString), index: newIndex)
     }
     
     func addImage(photoID: String, toAlbum: UUID? = nil) {
@@ -163,10 +170,10 @@ class GalleryManager {
             let newFilename = image.fileName
             let newImage = ImageResizer.resizeImage(image: UIImage(contentsOfFile: selectedGalleryPath.appendingPathComponent(forAlbum).appendingPathComponent(image.fileName).relativePath)!, targetSize: CGSize(width: 300, height: 300))
             if let jpegImage = newImage?.jpegData(compressionQuality: 0.6) {
-                if FileManager.default.fileExists(atPath: selectedGalleryPath.appendingPathComponent(forAlbum).appendingPathComponent("thumbs").path) == false {
-                    try? FileManager.default.createDirectory(atPath: selectedGalleryPath.appendingPathComponent(forAlbum).appendingPathComponent("thumbs").path, withIntermediateDirectories: false)
+                if FileManager.default.fileExists(atPath: selectedGalleryPath.appendingPathComponent(forAlbum).appendingPathComponent(kThumbs).path) == false {
+                    try? FileManager.default.createDirectory(atPath: selectedGalleryPath.appendingPathComponent(forAlbum).appendingPathComponent(kThumbs).path, withIntermediateDirectories: false)
                 }
-                var filePath = selectedGalleryPath.appendingPathComponent(forAlbum).appendingPathComponent("thumbs").appendingPathComponent(newFilename)
+                var filePath = selectedGalleryPath.appendingPathComponent(forAlbum).appendingPathComponent(kThumbs).appendingPathComponent(newFilename)
                 filePath = filePath.deletingPathExtension()
                 filePath = filePath.appendingPathExtension("jpg")
                 try! jpegImage.write(to: filePath)
