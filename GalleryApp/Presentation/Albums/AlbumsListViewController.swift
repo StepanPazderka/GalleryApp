@@ -96,7 +96,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         }
         
         let selectAlbum = UIButton(type: .system)
-        selectAlbum.setTitle("Select Album", for: .normal)
+        selectAlbum.setTitle(NSLocalizedString("kSELECTALBUM", comment: ""), for: .normal)
         selectAlbum.tintColor = .systemBlue
         selectAlbum.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
         selectAlbum.rx.tap.subscribe(onNext: { [weak self] in
