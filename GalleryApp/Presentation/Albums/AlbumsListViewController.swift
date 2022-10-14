@@ -16,28 +16,26 @@ import Swinject
 import DirectoryWatcher
 
 class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UISplitViewControllerDelegate {
-    
+
+    // MARK: -- Properties
     var container: Container!
-    var galleryInteractor: GalleryManager
+    var galleryManager: GalleryManager
     private var dataSource: UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>!
     private var collectionView: UICollectionView!
     private var secondaryViewControllers: [UIViewController] = []
-    let disposeBag = DisposeBag()
-    
-    var screens: [String: UIViewController]
-    
+    private var screens: [String: UIViewController]
     var albums = [SidebarItem]()
-    
     var selectedAlbum: UUID?
     var selectedImages: [String]
-    
     var mainButtonsRX = PublishSubject<[SidebarItem]>()
     var albumRX = PublishSubject<[SidebarItem]>()
-    
     var albumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
+    let disposeBag = DisposeBag()
     
+    
+    // MARK: -- Init
     init(galleryInteractor: GalleryManager, container: Container, selectedImages: [String]) {
-        self.galleryInteractor = galleryInteractor
+        self.galleryManager = galleryInteractor
         self.selectedImages = selectedImages
         self.container = container
         screens = ["allPhotos": UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self)!),
@@ -50,17 +48,18 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     }
     
     func moveToAlbum(images: [String], album: UUID) {
-        self.galleryInteractor.moveImage(image: AlbumImage(fileName: images.first!, date: Date()), toAlbum: album) {
+        self.galleryManager.moveImage(image: AlbumImage(fileName: images.first!, date: Date()), toAlbum: album) {
             self.dismiss(animated: true)
         }
     }
     
+    // MARK: -- Data Binding
     func bindAlbums() {
-        let index: GalleryIndex? = self.galleryInteractor.loadGalleryIndex()
+        let index: GalleryIndex? = self.galleryManager.loadGalleryIndex()
         
         if let index = index {
             self.albums = index.albums.compactMap { albumID in
-                if let albumIndex = self.galleryInteractor.loadAlbumIndex(id: albumID) {
+                if let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
                     return SidebarItem(from: albumIndex)
                 }
                 return nil
@@ -68,9 +67,9 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
             self.refreshMenu()
         }
         
-        self.galleryInteractor.selectedGalleryIndexRelay.subscribe(onNext: { gallery in
+        self.galleryManager.selectedGalleryIndexRelay.subscribe(onNext: { gallery in
             self.albums = gallery.albums.compactMap { albumID in
-                if let albumIndex = self.galleryInteractor.loadAlbumIndex(id: albumID) {
+                if let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
                     return SidebarItem(from: albumIndex)
                 }
                 return nil
