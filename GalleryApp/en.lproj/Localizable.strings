@@ -21,3 +21,5 @@
 "kAlbumNameCantBeEmpty" = "Album name can't be empty";
 "kEnterAlbumName" = "Enter Album name";
 "kThumbs" = "thumbs";
+"kCantAddImageToTheAlbum" = "Can't add image to the album";
+"kImageAlreadyInAlbum" = "Image already in album";

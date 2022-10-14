@@ -53,7 +53,8 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
                 self.dismiss(animated: true)
             }
         } catch MoveImageError.imageAlreadyInAlbum {
-            var UIAlert = UIAlertController(title: "Image already in album", message: "Image already in album", preferredStyle: .alert)
+            let imageAlreadyInAlbumString = NSLocalizedString("kImageAlreadyInAlbum", comment: "")
+            var UIAlert = UIAlertController(title: NSLocalizedString("kCantAddImageToTheAlbum", comment: ""), message: imageAlreadyInAlbumString, preferredStyle: .alert)
             let OKButton = UIAlertAction(title: NSLocalizedString("kOK", comment: ""), style: .default) { UIAlertAction in
                 self.dismiss(animated: true)
             }
