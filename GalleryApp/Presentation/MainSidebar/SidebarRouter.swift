@@ -17,10 +17,12 @@ class SidebarRouter {
         return view
     }()
     var container: Container
+    var transientContainer: Container
     let galleryManager: GalleryManager
     
-    init(container: Container, galleryManager: GalleryManager) {
+    init(container: Container, transientContainer: Container, galleryManager: GalleryManager) {
         self.container = container
+        self.transientContainer = transientContainer
         self.galleryManager = galleryManager
     }
     
@@ -30,12 +32,12 @@ class SidebarRouter {
     }
     
     func showAllPhotos() {
-        let allPhotosVC = container.resolve(AlbumScreenViewController.self)!
+        let allPhotosVC = transientContainer.resolve(AlbumScreenViewController.self)!
         splitViewController.setViewController(UINavigationController(rootViewController: allPhotosVC), for: .secondary)
     }
     
     func show(album albumID: UUID) {
-        let albumVC = container.resolve(AlbumScreenViewController.self, argument: albumID)!
+        let albumVC = transientContainer.resolve(AlbumScreenViewController.self, argument: albumID)!
         splitViewController.setViewController(UINavigationController(rootViewController: albumVC), for: .secondary)
     }
     

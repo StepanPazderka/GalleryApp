@@ -19,12 +19,24 @@ class ContainerBuilder {
         registerPresentationLayer()
 
         container.register(AlbumsListViewController.self) { (r, selectedImages: [String]) in
-            return AlbumsListViewController(galleryInteractor: r.resolve(GalleryManager.self)!,container: container, selectedImages: selectedImages)
+            return AlbumsListViewController(galleryInteractor: r.resolve(GalleryManager.self)!, container: container, selectedImages: selectedImages)
         }
 
         let transientContainer = Container(parent: container, defaultObjectScope: .transient)
+
         transientContainer.register(PhotoDetailViewController.self) { (r, photoDetailSettings: PhotoDetailViewControllerSettings) in
             return PhotoDetailViewController(galleryInteractor: r.resolve(GalleryManager.self)!, sidebar: r.resolve(SidebarViewController.self)!, settings: photoDetailSettings)
+        }
+
+        transientContainer.register(AlbumScreenViewModel.self) { (r, albumID: UUID) in
+            return AlbumScreenViewModel(albumID: albumID,
+                                        galleryManager: r.resolve(GalleryManager.self)!)
+        }
+        
+        transientContainer.register(AlbumScreenViewController.self) { (r, albumID: UUID) in
+            return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!,
+                                             viewModel: linkTransientContainer.resolve(AlbumScreenViewModel.self,
+                                                                  argument: albumID)!)
         }
 
         linkTransientContainer = transientContainer
@@ -52,7 +64,7 @@ class ContainerBuilder {
     
     static func registerPresentationLayer() {
         container.register(SidebarRouter.self) { r in
-            return SidebarRouter(container: container, galleryManager: r.resolve(GalleryManager.self)!)
+            return SidebarRouter(container: container, transientContainer: linkTransientContainer, galleryManager: r.resolve(GalleryManager.self)!)
         }
         
         container.register(SidebarViewModel.self) { r in
