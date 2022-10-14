@@ -16,6 +16,10 @@ enum GalleryManagerError: Error {
     case cantStartMonitor
 }
 
+enum MoveImageError: Error {
+    case imageAlreadyInAlbum
+}
+
 class GalleryManager {
     
     // MARK: -- Properties
@@ -90,12 +94,12 @@ class GalleryManager {
         }
     }
     
-    func moveImage(image: AlbumImage, toAlbum: UUID, callback: (() -> ())? = nil) {
+    func moveImage(image: AlbumImage, toAlbum: UUID, callback: (() -> ())? = nil) throws {
         guard var targetAlbumIndex = loadAlbumIndex(id: toAlbum) else { return }
         var newIndex = targetAlbumIndex
         for albumImage in targetAlbumIndex.images {
             if albumImage.fileName == image.fileName {
-                return
+                throw MoveImageError.imageAlreadyInAlbum
             }
         }
         newIndex.images.append(image)

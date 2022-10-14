@@ -48,9 +48,21 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     }
     
     func moveToAlbum(images: [String], album: UUID) {
-        self.galleryManager.moveImage(image: AlbumImage(fileName: images.first!, date: Date()), toAlbum: album) {
+        do {
+            try self.galleryManager.moveImage(image: AlbumImage(fileName: images.first!, date: Date()), toAlbum: album) {
+                self.dismiss(animated: true)
+            }
+        } catch MoveImageError.imageAlreadyInAlbum {
+            var UIAlert = UIAlertController(title: "Image already in album", message: "Image already in album", preferredStyle: .alert)
+            let OKButton = UIAlertAction(title: NSLocalizedString("kOK", comment: ""), style: .default) { UIAlertAction in
+                self.dismiss(animated: true)
+            }
+            UIAlert.addAction(OKButton)
+            self.present(UIAlert, animated: true)
+        } catch {
             self.dismiss(animated: true)
         }
+        
     }
     
     // MARK: -- Data Binding
