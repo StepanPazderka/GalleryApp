@@ -91,8 +91,13 @@ class GalleryManager {
     }
     
     func moveImage(image: AlbumImage, toAlbum: UUID, callback: (() -> ())? = nil) {
-        guard var albumIndex = loadAlbumIndex(id: toAlbum) else { return }
-        var newIndex = albumIndex
+        guard var targetAlbumIndex = loadAlbumIndex(id: toAlbum) else { return }
+        var newIndex = targetAlbumIndex
+        for albumImage in targetAlbumIndex.images {
+            if albumImage.fileName == image.fileName {
+                return
+            }
+        }
         newIndex.images.append(image)
         self.updateAlbumIndex(folder: selectedGalleryPath.appendingPathComponent(toAlbum.uuidString), index: newIndex)
         if let callback = callback {
@@ -243,8 +248,8 @@ class GalleryManager {
     
     func loadGalleryIndex(named galleryName: String? = nil) -> GalleryIndex? {
         if FileManager.default.fileExists(atPath: self.selectedGalleryPath.appendingPathComponent(kGalleryIndex).relativePath) {
-            if let GalleryIndexJSON = try? String(contentsOfFile: self.selectedGalleryPath.appendingPathComponent(kGalleryIndex).relativePath).data(using: .unicode) {
-                let decodedGalleryIndex = try! JSONDecoder().decode(GalleryIndex.self, from: GalleryIndexJSON)
+            if let encodedGalleryIndex = try? String(contentsOfFile: self.selectedGalleryPath.appendingPathComponent(kGalleryIndex).relativePath).data(using: .unicode) {
+                let decodedGalleryIndex = try! JSONDecoder().decode(GalleryIndex.self, from: encodedGalleryIndex)
                 return decodedGalleryIndex
             }
         }
