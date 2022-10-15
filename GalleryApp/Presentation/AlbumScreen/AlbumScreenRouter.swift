@@ -29,12 +29,15 @@ class AlbumScreenRouter {
     
     func showDetails() {
 //        sidebarRouter.showDetails()
-        
     }
     
     func showPhotoDetail(images: [AlbumImage], index: Int) {
         let vc = container.resolve(PhotoDetailViewController.self, argument: PhotoDetailViewControllerSettings(selectedImages: images, selectedIndex: index))!
-        self.navigationController?.pushViewController(vc, animated: true)
+//        self.navigationController?.pushViewController(vc, animated: true)
+        let navigationController = UINavigationController(rootViewController: vc)
+        
+        navigationController.modalPresentationStyle = .fullScreen
+        topMostController()?.present(navigationController, animated: true)
     }
     
     func showDocumentPicker() {

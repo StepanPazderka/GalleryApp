@@ -38,7 +38,8 @@ class AlbumScreenViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.router.start(navigationController: navigationController)
+        let topMostNavigationController = topMostController()
+        self.router.start(navigationController: self.navigationController)
         
         self.setupViews()
         self.layoutViews()

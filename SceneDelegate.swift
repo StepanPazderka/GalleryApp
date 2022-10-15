@@ -36,7 +36,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         mainrouter.start(splitViewController: splitView)
         let window = UIWindow(windowScene: windowScene)
 //        window.backgroundColor = .black
+//        window.rootViewController = UINavigationController(rootViewController: splitView)
         window.rootViewController = splitView
+        
         self.window = window
         window.makeKeyAndVisible()
     }

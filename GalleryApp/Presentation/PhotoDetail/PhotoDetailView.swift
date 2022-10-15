@@ -12,6 +12,12 @@ import ImageSlideshow
 class PhotoDetailView: UIView {
     
     // MARK: -- Views
+    let closeButton: UIButton = {
+        let view = UIButton(frame: .zero)
+        view.setImage(UIImage(systemName: "xmark"), for: .normal)
+        return view
+    }()
+    
     let imageSlideShow: ImageSlideshow = {
         let view = ImageSlideshow()
         view.frame = .zero
@@ -34,11 +40,17 @@ class PhotoDetailView: UIView {
     // MARK: -- Setup Views
     func setupViews() {
         self.addSubview(imageSlideShow)
+        self.addSubview(closeButton)
     }
     
     func layoutViews() {
         imageSlideShow.snp.makeConstraints { (make) -> Void in
             make.edges.equalToSuperview()
+        }
+        
+        closeButton.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(20)
+            make.top.equalToSuperview().offset(30)
         }
     }
 }

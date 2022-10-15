@@ -17,7 +17,7 @@ import DirectoryWatcher
 
 class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UISplitViewControllerDelegate {
 
-    // MARK: -- Properties
+    // MARK: - Properties
     var container: Container!
     var galleryManager: GalleryManager
     private var dataSource: UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>!
@@ -33,7 +33,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     let disposeBag = DisposeBag()
     
     
-    // MARK: -- Init
+    // MARK: - Init
     init(galleryInteractor: GalleryManager, container: Container, selectedImages: [String]) {
         self.galleryManager = galleryInteractor
         self.selectedImages = selectedImages
@@ -66,7 +66,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         
     }
     
-    // MARK: -- Data Binding
+    // MARK: - Data Binding
     func bindAlbums() {
         let index: GalleryIndex? = self.galleryManager.loadGalleryIndex()
         
@@ -91,6 +91,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         }).disposed(by: disposeBag)
     }
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         let headerRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
@@ -141,7 +142,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         collectionView.translatesAutoresizingMaskIntoConstraints = false // This line fixes issue with incorrect highlighting
         view.addSubview(collectionView)
 
-        // MARK: -- Snapkit Example
+        // MARK: - Snapkit Example
         collectionView.snp.makeConstraints { (make) -> Void in
             make.edges.equalTo(self.view)
         }

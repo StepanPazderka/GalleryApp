@@ -13,6 +13,7 @@ import ImageSlideshow
 class PhotoDetailViewController: UIViewController {
     
     var singleTapGestureRecognizer: UITapGestureRecognizer!
+    let disposeBag = DisposeBag()
     
     let screenView = PhotoDetailView()
     
@@ -21,24 +22,25 @@ class PhotoDetailViewController: UIViewController {
     }
     var currentMode: ScreenMode = .normal
     
-    
+    // MARK: - Init
     internal init(galleryInteractor: GalleryManager, sidebar: SidebarViewController, settings: PhotoDetailViewControllerSettings) {
         self.galleryManager = galleryInteractor
         self.photoDetailView = settings
         self.sidebar = sidebar
         super.init(nibName: nil, bundle: nil)
         self.view.backgroundColor = .white
-        
-    }
-    
-    private func setupViews() {
-        self.view = screenView
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Setup
+    private func setupViews() {
+        self.view = screenView
+    }
+    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupViews()
@@ -68,6 +70,7 @@ class PhotoDetailViewController: UIViewController {
             return nil
         }
         
+        self.bindInteractions()
         self.screenView.imageSlideShow.setImageInputs(imagesSources)
     }
     
@@ -79,6 +82,12 @@ class PhotoDetailViewController: UIViewController {
             changeScreenMode(to: .full)
             self.currentMode = .full
         }
+    }
+    
+    func bindInteractions() {
+        self.screenView.closeButton.rx.tap.subscribe(onNext:  {
+            self.dismiss(animated: true)
+        }).disposed(by: disposeBag)
     }
         
     var panGestureRecognizer: UIPanGestureRecognizer!
@@ -96,6 +105,16 @@ class PhotoDetailViewController: UIViewController {
             print("Panning ended")
         @unknown default:
             break
+        }
+    }
+    
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        var didHandleEvent = false
+        for press in presses {
+            guard let key = press.key else { continue }
+            if key.charactersIgnoringModifiers == UIKeyCommand.inputEscape {
+                self.dismiss(animated: true)
+            }
         }
     }
     
