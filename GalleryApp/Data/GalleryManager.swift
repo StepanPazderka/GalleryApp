@@ -22,7 +22,7 @@ enum MoveImageError: Error {
 
 class GalleryManager {
     
-    // MARK: -- Properties
+    // MARK: - Properties
     var libraryPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     var userDefaults: UserDefaults = UserDefaults.standard
     var selectedGalleryPath: URL {
@@ -34,7 +34,7 @@ class GalleryManager {
     
     let selectedGalleryIndexRelay = PublishSubject<GalleryIndex>()    
     
-    // MARK: -- Init
+    // MARK: - Init
     init(settingsManager: SettingsManager, fileScannerManger: FileScannerManager) {
         self.settingsManager = settingsManager
         self.fileScannerManager = fileScannerManger
@@ -50,7 +50,7 @@ class GalleryManager {
         }
     }
     
-    // MARK: -- Basics
+    // MARK: - Essentials
     func createAlbum(name: String, parentAlbum: UUID? = nil) throws {
         let albumID = UUID()
         try? FileManager.default.createDirectory(at: selectedGalleryPath.appendingPathComponent(albumID.uuidString), withIntermediateDirectories: true, attributes: nil)
@@ -269,11 +269,11 @@ class GalleryManager {
             galleryIndex.images = newImageList
             do {
                 try FileManager.default.removeItem(atPath: self.selectedGalleryPath.appendingPathComponent(imageName).relativePath)
-                self.rebuildGalleryIndex()
+                
             } catch {
                 
             }
-            
+            self.rebuildGalleryIndex()
         }
     }
     
@@ -305,7 +305,7 @@ class GalleryManager {
         }
     }
     
-    // MARK: -- Rebuilding Gallery Index
+    // MARK: - Rebuilding Gallery Index
     
     /**
         Will rebuild gallery index based on files in Gallery folder

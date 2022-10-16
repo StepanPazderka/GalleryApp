@@ -10,7 +10,8 @@ import UIKit
 import Swinject
 
 class SidebarRouter {
-    var splitViewController: UISplitViewController = { let view = UISplitViewController(style: .doubleColumn)
+    var splitViewController: UISplitViewController = {
+        let view = UISplitViewController(style: .doubleColumn)
         view.preferredDisplayMode = .oneBesideSecondary
         view.presentsWithGesture = true
         view.preferredSplitBehavior = .tile

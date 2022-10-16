@@ -12,12 +12,13 @@ import RxCocoa
 
 class AlbumScreenRouter {
     
-    // MARK: -- Properties
+    // MARK: - Properties
     let sidebarRouter: SidebarRouter
     var navigationController: UINavigationController?
     var isEditing = BehaviorRelay<Bool>.init(value: false)
     let container: Container
     
+    // MARK: - Init
     internal init(sidebarRouter: SidebarRouter, container: Container) {
         self.sidebarRouter = sidebarRouter
         self.container = container
