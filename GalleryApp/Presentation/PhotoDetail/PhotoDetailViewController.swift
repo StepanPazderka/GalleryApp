@@ -13,9 +13,12 @@ import ImageSlideshow
 class PhotoDetailViewController: UIViewController {
     
     var singleTapGestureRecognizer: UITapGestureRecognizer!
-    let disposeBag = DisposeBag()
-    
     let screenView = PhotoDetailView()
+    var panGestureRecognizer: UIPanGestureRecognizer!
+    var photoDetailView: PhotoDetailViewControllerSettings
+    var galleryManager: GalleryManager
+    var sidebar: SidebarViewController
+    let disposeBag = DisposeBag()
     
     enum ScreenMode {
         case full, normal
@@ -28,7 +31,6 @@ class PhotoDetailViewController: UIViewController {
         self.photoDetailView = settings
         self.sidebar = sidebar
         super.init(nibName: nil, bundle: nil)
-        self.view.backgroundColor = .white
     }
     
     required init?(coder: NSCoder) {
@@ -38,6 +40,7 @@ class PhotoDetailViewController: UIViewController {
     // MARK: - Setup
     private func setupViews() {
         self.view = screenView
+        self.view.backgroundColor = .white
     }
     
     // MARK: - Lifecycle
@@ -88,13 +91,9 @@ class PhotoDetailViewController: UIViewController {
         self.screenView.closeButton.rx.tap.subscribe(onNext:  {
             self.dismiss(animated: true)
         }).disposed(by: disposeBag)
-    }
         
-    var panGestureRecognizer: UIPanGestureRecognizer!
-    
-    var photoDetailView: PhotoDetailViewControllerSettings
-    var galleryManager: GalleryManager
-    var sidebar: SidebarViewController
+        self.screenView.imageSlideShow.delegate = self
+    }
     
     
     @objc func didPanWith(gestureRecognizer: UIPanGestureRecognizer) {
@@ -167,4 +166,9 @@ extension PhotoDetailViewController: UIGestureRecognizerDelegate {
 
 extension PhotoDetailViewController: UIPageViewControllerDelegate {
         
+}
+
+
+extension PhotoDetailViewController: ImageSlideshowDelegate {
+    
 }

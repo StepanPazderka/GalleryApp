@@ -11,9 +11,12 @@ import ImageSlideshow
 
 class PhotoDetailView: UIView {
     
-    // MARK: -- Views
+    // MARK: - Aliases
+    typealias ViewModel = PhotoDetailViewModel
+    
+    // MARK: - Views
     let closeButton: UIButton = {
-        let view = UIButton(frame: .zero)
+        let view = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
         view.setImage(UIImage(systemName: "xmark"), for: .normal)
         return view
     }()

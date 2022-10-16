@@ -25,6 +25,7 @@
 		7F2A6129280AF53400245032 /* AlbumsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2A6128280AF53400245032 /* AlbumsListViewController.swift */; };
 		7F2A612B280AFAD200245032 /* AlbumsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2A612A280AFAD200245032 /* AlbumsView.swift */; };
 		7F2C0E4828FA15CE00FA1CE2 /* TopMostNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2C0E4728FA15CE00FA1CE2 /* TopMostNavigationController.swift */; };
+		7F2C0E4A28FB000400FA1CE2 /* PhotoDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2C0E4928FB000400FA1CE2 /* PhotoDetailViewModel.swift */; };
 		7F2CF04D2586A52E009A459D /* AlbumScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2CF04B2586A52E009A459D /* AlbumScreenViewController.swift */; };
 		7F39161B27814EB2003D688D /* SidebarRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F39161A27814EB2003D688D /* SidebarRouter.swift */; };
 		7F479F1725B64963005AFB97 /* InteractiveImageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F479F1625B64963005AFB97 /* InteractiveImageViewCell.swift */; };
@@ -94,6 +95,7 @@
 		7F2A6128280AF53400245032 /* AlbumsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsListViewController.swift; sourceTree = "<group>"; };
 		7F2A612A280AFAD200245032 /* AlbumsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsView.swift; sourceTree = "<group>"; };
 		7F2C0E4728FA15CE00FA1CE2 /* TopMostNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopMostNavigationController.swift; sourceTree = "<group>"; };
+		7F2C0E4928FB000400FA1CE2 /* PhotoDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailViewModel.swift; sourceTree = "<group>"; };
 		7F2CF04B2586A52E009A459D /* AlbumScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumScreenViewController.swift; sourceTree = "<group>"; };
 		7F39161A27814EB2003D688D /* SidebarRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarRouter.swift; sourceTree = "<group>"; };
 		7F479F1625B64963005AFB97 /* InteractiveImageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveImageViewCell.swift; sourceTree = "<group>"; wrapsLines = 1; };
@@ -295,6 +297,7 @@
 				7FC96D5B27A76DA900690CFB /* PhotoDetailViewControllerSettings.swift */,
 				7FC96D6527A9555100690CFB /* PhotoZoomViewController.swift */,
 				7F49EC8D27D7A96900E6D2D8 /* PhotoDetailView.swift */,
+				7F2C0E4928FB000400FA1CE2 /* PhotoDetailViewModel.swift */,
 			);
 			path = PhotoDetail;
 			sourceTree = "<group>";
@@ -517,6 +520,7 @@
 				7F67EFE225B50BEE00435148 /* ListsImages.swift in Sources */,
 				7F8CF6AB28D772410000EF47 /* ArrayExtension.swift in Sources */,
 				7F4BFCCE2602AB3B0058C051 /* ImageResizer.swift in Sources */,
+				7F2C0E4A28FB000400FA1CE2 /* PhotoDetailViewModel.swift in Sources */,
 				7F86A6F525B5DD0700428F92 /* UICheckBox.swift in Sources */,
 				7F2C0E4828FA15CE00FA1CE2 /* TopMostNavigationController.swift in Sources */,
 				7F163B3E28F62DD7008C13A4 /* AlbumListViewModel.swift in Sources */,

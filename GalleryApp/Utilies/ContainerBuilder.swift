@@ -10,7 +10,7 @@ import Swinject
 import UIKit
 
 class ContainerBuilder {
-    static let container = Container(parent: nil, defaultObjectScope: .container)
+    static var container = Container(parent: nil, defaultObjectScope: .container)
     static var linkTransientContainer: Container = Container()
     
     static func build() -> Container {
@@ -21,26 +21,31 @@ class ContainerBuilder {
         container.register(AlbumsListViewController.self) { (r, selectedImages: [String]) in
             return AlbumsListViewController(galleryInteractor: r.resolve(GalleryManager.self)!, container: container, selectedImages: selectedImages)
         }
+        
+        container = registerTransient()
+        
+        return container
+    }
+    
+    static func registerTransient() -> Container {
+        let container = Container(parent: container, defaultObjectScope: .transient)
 
-        let transientContainer = Container(parent: container, defaultObjectScope: .transient)
-
-        transientContainer.register(PhotoDetailViewController.self) { (r, photoDetailSettings: PhotoDetailViewControllerSettings) in
+        container.register(PhotoDetailViewController.self) { (r, photoDetailSettings: PhotoDetailViewControllerSettings) in
             return PhotoDetailViewController(galleryInteractor: r.resolve(GalleryManager.self)!, sidebar: r.resolve(SidebarViewController.self)!, settings: photoDetailSettings)
         }
 
-        transientContainer.register(AlbumScreenViewModel.self) { (r, albumID: UUID) in
+        container.register(AlbumScreenViewModel.self) { (r, albumID: UUID) in
             return AlbumScreenViewModel(albumID: albumID,
                                         galleryManager: r.resolve(GalleryManager.self)!)
         }
         
-        transientContainer.register(AlbumScreenViewController.self) { (r, albumID: UUID) in
+        container.register(AlbumScreenViewController.self) { (r, albumID: UUID) in
             return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!,
-                                             viewModel: linkTransientContainer.resolve(AlbumScreenViewModel.self,
-                                                                  argument: albumID)!)
+                                             viewModel: container.resolve(AlbumScreenViewModel.self,
+                                                                                       argument: albumID)!)
         }
-
-        linkTransientContainer = transientContainer
-        return transientContainer
+        self.container = container
+        return container
     }
 
     static func registerDataLayer() {
@@ -79,28 +84,17 @@ class ContainerBuilder {
 
         container.register(AlbumScreenRouter.self) { r in
             return AlbumScreenRouter(sidebarRouter: r.resolve(SidebarRouter.self)!,
-                                     container: linkTransientContainer)
-        }
-        
-        container.register(AlbumScreenViewModel.self) { r in
-            return AlbumScreenViewModel(albumID: nil,
-                                        galleryManager: r.resolve(GalleryManager.self)!)
-        }
-        
-        container.register(AlbumScreenViewModel.self) { (r, albumID: UUID) in
-            return AlbumScreenViewModel(albumID: albumID,
-                                        galleryManager: r.resolve(GalleryManager.self)!)
-        }
-        
-        container.register(AlbumScreenViewController.self) { (r, albumID: UUID) in
-            return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!,
-                                             viewModel: r.resolve(AlbumScreenViewModel.self,
-                                                                  argument: albumID)!)
+                                     container: container)
         }
         
         container.register(AlbumScreenViewController.self) { r in
             return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!,
                                              viewModel: r.resolve(AlbumScreenViewModel.self)!)
+        }
+        
+        container.register(AlbumScreenViewModel.self) { r in
+            return AlbumScreenViewModel(albumID: nil,
+                                        galleryManager: r.resolve(GalleryManager.self)!)
         }
     }
 }
