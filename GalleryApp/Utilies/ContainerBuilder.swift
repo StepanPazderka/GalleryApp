@@ -78,7 +78,7 @@ class ContainerBuilder {
     
     static func registerPresentationLayer() {
         container.register(SidebarRouter.self) { r in
-            return SidebarRouter(container: container, transientContainer: linkTransientContainer, galleryManager: r.resolve(GalleryManager.self)!)
+            return SidebarRouter(container: container, galleryManager: r.resolve(GalleryManager.self)!)
         }
         
         container.register(SidebarViewModel.self) { r in

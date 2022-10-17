@@ -18,12 +18,10 @@ class SidebarRouter {
         return view
     }()
     var container: Container
-    var transientContainer: Container
     let galleryManager: GalleryManager
     
-    init(container: Container, transientContainer: Container, galleryManager: GalleryManager) {
+    init(container: Container, galleryManager: GalleryManager) {
         self.container = container
-        self.transientContainer = transientContainer
         self.galleryManager = galleryManager
     }
     
