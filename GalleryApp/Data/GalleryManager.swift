@@ -167,7 +167,7 @@ class GalleryManager {
         return outputImageList
     }
     
-    func lostAllImagesInGalleryFolder() -> [AlbumImage] {
+    func listAllImagesInGalleryFolder() -> [AlbumImage] {
         var outputImageList: [AlbumImage] = []
 
         let list = fileScannerManager.scanAlbumFolderForImages()
@@ -277,7 +277,6 @@ class GalleryManager {
             galleryIndex.images = newImageList
             do {
                 try FileManager.default.removeItem(atPath: self.selectedGalleryPath.appendingPathComponent(imageName).relativePath)
-                
             } catch {
                 
             }
@@ -311,6 +310,30 @@ class GalleryManager {
 //                galleryMonitor?.stop()
             }
         }
+    }
+    
+    // MARK: - Update Album Image
+    func updateAlbumImage(image: AlbumImage) {
+        if var index = loadGalleryIndex() {
+            if let element = index.images.firstIndex(where: { AlbumImage in
+                AlbumImage.fileName == image.fileName
+            }) {
+                index.images[element] = image
+                updateGalleryIndex(newGalleryIndex: index)
+            }
+        }
+    }
+    
+    // MARK: - Update Gallery Index
+    @discardableResult func updateGalleryIndex(newGalleryIndex: GalleryIndex) -> GalleryIndex {
+        let newIndex = newGalleryIndex
+        let galleryIndexPath = selectedGalleryPath.appendingPathComponent(kGalleryIndex)
+        
+        let jsonEncoded = try? JSONEncoder().encode(newIndex)
+        try! jsonEncoded?.write(to: galleryIndexPath)
+        self.selectedGalleryIndexRelay.onNext(newIndex)
+        
+        return newIndex
     }
     
     // MARK: - Rebuilding Gallery Index
@@ -352,6 +375,6 @@ class GalleryManager {
         let url = selectedGalleryPath.appendingPathComponent(kGalleryIndex)
         try? jsonEncoded?.write(to: url)
         
-        return GalleryIndex(mainGalleryName: gallery.mainGalleryName, images: self.lostAllImagesInGalleryFolder(), albums: gallery.albums)
+        return GalleryIndex(mainGalleryName: gallery.mainGalleryName, images: self.listAllImagesInGalleryFolder(), albums: gallery.albums)
     }
 }

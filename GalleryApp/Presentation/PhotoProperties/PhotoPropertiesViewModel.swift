@@ -9,11 +9,13 @@ import Foundation
 
 class PhotoPropertiesViewModel {
     
-    let photoIDs: [URL]
+    // MARK: - Properties
+    let imagePaths: [URL]
     let galleryManager: GalleryManager
     
+    //MARK: - Init
     init(photoIDs: [URL], galleryManager: GalleryManager) {
-        self.photoIDs = photoIDs
+        self.imagePaths = photoIDs
         self.galleryManager = galleryManager
     }
     
@@ -21,7 +23,7 @@ class PhotoPropertiesViewModel {
         var fileSize: UInt64 = 0
         
         do {
-            var attr: NSDictionary? = try FileManager.default.attributesOfItem(atPath: photoIDs.first!.relativePath) as NSDictionary
+            var attr: NSDictionary? = try FileManager.default.attributesOfItem(atPath: imagePaths.first!.relativePath) as NSDictionary
             if let _attr = attr {
                 fileSize = _attr.fileSize();
             }
@@ -34,7 +36,7 @@ class PhotoPropertiesViewModel {
     func getFileCreationDate() -> Date? {
         var date: Date?
         do {
-            let attr = try FileManager.default.attributesOfItem(atPath: photoIDs.first!.relativePath)
+            let attr = try FileManager.default.attributesOfItem(atPath: imagePaths.first!.relativePath)
             date = attr[FileAttributeKey.creationDate] as? Date
         } catch {
             return nil
@@ -45,7 +47,7 @@ class PhotoPropertiesViewModel {
     func getFileModifiedDate() -> Date? {
         var date: Date?
         do {
-            let attr = try FileManager.default.attributesOfItem(atPath: photoIDs.first!.lastPathComponent)
+            let attr = try FileManager.default.attributesOfItem(atPath: imagePaths.first!.lastPathComponent)
             date = attr[FileAttributeKey.modificationDate] as? Date
         } catch {
             return nil
@@ -54,9 +56,13 @@ class PhotoPropertiesViewModel {
     }
     
     func getPhotoTitle() -> String {
-        guard let photoID = photoIDs.first else { return "" }
+        guard let photoID = imagePaths.first else { return "" }
         var albumImage: AlbumImage?
         albumImage = self.galleryManager.loadAlbumImage(id: photoID.lastPathComponent)
         return albumImage?.title ?? ""
+    }
+    
+    func updateAlbumImage(albumImage: AlbumImage) {
+        self.galleryManager.updateAlbumImage(image: albumImage)
     }
 }

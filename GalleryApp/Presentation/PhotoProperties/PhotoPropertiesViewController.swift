@@ -24,6 +24,10 @@ class PhotoPropertiesViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
@@ -31,7 +35,7 @@ class PhotoPropertiesViewController: UIViewController {
     
     func setupViews() {
         self.view = screenView
-        self.screenView.imageView.image = UIImage(contentsOfFile: viewModel.photoIDs.first!.relativePath)
+        self.screenView.imageView.image = UIImage(contentsOfFile: viewModel.imagePaths.first!.relativePath)
         self.screenView.photoSizeLabel.text = "\(NSLocalizedString("kFileSize", comment: "")) \(ByteCountFormatter().string(fromByteCount: Int64(viewModel.getFileSize())))"
         
         if let date = viewModel.getFileModifiedDate() {
@@ -43,9 +47,13 @@ class PhotoPropertiesViewController: UIViewController {
         }
         
         self.screenView.textView.text = viewModel.getPhotoTitle()
+        self.screenView.textView.delegate = self
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+}
+
+extension PhotoPropertiesViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        let newAlbumImage = AlbumImage(fileName: viewModel.imagePaths.first!.lastPathComponent, date: viewModel.getFileCreationDate() ?? Date(), title: textView.text)
+        viewModel.updateAlbumImage(albumImage: newAlbumImage)
     }
 }
