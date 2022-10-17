@@ -15,8 +15,8 @@ class PhotoPropertiesViewModel {
     let galleryManager: GalleryManager
     
     //MARK: - Init
-    init(photoIDs: [AlbumImage], galleryManager: GalleryManager) {
-        self.images = photoIDs
+    init(images: [AlbumImage], galleryManager: GalleryManager) {
+        self.images = images
         self.galleryManager = galleryManager
     }
     
