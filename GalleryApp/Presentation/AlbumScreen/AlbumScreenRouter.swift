@@ -45,7 +45,7 @@ class AlbumScreenRouter {
         
     }
     
-    func showDetails(images: [URL]) {
+    func showDetails(images: [AlbumImage]) {
         let vc = container.resolve(PhotoPropertiesViewController.self, argument: images)!
         sidebarRouter.splitViewController.present(vc, animated: true)
     }

@@ -36,7 +36,7 @@ class PhotoPropertiesViewController: UIViewController {
     
     func setupViews() {
         self.view = screenView
-        self.screenView.imageView.image = UIImage(contentsOfFile: viewModel.imagePaths.first!.relativePath)
+        self.screenView.imageView.image = viewModel.getImage()
         self.screenView.photoSizeLabel.text = "\(NSLocalizedString("kFileSize", comment: "")) \(ByteCountFormatter().string(fromByteCount: Int64(viewModel.getFileSize())))"
         
         if let date = viewModel.getFileModifiedDate() {
@@ -54,7 +54,7 @@ class PhotoPropertiesViewController: UIViewController {
 
 extension PhotoPropertiesViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        let newAlbumImage = AlbumImage(fileName: viewModel.imagePaths.first!.lastPathComponent, date: viewModel.getFileCreationDate() ?? Date(), title: textView.text)
+        let newAlbumImage = AlbumImage(fileName: viewModel.images.first!.fileName, date: viewModel.getFileCreationDate() ?? Date(), title: textView.text)
         viewModel.updateAlbumImage(albumImage: newAlbumImage)
     }
 }

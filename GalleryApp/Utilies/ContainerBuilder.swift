@@ -45,11 +45,11 @@ class ContainerBuilder {
                                                                           argument: albumID)!)
         }
         
-        container.register(PhotoPropertiesViewModel.self) { (r, photoIDs: [URL]) in
-            return PhotoPropertiesViewModel(photoIDs: photoIDs, galleryManager: r.resolve(GalleryManager.self)!)
+        container.register(PhotoPropertiesViewModel.self) { (r, photos: [AlbumImage]) in
+            return PhotoPropertiesViewModel(photoIDs: photos, galleryManager: r.resolve(GalleryManager.self)!)
         }
         
-        container.register(PhotoPropertiesViewController.self) { (r, photoID: [URL]) in
+        container.register(PhotoPropertiesViewController.self) { (r, photoID: [AlbumImage]) in
             return PhotoPropertiesViewController(viewModel: container.resolve(PhotoPropertiesViewModel.self, argument: photoID)!)
         }
         
