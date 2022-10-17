@@ -24,4 +24,5 @@
 "kCantAddImageToTheAlbum" = "Can't add image to the album";
 "kImageAlreadyInAlbum" = "Image already in album";
 "kFileSize" = "File size: ";
-"kFileDate" = "Date modified: ";
+"kFileCreationDate" = "Date creation: ";
+"kFileModifiedDate" = "Date modified: ";

@@ -250,6 +250,14 @@ class GalleryManager {
         return scanFolderForAlbums().filter { $0.id == id }.first ?? nil
     }
     
+    func loadAlbumImage(id: String) -> AlbumImage? {
+        let index: GalleryIndex? = loadGalleryIndex()
+        let image = index?.images.first(where: { image in
+            image.fileName == id
+        })
+        return image
+    }
+    
     func loadGalleryIndex(named galleryName: String? = nil) -> GalleryIndex? {
         if FileManager.default.fileExists(atPath: self.selectedGalleryPath.appendingPathComponent(kGalleryIndex).relativePath) {
             if let encodedGalleryIndex = try? String(contentsOfFile: self.selectedGalleryPath.appendingPathComponent(kGalleryIndex).relativePath).data(using: .unicode) {

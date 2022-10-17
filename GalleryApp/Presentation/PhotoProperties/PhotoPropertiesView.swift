@@ -23,9 +23,21 @@ class PhotoPropertiesView: UIView {
         return view
     }()
     
+    public let photoDateCreationLabel = {
+        let view = UILabel(frame: .zero)
+        view.text = "Date"
+        return view
+    }()
+    
     public let photoDateLabel = {
         let view = UILabel(frame: .zero)
         view.text = "Date"
+        return view
+    }()
+    
+    public let textView = {
+        let view = UITextView()
+        view.backgroundColor = .lightGray
         return view
     }()
     
@@ -55,6 +67,8 @@ class PhotoPropertiesView: UIView {
         self.backgroundColor = .white
         self.stackview.addArrangedSubview(photoSizeLabel)
         self.stackview.addArrangedSubview(photoDateLabel)
+        self.stackview.addArrangedSubview(photoDateCreationLabel)
+        self.stackview.addArrangedSubview(textView)
     }
     
     func layoutViews() {
@@ -67,9 +81,8 @@ class PhotoPropertiesView: UIView {
         stackview.snp.makeConstraints { make in
             make.bottom.equalToSuperview()
             make.width.equalToSuperview().offset(-20)
-//            make.margins.width.equalToSuperview().offset(5)
             make.top.equalTo(imageView.snp_bottomMargin)
-            make.leftMargin.equalTo(10)
+            make.leftMargin.equalTo(5)
         }
         
         photoSizeLabel.snp.makeConstraints { make in
@@ -80,6 +93,17 @@ class PhotoPropertiesView: UIView {
         photoDateLabel.snp.makeConstraints { make in
             make.width.equalToSuperview()
             make.height.equalTo(20)
+        }
+        
+        photoDateCreationLabel.snp.makeConstraints { make in
+            make.width.equalToSuperview()
+            make.height.equalTo(20)
+        }
+        
+        textView.snp.makeConstraints { make in
+            make.width.equalToSuperview()
+            make.rightMargin.equalTo(50)
+            make.height.equalTo(50)
         }
     }
 }

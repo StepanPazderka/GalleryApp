@@ -31,11 +31,18 @@ class PhotoPropertiesViewController: UIViewController {
     
     func setupViews() {
         self.view = screenView
-        self.screenView.imageView.image = UIImage(contentsOfFile: viewModel.photoIDs.first!)
+        self.screenView.imageView.image = UIImage(contentsOfFile: viewModel.photoIDs.first!.relativePath)
         self.screenView.photoSizeLabel.text = "\(NSLocalizedString("kFileSize", comment: "")) \(ByteCountFormatter().string(fromByteCount: Int64(viewModel.getFileSize())))"
+        
         if let date = viewModel.getFileModifiedDate() {
-            self.screenView.photoDateLabel.text = "\(NSLocalizedString("kFileDate", comment: "")) \(date)"
+            self.screenView.photoDateLabel.text = "\(NSLocalizedString("kFileModifiedDate", comment: "")) \(date)"
         }
+        
+        if let date = viewModel.getFileCreationDate() {
+            self.screenView.photoDateCreationLabel.text = "\(NSLocalizedString("kFileCreationDate", comment: "")) \(date)"
+        }
+        
+        self.screenView.textView.text = viewModel.getPhotoTitle()
     }
     
     required init?(coder: NSCoder) {
