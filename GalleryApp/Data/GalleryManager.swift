@@ -339,7 +339,6 @@ class GalleryManager {
         return newIndex
     }
     
-    
     @discardableResult func rebuildGalleryIndex(gallery: GalleryIndex) -> GalleryIndex {
         let jsonEncoded = try? JSONEncoder().encode(gallery)
         let url = selectedGalleryPath.appendingPathComponent(kGalleryIndex)

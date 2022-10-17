@@ -210,7 +210,8 @@ class AlbumScreenViewController: UIViewController {
                      image: UIImage(systemName: "info.circle")) { action in
                 let newView = UIView()
                 newView.backgroundColor = .green
-                self.router.showDetails(images: [UUID()])
+                let photoID = self.viewModel.shownImagesPaths[indexPath.row]
+                self.router.showDetails(images: [self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(photoID.fileName).relativePath])
             }
             
             let selectedImage = self.viewModel.shownImagesPaths[indexPath.row]

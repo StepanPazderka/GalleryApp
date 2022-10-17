@@ -42,8 +42,17 @@ class ContainerBuilder {
         container.register(AlbumScreenViewController.self) { (r, albumID: UUID) in
             return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!,
                                              viewModel: container.resolve(AlbumScreenViewModel.self,
-                                                                                       argument: albumID)!)
+                                                                          argument: albumID)!)
         }
+        
+        container.register(PhotoPropertiesViewModel.self) { (r, photoIDs: [String]) in
+            return PhotoPropertiesViewModel(photoIDs: photoIDs)
+        }
+        
+        container.register(PhotoPropertiesViewController.self) { (r, photoID: [String]) in
+            return PhotoPropertiesViewController(viewModel: container.resolve(PhotoPropertiesViewModel.self, argument: photoID)!)
+        }
+        
         self.container = container
         return container
     }
