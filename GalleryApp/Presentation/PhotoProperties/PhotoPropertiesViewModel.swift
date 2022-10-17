@@ -28,4 +28,15 @@ class PhotoPropertiesViewModel {
         }
         return fileSize
     }
+    
+    func getFileModifiedDate() -> Date? {
+        var date: Date?
+        do {
+            let attr = try FileManager.default.attributesOfItem(atPath: photoIDs.first!)
+            date = attr[FileAttributeKey.modificationDate] as? Date
+        } catch {
+            return nil
+        }
+        return date
+    }
 }
