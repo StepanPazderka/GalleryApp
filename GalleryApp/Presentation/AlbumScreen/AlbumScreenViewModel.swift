@@ -27,7 +27,13 @@ class AlbumScreenViewModel {
 
         if let albumID = albumID {
             if let index: AlbumIndex = galleryManager.loadAlbumIndex(id: albumID) {
-                self.shownImagesPaths = index.images
+                self.shownImagesPaths = index.images.compactMap { albumImage in
+                    if FileManager.default.fileExists(atPath: self.galleryManager.selectedGalleryPath.appendingPathComponent(albumImage.fileName).relativePath) {
+                        return albumImage
+                    } else {
+                        return nil
+                    }
+                }
             } else {
                 self.shownImagesPaths = [AlbumImage]()
             }
