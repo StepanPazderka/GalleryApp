@@ -26,14 +26,17 @@ class AlbumScreenViewModel {
         self.galleryManager = galleryManager
 
         if let albumID = albumID {
-            if let index: AlbumIndex = galleryManager.loadAlbumIndex(id: albumID) {
-                self.shownImagesPaths = index.images.compactMap { albumImage in
+            if var index: AlbumIndex = galleryManager.loadAlbumIndex(id: albumID) {
+                let filteredImages = index.images.compactMap { albumImage in
                     if FileManager.default.fileExists(atPath: self.galleryManager.selectedGalleryPath.appendingPathComponent(albumImage.fileName).relativePath) {
                         return albumImage
                     } else {
                         return nil
                     }
                 }
+                self.shownImagesPaths = filteredImages
+                index.images = filteredImages
+                self.galleryManager.updateAlbumIndex(index: index)
             } else {
                 self.shownImagesPaths = [AlbumImage]()
             }

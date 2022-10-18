@@ -213,6 +213,12 @@ class GalleryManager {
         try? json.write(to: url)
     }
     
+    func updateAlbumIndex(index: AlbumIndex) {
+        let json = try! JSONEncoder().encode(index)
+        let url = self.selectedGalleryPath.appendingPathComponent(index.id.uuidString).appendingPathComponent(kAlbumIndex)
+        try? json.write(to: url)
+    }
+    
     func loadAlbumIndex(folder: URL) throws -> AlbumIndex? {
         let indexPath = folder.lastPathComponent == kAlbumIndex ? folder.relativePath : folder.appendingPathComponent(kAlbumIndex).relativePath
 
