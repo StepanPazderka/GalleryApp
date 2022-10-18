@@ -53,8 +53,9 @@ class PhotoPropertiesViewController: UIViewController {
 }
 
 extension PhotoPropertiesViewController: UITextViewDelegate {
-    func textViewDidChange(_ textView: UITextView) {
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
         let newAlbumImage = AlbumImage(fileName: viewModel.images.first!.fileName, date: viewModel.getFileCreationDate() ?? Date(), title: textView.text)
-        viewModel.updateAlbumImage(albumImage: newAlbumImage)
+        self.viewModel.updateAlbumImage(albumImage: newAlbumImage)
     }
 }
