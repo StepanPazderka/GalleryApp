@@ -99,7 +99,7 @@ class AlbumImageCell: UICollectionViewCell {
                 delegate.isEditing = true
                 return
             }
-            delegate.router.showPhotoDetail(images: delegate.viewModel.shownImagesPaths, index: self.index)
+            delegate.router.showPhotoDetail(images: delegate.viewModel.images, index: self.index)
             
         }
     }

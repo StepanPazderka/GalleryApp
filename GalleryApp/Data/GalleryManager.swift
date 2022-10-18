@@ -103,7 +103,7 @@ class GalleryManager {
             }
         }
         newIndex.images.append(image)
-        self.updateAlbumIndex(folder: selectedGalleryPath.appendingPathComponent(toAlbum.uuidString), index: newIndex)
+        self.updateAlbumIndex(index: newIndex)
         if let callback = callback {
             callback()
         }
@@ -113,12 +113,13 @@ class GalleryManager {
         if var galleryIndex = self.loadGalleryIndex() {
             galleryIndex.images.append(AlbumImage(fileName: photoID, date: Date()))
             self.rebuildGalleryIndex(gallery: galleryIndex)
+            self.selectedGalleryIndexRelay.onNext(galleryIndex)
         }
         
         if let toAlbum = toAlbum {
             if var album = loadAlbumIndex(id: toAlbum) {
                 album.images.append(AlbumImage(fileName: photoID, date: Date()))
-                self.updateAlbumIndex(folder: self.selectedGalleryPath, index: album)
+                self.updateAlbumIndex(index: album)
             }
         }
     }

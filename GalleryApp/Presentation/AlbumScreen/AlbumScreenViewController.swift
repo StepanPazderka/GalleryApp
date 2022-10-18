@@ -192,11 +192,11 @@ class AlbumScreenViewController: UIViewController {
     }
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let temp = self.viewModel.shownImagesPaths.remove(at: sourceIndexPath.item)
-        self.viewModel.shownImagesPaths.insert(temp, at: destinationIndexPath.item)
+        let temp = self.viewModel.images.remove(at: sourceIndexPath.item)
+        self.viewModel.images.insert(temp, at: destinationIndexPath.item)
 
-        let newGalleryIndex = AlbumIndex(name: self.viewModel.galleryManager.selectedGalleryPath.lastPathComponent, images: self.viewModel.shownImagesPaths, thumbnail: self.viewModel.shownImagesPaths.first?.fileName ?? "")
-        self.viewModel.galleryManager.updateAlbumIndex(folder: self.viewModel.galleryManager.selectedGalleryPath, index: newGalleryIndex)
+        let newGalleryIndex = AlbumIndex(name: self.viewModel.galleryManager.selectedGalleryPath.lastPathComponent, images: self.viewModel.images, thumbnail: self.viewModel.images.first?.fileName ?? "")
+        self.viewModel.galleryManager.updateAlbumIndex(index: newGalleryIndex)
         collectionView.reloadData()
         return
     }
@@ -211,12 +211,12 @@ class AlbumScreenViewController: UIViewController {
                 let newView = UIView()
                 newView.backgroundColor = .green
 
-                let photoID = self.viewModel.shownImagesPaths[indexPath.row]
+                let photoID = self.viewModel.images[indexPath.row]
                                 
                 self.router.showDetails(images: [photoID])
             }
             
-            let selectedImage = self.viewModel.shownImagesPaths[indexPath.row]
+            let selectedImage = self.viewModel.images[indexPath.row]
             
             
             let moveToAlbum = UIAction(title: NSLocalizedString("MoveToAlbum", comment: ""),
@@ -236,7 +236,7 @@ class AlbumScreenViewController: UIViewController {
             UIAction(title: NSLocalizedString("kDELETEIMAGE", comment: ""),
                      image: UIImage(systemName: "trash"),
                      attributes: .destructive) { action in
-                let imageName = self.viewModel.shownImagesPaths[indexPath.row].fileName
+                let imageName = self.viewModel.images[indexPath.row].fileName
                 self.viewModel.deleteImage(imageName: imageName)
             }
             return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, deleteAction])
@@ -261,13 +261,13 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
-        let fullImageURL = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(self.viewModel.shownImagesPaths[indexPath.row].fileName)
+        let fullImageURL = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(self.viewModel.images[indexPath.row].fileName)
         let path = fullImageURL.path
         cell.imageView.image = UIImage(contentsOfFile: path)
         cell.router = self.router
         cell.index = indexPath.row
         cell.delegate = self
-        cell.configure(imageData: self.viewModel.shownImagesPaths[indexPath.row])
+        cell.configure(imageData: self.viewModel.images[indexPath.row])
         return cell
     }
     
@@ -287,7 +287,7 @@ extension AlbumScreenViewController: UICollectionViewDelegateFlowLayout {
 extension AlbumScreenViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.viewModel.shownImagesPaths.count
+        return self.viewModel.images.count
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {

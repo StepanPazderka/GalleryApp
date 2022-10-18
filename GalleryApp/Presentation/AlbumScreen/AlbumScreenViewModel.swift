@@ -16,7 +16,7 @@ class AlbumScreenViewModel {
     var albumID: UUID?
     var albumIndex: AlbumIndex?
     let galleryManager: GalleryManager
-    var shownImagesPaths = [AlbumImage]()
+    var images = [AlbumImage]()
     let thumbnailSize: Float = 200
     
     let disposeBag = DisposeBag()
@@ -34,23 +34,23 @@ class AlbumScreenViewModel {
                         return nil
                     }
                 }
-                self.shownImagesPaths = filteredImages
+                self.images = filteredImages
                 index.images = filteredImages
                 self.galleryManager.updateAlbumIndex(index: index)
             } else {
-                self.shownImagesPaths = [AlbumImage]()
+                self.images = [AlbumImage]()
             }
             
             galleryManager.loadAlbumIndex(id: albumID).subscribe(onNext: { [weak self] albumIndex in
                 self?.albumIndex = albumIndex
-                self?.shownImagesPaths = albumIndex.images
+                self?.images = albumIndex.images
             }).disposed(by: disposeBag)
         } else {
-            if let images = galleryManager.loadGalleryIndex()?.images {
-                shownImagesPaths = images
+            if let newImages = galleryManager.loadGalleryIndex()?.images {
+                self.images = newImages
             }
             galleryManager.selectedGalleryIndexRelay.subscribe(onNext: { galleryIndex in
-                self.shownImagesPaths = galleryIndex.images
+                self.images = galleryIndex.images
             }).disposed(by: disposeBag)
         }
     }
@@ -81,7 +81,11 @@ class AlbumScreenViewModel {
     
     func addPhoto(image: AlbumImage, callback: (() -> Void)? = nil) {
         self.galleryManager.addImage(photoID: image.fileName, toAlbum: albumID ?? nil)
-        self.shownImagesPaths = self.galleryManager.loadGalleryIndex()?.images ?? []
+        if let albumID = albumID {
+            self.images.append(image)
+        } else {
+            self.images = self.galleryManager.loadGalleryIndex()?.images ?? []
+        }
         if let callback = callback {
             callback()
         }
