@@ -8,5 +8,6 @@
 import Foundation
 
 class PhotoDetailViewModel {
-    
+
+//    var index: AlbumIndex
 }

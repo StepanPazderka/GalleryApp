@@ -142,11 +142,6 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         collectionView.translatesAutoresizingMaskIntoConstraints = false // This line fixes issue with incorrect highlighting
         view.addSubview(collectionView)
 
-        // MARK: - Snapkit Example
-        collectionView.snp.makeConstraints { (make) -> Void in
-            make.edges.equalTo(self.view)
-        }
-
         dataSource = UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>(collectionView: collectionView) {
             (collectionView: UICollectionView, indexPath: IndexPath, item: SidebarItem) -> UICollectionViewCell? in
             if indexPath.item == 0 && indexPath.section != 0 {

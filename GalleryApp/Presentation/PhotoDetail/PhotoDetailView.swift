@@ -16,7 +16,7 @@ class PhotoDetailView: UIView {
     
     // MARK: - Views
     let closeButton: UIButton = {
-        let view = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        let view = UIButton(frame: CGRect(x: 0, y: 0, width: 250, height: 250))
         view.setImage(UIImage(systemName: "xmark"), for: .normal)
         return view
     }()
@@ -25,9 +25,10 @@ class PhotoDetailView: UIView {
         let view = ImageSlideshow()
         view.frame = .zero
         view.zoomEnabled = true
+        view.pageIndicator = .none
         return view
     }()
-    
+        
     // MARK: -- Init
     init() {
         super.init(frame: .zero)

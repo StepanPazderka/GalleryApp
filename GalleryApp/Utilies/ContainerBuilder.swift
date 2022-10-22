@@ -31,7 +31,7 @@ class ContainerBuilder {
         let container = Container(parent: container, defaultObjectScope: .transient)
 
         container.register(PhotoDetailViewController.self) { (r, photoDetailSettings: PhotoDetailViewControllerSettings) in
-            return PhotoDetailViewController(galleryInteractor: r.resolve(GalleryManager.self)!, sidebar: r.resolve(SidebarViewController.self)!, settings: photoDetailSettings)
+            return PhotoDetailViewController(galleryInteractor: r.resolve(GalleryManager.self)!, settings: photoDetailSettings)
         }
 
         container.register(AlbumScreenViewModel.self) { (r, albumID: UUID) in

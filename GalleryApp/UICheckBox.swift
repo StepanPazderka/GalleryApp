@@ -22,10 +22,11 @@ import UIKit
     override init(frame: CGRect) {
         super.init(frame: frame)
         image.image = UIImage(systemName: "checkmark.circle")
+        self.addSubview(image)
+        
         image.snp.makeConstraints { make in
             make.size.equalTo(self.frame.size)
         }
-        self.addSubview(image)
     }
     
     required init?(coder: NSCoder) {

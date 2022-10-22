@@ -68,8 +68,17 @@ class AlbumScreenView: UIView {
     
     let bottomToolbar: UIView = {
         let view = UIView()
-        view.backgroundColor = .lightGray
+        view.backgroundColor = .white
+        view.layer.borderColor = CGColor(gray: 1, alpha: 1)
+        view.layer.borderWidth = 1
         view.frame.size.height = 200
+        return view
+    }()
+    
+    let checkBoxTitles = {
+        let view = UICheckBox(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        view.frame.size = CGSize(width: 200, height: 200)
+        view.setTitle("Show titles", for: .normal)
         return view
     }()
     
@@ -96,13 +105,14 @@ class AlbumScreenView: UIView {
     }
     
     private func addSubviews() {
-        self.addSubview(collectionView)
-        self.addSubview(bottomToolbar)
+        self.addSubviews(collectionView,
+                         bottomToolbar)
         bottomToolbar.addSubview(slider)
+        bottomToolbar.addSubview(checkBoxTitles)
     }
     
     private func layoutViews() {
-        collectionView.snp.makeConstraints { (make) -> Void in
+        collectionView.snp.makeConstraints { make in
             make.bottom.equalTo(bottomToolbar.snp.top)
             make.top.equalToSuperview()
             make.width.equalToSuperview()
@@ -113,8 +123,11 @@ class AlbumScreenView: UIView {
             make.width.equalToSuperview()
         }
         slider.snp.makeConstraints { make in
-            make.left.equalToSuperview()
+            make.leftMargin.equalToSuperview().offset(20)
             make.width.equalTo(300)
+        }
+        checkBoxTitles.snp.makeConstraints { make in
+            make.rightMargin.equalToSuperview()
         }
     }
 }

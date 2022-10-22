@@ -8,26 +8,31 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import FolderMonitorKit
 
 class AlbumScreenViewModel {
     
     // MARK: -- Properties
     var isEditing = BehaviorSubject(value: false)
+    var showingTitles = BehaviorSubject(value: false)
+    
     var albumID: UUID?
     var albumIndex: AlbumIndex?
     let galleryManager: GalleryManager
     var images = [AlbumImage]()
-    let thumbnailSize: Float = 200
-    
     let disposeBag = DisposeBag()
     
     internal init(albumID: UUID? = nil, galleryManager: GalleryManager) {
         self.albumID = albumID
         self.galleryManager = galleryManager
+        
+        if let albumID {
+            self.albumIndex = loadAlbum(by: albumID)
+        }
 
-        if let albumID = albumID {
-            if var index: AlbumIndex = galleryManager.loadAlbumIndex(id: albumID) {
-                let filteredImages = index.images.compactMap { albumImage in
+        if let albumID {
+            if var albumIndex: AlbumIndex = galleryManager.loadAlbumIndex(id: albumID) {
+                let filteredImages = albumIndex.images.compactMap { albumImage in
                     if FileManager.default.fileExists(atPath: self.galleryManager.selectedGalleryPath.appendingPathComponent(albumImage.fileName).relativePath) {
                         return albumImage
                     } else {
@@ -35,8 +40,8 @@ class AlbumScreenViewModel {
                     }
                 }
                 self.images = filteredImages
-                index.images = filteredImages
-                self.galleryManager.updateAlbumIndex(index: index)
+                albumIndex.images = filteredImages
+                self.galleryManager.updateAlbumIndex(index: albumIndex)
             } else {
                 self.images = [AlbumImage]()
             }
@@ -53,6 +58,7 @@ class AlbumScreenViewModel {
                 self.images = galleryIndex.images
             }).disposed(by: disposeBag)
         }
+        
     }
     
     func loadGalleryIndex() -> Observable<GalleryIndex> {
@@ -81,7 +87,7 @@ class AlbumScreenViewModel {
     
     func addPhoto(image: AlbumImage, callback: (() -> Void)? = nil) {
         self.galleryManager.addImage(photoID: image.fileName, toAlbum: albumID ?? nil)
-        if let albumID = albumID {
+        if albumID != nil {
             self.images.append(image)
         } else {
             self.images = self.galleryManager.loadGalleryIndex()?.images ?? []
@@ -89,5 +95,16 @@ class AlbumScreenViewModel {
         if let callback = callback {
             callback()
         }
+    }
+    
+    func newThumbnailSize(size: Float) {
+        if let albumID = albumID, var newIndex = loadAlbum(by: albumID) {
+            newIndex.thumbnailsSize = size
+            self.galleryManager.updateAlbumIndex(index: newIndex)
+        }
+    }
+    
+    func switchTitles() {
+        
     }
 }

@@ -12,12 +12,15 @@ import ImageSlideshow
 
 class PhotoDetailViewController: UIViewController {
     
-    var singleTapGestureRecognizer: UITapGestureRecognizer!
+    var singleTapGestureRecognizer = UITapGestureRecognizer()
+    var swipeDownGestureRecognizer = {
+        let view = UISwipeGestureRecognizer()
+        view.direction = .down
+        return view
+    }()
     let screenView = PhotoDetailView()
-    var panGestureRecognizer: UIPanGestureRecognizer!
     var photoDetailView: PhotoDetailViewControllerSettings
     var galleryManager: GalleryManager
-    var sidebar: SidebarViewController
     let disposeBag = DisposeBag()
     
     enum ScreenMode {
@@ -26,10 +29,9 @@ class PhotoDetailViewController: UIViewController {
     var currentMode: ScreenMode = .normal
     
     // MARK: - Init
-    internal init(galleryInteractor: GalleryManager, sidebar: SidebarViewController, settings: PhotoDetailViewControllerSettings) {
+    internal init(galleryInteractor: GalleryManager, settings: PhotoDetailViewControllerSettings) {
         self.galleryManager = galleryInteractor
         self.photoDetailView = settings
-        self.sidebar = sidebar
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -45,24 +47,23 @@ class PhotoDetailViewController: UIViewController {
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
         super.viewDidLoad()
         self.setupViews()
-
-        self.view.backgroundColor = .none
-        self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(didPanWith(gestureRecognizer:)))
-        self.panGestureRecognizer.delegate = self
-        
-        self.singleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didSingleTapWith(gestureRecognizer:)))
-        self.view.addGestureRecognizer(panGestureRecognizer)
+                
         self.view.addGestureRecognizer(self.singleTapGestureRecognizer)
-        let images = photoDetailView.selectedImages
+        self.view.addGestureRecognizer(self.swipeDownGestureRecognizer)
         
+        self.reorderImages()
+        self.bindInteractions()
+    }
+    
+    func reorderImages() {
         let firstImages = photoDetailView.selectedImages[0..<photoDetailView.selectedIndex]
         let endingImages = photoDetailView.selectedImages[photoDetailView.selectedIndex..<photoDetailView.selectedImages.endIndex]
         let newArray = Array(endingImages + firstImages)
         
         let selectedImage = photoDetailView.selectedImages[photoDetailView.selectedIndex].fileName
-        let imagePath =  galleryManager.selectedGalleryPath.appendingPathComponent(selectedImage)
 
         let imagesSources: [ImageSource] = newArray.compactMap {
             let image = UIImage(contentsOfFile: galleryManager.selectedGalleryPath.appendingPathComponent($0.fileName).relativePath)
@@ -73,7 +74,6 @@ class PhotoDetailViewController: UIViewController {
             return nil
         }
         
-        self.bindInteractions()
         self.screenView.imageSlideShow.setImageInputs(imagesSources)
     }
     
@@ -87,24 +87,21 @@ class PhotoDetailViewController: UIViewController {
         }
     }
     
-    func bindInteractions() {
+    // MARK: - Binding Interactions
+    private func bindInteractions() {
         self.screenView.closeButton.rx.tap.subscribe(onNext:  {
             self.dismiss(animated: true)
         }).disposed(by: disposeBag)
         
         self.screenView.imageSlideShow.delegate = self
-    }
-    
-    
-    @objc func didPanWith(gestureRecognizer: UIPanGestureRecognizer) {
-        switch gestureRecognizer.state {
-        case .began:
-            print("Panning began")
-        case .ended:
-            print("Panning ended")
-        @unknown default:
-            break
-        }
+        
+        singleTapGestureRecognizer.rx.event.subscribe(onNext: { event in
+            self.didSingleTapWith(gestureRecognizer: event)
+        }).disposed(by: disposeBag)
+        
+        swipeDownGestureRecognizer.rx.event.subscribe(onNext: { event in
+            self.dismiss(animated: true)
+        }).disposed(by: disposeBag)
     }
     
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
@@ -123,11 +120,12 @@ class PhotoDetailViewController: UIViewController {
             UIView.animate(withDuration: 0.25,
                            animations: {
                             self.view.backgroundColor = .black
+                            self.screenView.closeButton.isHidden = true
                             
             }, completion: { completed in
             })
         } else {
-            self.navigationController?.setNavigationBarHidden(false, animated: false)
+            self.navigationController?.setNavigationBarHidden(true, animated: false)
             UIView.animate(withDuration: 0.25,
                            animations: {
                             if #available(iOS 13.0, *) {
@@ -135,6 +133,7 @@ class PhotoDetailViewController: UIViewController {
                             } else {
                                 self.view.backgroundColor = .white
                             }
+                            self.screenView.closeButton.isHidden = false
             }, completion: { completed in
             })
         }
@@ -164,11 +163,8 @@ extension PhotoDetailViewController: UIGestureRecognizerDelegate {
     }
 }
 
-extension PhotoDetailViewController: UIPageViewControllerDelegate {
-        
-}
-
-
 extension PhotoDetailViewController: ImageSlideshowDelegate {
-    
+    func imageSlideshow(_ imageSlideshow: ImageSlideshow, didChangeCurrentPageTo page: Int) {
+        
+    }
 }

@@ -24,11 +24,13 @@ class AlbumScreenViewController: UIViewController {
     let router: AlbumScreenRouter
     let disposeBag = DisposeBag()
     var editingRx = BehaviorRelay<Bool>(value: false)
+    var showingTitles = BehaviorRelay<Bool>(value: false)
     
     // MARK: - Init
     init(router: AlbumScreenRouter, viewModel: AlbumScreenViewModel) {
         self.router = router
         self.viewModel = viewModel
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -36,33 +38,40 @@ class AlbumScreenViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        let topMostNavigationController = topMostController()
+        
         self.router.start(navigationController: self.navigationController)
         
         self.setupViews()
-        self.layoutViews()
         self.bindData()
         self.bindInteractions()
+        
+        if let albumIndex = viewModel.albumIndex {
+            let thumbSize = albumIndex.thumbnailsSize
+            self.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(thumbSize), height: CGFloat(thumbSize))
+            self.screenView.slider.setValue(thumbSize, animated: false)
+        }
         
         self.editingRx.bind(onNext: { [weak self] value in
             self?.setEditing(value, animated: true)
             if let editButton = self?.screenView.editButton {
                 if value {
-                    self?.screenView.editButton.setTitle(NSLocalizedString("kDONE", comment: ""), for: .normal)
+                    editButton.setTitle(NSLocalizedString("kDONE", comment: ""), for: .normal)
+                    self?.setEditing(true, animated: true)
                 } else {
-                    self?.screenView.editButton.setTitle(NSLocalizedString("kEDIT", comment: ""), for: .normal)
+                    editButton.setTitle(NSLocalizedString("kEDIT", comment: ""), for: .normal)
+                    self?.setEditing(false, animated: false)
                 }
             }
         }).disposed(by: disposeBag)
-        
-        self.screenView.slider.rx.value.changed.subscribe(onNext: { value in
-            let newValue = CGFloat(value)
-            self.screenView.collectionLayout.itemSize = CGSize(width: newValue, height: newValue)
-        }).disposed(by: disposeBag)
-        
-        self.refreshData()
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        screenView.collectionLayout.itemSize = CGSize(width: self.screenView.frame.width / 3.3, height: self.screenView.frame.height / 3.3)
+        screenView.collectionLayout.invalidateLayout()
     }
 
     override func viewWillLayoutSubviews() {
@@ -71,6 +80,7 @@ class AlbumScreenViewController: UIViewController {
         screenView.collectionLayout.invalidateLayout()
     }
 
+    // MARK: - Layout
     func setupViews() {
         self.view = screenView
         
@@ -86,13 +96,6 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
         self.screenView.collectionView.register(AlbumScreenFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenFooter.identifier)
     }
-    
-    func layoutViews() {
-        screenView.slider.snp.makeConstraints { make in
-            make.leftMargin.equalToSuperview().offset(50)
-            make.top.equalToSuperview().offset(20)
-        }
-    }
 
     func showDocumentPicker() {
         self.screenView.documentPicker.delegate = self
@@ -104,19 +107,15 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.imagePicker.delegate = self
         self.present(self.screenView.imagePicker, animated: true)
     }
-
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        screenView.collectionLayout.itemSize = CGSize(width: self.screenView.frame.width / 3.3, height: self.screenView.frame.height / 3.3)
-        screenView.collectionLayout.invalidateLayout()
-    }
     
+    // MARK: - Data Binding
     func bindData() {
         self.viewModel.loadGalleryIndex().subscribe(onNext: { galleryIndex in
             self.refreshData()
         }).disposed(by: disposeBag)
     }
     
+    // MARK: - Interactions Binding
     func bindInteractions() {
         self.screenView.editButton.rx.tap.subscribe(onNext: { [weak self] in
             if self?.editingRx.value == false {
@@ -143,11 +142,17 @@ class AlbumScreenViewController: UIViewController {
 
             self?.present(alert, animated: true, completion: nil)
         }).disposed(by: disposeBag)
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        
+        self.screenView.checkBoxTitles.rx.tap.subscribe(onNext: {
+            self.showingTitles.accept(true)
+        }).disposed(by: disposeBag)
+        
+        // MARK: - Slider binding
+        self.screenView.slider.rx.value.changed.subscribe(onNext: { value in
+            let newValue = CGFloat(value)
+            self.screenView.collectionLayout.itemSize = CGSize(width: newValue, height: newValue)
+            self.viewModel.newThumbnailSize(size: value)
+        }).disposed(by: disposeBag)
     }
 
     func addPhoto(filename: AlbumImage, to album: UUID? = nil) {
@@ -190,6 +195,13 @@ class AlbumScreenViewController: UIViewController {
             cell.isEditing = editing
         }
     }
+//
+//    func showTitles() {
+//        self.screenView.collectionView.indexPathsForVisibleItems.forEach { (indexPath) in
+//            let cell = screenView.collectionView.cellForItem(at: indexPath) as! AlbumImageCell
+//            cell.showingTitle.toggle()
+//        }
+//    }
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let temp = self.viewModel.images.remove(at: sourceIndexPath.item)

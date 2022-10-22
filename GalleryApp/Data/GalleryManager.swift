@@ -32,7 +32,8 @@ class GalleryManager {
     let settingsManager: SettingsManager
     let fileScannerManager: FileScannerManager
     
-    let selectedGalleryIndexRelay = PublishSubject<GalleryIndex>()    
+    let selectedGalleryIndexRelay = PublishSubject<GalleryIndex>()
+    let selectedAlbumIndexRelay = PublishRelay<AlbumIndex>()
     
     // MARK: - Init
     init(settingsManager: SettingsManager, fileScannerManger: FileScannerManager) {
