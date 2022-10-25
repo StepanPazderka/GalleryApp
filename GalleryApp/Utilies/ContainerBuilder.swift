@@ -11,7 +11,7 @@ import UIKit
 
 class ContainerBuilder {
     static var container = Container(parent: nil, defaultObjectScope: .container)
-    static var linkTransientContainer: Container = Container()
+//    static var linkTransientContainer: Container = Container()
     
     static func build() -> Container {
 
@@ -29,6 +29,10 @@ class ContainerBuilder {
     
     static func registerTransient() -> Container {
         let container = Container(parent: container, defaultObjectScope: .transient)
+        
+        container.register(PhotoDetailViewModel.self) { (r, images: [AlbumImage], index: Int) in
+            return PhotoDetailViewModel(images: images, index: index)
+        }
 
         container.register(PhotoDetailViewController.self) { (r, photoDetailSettings: PhotoDetailViewControllerSettings) in
             return PhotoDetailViewController(galleryInteractor: r.resolve(GalleryManager.self)!, settings: photoDetailSettings)

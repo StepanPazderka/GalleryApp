@@ -8,6 +8,14 @@
 import Foundation
 
 class PhotoDetailViewModel {
-
-//    var index: AlbumIndex
+    
+    // MARK: - Properties
+    var images: [AlbumImage]
+    var index: Int
+    
+    // MARK: - Init
+    internal init(images: [AlbumImage], index: Int) {
+        self.images = images
+        self.index = index
+    }
 }

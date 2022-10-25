@@ -104,6 +104,13 @@ class AlbumScreenViewModel {
         }
     }
     
+    func setAlbumThumbnail(imageName: String) {
+        if var updatedAlbum = self.albumIndex {
+            updatedAlbum.thumbnail = imageName
+            self.galleryManager.updateAlbumIndex(index: updatedAlbum)
+        }
+    }
+    
     func switchTitles() {
         
     }

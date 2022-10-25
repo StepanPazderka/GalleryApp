@@ -68,9 +68,7 @@ class AlbumScreenView: UIView {
     
     let bottomToolbar: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
-        view.layer.borderColor = CGColor(gray: 1, alpha: 1)
-        view.layer.borderWidth = 1
+        view.backgroundColor = .secondarySystemBackground
         view.frame.size.height = 200
         return view
     }()
@@ -125,6 +123,7 @@ class AlbumScreenView: UIView {
         slider.snp.makeConstraints { make in
             make.leftMargin.equalToSuperview().offset(20)
             make.width.equalTo(300)
+            make.centerY.equalToSuperview()
         }
         checkBoxTitles.snp.makeConstraints { make in
             make.rightMargin.equalToSuperview()

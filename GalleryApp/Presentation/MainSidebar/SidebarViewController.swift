@@ -30,8 +30,8 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
     var screens: [String: UIViewController]
     var mainbuttons: [SidebarItem] {
         get {
-            [SidebarItem(id: UUID(), title: "All Photos", image: UIImage(systemName: "photo.on.rectangle.angled")),
-             SidebarItem(id: UUID(), title: "Radio", image: UIImage(systemName: "dot.radiowaves.left.and.right")),
+            [SidebarItem(id: UUID(), title: "All Photos", image: UIImage(systemName: "photo.on.rectangle.angled")?.withTintColor(.tintColor)),
+             SidebarItem(id: UUID(), title: "Radio", image: UIImage(systemName: "dot.radiowaves.left.and.right")?.withTintColor(.tintColor)),
              SidebarItem(id: UUID(), title: "Search", image: UIImage(systemName: "magnifyingglass"))]
         }
     }
@@ -175,7 +175,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
             var content = cell.defaultContentConfiguration()
             content.text = item.title
-            content.image = item.image?.roundedImage
+            content.image = item.image
             cell.contentConfiguration = content
             cell.accessories = []
         }

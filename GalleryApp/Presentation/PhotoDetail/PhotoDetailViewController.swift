@@ -21,6 +21,7 @@ class PhotoDetailViewController: UIViewController {
     let screenView = PhotoDetailView()
     var photoDetailView: PhotoDetailViewControllerSettings
     var galleryManager: GalleryManager
+    
     let disposeBag = DisposeBag()
     
     enum ScreenMode {
@@ -42,7 +43,7 @@ class PhotoDetailViewController: UIViewController {
     // MARK: - Setup
     private func setupViews() {
         self.view = screenView
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = .systemBackground
     }
     
     // MARK: - Lifecycle

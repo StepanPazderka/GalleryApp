@@ -195,13 +195,6 @@ class AlbumScreenViewController: UIViewController {
             cell.isEditing = editing
         }
     }
-//
-//    func showTitles() {
-//        self.screenView.collectionView.indexPathsForVisibleItems.forEach { (indexPath) in
-//            let cell = screenView.collectionView.cellForItem(at: indexPath) as! AlbumImageCell
-//            cell.showingTitle.toggle()
-//        }
-//    }
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let temp = self.viewModel.images.remove(at: sourceIndexPath.item)
@@ -217,7 +210,7 @@ class AlbumScreenViewController: UIViewController {
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil,
                                           previewProvider: nil,
-                                          actionProvider: { suggestedActions in
+                                          actionProvider: { [self] suggestedActions in
             let inspectAction = UIAction(title: NSLocalizedString("kDETAILS", comment: ""),
                      image: UIImage(systemName: "info.circle")) { action in
                 let newView = UIView()
@@ -244,6 +237,12 @@ class AlbumScreenViewController: UIViewController {
                      image: UIImage(systemName: "plus.square.on.square")) { action in
                 //                self.performDuplicate(indexPath)
             }
+            let setThumbnailAction =
+            UIAction(title: NSLocalizedString("SetThumbnail", comment: ""),
+                     image: UIImage(systemName: "rectangle.portrait.inset.filled")) { action in
+                let selectedThumbnailFileName = viewModel.images[indexPath.row].fileName
+                self.viewModel.setAlbumThumbnail(imageName: selectedThumbnailFileName)
+            }
             let deleteAction =
             UIAction(title: NSLocalizedString("kDELETEIMAGE", comment: ""),
                      image: UIImage(systemName: "trash"),
@@ -251,7 +250,11 @@ class AlbumScreenViewController: UIViewController {
                 let imageName = self.viewModel.images[indexPath.row].fileName
                 self.viewModel.deleteImage(imageName: imageName)
             }
-            return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, deleteAction])
+            if viewModel.albumID != nil {
+                return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, setThumbnailAction, deleteAction])
+            } else {
+                return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, deleteAction])
+            }
         })
     }
 }
@@ -266,11 +269,13 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
         UIEdgeInsets.init(top: 0, left: 0, bottom: 0, right: 0)
     }
     
+    // MARK: - Dequeing footer cell
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let footer = screenView.collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenFooter.identifier, for: indexPath) as! AlbumScreenFooter
         return footer
     }
     
+    // MARK: - Dequeing main cell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
         let fullImageURL = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(self.viewModel.images[indexPath.row].fileName)

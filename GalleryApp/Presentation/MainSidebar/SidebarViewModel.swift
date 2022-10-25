@@ -66,7 +66,11 @@ class SidebarViewModel {
         self.fetchAlbums().map { albumIDsArray in
             return albumIDsArray.map { albumID in
                 if let album = self.galleryManager.loadAlbumIndex(id: albumID) {
-                    return SidebarItem(id: album.id, title: album.name, image: nil)
+                    var thumbnailImage: UIImage?
+                    if !album.thumbnail.isEmpty {
+                        thumbnailImage = UIImage(contentsOfFile: self.galleryManager.selectedGalleryPath.appendingPathComponent(album.thumbnail).relativePath)
+                    }
+                    return SidebarItem(id: album.id, title: album.name, image: thumbnailImage?.resized(to: CGSize(width: 25.5, height: 25.5)) ?? nil)
                 }
                 else {
                     return SidebarItem.empty

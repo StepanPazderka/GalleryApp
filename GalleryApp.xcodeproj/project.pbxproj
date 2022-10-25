@@ -33,6 +33,10 @@
 		7F479F1A25B6496F005AFB97 /* InteractiveImageViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F479F1925B6496E005AFB97 /* InteractiveImageViewCell.xib */; };
 		7F49EC8E27D7A96900E6D2D8 /* PhotoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F49EC8D27D7A96900E6D2D8 /* PhotoDetailView.swift */; };
 		7F4BFCCE2602AB3B0058C051 /* ImageResizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4BFCCD2602AB3B0058C051 /* ImageResizer.swift */; };
+		7F5EE81D2908977F008B247B /* ZoomTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5EE81C2908977F008B247B /* ZoomTransitionController.swift */; };
+		7F5EE8202908979F008B247B /* ZoomAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5EE81E2908979F008B247B /* ZoomAnimator.swift */; };
+		7F5EE8212908979F008B247B /* ZoomDismissalInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5EE81F2908979F008B247B /* ZoomDismissalInteractionController.swift */; };
+		7F62EA7929056C3600FCD97F /* GalleryAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */; };
 		7F67EFE225B50BEE00435148 /* ListsImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F67EFE125B50BEE00435148 /* ListsImages.swift */; };
 		7F6F6726281884D8000AA747 /* AlbumScreenRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F6F6725281884D8000AA747 /* AlbumScreenRouter.swift */; };
 		7F72D6692854E4A20016FC2A /* FileScannerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F72D6682854E4A20016FC2A /* FileScannerManager.swift */; };
@@ -52,12 +56,11 @@
 		7FC96D5A27A74B9800690CFB /* PhotoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC96D5927A74B9800690CFB /* PhotoDetailViewController.swift */; };
 		7FC96D5C27A76DA900690CFB /* PhotoDetailViewControllerSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC96D5B27A76DA900690CFB /* PhotoDetailViewControllerSettings.swift */; };
 		7FC96D6627A9555100690CFB /* PhotoZoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC96D6527A9555100690CFB /* PhotoZoomViewController.swift */; };
-		7FCD29612824692B005ECEF6 /* GalleryAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCD29602824692B005ECEF6 /* GalleryAppUITests.swift */; };
-		7FCD29632824692B005ECEF6 /* GalleryAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCD29622824692B005ECEF6 /* GalleryAppUITestsLaunchTests.swift */; };
 		7FCDB80128FCBAF000CC84F9 /* PhotoPropertiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCDB80028FCBAF000CC84F9 /* PhotoPropertiesViewController.swift */; };
 		7FCDB80328FCBD4900CC84F9 /* PhotoPropertiesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCDB80228FCBD4900CC84F9 /* PhotoPropertiesViewModel.swift */; };
 		7FCDB80528FCBD6D00CC84F9 /* PhotoPropertiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCDB80428FCBD6D00CC84F9 /* PhotoPropertiesView.swift */; };
 		7FD0A0F42819F1BD00A33913 /* AlbumScreenFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD0A0F32819F1BD00A33913 /* AlbumScreenFooter.swift */; };
+		7FDCEE732905741C00395F10 /* GalleryManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FDCEE722905741C00395F10 /* GalleryManagerTest.swift */; };
 		7FEDEA90284B5C7F001F40C0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEDEA8F284B5C7F001F40C0 /* Constants.swift */; };
 		7FEDEA93284CD8AD001F40C0 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7FEDEA92284CD8AD001F40C0 /* SnapKit */; };
 		7FEE73E427AC664400B8E02E /* AlbumScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEE73E327AC664400B8E02E /* AlbumScreenView.swift */; };
@@ -67,7 +70,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		7FCD29642824692B005ECEF6 /* PBXContainerItemProxy */ = {
+		7F62EA7A29056C3600FCD97F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7F235DF22585B73C007BD075 /* Project object */;
 			proxyType = 1;
@@ -106,6 +109,11 @@
 		7F479F1925B6496E005AFB97 /* InteractiveImageViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InteractiveImageViewCell.xib; sourceTree = "<group>"; };
 		7F49EC8D27D7A96900E6D2D8 /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
 		7F4BFCCD2602AB3B0058C051 /* ImageResizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageResizer.swift; sourceTree = "<group>"; };
+		7F5EE81C2908977F008B247B /* ZoomTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomTransitionController.swift; sourceTree = "<group>"; };
+		7F5EE81E2908979F008B247B /* ZoomAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomAnimator.swift; sourceTree = "<group>"; };
+		7F5EE81F2908979F008B247B /* ZoomDismissalInteractionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomDismissalInteractionController.swift; sourceTree = "<group>"; };
+		7F62EA7629056C3600FCD97F /* GalleryAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GalleryAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryAppTests.swift; sourceTree = "<group>"; };
 		7F67EFE125B50BEE00435148 /* ListsImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListsImages.swift; sourceTree = "<group>"; };
 		7F6F6725281884D8000AA747 /* AlbumScreenRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumScreenRouter.swift; sourceTree = "<group>"; };
 		7F72D6682854E4A20016FC2A /* FileScannerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileScannerManager.swift; sourceTree = "<group>"; };
@@ -125,13 +133,11 @@
 		7FC96D5927A74B9800690CFB /* PhotoDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailViewController.swift; sourceTree = "<group>"; };
 		7FC96D5B27A76DA900690CFB /* PhotoDetailViewControllerSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailViewControllerSettings.swift; sourceTree = "<group>"; };
 		7FC96D6527A9555100690CFB /* PhotoZoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoZoomViewController.swift; sourceTree = "<group>"; };
-		7FCD295E2824692B005ECEF6 /* GalleryAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GalleryAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		7FCD29602824692B005ECEF6 /* GalleryAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryAppUITests.swift; sourceTree = "<group>"; };
-		7FCD29622824692B005ECEF6 /* GalleryAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		7FCDB80028FCBAF000CC84F9 /* PhotoPropertiesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPropertiesViewController.swift; sourceTree = "<group>"; };
 		7FCDB80228FCBD4900CC84F9 /* PhotoPropertiesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPropertiesViewModel.swift; sourceTree = "<group>"; };
 		7FCDB80428FCBD6D00CC84F9 /* PhotoPropertiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPropertiesView.swift; sourceTree = "<group>"; };
 		7FD0A0F32819F1BD00A33913 /* AlbumScreenFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumScreenFooter.swift; sourceTree = "<group>"; };
+		7FDCEE722905741C00395F10 /* GalleryManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryManagerTest.swift; sourceTree = "<group>"; };
 		7FEDEA8F284B5C7F001F40C0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		7FEE73E327AC664400B8E02E /* AlbumScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumScreenView.swift; sourceTree = "<group>"; };
 		7FFD64C42759318C00189AC4 /* AlbumImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumImageCell.swift; sourceTree = "<group>"; };
@@ -151,7 +157,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		7FCD295B2824692B005ECEF6 /* Frameworks */ = {
+		7F62EA7329056C3600FCD97F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -185,6 +191,7 @@
 		7F04C60C2760F03C001CD45F /* Utilies */ = {
 			isa = PBXGroup;
 			children = (
+				7F5EE81B29089761008B247B /* ZoomAnimation */,
 				7F1C1C87275F8B3200929C95 /* UIImage+imageWidth.swift */,
 				7F0031D025B7AC7400D93B75 /* UIWindow+isLandscape.swift */,
 				7F0031CD25B7A21B00D93B75 /* ImageView+BlurEffect.swift */,
@@ -215,13 +222,11 @@
 		7F235DF12585B73C007BD075 = {
 			isa = PBXGroup;
 			children = (
-				7F235DFD2585B73C007BD075 /* AppDelegate.swift */,
-				7F235DFF2585B73C007BD075 /* SceneDelegate.swift */,
 				7F235DFC2585B73C007BD075 /* GalleryApp */,
-				7FCD295F2824692B005ECEF6 /* GalleryAppUITests */,
+				7F62EA7729056C3600FCD97F /* GalleryAppTests */,
 				7F235DFB2585B73C007BD075 /* Products */,
-				58EE590C8CD4A31706325B59 /* Pods */,
 				AAEB3BEC983888C56C2A2EEA /* Frameworks */,
+				58EE590C8CD4A31706325B59 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -229,7 +234,7 @@
 			isa = PBXGroup;
 			children = (
 				7F235DFA2585B73C007BD075 /* GalleryApp.app */,
-				7FCD295E2824692B005ECEF6 /* GalleryAppUITests.xctest */,
+				7F62EA7629056C3600FCD97F /* GalleryAppTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -237,6 +242,8 @@
 		7F235DFC2585B73C007BD075 /* GalleryApp */ = {
 			isa = PBXGroup;
 			children = (
+				7F235DFD2585B73C007BD075 /* AppDelegate.swift */,
+				7F235DFF2585B73C007BD075 /* SceneDelegate.swift */,
 				7F04C60C2760F03C001CD45F /* Utilies */,
 				7F04C60B2760E2DC001CD45F /* Data */,
 				7FFD64C227592F5900189AC4 /* Domain */,
@@ -270,6 +277,25 @@
 				7FA6762F284E367200B685F4 /* SettingsKey.swift */,
 			);
 			path = Enums;
+			sourceTree = "<group>";
+		};
+		7F5EE81B29089761008B247B /* ZoomAnimation */ = {
+			isa = PBXGroup;
+			children = (
+				7F5EE81E2908979F008B247B /* ZoomAnimator.swift */,
+				7F5EE81F2908979F008B247B /* ZoomDismissalInteractionController.swift */,
+				7F5EE81C2908977F008B247B /* ZoomTransitionController.swift */,
+			);
+			path = ZoomAnimation;
+			sourceTree = "<group>";
+		};
+		7F62EA7729056C3600FCD97F /* GalleryAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */,
+				7FDCEE722905741C00395F10 /* GalleryManagerTest.swift */,
+			);
+			path = GalleryAppTests;
 			sourceTree = "<group>";
 		};
 		7FCB40B925FAF1AC007ADF35 /* Presentation */ = {
@@ -307,15 +333,6 @@
 				7F2C0E4928FB000400FA1CE2 /* PhotoDetailViewModel.swift */,
 			);
 			path = PhotoDetail;
-			sourceTree = "<group>";
-		};
-		7FCD295F2824692B005ECEF6 /* GalleryAppUITests */ = {
-			isa = PBXGroup;
-			children = (
-				7FCD29602824692B005ECEF6 /* GalleryAppUITests.swift */,
-				7FCD29622824692B005ECEF6 /* GalleryAppUITestsLaunchTests.swift */,
-			);
-			path = GalleryAppUITests;
 			sourceTree = "<group>";
 		};
 		7FCDB7FF28FCBACE00CC84F9 /* PhotoProperties */ = {
@@ -383,23 +400,23 @@
 			productReference = 7F235DFA2585B73C007BD075 /* GalleryApp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		7FCD295D2824692B005ECEF6 /* GalleryAppUITests */ = {
+		7F62EA7529056C3600FCD97F /* GalleryAppTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7FCD29682824692B005ECEF6 /* Build configuration list for PBXNativeTarget "GalleryAppUITests" */;
+			buildConfigurationList = 7F62EA7C29056C3600FCD97F /* Build configuration list for PBXNativeTarget "GalleryAppTests" */;
 			buildPhases = (
-				7FCD295A2824692B005ECEF6 /* Sources */,
-				7FCD295B2824692B005ECEF6 /* Frameworks */,
-				7FCD295C2824692B005ECEF6 /* Resources */,
+				7F62EA7229056C3600FCD97F /* Sources */,
+				7F62EA7329056C3600FCD97F /* Frameworks */,
+				7F62EA7429056C3600FCD97F /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				7FCD29652824692B005ECEF6 /* PBXTargetDependency */,
+				7F62EA7B29056C3600FCD97F /* PBXTargetDependency */,
 			);
-			name = GalleryAppUITests;
-			productName = GalleryAppUITests;
-			productReference = 7FCD295E2824692B005ECEF6 /* GalleryAppUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
+			name = GalleryAppTests;
+			productName = GalleryAppTests;
+			productReference = 7F62EA7629056C3600FCD97F /* GalleryAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -407,14 +424,14 @@
 		7F235DF22585B73C007BD075 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1330;
+				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1220;
 				TargetAttributes = {
 					7F235DF92585B73C007BD075 = {
 						CreatedOnToolsVersion = 12.2;
 					};
-					7FCD295D2824692B005ECEF6 = {
-						CreatedOnToolsVersion = 13.3.1;
+					7F62EA7529056C3600FCD97F = {
+						CreatedOnToolsVersion = 14.0.1;
 						TestTargetID = 7F235DF92585B73C007BD075;
 					};
 				};
@@ -437,7 +454,7 @@
 			projectRoot = "";
 			targets = (
 				7F235DF92585B73C007BD075 /* GalleryApp */,
-				7FCD295D2824692B005ECEF6 /* GalleryAppUITests */,
+				7F62EA7529056C3600FCD97F /* GalleryAppTests */,
 			);
 		};
 /* End PBXProject section */
@@ -454,7 +471,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		7FCD295C2824692B005ECEF6 /* Resources */ = {
+		7F62EA7429056C3600FCD97F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -541,7 +558,9 @@
 				7FCDB80328FCBD4900CC84F9 /* PhotoPropertiesViewModel.swift in Sources */,
 				7F86A6F525B5DD0700428F92 /* UICheckBox.swift in Sources */,
 				7F2C0E4828FA15CE00FA1CE2 /* TopMostNavigationController.swift in Sources */,
+				7F5EE81D2908977F008B247B /* ZoomTransitionController.swift in Sources */,
 				7F163B3E28F62DD7008C13A4 /* AlbumListViewModel.swift in Sources */,
+				7F5EE8212908979F008B247B /* ZoomDismissalInteractionController.swift in Sources */,
 				7F235E002585B73C007BD075 /* SceneDelegate.swift in Sources */,
 				7F0938B02842B86900F29123 /* SettingsManager.swift in Sources */,
 				7FC96D6627A9555100690CFB /* PhotoZoomViewController.swift in Sources */,
@@ -550,6 +569,7 @@
 				7F0031D125B7AC7400D93B75 /* UIWindow+isLandscape.swift in Sources */,
 				7F39161B27814EB2003D688D /* SidebarRouter.swift in Sources */,
 				7F1267AF2777EEC3002A7038 /* AlbumsMenuIndex.swift in Sources */,
+				7F5EE8202908979F008B247B /* ZoomAnimator.swift in Sources */,
 				7FC96D5A27A74B9800690CFB /* PhotoDetailViewController.swift in Sources */,
 				7F72D6692854E4A20016FC2A /* FileScannerManager.swift in Sources */,
 				7F27EE7729007BA40001B810 /* UIView+addSubviews.swift in Sources */,
@@ -579,22 +599,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		7FCD295A2824692B005ECEF6 /* Sources */ = {
+		7F62EA7229056C3600FCD97F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7FCD29612824692B005ECEF6 /* GalleryAppUITests.swift in Sources */,
-				7FCD29632824692B005ECEF6 /* GalleryAppUITestsLaunchTests.swift in Sources */,
+				7FDCEE732905741C00395F10 /* GalleryManagerTest.swift in Sources */,
+				7F62EA7929056C3600FCD97F /* GalleryAppTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		7FCD29652824692B005ECEF6 /* PBXTargetDependency */ = {
+		7F62EA7B29056C3600FCD97F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7F235DF92585B73C007BD075 /* GalleryApp */;
-			targetProxy = 7FCD29642824692B005ECEF6 /* PBXContainerItemProxy */;
+			targetProxy = 7F62EA7A29056C3600FCD97F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -782,41 +802,49 @@
 			};
 			name = Release;
 		};
-		7FCD29662824692B005ECEF6 /* Debug */ = {
+		7F62EA7D29056C3600FCD97F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3HV23S92WL;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.pazderka.GalleryAppUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pazderka.GalleryAppTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = GalleryApp;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GalleryApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GalleryApp";
 			};
 			name = Debug;
 		};
-		7FCD29672824692B005ECEF6 /* Release */ = {
+		7F62EA7E29056C3600FCD97F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3HV23S92WL;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.pazderka.GalleryAppUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pazderka.GalleryAppTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = GalleryApp;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GalleryApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GalleryApp";
 			};
 			name = Release;
 		};
@@ -841,11 +869,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7FCD29682824692B005ECEF6 /* Build configuration list for PBXNativeTarget "GalleryAppUITests" */ = {
+		7F62EA7C29056C3600FCD97F /* Build configuration list for PBXNativeTarget "GalleryAppTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7FCD29662824692B005ECEF6 /* Debug */,
-				7FCD29672824692B005ECEF6 /* Release */,
+				7F62EA7D29056C3600FCD97F /* Debug */,
+				7F62EA7E29056C3600FCD97F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
