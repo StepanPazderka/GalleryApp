@@ -43,6 +43,9 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
                        SidebarItem(id: UUID(), title: "Replay 2019", image: UIImage(systemName: "music.note.list"))]
 
     let viewModel: SidebarViewModel
+    
+    let albumsHeader = SidebarItem(id: UUID(), title: SidebarSection.albumsButtons.rawValue, image: nil)
+    
     let disposeBag = DisposeBag()
     
     // MARK: -- Sidebar Snapshots
@@ -223,11 +226,10 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
     }
     
     func refreshAlbums() {
-        let headerItem = SidebarItem(id: UUID(), title: SidebarSection.albumsButtons.rawValue, image: nil)
         albumsSnapshot.deleteAll()
-        albumsSnapshot.append([headerItem])
-        albumsSnapshot.append(viewModel.albumButtons, to: headerItem)
-        albumsSnapshot.expand([headerItem])
+        albumsSnapshot.append([albumsHeader])
+        albumsSnapshot.append(viewModel.albumButtons, to: albumsHeader)
+        albumsSnapshot.expand([albumsHeader])
         dataSource.apply(albumsSnapshot, to: .albumsButtons, animatingDifferences: true)
     }
 }

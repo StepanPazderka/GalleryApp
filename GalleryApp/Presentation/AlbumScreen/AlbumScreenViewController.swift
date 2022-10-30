@@ -236,10 +236,9 @@ class AlbumScreenViewController: UIViewController {
             }
             let setThumbnailAction =
             UIAction(title: NSLocalizedString("SetThumbnail", comment: ""),
-                     image: UIImage(systemName: "rectangle.portrait.inset.filled")) { [weak self] action in
-                if let selectedThumbnailFileName = self?.viewModel.images[indexPath.row].fileName {
-                    self?.viewModel.setAlbumThumbnail(imageName: selectedThumbnailFileName)
-                }
+                     image: UIImage(systemName: "rectangle.portrait.inset.filled")) { action in
+                let selectedThumbnailFileName = self.viewModel.images[indexPath.row].fileName
+                self.viewModel.setAlbumThumbnail(imageName: selectedThumbnailFileName)
             }
             let deleteAction =
             UIAction(title: NSLocalizedString("kDELETEIMAGE", comment: ""),
@@ -277,7 +276,7 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
         let fullImageURL = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(self.viewModel.images[indexPath.row].fileName)
-        let path = fullImageURL.path
+        let path = fullImageURL.relativePath
         cell.imageView.image = UIImage(contentsOfFile: path)
         cell.router = self.router
         cell.index = indexPath.row

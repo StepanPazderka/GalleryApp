@@ -105,9 +105,12 @@ class AlbumScreenViewModel {
     }
     
     func setAlbumThumbnail(imageName: String) {
-        if var updatedAlbum = self.albumIndex {
-            updatedAlbum.thumbnail = imageName
-            self.galleryManager.updateAlbumIndex(index: updatedAlbum)
+        let seconds = 1.0
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+            if var updatedAlbum = self.albumIndex {
+                updatedAlbum.thumbnail = imageName
+                self.galleryManager.updateAlbumIndex(index: updatedAlbum)
+            }
         }
     }
     

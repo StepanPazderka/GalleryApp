@@ -215,6 +215,9 @@ class GalleryManager {
         try? json.write(to: url)
     }
     
+    /**
+    Rewrites Album Index in file system
+     */
     func updateAlbumIndex(index: AlbumIndex) {
         let json = try! JSONEncoder().encode(index)
         let url = self.selectedGalleryPath.appendingPathComponent(index.id.uuidString).appendingPathComponent(kAlbumIndex)
