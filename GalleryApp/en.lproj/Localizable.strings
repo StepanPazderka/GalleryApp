@@ -18,6 +18,7 @@
 "kEDIT" = "Edit";
 "kDONE" = "Done";
 "kOK" = "OK";
+"kDELETEALBUM" = "Delete Album";
 "kAlbumNameCantBeEmpty" = "Album name can't be empty";
 "kEnterAlbumName" = "Enter Album name";
 "kThumbs" = "thumbs";

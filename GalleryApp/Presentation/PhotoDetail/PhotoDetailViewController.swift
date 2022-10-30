@@ -40,7 +40,7 @@ class PhotoDetailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Setup
+    // MARK: - Layout
     private func setupViews() {
         self.view = screenView
         self.view.backgroundColor = .systemBackground
@@ -59,6 +59,9 @@ class PhotoDetailViewController: UIViewController {
         self.bindInteractions()
     }
     
+    /**
+     Reording images to start with selected image in Photo Detail view
+     */
     func reorderImages() {
         let firstImages = photoDetailView.selectedImages[0..<photoDetailView.selectedIndex]
         let endingImages = photoDetailView.selectedImages[photoDetailView.selectedIndex..<photoDetailView.selectedImages.endIndex]

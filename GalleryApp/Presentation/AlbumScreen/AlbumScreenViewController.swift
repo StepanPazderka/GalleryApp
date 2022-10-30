@@ -48,12 +48,6 @@ class AlbumScreenViewController: UIViewController {
         self.bindData()
         self.bindInteractions()
         
-        if let albumIndex = viewModel.albumIndex {
-            let thumbSize = albumIndex.thumbnailsSize
-            self.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(thumbSize), height: CGFloat(thumbSize))
-            self.screenView.slider.setValue(thumbSize, animated: false)
-        }
-        
         self.editingRx.bind(onNext: { [weak self] value in
             self?.setEditing(value, animated: true)
             if let editButton = self?.screenView.editButton {
@@ -70,13 +64,11 @@ class AlbumScreenViewController: UIViewController {
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        screenView.collectionLayout.itemSize = CGSize(width: self.screenView.frame.width / 3.3, height: self.screenView.frame.height / 3.3)
         screenView.collectionLayout.invalidateLayout()
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        screenView.collectionLayout.itemSize = CGSize(width: self.screenView.frame.width / 3.3, height: self.screenView.frame.height / 3.3)
         screenView.collectionLayout.invalidateLayout()
     }
 
@@ -95,6 +87,11 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.collectionView.addGestureRecognizer(longPressRecognizer)
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
         self.screenView.collectionView.register(AlbumScreenFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenFooter.identifier)
+        
+        if let thumbnailSize = self.viewModel.albumIndex?.thumbnailsSize {
+            self.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(thumbnailSize), height: CGFloat(thumbnailSize))
+            self.screenView.slider.value = thumbnailSize
+        }
     }
 
     func showDocumentPicker() {
@@ -239,9 +236,10 @@ class AlbumScreenViewController: UIViewController {
             }
             let setThumbnailAction =
             UIAction(title: NSLocalizedString("SetThumbnail", comment: ""),
-                     image: UIImage(systemName: "rectangle.portrait.inset.filled")) { action in
-                let selectedThumbnailFileName = viewModel.images[indexPath.row].fileName
-                self.viewModel.setAlbumThumbnail(imageName: selectedThumbnailFileName)
+                     image: UIImage(systemName: "rectangle.portrait.inset.filled")) { [weak self] action in
+                if let selectedThumbnailFileName = self?.viewModel.images[indexPath.row].fileName {
+                    self?.viewModel.setAlbumThumbnail(imageName: selectedThumbnailFileName)
+                }
             }
             let deleteAction =
             UIAction(title: NSLocalizedString("kDELETEIMAGE", comment: ""),

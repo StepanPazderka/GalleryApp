@@ -55,13 +55,6 @@ class SidebarViewModel {
         }).disposed(by: disposeBag)
     }
     
-    func loadAlbums() {
-        guard let galleryIndex: GalleryIndex = self.galleryManager.loadGalleryIndex() else { return }
-        self.albumButtons = galleryIndex.albums.compactMap {
-            SidebarItem(from: AlbumIndex(from: galleryManager.selectedGalleryPath.appendingPathComponent($0.uuidString))!)
-        }
-    }
-    
     func fetchAlbumButtons() -> Observable<[SidebarItem]> {
         self.fetchAlbums().map { albumIDsArray in
             return albumIDsArray.map { albumID in
@@ -70,7 +63,7 @@ class SidebarViewModel {
                     if !album.thumbnail.isEmpty {
                         thumbnailImage = UIImage(contentsOfFile: self.galleryManager.selectedGalleryPath.appendingPathComponent(album.thumbnail).relativePath)
                     }
-                    return SidebarItem(id: album.id, title: album.name, image: thumbnailImage?.resized(to: CGSize(width: 25.5, height: 25.5)) ?? nil)
+                    return SidebarItem(id: album.id, title: album.name, image: thumbnailImage?.resized(to: CGSize(width: 25.5, height: 25.5)) ?? nil) // TODO: - Resizing
                 }
                 else {
                     return SidebarItem.empty
@@ -85,7 +78,7 @@ class SidebarViewModel {
         }
     }
     
-    func createAlbum(name: String, parentAlbumID: UUID? = nil,  ID: UUID? = nil, callback: (() -> Void)? = nil) {
+    func createAlbum(name: String, parentAlbumID: UUID? = nil,  ID: UUID? = nil) {
         do {
             if let parentAlbumID = parentAlbumID {
                 try galleryManager.createAlbum(name: name, parentAlbum: parentAlbumID)
@@ -95,16 +88,10 @@ class SidebarViewModel {
         } catch {
             
         }
-        if let callback = callback {
-            callback()
-        }
     }
     
-    func deleteAlbum(index: Int, callback: (() -> Void)? = nil) {
+    func deleteAlbum(index: Int) {
         let selectedAlbumForDeletion = self.albumButtons[index - 1]
         self.galleryManager.delete(album: selectedAlbumForDeletion.identifier)
-        if let callback = callback {
-            callback()
-        }
     }
 }

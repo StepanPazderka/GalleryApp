@@ -108,11 +108,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
             }
             
             if let albumName = textField.text, !text.isEmpty {
-                self.viewModel.createAlbum(name: albumName, callback: {
-                    self.viewModel.loadAlbums()
-                    self.refreshMenu()
-                    self.refreshAlbums()
-                })
+                self.viewModel.createAlbum(name: albumName)
             }
         }
         createAlbumAlert.addAction(confirmAction)
@@ -270,11 +266,7 @@ extension SidebarViewController: UICollectionViewDelegate {
             UIAction(title: NSLocalizedString(kDeleteAlbum, comment: ""),
                      image: UIImage(systemName: "trash"),
                      attributes: .destructive) { action in
-                self.viewModel.deleteAlbum(index: indexPath.row) {
-                    self.viewModel.loadAlbums()
-                    self.refreshAlbums()
-                    self.refreshMenu()
-                }
+                self.viewModel.deleteAlbum(index: indexPath.row)
             }
             return UIMenu(title: "", children: [inspectAction, duplicateAction, deleteAction])
         })
