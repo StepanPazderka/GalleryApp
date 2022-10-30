@@ -51,6 +51,17 @@ class GalleryManager {
         }
     }
     
+    func galleryObservable() -> Observable<GalleryIndex> {
+        Observable.create { observer -> Disposable in
+            let galleryIndex: GalleryIndex? = self.loadGalleryIndex()
+            if let galleryIndex {
+                observer.onNext(galleryIndex)
+            }
+         
+            return Disposables.create {}
+        }
+    }
+    
     // MARK: - Essentials
     func createAlbum(name: String, parentAlbum: UUID? = nil) throws {
         let albumID = UUID()
@@ -275,7 +286,7 @@ class GalleryManager {
     func loadGalleryIndex(named galleryName: String? = nil) -> GalleryIndex? {
         if FileManager.default.fileExists(atPath: self.selectedGalleryPath.appendingPathComponent(kGalleryIndex).relativePath) {
             if let encodedGalleryIndex = try? String(contentsOfFile: self.selectedGalleryPath.appendingPathComponent(kGalleryIndex).relativePath).data(using: .unicode) {
-                let decodedGalleryIndex = try! JSONDecoder().decode(GalleryIndex.self, from: encodedGalleryIndex)
+                let decodedGalleryIndex = try? JSONDecoder().decode(GalleryIndex.self, from: encodedGalleryIndex)
                 return decodedGalleryIndex
             }
         }

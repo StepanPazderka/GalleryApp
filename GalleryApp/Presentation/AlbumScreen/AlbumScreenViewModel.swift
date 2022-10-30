@@ -102,6 +102,11 @@ class AlbumScreenViewModel {
             newIndex.thumbnailsSize = size
             self.galleryManager.updateAlbumIndex(index: newIndex)
         }
+        
+        if albumIndex == nil, var galleryIndex = self.galleryManager.loadGalleryIndex() {
+            galleryIndex.thumbnailSize = size
+            self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
+        }
     }
     
     func setAlbumThumbnail(imageName: String) {

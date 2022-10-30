@@ -12,8 +12,9 @@ struct GalleryIndex: Codable {
     var mainGalleryName: String
     var images: [AlbumImage]
     var albums: [UUID]
+    var thumbnailSize: Float? = 200
     
     static var empty: Self {
-        Self(mainGalleryName: "", images: [AlbumImage](), albums: [UUID]())
+        Self(mainGalleryName: "", images: [AlbumImage](), albums: [UUID](), thumbnailSize: 200)
     }
 }
