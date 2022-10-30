@@ -154,8 +154,18 @@ class AlbumScreenViewController: UIViewController {
         // MARK: - Slider binding
         self.screenView.slider.rx.value.changed.subscribe(onNext: { value in
             let newValue = CGFloat(value)
+            
             self.screenView.collectionLayout.itemSize = CGSize(width: newValue, height: newValue)
-            self.viewModel.newThumbnailSize(size: value)
+
+            let seconds = 1.0
+            DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+                let currentValue = self.screenView.slider.value
+                let oldValue = value
+                
+                if oldValue == currentValue {
+                    self.viewModel.newThumbnailSize(size: value)
+                }
+            }
         }).disposed(by: disposeBag)
     }
 

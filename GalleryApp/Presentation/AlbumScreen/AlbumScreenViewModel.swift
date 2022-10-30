@@ -98,24 +98,29 @@ class AlbumScreenViewModel {
     }
     
     func newThumbnailSize(size: Float) {
+        
+        
         if let albumID = albumID, var newIndex = loadAlbum(by: albumID) {
-            newIndex.thumbnailsSize = size
-            self.galleryManager.updateAlbumIndex(index: newIndex)
+            let seconds = 1.0
+            DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+                newIndex.thumbnailsSize = size
+                self.galleryManager.updateAlbumIndex(index: newIndex)
+            }
         }
         
         if albumIndex == nil, var galleryIndex = self.galleryManager.loadGalleryIndex() {
-            galleryIndex.thumbnailSize = size
-            self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
+            let seconds = 1.0
+            DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+                galleryIndex.thumbnailSize = size
+                self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
+            }
         }
     }
     
     func setAlbumThumbnail(imageName: String) {
-        let seconds = 1.0
-        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-            if var updatedAlbum = self.albumIndex {
-                updatedAlbum.thumbnail = imageName
-                self.galleryManager.updateAlbumIndex(index: updatedAlbum)
-            }
+        if var updatedAlbum = self.albumIndex {
+            updatedAlbum.thumbnail = imageName
+            self.galleryManager.updateAlbumIndex(index: updatedAlbum)
         }
     }
     
