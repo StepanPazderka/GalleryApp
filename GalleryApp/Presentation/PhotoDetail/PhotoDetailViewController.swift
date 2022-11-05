@@ -82,6 +82,8 @@ class PhotoDetailViewController: UIViewController {
     }
     
     @objc func didSingleTapWith(gestureRecognizer: UITapGestureRecognizer) {
+        self.screenView.imageSlideShow.presentFullScreenController(from: self)
+        
         if self.currentMode == .full {
             changeScreenMode(to: .normal)
             self.currentMode = .normal
@@ -115,6 +117,12 @@ class PhotoDetailViewController: UIViewController {
             if key.charactersIgnoringModifiers == UIKeyCommand.inputEscape {
                 self.dismiss(animated: true)
             }
+    
+            if key.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
+                self.screenView.imageSlideShow.previousPage(animated: true)
+            } else if key.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
+                self.screenView.imageSlideShow.nextPage(animated: true)
+            }
         }
     }
     
@@ -125,10 +133,11 @@ class PhotoDetailViewController: UIViewController {
                            animations: {
                             self.view.backgroundColor = .black
                             self.screenView.closeButton.isHidden = true
-                            
+
             }, completion: { completed in
             })
         } else {
+            
             self.navigationController?.setNavigationBarHidden(true, animated: false)
             UIView.animate(withDuration: 0.25,
                            animations: {

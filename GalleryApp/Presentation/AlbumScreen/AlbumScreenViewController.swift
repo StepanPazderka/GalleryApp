@@ -157,7 +157,10 @@ class AlbumScreenViewController: UIViewController {
             
             self.screenView.collectionLayout.itemSize = CGSize(width: newValue, height: newValue)
 
-            let seconds = 1.0
+            /*
+             This compares curren slider value with value -0.5 second, if equal, it will update thumbnail on index in json
+             */
+            let seconds = 0.5
             DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
                 let currentValue = self.screenView.slider.value
                 let oldValue = value
@@ -297,7 +300,7 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
         cell.imageView.image = UIImage(contentsOfFile: path)
         cell.router = self.router
         cell.index = indexPath.row
-        cell.delegate = self
+        cell.viewModel = self.viewModel
         cell.configure(imageData: self.viewModel.images[indexPath.row])
         return cell
     }
@@ -309,10 +312,6 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         CGSize(width: view.frame.width, height: 200)
     }
-}
-
-extension AlbumScreenViewController: UICollectionViewDelegateFlowLayout {
-    
 }
 
 extension AlbumScreenViewController: UICollectionViewDataSource {

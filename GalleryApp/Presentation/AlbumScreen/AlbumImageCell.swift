@@ -13,9 +13,8 @@ import RxCocoa
 class AlbumImageCell: UICollectionViewCell {
 
     // MARK: - Properties
+    var viewModel: AlbumScreenViewModel?
     var router: AlbumScreenRouter?
-    
-    var delegate: AlbumScreenViewController?
     let checkBox = UICheckBox(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
     var index: Int
     var isEditing: Bool = false {
@@ -101,7 +100,7 @@ class AlbumImageCell: UICollectionViewCell {
     }
     
     func bindData() {
-        self.delegate?.viewModel.showingTitles.subscribe(onNext: { value in
+        self.viewModel?.showingTitles.subscribe(onNext: { value in
             UIView.animate(withDuration: 0.25,
                            animations: {
                 if value == false {
@@ -130,7 +129,7 @@ class AlbumImageCell: UICollectionViewCell {
     func configure(imageData: AlbumImage) {
         self.textLabel.text = imageData.title
         
-        self.delegate?.editingRx.subscribe(onNext: { value in
+        self.viewModel?.isEditing.subscribe(onNext: { value in
             if value {
 //                self.removeGestureRecognizer(self.navigateToImageRecognizer)
                 self.navigateToImageRecognizer.isEnabled = false
@@ -144,7 +143,7 @@ class AlbumImageCell: UICollectionViewCell {
             }
         }).disposed(by: disposeBag)
         
-        delegate?.viewModel.showingTitles.subscribe(onNext: { value in
+        viewModel?.showingTitles.subscribe(onNext: { value in
             UIView.animate(withDuration: 0.25,
                            animations: {
                 self.textLabel.isHidden = value
@@ -153,13 +152,13 @@ class AlbumImageCell: UICollectionViewCell {
     }
     
     @objc func galleryImageTapped(_ sender: UITapGestureRecognizer) {
-        if let delegate = delegate {
+        if let viewModel = viewModel, let router = router {
             if sender.numberOfTouches == 2 {
-                delegate.isEditing = true
+                viewModel.isEditing.accept(true)
                 return
+            } else {
+                router.showPhotoDetail(images: viewModel.images, index: self.index)
             }
-            delegate.router.showPhotoDetail(images: delegate.viewModel.images, index: self.index)
-            
         }
     }
 

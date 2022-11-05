@@ -13,7 +13,7 @@ import FolderMonitorKit
 class AlbumScreenViewModel {
     
     // MARK: -- Properties
-    var isEditing = BehaviorSubject(value: false)
+    var isEditing = PublishRelay<Bool>()
     var showingTitles = BehaviorSubject(value: false)
     
     var albumID: UUID?
