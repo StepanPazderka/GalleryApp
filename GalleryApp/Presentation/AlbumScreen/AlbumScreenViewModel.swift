@@ -85,15 +85,12 @@ class AlbumScreenViewModel {
         self.galleryManager.deleteImage(imageName: imageName)
     }
     
-    func addPhoto(image: AlbumImage, callback: (() -> Void)? = nil) {
+    func addPhoto(image: AlbumImage) {
         self.galleryManager.addImage(photoID: image.fileName, toAlbum: albumID ?? nil)
         if albumID != nil {
             self.images.append(image)
         } else {
             self.images = self.galleryManager.loadGalleryIndex()?.images ?? []
-        }
-        if let callback = callback {
-            callback()
         }
     }
     

@@ -62,9 +62,17 @@ class AlbumScreenView: UIView {
         return view
     }()
     
-    let imagePicker: UIImagePickerController = {
-        let view = UIImagePickerController()
-        view.allowsEditing = false
+//    let imagePicker: UIImagePickerController = {
+//        let view = UIImagePickerController()
+//        view.allowsEditing = false
+//        return view
+//    }()
+    
+    let imagePicker: PHPickerViewController = {
+        var configuration = PHPickerConfiguration()
+        configuration.filter = .images
+        configuration.selectionLimit = 0
+        let view = PHPickerViewController(configuration: configuration)
         return view
     }()
     

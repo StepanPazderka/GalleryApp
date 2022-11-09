@@ -13,6 +13,8 @@ import UniformTypeIdentifiers
 import SnapKit
 import LocalAuthentication
 import Swinject
+import Photos
+import PhotosUI
 
 class AlbumScreenViewController: UIViewController {
     
@@ -173,9 +175,7 @@ class AlbumScreenViewController: UIViewController {
     }
 
     func addPhoto(filename: AlbumImage, to album: UUID? = nil) {
-        self.viewModel.addPhoto(image: filename) {
-            self.refreshData()
-        }
+        self.viewModel.addPhoto(image: filename)
     }
 
     public func refreshData() {
@@ -357,6 +357,51 @@ extension AlbumScreenViewController: UIImagePickerControllerDelegate, UINavigati
                 print(error.localizedDescription)
             }
             self.screenView.imagePicker.dismiss(animated: true)
+        }
+    }
+}
+
+extension AlbumScreenViewController: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true)
+        let itemProviders = results.map { $0.itemProvider }
+        
+        for itemProvider in itemProviders {
+            
+            if itemProvider.canLoadObject(ofClass: UIImage.self) {
+                guard let filename = itemProvider.suggestedName else { return }
+
+                print("\(results.first?.assetIdentifier)")
+                
+                itemProvider.loadObject(ofClass: UIImage.self) { image, error in
+                    guard let identifier = itemProvider.registeredTypeIdentifiers.first else { return }
+                    guard let filenameExtension = URL(string: identifier)?.pathExtension else { return }
+                    
+                    let resultPath = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
+                    
+                    guard let image = image as? UIImage else { return }
+                    
+                    if filenameExtension == "jpeg" || filenameExtension == "jpg" {
+                        if let data = image.jpegData(compressionQuality: 1.0) {
+                            do {
+                                try data.write(to: resultPath)
+                            } catch {
+                                print(error.localizedDescription)
+                            }
+                        }
+                    } else if filenameExtension == "png" {
+                        if let data = image.pngData() {
+                            do {
+                                try data.write(to: resultPath)
+                            } catch {
+                                print(error.localizedDescription)
+                            }
+                        }
+                    }
+                    
+                    self.addPhoto(filename: AlbumImage(fileName: resultPath.lastPathComponent, date: Date()), to: self.viewModel.albumID)
+                }
+            }
         }
     }
 }
