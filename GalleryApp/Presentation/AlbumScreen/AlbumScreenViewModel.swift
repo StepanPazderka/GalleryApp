@@ -94,6 +94,15 @@ class AlbumScreenViewModel {
         }
     }
     
+    func addPhotos(images: [AlbumImage]) {
+        self.galleryManager.addImages(photos: images.map { $0.fileName })
+        if albumID != nil {
+            self.images.append(contentsOf: images)
+        } else {
+            self.images = self.galleryManager.loadGalleryIndex()?.images ?? []
+        }
+    }
+    
     func newThumbnailSize(size: Float) {
         
         

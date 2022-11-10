@@ -136,6 +136,21 @@ class GalleryManager {
         }
     }
     
+    func addImages(photos: [String], toAlbum: UUID? = nil) {
+        if var galleryIndex = self.loadGalleryIndex() {
+            galleryIndex.images.append(contentsOf: photos.map { AlbumImage(fileName: $0, date: Date()) })
+            self.rebuildGalleryIndex(gallery: galleryIndex)
+            self.selectedGalleryIndexRelay.onNext(galleryIndex)
+        }
+        
+        if let toAlbum = toAlbum {
+            if var album = loadAlbumIndex(id: toAlbum) {
+                album.images.append(contentsOf: photos.map { AlbumImage(fileName: $0, date: Date()) })
+                self.updateAlbumIndex(index: album)
+            }
+        }
+    }
+    
     func loadImage() -> UIImage {
         let outputImage: UIImage = UIImage()
         return outputImage

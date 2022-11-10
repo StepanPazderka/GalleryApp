@@ -364,43 +364,56 @@ extension AlbumScreenViewController: UIImagePickerControllerDelegate, UINavigati
 extension AlbumScreenViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
-        let itemProviders = results.map { $0.itemProvider }
+        var images = [AlbumImage]()
         
-        for itemProvider in itemProviders {
+        var progress: Progress?
+        
+        for itemProvider in results.map({ $0.itemProvider }) {
             
             if itemProvider.canLoadObject(ofClass: UIImage.self) {
                 guard let filename = itemProvider.suggestedName else { return }
+                guard let identifier = itemProvider.registeredTypeIdentifiers.first else { return }
+                guard let filenameExtension = URL(string: identifier)?.pathExtension else { return }
 
                 print("\(results.first?.assetIdentifier)")
+                                
                 
-                itemProvider.loadObject(ofClass: UIImage.self) { image, error in
-                    guard let identifier = itemProvider.registeredTypeIdentifiers.first else { return }
-                    guard let filenameExtension = URL(string: identifier)?.pathExtension else { return }
+                guard let identifier = results.first?.itemProvider.registeredTypeIdentifiers.first else { return }
+                
+                progress = itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.image.identifier) { tempPathForFileCopying, error in
                     
-                    let resultPath = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
-                    
-                    guard let image = image as? UIImage else { return }
-                    
-                    if filenameExtension == "jpeg" || filenameExtension == "jpg" {
-                        if let data = image.jpegData(compressionQuality: 1.0) {
-                            do {
-                                try data.write(to: resultPath)
-                            } catch {
-                                print(error.localizedDescription)
-                            }
-                        }
-                    } else if filenameExtension == "png" {
-                        if let data = image.pngData() {
-                            do {
-                                try data.write(to: resultPath)
-                            } catch {
-                                print(error.localizedDescription)
-                            }
-                        }
+                    if (error != nil) {
+                        print("Error while copying files \(error)")
                     }
+                                        
+                    let targetPath = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
                     
-                    self.addPhoto(filename: AlbumImage(fileName: resultPath.lastPathComponent, date: Date()), to: self.viewModel.albumID)
+                    if let tempPathForFileCopying {
+                        do {
+                            try FileManager.default.copyItem(at: tempPathForFileCopying, to: targetPath)
+                        } catch {
+                            print("Error \(error)")
+                        }
+                        
+                        images.append(AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
+                    }
                 }
+            }
+        }
+        
+        self.screenView.progressView.isHidden = false
+        
+//        sleep(UInt32(0.1))
+        
+        if let progress {
+            while !progress.isFinished {
+                self.screenView.progressView.progress = Float(progress.fractionCompleted)
+                self.screenView.progressView.isHidden = false
+            }
+            
+            if progress.isFinished {
+                self.viewModel.addPhotos(images: images)
+                self.screenView.progressView.isHidden = true
             }
         }
     }

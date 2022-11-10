@@ -62,6 +62,13 @@ class AlbumScreenView: UIView {
         return view
     }()
     
+    var progressView = {
+        let view = UIProgressView()
+        view.progress = 0.0
+        view.isHidden = true
+        return view
+    }()
+    
 //    let imagePicker: UIImagePickerController = {
 //        let view = UIImagePickerController()
 //        view.allowsEditing = false
@@ -114,7 +121,8 @@ class AlbumScreenView: UIView {
     
     private func addSubviews() {
         self.addSubviews(collectionView,
-                         bottomToolbar)
+                         bottomToolbar,
+                         progressView)
         bottomToolbar.addSubview(slider)
         bottomToolbar.addSubview(checkBoxTitles)
     }
@@ -137,6 +145,11 @@ class AlbumScreenView: UIView {
         }
         checkBoxTitles.snp.makeConstraints { make in
             make.rightMargin.equalToSuperview()
+        }
+        progressView.snp.makeConstraints { make in
+            make.width.equalToSuperview().offset(-200)
+            make.height.equalTo(4)
+            make.center.equalToSuperview()
         }
     }
 }
