@@ -31,6 +31,7 @@ class PhotoDetailView: UIView {
 //        view.circular = false
         view.maximumScale = 10.0
         view.pageIndicator = .none
+        view.preload = .fixed(offset: 1)
         return view
     }()
         
