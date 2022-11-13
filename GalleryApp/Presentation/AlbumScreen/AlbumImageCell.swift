@@ -159,7 +159,6 @@ class AlbumImageCell: UICollectionViewCell {
                 return
             } else {
                 router.showPhotoDetail(images: viewModel.images, index: self.index)
-                
             }
         }
     }
