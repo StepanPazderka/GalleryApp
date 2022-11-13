@@ -54,21 +54,9 @@ class PhotoDetailViewController: UIViewController {
                 
         self.view.addGestureRecognizer(self.singleTapGestureRecognizer)
         self.view.addGestureRecognizer(self.swipeDownGestureRecognizer)
+                
+        let newArray = Array(photoDetailView.selectedImages)
         
-        self.reorderImages()
-        self.bindInteractions()
-    }
-    
-    /**
-     Reording images to start with selected image in Photo Detail view
-     */
-    func reorderImages() {
-        let firstImages = photoDetailView.selectedImages[0..<photoDetailView.selectedIndex]
-        let endingImages = photoDetailView.selectedImages[photoDetailView.selectedIndex..<photoDetailView.selectedImages.endIndex]
-        let newArray = Array(endingImages + firstImages)
-        
-        let selectedImage = photoDetailView.selectedImages[photoDetailView.selectedIndex].fileName
-
         let imagesSources: [ImageSource] = newArray.compactMap {
             let image = UIImage(contentsOfFile: galleryManager.selectedGalleryPath.appendingPathComponent($0.fileName).relativePath)
             if let image = image {
@@ -77,9 +65,14 @@ class PhotoDetailViewController: UIViewController {
             }
             return nil
         }
-        
         self.screenView.imageSlideShow.setImageInputs(imagesSources)
+        
+                self.screenView.imageSlideShow.setCurrentPage(photoDetailView.selectedIndex, animated: false)
+
+        
+        self.bindInteractions()
     }
+
     
     @objc func didSingleTapWith(gestureRecognizer: UITapGestureRecognizer) {
         self.screenView.imageSlideShow.presentFullScreenController(from: self)
