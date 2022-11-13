@@ -28,7 +28,7 @@ class PhotoDetailView: UIView {
         let view = ImageSlideshow()
         view.frame = .zero
         view.zoomEnabled = true
-        view.circular = false
+//        view.circular = false
         view.maximumScale = 10.0
         view.pageIndicator = .none
         return view

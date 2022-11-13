@@ -95,18 +95,18 @@ class PhotoDetailViewController: UIViewController {
     
     // MARK: - Binding Interactions
     private func bindInteractions() {
-        self.screenView.closeButton.rx.tap.subscribe(onNext:  {
-            self.dismiss(animated: true)
+        self.screenView.closeButton.rx.tap.subscribe(onNext:  { [weak self] in
+            self?.dismiss(animated: true)
         }).disposed(by: disposeBag)
         
         self.screenView.imageSlideShow.delegate = self
         
-        singleTapGestureRecognizer.rx.event.subscribe(onNext: { event in
-            self.didSingleTapWith(gestureRecognizer: event)
+        singleTapGestureRecognizer.rx.event.subscribe(onNext: { [weak self] event in
+            self?.didSingleTapWith(gestureRecognizer: event)
         }).disposed(by: disposeBag)
         
-        swipeDownGestureRecognizer.rx.event.subscribe(onNext: { event in
-            self.dismiss(animated: true)
+        swipeDownGestureRecognizer.rx.event.subscribe(onNext: { [weak self] event in
+            self?.dismiss(animated: true)
         }).disposed(by: disposeBag)
     }
     
@@ -130,9 +130,9 @@ class PhotoDetailViewController: UIViewController {
         if to == .full {
             self.navigationController?.setNavigationBarHidden(true, animated: false)
             UIView.animate(withDuration: 0.25,
-                           animations: {
-                            self.view.backgroundColor = .black
-                            self.screenView.closeButton.isHidden = true
+                           animations: { [weak self] in
+                            self?.view.backgroundColor = .black
+                            self?.screenView.closeButton.isHidden = true
 
             }, completion: { completed in
             })
@@ -140,13 +140,13 @@ class PhotoDetailViewController: UIViewController {
             
             self.navigationController?.setNavigationBarHidden(true, animated: false)
             UIView.animate(withDuration: 0.25,
-                           animations: {
+                           animations: { [weak self] in
                             if #available(iOS 13.0, *) {
-                                self.view.backgroundColor = .systemBackground
+                                self?.view.backgroundColor = .systemBackground
                             } else {
-                                self.view.backgroundColor = .white
+                                self?.view.backgroundColor = .white
                             }
-                            self.screenView.closeButton.isHidden = false
+                            self?.screenView.closeButton.isHidden = false
             }, completion: { completed in
             })
         }
