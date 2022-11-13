@@ -57,7 +57,7 @@ class GalleryManager {
             if let galleryIndex {
                 observer.onNext(galleryIndex)
             }
-         
+            
             return Disposables.create {}
         }
     }
@@ -78,7 +78,7 @@ class GalleryManager {
             print(error)
         }
     }
-
+    
     func scanFolderForAlbums(url: URL? = nil) -> [AlbumIndex] {
         var detectedAlbums = [URL]()
         
@@ -197,20 +197,23 @@ class GalleryManager {
     
     func listAllImagesInGalleryFolder() -> [AlbumImage] {
         var outputImageList: [AlbumImage] = []
-
+        
         let list = fileScannerManager.scanAlbumFolderForImages()
         outputImageList = list
         return outputImageList
     }
     
     func buildThumbs(forAlbum: String) {
-        let images = fileScannerManager.scanAlbumFolderForImages(albumName: forAlbum)
+        let images = self.loadGalleryIndex()?.images
+        
+        guard let images else { return }
+        
         for image in images {
             let newFilename = image.fileName
             let newImage = ImageResizer.resizeImage(image: UIImage(contentsOfFile: selectedGalleryPath.appendingPathComponent(forAlbum).appendingPathComponent(image.fileName).relativePath)!, targetSize: CGSize(width: 300, height: 300))
             if let jpegImage = newImage?.jpegData(compressionQuality: 0.6) {
-                if FileManager.default.fileExists(atPath: selectedGalleryPath.appendingPathComponent(forAlbum).appendingPathComponent(kThumbs).path) == false {
-                    try? FileManager.default.createDirectory(atPath: selectedGalleryPath.appendingPathComponent(forAlbum).appendingPathComponent(kThumbs).path, withIntermediateDirectories: false)
+                if FileManager.default.fileExists(atPath: selectedGalleryPath.appendingPathComponent(kThumbs).path) == false {
+                    try? FileManager.default.createDirectory(atPath: selectedGalleryPath.appendingPathComponent(kThumbs).path, withIntermediateDirectories: false)
                 }
                 var filePath = selectedGalleryPath.appendingPathComponent(forAlbum).appendingPathComponent(kThumbs).appendingPathComponent(newFilename)
                 filePath = filePath.deletingPathExtension()
@@ -218,6 +221,39 @@ class GalleryManager {
                 try! jpegImage.write(to: filePath)
             }
         }
+    }
+    
+    func buildThumb(for imageFileName: String) {
+        let images = self.loadGalleryIndex()?.images
+        
+        let thumbPath = selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(imageFileName).deletingPathExtension().appendingPathExtension("jpg")
+        
+        guard !FileManager.default.fileExists(atPath: thumbPath.relativePath) else { return }
+        
+        guard let images else { return }
+        
+        let selectedImage = images.first(where: {
+            
+            var fileName = URL(string: $0.fileName)
+            
+            if let fileName {
+                print(fileName.deletingPathExtension())
+            }
+            
+            return $0.fileName == imageFileName
+        })
+        
+        let image = UIImage(contentsOfFile: selectedGalleryPath.appendingPathComponent(imageFileName).relativePath)
+        
+        guard let image else { return }
+        let resizedImage = ImageResizer.resizeImage(image: image, targetSize: CGSize(width: 300, height: 300))
+        guard let resizedImage else { return }
+        let jpegImage = resizedImage.jpegData(compressionQuality: 0.6)
+        if !FileManager.default.fileExists(atPath: selectedGalleryPath.appendingPathComponent(kThumbs).relativePath) {
+            try? FileManager.default.createDirectory(at: selectedGalleryPath.appendingPathComponent(kThumbs), withIntermediateDirectories: false)
+        }
+
+        try? jpegImage?.write(to: thumbPath)
     }
     
     static func writeThumb(image: UIImage) {

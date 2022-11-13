@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import RxSwift
 import RxCocoa
+import ImageViewer
 
 class AlbumImageCell: UICollectionViewCell {
 
@@ -158,6 +159,7 @@ class AlbumImageCell: UICollectionViewCell {
                 return
             } else {
                 router.showPhotoDetail(images: viewModel.images, index: self.index)
+                
             }
         }
     }

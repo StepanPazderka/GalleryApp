@@ -15,6 +15,7 @@ import LocalAuthentication
 import Swinject
 import Photos
 import PhotosUI
+import ImageViewer
 
 class AlbumScreenViewController: UIViewController {
     
@@ -296,7 +297,9 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
         let fullImageURL = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(self.viewModel.images[indexPath.row].fileName)
-        let path = fullImageURL.relativePath
+        self.viewModel.galleryManager.buildThumb(for: self.viewModel.images[indexPath.row].fileName)
+        
+        let path = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(self.viewModel.images[indexPath.row].fileName).deletingPathExtension().appendingPathExtension("jpg").relativePath
         cell.imageView.image = UIImage(contentsOfFile: path)
         cell.router = self.router
         cell.index = indexPath.row
@@ -362,12 +365,13 @@ extension AlbumScreenViewController: UIImagePickerControllerDelegate, UINavigati
 }
 
 extension AlbumScreenViewController: PHPickerViewControllerDelegate {
+    
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
         var images = [AlbumImage]()
         
         var progress: Progress?
-        
+                
         for itemProvider in results.map({ $0.itemProvider }) {
             
             if itemProvider.canLoadObject(ofClass: UIImage.self) {
@@ -400,10 +404,10 @@ extension AlbumScreenViewController: PHPickerViewControllerDelegate {
                 }
             }
         }
-        
+
         self.screenView.progressView.isHidden = false
         
-//        sleep(UInt32(0.1))
+        sleep(1)
         
         if let progress {
             while !progress.isFinished {

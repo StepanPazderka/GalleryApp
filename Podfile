@@ -13,5 +13,6 @@ target 'GalleryApp' do
   pod 'DirectoryWatcher'
   pod 'SwiftLint'
   pod 'ImageSlideshow', '~> 1.9.0'
+  pod 'ImageViewer'
 
 end
