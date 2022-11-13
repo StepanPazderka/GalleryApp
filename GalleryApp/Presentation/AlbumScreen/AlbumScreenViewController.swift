@@ -27,7 +27,6 @@ class AlbumScreenViewController: UIViewController {
     let router: AlbumScreenRouter
     let disposeBag = DisposeBag()
     var editingRx = BehaviorRelay<Bool>(value: false)
-    var showingTitles = BehaviorRelay<Bool>(value: false)
     
     // MARK: - Init
     init(router: AlbumScreenRouter, viewModel: AlbumScreenViewModel) {
@@ -150,8 +149,12 @@ class AlbumScreenViewController: UIViewController {
             self?.present(alert, animated: true, completion: nil)
         }).disposed(by: disposeBag)
         
-        self.screenView.checkBoxTitles.rx.tap.subscribe(onNext: {
-            self.showingTitles.accept(true)
+        self.screenView.checkBoxTitles.rx.tap.subscribe(onNext: { [weak self] in
+            if self?.viewModel.showingTitles.value != false {
+                self?.viewModel.showingTitles.accept(false)
+            } else {
+                self?.viewModel.showingTitles.accept(true)
+            }
         }).disposed(by: disposeBag)
         
         // MARK: - Slider binding
@@ -296,11 +299,11 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     // MARK: - Dequeing main cell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
+        let thumbnailURL = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(self.viewModel.images[indexPath.row].fileName).deletingPathExtension().appendingPathExtension("jpg").relativePath
         let fullImageURL = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(self.viewModel.images[indexPath.row].fileName)
-        self.viewModel.galleryManager.buildThumb(for: self.viewModel.images[indexPath.row].fileName)
+        self.viewModel.galleryManager.buildThumb(forImage: self.viewModel.images[indexPath.row])
         
-        let path = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(self.viewModel.images[indexPath.row].fileName).deletingPathExtension().appendingPathExtension("jpg").relativePath
-        cell.imageView.image = UIImage(contentsOfFile: path)
+        cell.imageView.image = UIImage(contentsOfFile: thumbnailURL)
         cell.router = self.router
         cell.index = indexPath.row
         cell.viewModel = self.viewModel

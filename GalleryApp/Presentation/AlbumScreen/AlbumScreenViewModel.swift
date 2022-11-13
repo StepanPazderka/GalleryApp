@@ -14,7 +14,7 @@ class AlbumScreenViewModel {
     
     // MARK: -- Properties
     var isEditing = PublishRelay<Bool>()
-    var showingTitles = BehaviorSubject(value: false)
+    var showingTitles = BehaviorRelay(value: false)
     
     var albumID: UUID?
     var albumIndex: AlbumIndex?

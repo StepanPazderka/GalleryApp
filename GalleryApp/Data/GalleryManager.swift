@@ -223,10 +223,10 @@ class GalleryManager {
         }
     }
     
-    func buildThumb(for imageFileName: String) {
+    func buildThumb(forImage albumImage: AlbumImage) {
         let images = self.loadGalleryIndex()?.images
         
-        let thumbPath = selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(imageFileName).deletingPathExtension().appendingPathExtension("jpg")
+        let thumbPath = selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(albumImage.fileName).deletingPathExtension().appendingPathExtension("jpg")
         
         guard !FileManager.default.fileExists(atPath: thumbPath.relativePath) else { return }
         
@@ -240,10 +240,10 @@ class GalleryManager {
                 print(fileName.deletingPathExtension())
             }
             
-            return $0.fileName == imageFileName
+            return $0.fileName == albumImage.fileName
         })
         
-        let image = UIImage(contentsOfFile: selectedGalleryPath.appendingPathComponent(imageFileName).relativePath)
+        let image = UIImage(contentsOfFile: selectedGalleryPath.appendingPathComponent(albumImage.fileName).relativePath)
         
         guard let image else { return }
         let resizedImage = ImageResizer.resizeImage(image: image, targetSize: CGSize(width: 300, height: 300))
