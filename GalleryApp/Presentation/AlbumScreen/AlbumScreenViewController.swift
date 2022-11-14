@@ -26,7 +26,6 @@ class AlbumScreenViewController: UIViewController {
     var viewModel: AlbumScreenViewModel
     let router: AlbumScreenRouter
     let disposeBag = DisposeBag()
-    var editingRx = BehaviorRelay<Bool>(value: false)
     
     // MARK: - Init
     init(router: AlbumScreenRouter, viewModel: AlbumScreenViewModel) {
@@ -50,7 +49,7 @@ class AlbumScreenViewController: UIViewController {
         self.bindData()
         self.bindInteractions()
         
-        self.editingRx.bind(onNext: { [weak self] value in
+        self.viewModel.isEditing.bind(onNext: { [weak self] value in
             self?.setEditing(value, animated: true)
             if let editButton = self?.screenView.editButton {
                 if value {
@@ -58,7 +57,13 @@ class AlbumScreenViewController: UIViewController {
                     self?.setEditing(true, animated: true)
                 } else {
                     editButton.setTitle(NSLocalizedString("kEDIT", comment: ""), for: .normal)
-                    self?.setEditing(false, animated: false)
+                    self?.setEditing(false, animated: true)
+                    self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
+                        let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumImageCell
+                        cell.isEditing = false
+                        cell.checkBox.checker = false
+                        cell.checkBox.isEnabled = false
+                    }
                 }
             }
         }).disposed(by: disposeBag)
@@ -124,10 +129,10 @@ class AlbumScreenViewController: UIViewController {
     // MARK: - Interactions Binding
     func bindInteractions() {
         self.screenView.editButton.rx.tap.subscribe(onNext: { [weak self] in
-            if self?.editingRx.value == false {
-                self?.editingRx.accept(true)
+            if self?.viewModel.isEditing.value == false {
+                self?.viewModel.isEditing.accept(true)
             } else {
-                self?.editingRx.accept(false)
+                self?.viewModel.isEditing.accept(false)
             }
         }).disposed(by: disposeBag)
         

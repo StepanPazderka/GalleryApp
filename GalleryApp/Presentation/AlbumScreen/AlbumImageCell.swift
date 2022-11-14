@@ -16,30 +16,17 @@ class AlbumImageCell: UICollectionViewCell {
     // MARK: - Properties
     var viewModel: AlbumScreenViewModel?
     var router: AlbumScreenRouter?
-    let checkBox = UICheckBox(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+    let checkBox = UICheckBox(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
     var index: Int
     var isEditing: Bool = false {
         didSet {
             checkBox.isHidden = !isEditing
         }
     }
-//    var showingTitle = false {
-//        didSet {
-//            UIView.animate(withDuration: 0.25,
-//                           animations: {
-//                if self.showingTitle == false {
-//                    self.textLabel.alpha = 0
-//                } else {
-//                    self.textLabel.alpha = 1
-//                }
-//            })
-//        }
-//    }
     
     // MARK: - Views
     var textLabel = {
         let view = UILabel()
-//        view.backgroundColor = .green
         return view
     }()
     var imageView = UIImageView()
@@ -50,7 +37,6 @@ class AlbumImageCell: UICollectionViewCell {
         return view
     }()
     
-    let checkImageRecognizer = UITapGestureRecognizer(target: AlbumImageCell.self, action: #selector(galleryImageCheckboxTapped(_:)))
     var checkBoxTapped: UITapGestureRecognizer?
     let disposeBag = DisposeBag()
     static let identifier: String = String(describing: type(of: AlbumImageCell.self))
@@ -63,31 +49,15 @@ class AlbumImageCell: UICollectionViewCell {
         
         checkBox.isHidden = true
         
-        contentView.addSubviews(checkBox,
-                                stackView)
+        contentView.addSubviews(stackView,
+                                checkBox)
         
         stackView.addArrangedSubview(imageView)
         stackView.addArrangedSubview(textLabel)
         
-        checkBox.snp.makeConstraints { make in
-            make.bottom.equalToSuperview()
-            make.trailing.equalToSuperview()
-        }
-        
-        textLabel.snp.makeConstraints { make in
-            make.height.equalTo(50)
-        }
-        
-        stackView.snp.makeConstraints { make in
-            make.size.equalToSuperview()
-            make.margins.equalTo(0)
-        }
-        
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTap(_:)))
         doubleTap.numberOfTapsRequired = 2
-        
-        
-        
+
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(galleryImageLongPress(_:)))
         imageView.isUserInteractionEnabled = true
         
@@ -98,6 +68,8 @@ class AlbumImageCell: UICollectionViewCell {
         self.backgroundColor = .none
 
         self.addGestureRecognizer(navigateToImageRecognizer)
+        
+        self.layoutViews()
     }
     
     func bindData() {
@@ -122,6 +94,12 @@ class AlbumImageCell: UICollectionViewCell {
         recognizer.numberOfTapsRequired = 1
         return recognizer
     }
+    
+    var checkImageRecognizer: UITapGestureRecognizer {
+//        let recognizer = UITapGestureRecognizer(target: self, action: #selector(galleryImageCheckboxTapped(_:)))
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector(galleryImageCheckboxTapped(_:)))
+        return recognizer
+    }
 
     @objc func doubleTap(_ sender: UITapGestureRecognizer) {
         print("Double tap")
@@ -132,15 +110,11 @@ class AlbumImageCell: UICollectionViewCell {
         
         self.viewModel?.isEditing.subscribe(onNext: { value in
             if value {
-//                self.removeGestureRecognizer(self.navigateToImageRecognizer)
-                self.navigateToImageRecognizer.isEnabled = false
-//                self.addGestureRecognizer(self.checkImageRecognizer)
-                self.checkImageRecognizer.isEnabled = true
+                self.removeGestureRecognizer(self.navigateToImageRecognizer)
+                self.addGestureRecognizer(self.checkImageRecognizer)
             } else {
-//                self.addGestureRecognizer(self.navigateToImageRecognizer)
-                self.navigateToImageRecognizer.isEnabled = true
-//                self.removeGestureRecognizer(self.checkImageRecognizer)
-                self.checkImageRecognizer.isEnabled = false
+                self.removeGestureRecognizer(self.checkImageRecognizer)
+                self.addGestureRecognizer(self.navigateToImageRecognizer)
             }
         }).disposed(by: disposeBag)
         
@@ -172,5 +146,23 @@ class AlbumImageCell: UICollectionViewCell {
         UIView.animate(withDuration: 0.1, animations: {
             self.imageView.transform = CGAffineTransform(scaleX: 1.25, y: 1.25)
         })
+    }
+    
+    func layoutViews() {
+        checkBox.snp.makeConstraints { make in
+            make.bottom.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.left.equalToSuperview()
+            make.size.equalTo(20)
+        }
+        
+        textLabel.snp.makeConstraints { make in
+            make.height.equalTo(50)
+        }
+        
+        stackView.snp.makeConstraints { make in
+            make.size.equalToSuperview()
+            make.margins.equalTo(0)
+        }
     }
 }

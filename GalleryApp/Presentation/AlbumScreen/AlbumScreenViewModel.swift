@@ -13,7 +13,7 @@ import FolderMonitorKit
 class AlbumScreenViewModel {
     
     // MARK: -- Properties
-    var isEditing = PublishRelay<Bool>()
+    var isEditing = BehaviorRelay(value: false)
     var showingTitles = BehaviorRelay(value: false)
     
     var albumID: UUID?
@@ -104,8 +104,6 @@ class AlbumScreenViewModel {
     }
     
     func newThumbnailSize(size: Float) {
-        
-        
         if let albumID = albumID, var newIndex = loadAlbum(by: albumID) {
             let seconds = 1.0
             DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
