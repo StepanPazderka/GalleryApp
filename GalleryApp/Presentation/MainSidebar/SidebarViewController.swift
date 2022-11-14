@@ -177,7 +177,6 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
             content.image = item.image
             cell.contentConfiguration = content
             cell.accessories = []
-            cell.backgroundColor = UIColor(white: 1.0, alpha: 0.0)
         }
         
         dataSource = UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>(collectionView: self.screenView.sidebarMenu) {
