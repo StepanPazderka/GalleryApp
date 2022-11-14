@@ -353,25 +353,6 @@ extension AlbumScreenViewController: UIPopoverPresentationControllerDelegate {
     
 }
 
-extension AlbumScreenViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        self.presentedViewController?.dismiss(animated: true, completion: nil)
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let imageURL = info[.imageURL] as? URL {
-            print(imageURL)
-            do {
-                try FileManager().moveItem(at: imageURL, to: self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(self.viewModel.albumIndex?.name ?? "").appendingPathComponent(imageURL.lastPathComponent))
-                self.addPhoto(filename: AlbumImage(fileName: imageURL.lastPathComponent, date: Date()), to: self.viewModel.albumID)
-            } catch {
-                print(error.localizedDescription)
-            }
-            self.screenView.imagePicker.dismiss(animated: true)
-        }
-    }
-}
-
 extension AlbumScreenViewController: PHPickerViewControllerDelegate {
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
