@@ -75,8 +75,8 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         self.bindData()
         self.bindInteractions()
 
-        ConfigureDataSource()
-        router.showAllPhotos()
+        self.configureDataSource()
+        self.router.showAllPhotos()
         
         self.viewModel.fetchAlbumButtons().subscribe(onNext: { albumButtons in
             self.viewModel.albumButtons = albumButtons
@@ -163,7 +163,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: screenView.addAlbumButton)
     }
 
-    func ConfigureDataSource() {
+    func configureDataSource() {
         let headerRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
             var content = cell.defaultContentConfiguration()
             content.text = item.title

@@ -49,6 +49,12 @@ class GalleryManager {
         if let galleryIndex = loadGalleryIndex() {
             selectedGalleryIndexRelay.onNext(galleryIndex)
         }
+
+//        let files = try? FileManager.default.contentsOfDirectory(atPath: self.selectedGalleryPath.relativePath)
+//        guard let files else { return }
+//        for filename in files {
+//            try? FileManager.default.removeItem(at: self.selectedGalleryPath.appendingPathComponent(filename))
+//        }
     }
     
     func galleryObservable() -> Observable<GalleryIndex> {

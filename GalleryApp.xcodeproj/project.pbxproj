@@ -33,6 +33,7 @@
 		7F479F1A25B6496F005AFB97 /* InteractiveImageViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F479F1925B6496E005AFB97 /* InteractiveImageViewCell.xib */; };
 		7F49EC8E27D7A96900E6D2D8 /* PhotoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F49EC8D27D7A96900E6D2D8 /* PhotoDetailView.swift */; };
 		7F4BFCCE2602AB3B0058C051 /* ImageResizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4BFCCD2602AB3B0058C051 /* ImageResizer.swift */; };
+		7F5BBE4D2926660700DE9AF1 /* MutableProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5BBE4C2926660700DE9AF1 /* MutableProgress.swift */; };
 		7F5EE81D2908977F008B247B /* ZoomTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5EE81C2908977F008B247B /* ZoomTransitionController.swift */; };
 		7F5EE8202908979F008B247B /* ZoomAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5EE81E2908979F008B247B /* ZoomAnimator.swift */; };
 		7F5EE8212908979F008B247B /* ZoomDismissalInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5EE81F2908979F008B247B /* ZoomDismissalInteractionController.swift */; };
@@ -109,6 +110,7 @@
 		7F479F1925B6496E005AFB97 /* InteractiveImageViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InteractiveImageViewCell.xib; sourceTree = "<group>"; };
 		7F49EC8D27D7A96900E6D2D8 /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
 		7F4BFCCD2602AB3B0058C051 /* ImageResizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageResizer.swift; sourceTree = "<group>"; };
+		7F5BBE4C2926660700DE9AF1 /* MutableProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableProgress.swift; sourceTree = "<group>"; };
 		7F5EE81C2908977F008B247B /* ZoomTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomTransitionController.swift; sourceTree = "<group>"; };
 		7F5EE81E2908979F008B247B /* ZoomAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomAnimator.swift; sourceTree = "<group>"; };
 		7F5EE81F2908979F008B247B /* ZoomDismissalInteractionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomDismissalInteractionController.swift; sourceTree = "<group>"; };
@@ -202,6 +204,7 @@
 				7F8CF6AA28D772410000EF47 /* ArrayExtension.swift */,
 				7F2C0E4728FA15CE00FA1CE2 /* TopMostNavigationController.swift */,
 				7F27EE7629007BA40001B810 /* UIView+addSubviews.swift */,
+				7F5BBE4C2926660700DE9AF1 /* MutableProgress.swift */,
 			);
 			path = Utilies;
 			sourceTree = "<group>";
@@ -584,6 +587,7 @@
 				7FCDB80128FCBAF000CC84F9 /* PhotoPropertiesViewController.swift in Sources */,
 				7F1267AD2777D612002A7038 /* SidebarViewModel.swift in Sources */,
 				7FC5503B258EE7C2000290F6 /* AlbumImage.swift in Sources */,
+				7F5BBE4D2926660700DE9AF1 /* MutableProgress.swift in Sources */,
 				7FC96D5C27A76DA900690CFB /* PhotoDetailViewControllerSettings.swift in Sources */,
 				7F9F0743277BB6D400503612 /* ContainerBuilder.swift in Sources */,
 				7FA67630284E367200B685F4 /* SettingsKey.swift in Sources */,
