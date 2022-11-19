@@ -49,12 +49,8 @@ class GalleryManager {
         if let galleryIndex = loadGalleryIndex() {
             selectedGalleryIndexRelay.onNext(galleryIndex)
         }
-
-//        let files = try? FileManager.default.contentsOfDirectory(atPath: self.selectedGalleryPath.relativePath)
-//        guard let files else { return }
-//        for filename in files {
-//            try? FileManager.default.removeItem(at: self.selectedGalleryPath.appendingPathComponent(filename))
-//        }
+        
+        purgeGallery()
     }
     
     func galleryObservable() -> Observable<GalleryIndex> {
@@ -458,5 +454,13 @@ class GalleryManager {
         try? jsonEncoded?.write(to: url)
         
         return GalleryIndex(mainGalleryName: gallery.mainGalleryName, images: self.listAllImagesInGalleryFolder(), albums: gallery.albums)
+    }
+    
+    func purgeGallery() {
+        let files = try? FileManager.default.contentsOfDirectory(atPath: self.selectedGalleryPath.relativePath)
+        guard let files else { return }
+        for filename in files {
+            try? FileManager.default.removeItem(at: self.selectedGalleryPath.appendingPathComponent(filename))
+        }
     }
 }

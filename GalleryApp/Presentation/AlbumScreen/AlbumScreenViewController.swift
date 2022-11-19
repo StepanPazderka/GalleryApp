@@ -130,6 +130,12 @@ class AlbumScreenViewController: UIViewController {
         self.viewModel.loadGalleryIndex().subscribe(onNext: { galleryIndex in
             self.refreshData()
         }).disposed(by: disposeBag)
+        
+        self.screenView.progressView.observedProgress = self.viewModel.importProgress
+        
+        self.viewModel.showingLoading.map { value in
+            !value
+        }.bind(to: self.screenView.loadingView.rx.isHidden)
     }
     
     // MARK: - Interactions Binding
@@ -364,69 +370,7 @@ extension AlbumScreenViewController: PHPickerViewControllerDelegate {
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
-        self.imagesToBeAdded.removeAll()
-        DispatchQueue.global(qos: .unspecified).async {
-            for itemProvider in results.map({ $0.itemProvider }) {
-                
-                var newProgress = Progress()
-                
-                if itemProvider.canLoadObject(ofClass: UIImage.self) {
-                    guard let identifier = itemProvider.registeredTypeIdentifiers.first else { return }
-                    guard let filenameExtension = URL(string: identifier)?.pathExtension else { return }
-                    
-                    itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.image.identifier) { tempPathForFileCopying, error in
-                        
-                        newProgress.completedUnitCount = 0
-                        newProgress.totalUnitCount = 1000
-                        if (error != nil) {
-                            print("Error while copying files \(String(describing: error))")
-                        }
-                        
-                        let targetPath = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
-                        
-                        if let tempPathForFileCopying {
-                            do {
-                                var fileCopy = try? FileManager.default.moveItem(at: tempPathForFileCopying, to: targetPath)
-                                if let fileCopy {
-                                    newProgress.completedUnitCount = newProgress.totalUnitCount
-                                }
-                            } catch {
-                                print("Error \(error)")
-                            }
-                            
-                            self.viewModel.galleryManager.buildThumb(forImage: AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
-                            self.imagesToBeAdded.append(AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
-                        }
-                    }
-                    self.importProgress.addChild(newProgress)
-                }
-            }
-        }
         
-        if results.count > 0 {
-            self.screenView.progressView.observedProgress = importProgress
-            self.showLoading(task: importProgress)
-        }
-    }
-    
-    func showLoading(task: Progress) {
-        self.screenView.loadingView.isHidden = false
-        var timer: Timer?
-        func stopTimer() {
-            timer?.invalidate()
-        }
-        
-        sleep(1)
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (t) in
-            var progress = Float(self.importProgress.fractionCompleted)
-            self.screenView.progressView.setProgress(progress, animated: true)
-
-            if self.importProgress.fractionCompleted == 1.0 {
-                self.viewModel.addPhotos(images: self.imagesToBeAdded)
-                sleep(1)
-                self.screenView.loadingView.isHidden = true
-                stopTimer()
-            }
-        }
+        self.viewModel.importPHResults(results: results)
     }
 }

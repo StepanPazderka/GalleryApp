@@ -9,6 +9,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 import FolderMonitorKit
+import PhotosUI
 
 class AlbumScreenViewModel {
     
@@ -20,6 +21,9 @@ class AlbumScreenViewModel {
     var albumIndex: AlbumIndex?
     let galleryManager: GalleryManager
     var images = [AlbumImage]()
+    
+    var importProgress = MutableProgress()
+    var showingLoading = BehaviorRelay(value: false)
     let disposeBag = DisposeBag()
     
     internal init(albumID: UUID? = nil, galleryManager: GalleryManager) {
@@ -130,5 +134,61 @@ class AlbumScreenViewModel {
     
     func switchTitles() {
         
+    }
+    
+    func importPHResults(results: [PHPickerResult]) {
+        var imagesToBeAdded = [AlbumImage]()
+        
+        DispatchQueue.global(qos: .unspecified).async {
+            for itemProvider in results.map({ $0.itemProvider }) {
+                
+                var newTaskProgress = Progress(totalUnitCount: 1000)
+                
+                if itemProvider.canLoadObject(ofClass: UIImage.self) {                    
+                    itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.image.identifier) { tempPathForFileCopying, error in
+                        guard let tempPathForFileCopying else { return }
+                        
+                        let filenameExtension = tempPathForFileCopying.pathExtension
+                        
+                        newTaskProgress.completedUnitCount = 0
+                        if (error != nil) {
+                            print("Error while copying files \(String(describing: error))")
+                        }
+                        
+                        let targetPath = self.galleryManager.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
+                        var fileCopy = try? FileManager.default.moveItem(at: tempPathForFileCopying, to: targetPath)
+                        if fileCopy != nil {
+                            newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
+                            
+                            
+                            self.galleryManager.buildThumb(forImage: AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
+                            imagesToBeAdded.append(AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
+                        }
+                    }
+                    self.importProgress.addChild(newTaskProgress)
+                }
+            }
+        }
+        
+        guard results.count > 0 else { return }
+        
+        self.showingLoading.accept(true)
+        var timer: Timer?
+        func stopTimer() {
+            timer?.invalidate()
+        }
+        
+        sleep(1)
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (t) in
+            var progress = Float(self.importProgress.fractionCompleted)
+
+            if self.importProgress.fractionCompleted == 1.0 {
+                self.addPhotos(images: imagesToBeAdded)
+                sleep(1)
+                self.showingLoading.accept(false)
+                imagesToBeAdded.removeAll()
+                stopTimer()
+            }
+        }
     }
 }
