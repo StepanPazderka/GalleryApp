@@ -180,17 +180,8 @@ class AlbumScreenViewController: UIViewController {
             
             self.screenView.collectionLayout.itemSize = CGSize(width: newValue, height: newValue)
 
-            /*
-             This compares curren slider value with value -0.5 second, if equal, it will update thumbnail on index in json
-             */
-            let seconds = 0.5
-            DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-                let currentValue = self.screenView.slider.value
-                let oldValue = value
-                
-                if oldValue == currentValue {
-                    self.viewModel.newThumbnailSize(size: value)
-                }
+            DispatchQueue.global().async {
+                self.viewModel.newThumbnailSize(size: value)
             }
         }).disposed(by: disposeBag)
     }

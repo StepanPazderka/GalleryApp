@@ -50,7 +50,7 @@ class GalleryManager {
             selectedGalleryIndexRelay.onNext(galleryIndex)
         }
         
-        purgeGallery()
+//        purgeGallery()
     }
     
     func galleryObservable() -> Observable<GalleryIndex> {

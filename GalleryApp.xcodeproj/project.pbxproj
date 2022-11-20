@@ -48,6 +48,7 @@
 		7F8CF6AB28D772410000EF47 /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8CF6AA28D772410000EF47 /* ArrayExtension.swift */; };
 		7F90451627A1569D005BFB2D /* SidebarSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F90451527A1569D005BFB2D /* SidebarSection.swift */; };
 		7F941A5227740F880080C189 /* AlbumScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F941A5127740F880080C189 /* AlbumScreenViewModel.swift */; };
+		7F98D7CE292A48A300755D74 /* AlbumScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F98D7CD292A48A300755D74 /* AlbumScreenModel.swift */; };
 		7F9F0743277BB6D400503612 /* ContainerBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F9F0742277BB6D400503612 /* ContainerBuilder.swift */; };
 		7FA0424E2859CE7000913BF8 /* Average.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FA0424D2859CE7000913BF8 /* Average.swift */; };
 		7FA67630284E367200B685F4 /* SettingsKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FA6762F284E367200B685F4 /* SettingsKey.swift */; };
@@ -126,6 +127,7 @@
 		7F8CF6AA28D772410000EF47 /* ArrayExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		7F90451527A1569D005BFB2D /* SidebarSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarSection.swift; sourceTree = "<group>"; };
 		7F941A5127740F880080C189 /* AlbumScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumScreenViewModel.swift; sourceTree = "<group>"; };
+		7F98D7CD292A48A300755D74 /* AlbumScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumScreenModel.swift; sourceTree = "<group>"; };
 		7F9F0742277BB6D400503612 /* ContainerBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerBuilder.swift; sourceTree = "<group>"; };
 		7FA0424D2859CE7000913BF8 /* Average.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Average.swift; sourceTree = "<group>"; };
 		7FA6762F284E367200B685F4 /* SettingsKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsKey.swift; sourceTree = "<group>"; };
@@ -322,6 +324,7 @@
 				7FEE73E327AC664400B8E02E /* AlbumScreenView.swift */,
 				7F6F6725281884D8000AA747 /* AlbumScreenRouter.swift */,
 				7FD0A0F32819F1BD00A33913 /* AlbumScreenFooter.swift */,
+				7F98D7CD292A48A300755D74 /* AlbumScreenModel.swift */,
 			);
 			path = AlbumScreen;
 			sourceTree = "<group>";
@@ -567,6 +570,7 @@
 				7F235E002585B73C007BD075 /* SceneDelegate.swift in Sources */,
 				7F0938B02842B86900F29123 /* SettingsManager.swift in Sources */,
 				7FC96D6627A9555100690CFB /* PhotoZoomViewController.swift in Sources */,
+				7F98D7CE292A48A300755D74 /* AlbumScreenModel.swift in Sources */,
 				7FD0A0F42819F1BD00A33913 /* AlbumScreenFooter.swift in Sources */,
 				7F0031CE25B7A21B00D93B75 /* ImageView+BlurEffect.swift in Sources */,
 				7F0031D125B7AC7400D93B75 /* UIWindow+isLandscape.swift in Sources */,
