@@ -14,6 +14,10 @@ class PhotoPropertiesView: UIView {
     let imageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
+        view.layer.shadowColor = UIColor.systemGray2.cgColor
+        view.layer.shadowOpacity = 1
+        view.layer.shadowOffset = .zero
+        view.layer.shadowRadius = 10
         return view
     }()
     
@@ -37,7 +41,12 @@ class PhotoPropertiesView: UIView {
     
     public let textView = {
         let view = UITextView()
-        view.backgroundColor = .lightGray
+        view.backgroundColor = .systemGray5
+        view.font = .systemFont(ofSize: 18)
+        view.layer.cornerRadius = 10
+        view.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        view.layer.borderColor = CGColor(gray: 0.5, alpha: 1.0)
+        view.layer.borderWidth = 1.0
         return view
     }()
     
@@ -45,6 +54,8 @@ class PhotoPropertiesView: UIView {
         let view = UIStackView()
         view.axis = .vertical
         view.distribution = .fillEqually
+        view.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        view.isLayoutMarginsRelativeArrangement = true
         return view
     }()
     
@@ -73,16 +84,17 @@ class PhotoPropertiesView: UIView {
     
     func layoutViews() {
         imageView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
+            make.top.equalToSuperview().offset(50)
+            make.centerX.equalToSuperview()
             make.width.equalToSuperview()
             make.height.equalTo(400)
         }
         
         stackview.snp.makeConstraints { make in
-            make.bottom.equalToSuperview()
-            make.width.equalToSuperview().offset(-20)
+            make.bottom.equalToSuperview().offset(-50)
+            make.width.equalToSuperview().offset(-200)
+            make.centerX.equalToSuperview()
             make.top.equalTo(imageView.snp_bottomMargin)
-            make.leftMargin.equalTo(5)
         }
         
         photoSizeLabel.snp.makeConstraints { make in
@@ -102,7 +114,6 @@ class PhotoPropertiesView: UIView {
         
         textView.snp.makeConstraints { make in
             make.width.equalToSuperview()
-            make.rightMargin.equalTo(50)
             make.height.equalTo(50)
         }
     }
