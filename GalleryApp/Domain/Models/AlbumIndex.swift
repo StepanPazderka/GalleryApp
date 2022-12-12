@@ -13,13 +13,15 @@ struct AlbumIndex: Codable {
     var images: [AlbumImage]
     var thumbnail: String
     var thumbnailsSize: Float = 200
+    var showingAnnotations: Bool? = false
 
-    internal init(id: UUID = UUID() ,name: String, images: [AlbumImage], thumbnail: String) {
+    internal init(id: UUID = UUID() ,name: String, images: [AlbumImage], thumbnail: String, showingAnnotations: Bool? = false) {
         self.id = id
         self.name = name
         self.images = images
         self.thumbnail = thumbnail
         self.thumbnailsSize = 200
+        self.showingAnnotations = showingAnnotations
     }
 
     init?(from entity: URL) {
@@ -34,6 +36,7 @@ struct AlbumIndex: Codable {
                 self.thumbnail = album.thumbnail
                 self.id = album.id
                 self.thumbnailsSize = album.thumbnailsSize
+                self.showingAnnotations = album.showingAnnotations
                 return
             }
         }
@@ -42,6 +45,6 @@ struct AlbumIndex: Codable {
     }
     
     static var empty: Self {
-        Self(name: "", images: [], thumbnail: "")
+        Self(name: "", images: [], thumbnail: "", showingAnnotations: false)
     }
 }

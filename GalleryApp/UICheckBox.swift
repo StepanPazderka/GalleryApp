@@ -24,12 +24,22 @@ import UIKit
         image.image = UIImage(systemName: "checkmark.circle")
         self.addSubview(image)
         
+        self.addTarget(self, action: #selector(buttonClicked(sender:)), for: UIControl.Event.touchUpInside)
+        self.checker = false
+        
         image.snp.makeConstraints { make in
-            make.size.equalTo(self.frame.size)
+            make.size.height.equalTo(self.frame.size.height)
+            make.centerY.equalToSuperview()
         }
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    @objc func buttonClicked(sender: UIButton) {
+        if sender == self {
+            checker = !checker
+        }
     }
 }

@@ -108,15 +108,15 @@ class GalleryManager {
         }
     }
     
-    func moveImage(image: AlbumImage, toAlbum: UUID, callback: (() -> ())? = nil) throws {
+    func move(Image: AlbumImage, toAlbum: UUID, callback: (() -> ())? = nil) throws {
         guard var targetAlbumIndex = loadAlbumIndex(id: toAlbum) else { return }
         var newIndex = targetAlbumIndex
         for albumImage in targetAlbumIndex.images {
-            if albumImage.fileName == image.fileName {
+            if albumImage.fileName == Image.fileName {
                 throw MoveImageError.imageAlreadyInAlbum
             }
         }
-        newIndex.images.append(image)
+        newIndex.images.append(Image)
         self.updateAlbumIndex(index: newIndex)
         if let callback = callback {
             callback()
@@ -212,12 +212,12 @@ class GalleryManager {
         
         for image in images {
             let newFilename = image.fileName
-            let newImage = ImageResizer.resizeImage(image: UIImage(contentsOfFile: selectedGalleryPath.appendingPathComponent(forAlbum).appendingPathComponent(image.fileName).relativePath)!, targetSize: CGSize(width: 300, height: 300))
+            let newImage = ImageResizer.resizeImage(image: UIImage(contentsOfFile: selectedGalleryPath.appendingPathComponent(image.fileName).relativePath)!, targetSize: CGSize(width: 300, height: 300))
             if let jpegImage = newImage?.jpegData(compressionQuality: 0.6) {
                 if FileManager.default.fileExists(atPath: selectedGalleryPath.appendingPathComponent(kThumbs).path) == false {
                     try? FileManager.default.createDirectory(atPath: selectedGalleryPath.appendingPathComponent(kThumbs).path, withIntermediateDirectories: false)
                 }
-                var filePath = selectedGalleryPath.appendingPathComponent(forAlbum).appendingPathComponent(kThumbs).appendingPathComponent(newFilename)
+                var filePath = selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(newFilename)
                 filePath = filePath.deletingPathExtension()
                 filePath = filePath.appendingPathExtension("jpg")
                 try! jpegImage.write(to: filePath)
@@ -266,7 +266,6 @@ class GalleryManager {
         let scannedImagesFromFolder = self.fileScannerManager.scanAlbumFolderForImages(albumName: folder.lastPathComponent)
         
         let albumIndex = AlbumIndex(id: UUID(uuidString: folder.lastPathComponent) ?? UUID(), name: albumName, images: scannedImagesFromFolder, thumbnail: scannedImagesFromFolder.first?.fileName ?? "")
-        buildThumbs(forAlbum: folder.lastPathComponent)
         let json = try! JSONEncoder().encode(albumIndex)
         try? json.write(to: folder.lastPathComponent == kAlbumIndex ? folder : folder.appendingPathComponent(kAlbumIndex))
         

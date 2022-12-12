@@ -18,18 +18,20 @@ class AlbumImageCell: UICollectionViewCell {
     var router: AlbumScreenRouter?
     let checkBox = UICheckBox(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
     var index: Int
-    var isEditing: Bool = false {
-        didSet {
-            checkBox.isHidden = !isEditing
-        }
-    }
+//    var isEditing: Bool = false {
+//        didSet {
+//            checkBox.isHidden = !isEditing
+//        }
+//    }
     
     // MARK: - Views
     var textLabel = {
         let view = UILabel()
         return view
     }()
+    
     var imageView = UIImageView()
+    
     var stackView = {
         let view = UIStackView()
         view.axis = .vertical
@@ -38,7 +40,10 @@ class AlbumImageCell: UICollectionViewCell {
     }()
     
     var checkBoxTapped: UITapGestureRecognizer?
+    
     let disposeBag = DisposeBag()
+    
+    // MARK: - Properties
     static let identifier: String = String(describing: type(of: AlbumImageCell.self))
     
     // MARK: - Init
@@ -96,7 +101,6 @@ class AlbumImageCell: UICollectionViewCell {
     }
     
     var checkImageRecognizer: UITapGestureRecognizer {
-//        let recognizer = UITapGestureRecognizer(target: self, action: #selector(galleryImageCheckboxTapped(_:)))
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(galleryImageCheckboxTapped(_:)))
         return recognizer
     }

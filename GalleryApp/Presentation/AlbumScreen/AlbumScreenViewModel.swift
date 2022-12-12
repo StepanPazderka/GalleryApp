@@ -13,6 +13,9 @@ import PhotosUI
 
 class AlbumScreenViewModel {
     
+    // MARK: -- Model
+    var model = AlbumScreenModel(name: "Test", images: [AlbumImage(fileName: "Something", date: Date())], thumbnail: "Test")
+    
     // MARK: -- Properties
     var isEditing = BehaviorRelay(value: false)
     var showingTitles = BehaviorRelay(value: false)
@@ -62,7 +65,6 @@ class AlbumScreenViewModel {
                 self.images = galleryIndex.images
             }).disposed(by: disposeBag)
         }
-        
     }
     
     func loadGalleryIndex() -> Observable<GalleryIndex> {
@@ -145,10 +147,10 @@ class AlbumScreenViewModel {
                 var newTaskProgress = Progress(totalUnitCount: 1000)
                 
                 if itemProvider.canLoadObject(ofClass: UIImage.self) {                    
-                    itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.image.identifier) { tempPathForFileCopying, error in
-                        guard let tempPathForFileCopying else { return }
+                    itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.image.identifier) { filePath, error in
+                        guard let filePath else { return }
                         
-                        let filenameExtension = tempPathForFileCopying.pathExtension
+                        let filenameExtension = filePath.pathExtension
                         
                         newTaskProgress.completedUnitCount = 0
                         if (error != nil) {
@@ -156,14 +158,18 @@ class AlbumScreenViewModel {
                         }
                         
                         let targetPath = self.galleryManager.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
-                        var fileCopy = try? FileManager.default.moveItem(at: tempPathForFileCopying, to: targetPath)
-                        if fileCopy != nil {
-                            newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
-                            
-                            
-                            self.galleryManager.buildThumb(forImage: AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
-                            imagesToBeAdded.append(AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
+                        do {
+                            var fileCopy = try FileManager.default.moveItem(at: filePath, to: targetPath)
+                            if fileCopy != nil {
+                                newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
+                                
+                                self.galleryManager.buildThumb(forImage: AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
+                                imagesToBeAdded.append(AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
+                            }
+                        } catch {
+                            print(error)
                         }
+                        
                     }
                     self.importProgress.addChild(newTaskProgress)
                 }

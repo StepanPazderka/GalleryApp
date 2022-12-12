@@ -96,6 +96,8 @@ class AlbumScreenView: UIView {
         let view = UICheckBox(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
         view.frame.size = CGSize(width: 200, height: 200)
         view.setTitle("Show titles", for: .normal)
+        view.setTitleColor(UIColor.systemBlue, for: .normal)
+        view.contentEdgeInsets = UIEdgeInsets(top: 0, left: 50, bottom: 0, right: 0)
         return view
     }()
     
@@ -148,7 +150,8 @@ class AlbumScreenView: UIView {
             make.centerY.equalToSuperview()
         }
         checkBoxTitles.snp.makeConstraints { make in
-            make.rightMargin.equalToSuperview()
+            make.rightMargin.equalToSuperview().offset(-20)
+            make.centerY.equalToSuperview()
         }
         loadingView.snp.makeConstraints { make in
             make.width.equalToSuperview().offset(-400)

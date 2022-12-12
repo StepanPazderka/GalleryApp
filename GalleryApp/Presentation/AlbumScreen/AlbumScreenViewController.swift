@@ -66,7 +66,7 @@ class AlbumScreenViewController: UIViewController {
                     self?.setEditing(false, animated: true)
                     self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
                         let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumImageCell
-                        cell.isEditing = false
+//                        cell.isEditing = false
                         cell.checkBox.checker = false
                         cell.checkBox.isEnabled = false
                     }
@@ -135,7 +135,7 @@ class AlbumScreenViewController: UIViewController {
         
         self.viewModel.showingLoading.map { value in
             !value
-        }.bind(to: self.screenView.loadingView.rx.isHidden)
+        }.bind(to: self.screenView.loadingView.rx.isHidden).disposed(by: disposeBag)
     }
     
     // MARK: - Interactions Binding
@@ -180,7 +180,7 @@ class AlbumScreenViewController: UIViewController {
             
             self.screenView.collectionLayout.itemSize = CGSize(width: newValue, height: newValue)
 
-            DispatchQueue.global().async {
+            DispatchQueue.global(qos: .userInteractive).async {
                 self.viewModel.newThumbnailSize(size: value)
             }
         }).disposed(by: disposeBag)
@@ -221,7 +221,7 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.collectionView.allowsMultipleSelection = editing
         self.screenView.collectionView.indexPathsForVisibleItems.forEach { (indexPath) in
             let cell = screenView.collectionView.cellForItem(at: indexPath) as! AlbumImageCell
-            cell.isEditing = editing
+//            cell.isEditing = editing
         }
     }
     
@@ -310,7 +310,7 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
         let thumbnailURL = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(self.viewModel.images[indexPath.row].fileName).deletingPathExtension().appendingPathExtension("jpg").relativePath
         let fullImageURL = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(self.viewModel.images[indexPath.row].fileName)
         self.viewModel.galleryManager.buildThumb(forImage: self.viewModel.images[indexPath.row])
-        
+
         cell.imageView.image = UIImage(contentsOfFile: thumbnailURL)
         cell.router = self.router
         cell.index = indexPath.row

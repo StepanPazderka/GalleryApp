@@ -49,7 +49,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     
     func moveToAlbum(images: [String], album: UUID) {
         do {
-            try self.galleryManager.moveImage(image: AlbumImage(fileName: images.first!, date: Date()), toAlbum: album) {
+            try self.galleryManager.move(Image: AlbumImage(fileName: images.first!, date: Date()), toAlbum: album) {
                 self.dismiss(animated: true)
             }
         } catch MoveImageError.imageAlreadyInAlbum {
