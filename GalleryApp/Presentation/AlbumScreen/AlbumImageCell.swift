@@ -18,11 +18,6 @@ class AlbumImageCell: UICollectionViewCell {
     var router: AlbumScreenRouter?
     let checkBox = UICheckBox(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
     var index: Int
-//    var isEditing: Bool = false {
-//        didSet {
-//            checkBox.isHidden = !isEditing
-//        }
-//    }
     
     // MARK: - Views
     var textLabel = {
@@ -121,6 +116,8 @@ class AlbumImageCell: UICollectionViewCell {
                 self.addGestureRecognizer(self.navigateToImageRecognizer)
             }
         }).disposed(by: disposeBag)
+        
+        let overlay = UIVisualEffectView()
         
         viewModel?.showingTitles.subscribe(onNext: { value in
             UIView.animate(withDuration: 0.25,

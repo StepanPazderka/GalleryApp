@@ -146,9 +146,14 @@ class AlbumScreenViewModel {
                 
                 var newTaskProgress = Progress(totalUnitCount: 1000)
                 
-                if itemProvider.canLoadObject(ofClass: UIImage.self) {                    
+                if itemProvider.canLoadObject(ofClass: UIImage.self) {
+//                    print("Suggested name: \(itemProvider.suggestedName)")
                     itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.image.identifier) { filePath, error in
-                        guard let filePath else { return }
+                        print("File Path: \(filePath?.lastPathComponent)")
+                        guard let filePath else {
+                            newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
+                            return
+                        }
                         
                         let filenameExtension = filePath.pathExtension
                         
@@ -171,8 +176,10 @@ class AlbumScreenViewModel {
                         }
                         
                     }
-                    self.importProgress.addChild(newTaskProgress)
+                } else {
+                    newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
                 }
+                self.importProgress.addChild(newTaskProgress)
             }
         }
         
