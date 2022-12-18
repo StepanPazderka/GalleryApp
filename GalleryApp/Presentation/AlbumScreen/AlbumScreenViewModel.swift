@@ -27,6 +27,8 @@ class AlbumScreenViewModel {
     
     var importProgress = MutableProgress()
     var showingLoading = BehaviorRelay(value: false)
+    var showImportError = BehaviorRelay(value: [String]())
+    var filesThatCouldntBeAdded = [String]()
     let disposeBag = DisposeBag()
     
     internal init(albumID: UUID? = nil, galleryManager: GalleryManager) {
@@ -140,6 +142,7 @@ class AlbumScreenViewModel {
     
     func importPHResults(results: [PHPickerResult]) {
         var imagesToBeAdded = [AlbumImage]()
+        self.filesThatCouldntBeAdded = [String]()
         
         DispatchQueue.global(qos: .unspecified).async {
             for itemProvider in results.map({ $0.itemProvider }) {
@@ -147,10 +150,11 @@ class AlbumScreenViewModel {
                 var newTaskProgress = Progress(totalUnitCount: 1000)
                 
                 if itemProvider.canLoadObject(ofClass: UIImage.self) {
-//                    print("Suggested name: \(itemProvider.suggestedName)")
+                    guard let suggestedName = itemProvider.suggestedName else { return }
                     itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.image.identifier) { filePath, error in
                         print("File Path: \(filePath?.lastPathComponent)")
                         guard let filePath else {
+                            self.filesThatCouldntBeAdded.append(suggestedName)
                             newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
                             return
                         }
@@ -174,7 +178,6 @@ class AlbumScreenViewModel {
                         } catch {
                             print(error)
                         }
-                        
                     }
                 } else {
                     newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
@@ -200,6 +203,7 @@ class AlbumScreenViewModel {
                 sleep(1)
                 self.showingLoading.accept(false)
                 imagesToBeAdded.removeAll()
+                self.showImportError.accept(self.filesThatCouldntBeAdded)
                 stopTimer()
             }
         }

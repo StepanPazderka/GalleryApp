@@ -26,7 +26,7 @@ class AlbumScreenViewController: UIViewController {
     var viewModel: AlbumScreenViewModel
     let router: AlbumScreenRouter
     
-    var imagesToBeAdded = [AlbumImage]()
+//    var imagesToBeAdded = [AlbumImage]()
     
     let disposeBag = DisposeBag()
     
@@ -136,6 +136,26 @@ class AlbumScreenViewController: UIViewController {
         self.viewModel.showingLoading.map { value in
             !value
         }.bind(to: self.screenView.loadingView.rx.isHidden).disposed(by: disposeBag)
+        
+        self.viewModel.showImportError.subscribe(onNext: { filesThatCouldntBeImported in
+            if !filesThatCouldntBeImported.isEmpty {
+                let alert = UIAlertController(title: "Alert", message: "Could not import files \(filesThatCouldntBeImported)", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+                    switch action.style{
+                    case .default:
+                        print("default")
+                        
+                    case .cancel:
+                        print("cancel")
+                        
+                    case .destructive:
+                        print("destructive")
+                        
+                    }
+                }))
+                self.present(alert, animated: true, completion: nil)
+            }
+        }).disposed(by: disposeBag)
     }
     
     // MARK: - Interactions Binding
