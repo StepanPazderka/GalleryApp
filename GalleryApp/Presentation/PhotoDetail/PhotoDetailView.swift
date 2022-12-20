@@ -60,7 +60,7 @@ class PhotoDetailView: UIView {
         
         closeButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(10)
-            make.top.equalToSuperview().offset(10)
+            make.top.equalToSuperview().offset(20)
             make.size.equalTo(40)
         }
     }
