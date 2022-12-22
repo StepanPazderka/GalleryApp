@@ -5,6 +5,7 @@ PODS:
     - ImageSlideshow/Core (= 1.9.2)
   - ImageSlideshow/Core (1.9.2)
   - ImageViewer (6.0.0)
+  - IQKeyboardManagerSwift (6.5.10)
   - RxCocoa (4.5.0):
     - RxSwift (>= 4.4.2, ~> 4.4)
   - RxDataSources (3.1.0):
@@ -19,6 +20,7 @@ DEPENDENCIES:
   - DirectoryWatcher
   - ImageSlideshow (~> 1.9.0)
   - ImageViewer
+  - IQKeyboardManagerSwift
   - RxCocoa (~> 4.0)
   - RxDataSources
   - RxSwift (~> 4.0)
@@ -31,6 +33,7 @@ SPEC REPOS:
     - DirectoryWatcher
     - ImageSlideshow
     - ImageViewer
+    - IQKeyboardManagerSwift
     - RxCocoa
     - RxDataSources
     - RxSwift
@@ -42,12 +45,13 @@ SPEC CHECKSUMS:
   DirectoryWatcher: 43e1ae45c7539d3deeea9db4384ab158bae368e3
   ImageSlideshow: be305b54eaf2b2cfc7a7141c7c734605d44dc07d
   ImageViewer: cb88ef1c0ba19161bc10702adfdcebc116a7a59d
+  IQKeyboardManagerSwift: 52962c76ab33532f15ad9f3ff4e5715eda5335bb
   RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
   RxDataSources: a843bad90c29817f5923ec8163f4af2de084ceb3
   RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
   SwiftLint: 32ee33ded0636d0905ef6911b2b67bbaeeedafa5
   Swinject: b4a11b31992e8668308dc594ba1cb9b3164a37ab
 
-PODFILE CHECKSUM: 6abb1fe0b605f448fbd9e840c9688214136b7a25
+PODFILE CHECKSUM: e9ff92243f0e16d037b44d9a83f1b3a44b872665
 
 COCOAPODS: 1.11.3

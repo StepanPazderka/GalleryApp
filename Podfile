@@ -14,5 +14,6 @@ target 'GalleryApp' do
   pod 'SwiftLint'
   pod 'ImageSlideshow', '~> 1.9.0'
   pod 'ImageViewer'
+  pod 'IQKeyboardManagerSwift'
 
 end

@@ -8,6 +8,7 @@
 import UIKit
 import Photos
 import Swinject
+import IQKeyboardManagerSwift
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         print("App Document Directory: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!)")
+        IQKeyboardManager.shared.enable = true
         return true
     }
 
