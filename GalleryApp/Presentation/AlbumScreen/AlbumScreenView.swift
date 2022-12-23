@@ -119,6 +119,12 @@ class AlbumScreenView: UIView {
         self.rightStackView.addArrangedSubview(editButton)
         self.rightStackView.addArrangedSubview(searchButton)
         self.rightStackView.addArrangedSubview(addImageButton)
+        self.checkBoxTitles.tintColor = .white
+                
+        self.checkBoxTitles.image.layer.shadowColor = UIColor.black.cgColor
+        self.checkBoxTitles.image.layer.shadowOpacity = 1
+        self.checkBoxTitles.image.layer.shadowOffset = .zero
+        self.checkBoxTitles.image.layer.shadowRadius = 15
         
         collectionLayout.itemSize = CGSize(width: 200, height: 200)
     }

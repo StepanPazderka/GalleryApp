@@ -19,6 +19,7 @@ class AlbumScreenViewModel {
     // MARK: -- Properties
     var isEditing = BehaviorRelay(value: false)
     var showingTitles = BehaviorRelay(value: false)
+    var showingLoading = BehaviorRelay(value: false)
     
     var albumID: UUID?
     var albumIndex: AlbumIndex?
@@ -26,7 +27,6 @@ class AlbumScreenViewModel {
     var images = [AlbumImage]()
     
     var importProgress = MutableProgress()
-    var showingLoading = BehaviorRelay(value: false)
     var showImportError = BehaviorRelay(value: [String]())
     var filesThatCouldntBeAdded = [String]()
     let disposeBag = DisposeBag()
@@ -49,6 +49,7 @@ class AlbumScreenViewModel {
                     }
                 }
                 self.images = filteredImages
+                self.showingTitles.accept(albumIndex.showingAnnotations ?? false)
                 albumIndex.images = filteredImages
                 self.galleryManager.updateAlbumIndex(index: albumIndex)
             } else {
@@ -65,8 +66,13 @@ class AlbumScreenViewModel {
             }
             galleryManager.selectedGalleryIndexRelay.subscribe(onNext: { galleryIndex in
                 self.images = galleryIndex.images
+                self.showingTitles.accept(galleryIndex.showingAnnotations ?? false)
             }).disposed(by: disposeBag)
         }
+        
+        self.showingTitles.distinctUntilChanged().subscribe(onNext: { value in
+            self.switchTitles(value: value)
+        }).disposed(by: disposeBag)
     }
     
     func loadGalleryIndex() -> Observable<GalleryIndex> {
@@ -136,8 +142,14 @@ class AlbumScreenViewModel {
         }
     }
     
-    func switchTitles() {
-        
+    func switchTitles(value: Bool) {
+        if let albumID = albumID, var newIndex = loadAlbum(by: albumID) {
+            newIndex.showingAnnotations = value
+            self.galleryManager.updateAlbumIndex(index: newIndex)
+        } else if var galleryIndex = self.galleryManager.loadGalleryIndex() {
+            galleryIndex.showingAnnotations = value
+            self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
+        }
     }
     
     func importPHResults(results: [PHPickerResult]) {

@@ -16,7 +16,12 @@ class AlbumImageCell: UICollectionViewCell {
     // MARK: - Properties
     var viewModel: AlbumScreenViewModel?
     var router: AlbumScreenRouter?
-    let checkBox = UICheckBox(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+    let checkBox = {
+        let view = UICheckBox(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        view.isHidden = true
+        view.tintColor = .systemGray
+        return view
+    }()
     var index: Int
     
     // MARK: - Views
@@ -47,14 +52,6 @@ class AlbumImageCell: UICollectionViewCell {
         
         super.init(frame: frame)
         
-        checkBox.isHidden = true
-        
-        contentView.addSubviews(stackView,
-                                checkBox)
-        
-        stackView.addArrangedSubview(imageView)
-        stackView.addArrangedSubview(textLabel)
-        
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTap(_:)))
         doubleTap.numberOfTapsRequired = 2
 
@@ -69,6 +66,7 @@ class AlbumImageCell: UICollectionViewCell {
 
         self.addGestureRecognizer(navigateToImageRecognizer)
         
+        self.setupViews()
         self.layoutViews()
     }
     
@@ -78,11 +76,21 @@ class AlbumImageCell: UICollectionViewCell {
                            animations: {
                 if value == false {
                     self.textLabel.alpha = 0
+                    self.textLabel.isHidden = true
                 } else {
                     self.textLabel.alpha = 1
+                    self.textLabel.isHidden = false
                 }
             })
         }).disposed(by: disposeBag)
+    }
+    
+    func setupViews() {
+        contentView.addSubviews(stackView,
+                                checkBox)
+        
+        stackView.addArrangedSubview(imageView)
+        stackView.addArrangedSubview(textLabel)
     }
     
     required init?(coder: NSCoder) {
@@ -111,20 +119,23 @@ class AlbumImageCell: UICollectionViewCell {
             if value {
                 self.removeGestureRecognizer(self.navigateToImageRecognizer)
                 self.addGestureRecognizer(self.checkImageRecognizer)
+                self.checkBox.isHidden = !value
             } else {
                 self.removeGestureRecognizer(self.checkImageRecognizer)
                 self.addGestureRecognizer(self.navigateToImageRecognizer)
+                self.checkBox.isHidden = !value
             }
         }).disposed(by: disposeBag)
         
         let overlay = UIVisualEffectView()
         
-        viewModel?.showingTitles.subscribe(onNext: { value in
-            UIView.animate(withDuration: 0.25,
-                           animations: {
-                self.textLabel.isHidden = value
-            })
-        }).disposed(by: disposeBag)
+//        viewModel?.showingTitles.subscribe(onNext: { value in
+//            UIView.animate(withDuration: 0.25,
+//                           animations: {
+//                self.textLabel.isHidden = value
+//            })
+//        }).disposed(by: disposeBag)
+        bindData()
     }
     
     @objc func galleryImageTapped(_ sender: UITapGestureRecognizer) {
@@ -152,7 +163,7 @@ class AlbumImageCell: UICollectionViewCell {
     func layoutViews() {
         checkBox.snp.makeConstraints { make in
             make.bottom.equalToSuperview()
-            make.trailing.equalToSuperview()
+            make.leadingMargin.equalToSuperview()
             make.left.equalToSuperview()
             make.size.equalTo(20)
         }

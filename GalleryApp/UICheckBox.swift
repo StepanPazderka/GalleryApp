@@ -11,9 +11,9 @@ import UIKit
     var checker: Bool = false {
         didSet {
             if checker == false {
-                image.image = UIImage(systemName: "checkmark.circle")
+                image.image = UIImage(systemName: "checkmark.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 16, weight: .light))
             } else {
-                image.image = UIImage(systemName: "checkmark.circle.fill")
+                image.image = UIImage(systemName: "checkmark.circle.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 16, weight: .light))
             }
         }
     }
@@ -21,7 +21,7 @@ import UIKit
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        image.image = UIImage(systemName: "checkmark.circle")
+        self.image.image = UIImage(systemName: "checkmark.circle")
         self.addSubview(image)
         
         self.addTarget(self, action: #selector(buttonClicked(sender:)), for: UIControl.Event.touchUpInside)

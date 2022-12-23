@@ -156,6 +156,10 @@ class AlbumScreenViewController: UIViewController {
                 self.present(alert, animated: true, completion: nil)
             }
         }).disposed(by: disposeBag)
+        
+        self.viewModel.showingTitles.subscribe(onNext: { value in
+            self.screenView.checkBoxTitles.checker = value
+        }).disposed(by: disposeBag)
     }
     
     // MARK: - Interactions Binding
