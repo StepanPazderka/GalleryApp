@@ -96,8 +96,15 @@ class AlbumScreenViewModel {
         }
     }
     
-    func deleteImage(imageName: String) {
-        self.galleryManager.deleteImage(imageName: imageName)
+    func delete(image: String) {
+        self.galleryManager.deleteImage(imageName: image)
+    }
+    
+    func delete(images: [String]) {
+        for image in images {
+            self.galleryManager.deleteImage(imageName: image)
+        }
+        self.filesSelectedInEditMode.removeAll()
     }
     
     func addPhoto(image: AlbumImage) {

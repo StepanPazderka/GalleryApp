@@ -172,6 +172,16 @@ class AlbumScreenViewController: UIViewController {
             }
         }).disposed(by: disposeBag)
         
+        self.viewModel.isEditing.subscribe(onNext: { [weak self] value in
+            guard let self else { return }
+            
+            if value {
+                self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: self.screenView.leftStackView)
+            } else {
+                self.navigationItem.leftBarButtonItem = nil
+            }
+        }).disposed(by: disposeBag)
+        
         self.screenView.addImageButton.rx.tap.subscribe(onNext: { [weak self] in
             let alert = UIAlertController(title: NSLocalizedString("IMPORTFROM", comment: "Select import location"), message: nil, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: NSLocalizedString("SELECTFROMFILES", comment: "Default action"), style: .default) { [weak self] _ in
@@ -188,6 +198,11 @@ class AlbumScreenViewController: UIViewController {
             }
 
             self?.present(alert, animated: true, completion: nil)
+        }).disposed(by: disposeBag)
+        
+        self.screenView.deleteImageButton.rx.tap.subscribe(onNext: { [weak self] in
+            guard let self else { return }
+            self.viewModel.delete(images: Array(self.viewModel.filesSelectedInEditMode))
         }).disposed(by: disposeBag)
         
         self.screenView.checkBoxTitles.rx.tap.subscribe(onNext: { [weak self] in
@@ -301,7 +316,7 @@ class AlbumScreenViewController: UIViewController {
                      image: UIImage(systemName: "trash"),
                      attributes: .destructive) { action in
                 let imageName = self.viewModel.images[indexPath.row].fileName
-                self.viewModel.deleteImage(imageName: imageName)
+                self.viewModel.delete(image: imageName)
             }
             if viewModel.albumID != nil {
                 return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, setThumbnailAction, deleteAction])

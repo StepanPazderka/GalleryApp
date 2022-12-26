@@ -25,6 +25,14 @@ class AlbumScreenView: UIView {
         button.sizeToFit()
         return button
     }()
+    
+    let leftStackView: UIStackView = {
+        let view = UIStackView()
+        view.distribution = .equalSpacing
+        view.sizeToFit()
+        view.spacing = 20
+        return view
+    }()
 
     let rightStackView: UIStackView = {
         let view = UIStackView()
@@ -37,6 +45,13 @@ class AlbumScreenView: UIView {
     let addImageButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "plus"), for: .normal)
+        button.sizeToFit()
+        return button
+    }()
+    
+    let deleteImageButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "trash"), for: .normal)
         button.sizeToFit()
         return button
     }()
@@ -119,6 +134,7 @@ class AlbumScreenView: UIView {
         self.rightStackView.addArrangedSubview(editButton)
         self.rightStackView.addArrangedSubview(searchButton)
         self.rightStackView.addArrangedSubview(addImageButton)
+        self.leftStackView.addArrangedSubview(deleteImageButton)
         self.checkBoxTitles.tintColor = .white
                 
         self.checkBoxTitles.image.layer.shadowColor = UIColor.black.cgColor
