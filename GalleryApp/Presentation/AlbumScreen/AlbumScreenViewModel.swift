@@ -29,6 +29,7 @@ class AlbumScreenViewModel {
     var importProgress = MutableProgress()
     var showImportError = BehaviorRelay(value: [String]())
     var filesThatCouldntBeAdded = [String]()
+    var filesSelectedInEditMode = Set<String>()
     let disposeBag = DisposeBag()
     
     internal init(albumID: UUID? = nil, galleryManager: GalleryManager) {

@@ -103,8 +103,9 @@ class AlbumImageCell: UICollectionViewCell {
         return recognizer
     }
     
-    var checkImageRecognizer: UITapGestureRecognizer {
+    var selectCellRecognizer: UITapGestureRecognizer {
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(galleryImageCheckboxTapped(_:)))
+        recognizer.numberOfTapsRequired = 1
         return recognizer
     }
 
@@ -118,10 +119,10 @@ class AlbumImageCell: UICollectionViewCell {
         self.viewModel?.isEditing.subscribe(onNext: { value in
             if value {
                 self.removeGestureRecognizer(self.navigateToImageRecognizer)
-                self.addGestureRecognizer(self.checkImageRecognizer)
+                self.addGestureRecognizer(self.selectCellRecognizer)
                 self.checkBox.isHidden = !value
             } else {
-                self.removeGestureRecognizer(self.checkImageRecognizer)
+                self.removeGestureRecognizer(self.selectCellRecognizer)
                 self.addGestureRecognizer(self.navigateToImageRecognizer)
                 self.checkBox.isHidden = !value
             }
@@ -150,8 +151,18 @@ class AlbumImageCell: UICollectionViewCell {
     }
 
     @objc func galleryImageCheckboxTapped(_ sender: UITapGestureRecognizer) {
+        if !self.checkBox.checker {
+            if let images = self.viewModel?.images {
+                self.viewModel?.filesSelectedInEditMode.insert(images[self.index].fileName)
+            }
+        } else {
+            if let images = self.viewModel?.images {
+                self.viewModel?.filesSelectedInEditMode.remove(images[self.index].fileName)
+            }
+        }
         self.checkBox.checker.toggle()
         self.checkBox.isEnabled = false
+        
     }
 
     @objc func galleryImageLongPress(_ sender: UITapGestureRecognizer) {
