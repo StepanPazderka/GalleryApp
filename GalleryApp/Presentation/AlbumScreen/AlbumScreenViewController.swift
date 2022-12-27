@@ -139,20 +139,8 @@ class AlbumScreenViewController: UIViewController {
         
         self.viewModel.showImportError.subscribe(onNext: { filesThatCouldntBeImported in
             if !filesThatCouldntBeImported.isEmpty {
-                let alert = UIAlertController(title: "Alert", message: "Could not import files \(filesThatCouldntBeImported)", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-                    switch action.style{
-                    case .default:
-                        print("default")
-                        
-                    case .cancel:
-                        print("cancel")
-                        
-                    case .destructive:
-                        print("destructive")
-                        
-                    }
-                }))
+                let alert = UIAlertController(title: "Alert", message: "Could not import files \(filesThatCouldntBeImported.joined(separator: ", "))", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
                 self.present(alert, animated: true, completion: nil)
             }
         }).disposed(by: disposeBag)
@@ -402,5 +390,7 @@ extension AlbumScreenViewController: PHPickerViewControllerDelegate {
         picker.dismiss(animated: true)
         
         self.viewModel.importPHResults(results: results)
+        
+        self.screenView.imagePicker.deselectAssets(withIdentifiers: [UTType.image.identifier])
     }
 }
