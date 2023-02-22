@@ -126,7 +126,7 @@ class GalleryManager {
     func addImage(photoID: String, toAlbum: UUID? = nil) {
         if var galleryIndex = self.loadGalleryIndex() {
             galleryIndex.images.append(AlbumImage(fileName: photoID, date: Date()))
-            self.rebuildGalleryIndex(gallery: galleryIndex)
+            self.rebuildGalleryIndex()
             self.selectedGalleryIndexRelay.onNext(galleryIndex)
         }
         

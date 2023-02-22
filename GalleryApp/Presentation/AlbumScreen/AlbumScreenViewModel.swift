@@ -117,7 +117,7 @@ class AlbumScreenViewModel {
     }
     
     func addPhotos(images: [AlbumImage]) {
-        self.galleryManager.addImages(photos: images.map { $0.fileName })
+        self.galleryManager.addImages(photos: images.map { $0.fileName }, toAlbum: albumID)
         if albumID != nil {
             self.images.append(contentsOf: images)
         } else {

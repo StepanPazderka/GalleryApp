@@ -14,16 +14,12 @@ import RxDataSources
 import Swinject
 import DirectoryWatcher
 
-enum MainScreens: String, CaseIterable {
-    case allPhotos
-}
-
 class SidebarViewController: UIViewController, UINavigationControllerDelegate, UISplitViewControllerDelegate {
     
-    // MARK: -- Views
+    // MARK: - Views
     let screenView = SidebarView()
     
-    // MARK: -- Properties
+    // MARK: - Properties
     private var dataSource: UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>!
     private var secondaryViewControllers: [UIViewController] = []
     let router: SidebarRouter
@@ -48,12 +44,12 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
     
     let disposeBag = DisposeBag()
     
-    // MARK: -- Sidebar Snapshots
+    // MARK: - Sidebar Snapshots
     var mainButtonsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
     var albumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
     var smartAlbumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
     
-    // MARK: -- Init
+    // MARK: - Init
     init(router: SidebarRouter, container: Container, viewModel: SidebarViewModel) {
         screens = ["allPhotos": UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self)!),
                    "search": UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self)!)]
@@ -67,7 +63,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: -- Lifecycle
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -90,7 +86,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         screenView.layoutViews()
     }
     
-    // MARK: -- Create Album Popover
+    // MARK: - Create Album Popover
     @objc func showCreateAlbumPopover() {
         let createAlbumAlert = UIAlertController(title: NSLocalizedString("kEnterAlbumName", comment: ""), message: nil, preferredStyle: .alert)
 
@@ -138,7 +134,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         }).disposed(by: disposeBag)
     }
     
-    // MARK: - Interaction Bindings
+    // MARK: - User Interaction Bindings
     func bindInteractions() {
         self.screenView.selectGalleryButton.rx.tap.subscribe(onNext: { [weak self] in
             let newController = UIViewController()
@@ -151,7 +147,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         }).disposed(by: disposeBag)
     }
     
-    // MARK: - Setup
+    // MARK: - Views Setup
     func setupViews() {
         self.view = screenView
         
@@ -162,7 +158,8 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         self.navigationItem.titleView = self.screenView.selectGalleryButton
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: screenView.addAlbumButton)
     }
-
+    
+    // MARK: - Data Source Configuration
     func configureDataSource() {
         let headerRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
             var content = cell.defaultContentConfiguration()
@@ -236,8 +233,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
 
 extension SidebarViewController: UICollectionViewDelegate {
 
-    // -- MARK: Selected
-    // User Selected Item in Sidebar
+    // MARK: User Selected item in Sidebar
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.section == 0 {
             router.showAllPhotos()
