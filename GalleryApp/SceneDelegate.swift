@@ -27,9 +27,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let splitView = UISplitViewController(style: .doubleColumn)
-        splitView.preferredDisplayMode = .oneBesideSecondary
+        splitView.delegate = self
+//        splitView.preferredDisplayMode = .oneBesideSecondary
         splitView.presentsWithGesture = true
-        splitView.preferredSplitBehavior = .displace
+//        splitView.preferredSplitBehavior = .displace
+        splitView.preferredDisplayMode = .oneBesideSecondary
+        
         
         let mainrouter = container.resolve(SidebarRouter.self)!
         
@@ -72,3 +75,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 }
 
+extension SceneDelegate: UISplitViewControllerDelegate {
+    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
+        return true
+    }
+}

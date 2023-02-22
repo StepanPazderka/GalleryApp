@@ -121,8 +121,10 @@ class AlbumScreenViewController: UIViewController {
     }
 
     func showImagePicker() {
-        self.screenView.imagePicker.delegate = self
-        self.present(self.screenView.imagePicker, animated: true)
+        var imagePicker = self.screenView.imagePicker()
+        
+        imagePicker.delegate = self
+        self.present(imagePicker, animated: true)
     }
     
     // MARK: - Data Binding
@@ -388,9 +390,7 @@ extension AlbumScreenViewController: PHPickerViewControllerDelegate {
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
-        
-        self.viewModel.importPHResults(results: results)
-        
-        self.screenView.imagePicker.deselectAssets(withIdentifiers: [UTType.image.identifier])
+        let photos = results
+        self.viewModel.importPhotos(results: photos)
     }
 }

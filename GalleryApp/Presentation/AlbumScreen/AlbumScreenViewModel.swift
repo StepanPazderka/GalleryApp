@@ -160,7 +160,7 @@ class AlbumScreenViewModel {
         }
     }
     
-    func importPHResults(results: [PHPickerResult]) {
+    func importPhotos(results: [PHPickerResult]) {
         var imagesToBeAdded = [AlbumImage]()
         self.filesThatCouldntBeAdded = [String]()
         

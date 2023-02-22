@@ -92,13 +92,13 @@ class AlbumScreenView: UIView {
         return view
     }()
     
-    let imagePicker: PHPickerViewController = {
+    let imagePicker = {
         var configuration = PHPickerConfiguration()
         configuration.filter = .images
         configuration.selectionLimit = 0
         let view = PHPickerViewController(configuration: configuration)
         return view
-    }()
+    }
     
     let bottomToolbar: UIView = {
         let view = UIView()

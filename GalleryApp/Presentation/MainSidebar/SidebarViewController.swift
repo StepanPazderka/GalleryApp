@@ -14,7 +14,7 @@ import RxDataSources
 import Swinject
 import DirectoryWatcher
 
-class SidebarViewController: UIViewController, UINavigationControllerDelegate, UISplitViewControllerDelegate {
+class SidebarViewController: UIViewController, UINavigationControllerDelegate {
     
     // MARK: - Views
     let screenView = SidebarView()
@@ -152,7 +152,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate, U
         self.view = screenView
         
         self.screenView.sidebarMenu.delegate = self
-        self.screenView.sidebarMenu.translatesAutoresizingMaskIntoConstraints = false
+        self.screenView.sidebarMenu.translatesAutoresizingMaskIntoConstraints = true
         
         self.navigationController?.navigationBar.prefersLargeTitles = false
         self.navigationItem.titleView = self.screenView.selectGalleryButton
