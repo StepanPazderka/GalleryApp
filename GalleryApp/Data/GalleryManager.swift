@@ -37,8 +37,8 @@ class GalleryManager {
     let settingsManager: SettingsManager
     let fileScannerManager: FileScannerManager
     
-    let selectedGalleryIndexRelay = PublishSubject<GalleryIndex>()
-    let selectedAlbumIndexRelay = PublishRelay<AlbumIndex>()
+    let selectedGalleryIndexRelay = BehaviorRelay<GalleryIndex>(value: .empty)
+    let selectedAlbumIndexRelay = BehaviorRelay<AlbumIndex>(value: .empty)
     
     // MARK: - Init
     init(settingsManager: SettingsManager, fileScannerManger: FileScannerManager) {
@@ -52,7 +52,7 @@ class GalleryManager {
         }
         
         if let galleryIndex = loadGalleryIndex() {
-            selectedGalleryIndexRelay.onNext(galleryIndex)
+            selectedGalleryIndexRelay.accept(galleryIndex)
         }
         
 //        purgeGallery()
@@ -132,7 +132,7 @@ class GalleryManager {
         if var galleryIndex = self.loadGalleryIndex() {
             galleryIndex.images.append(AlbumImage(fileName: photoID, date: Date()))
             self.rebuildGalleryIndex()
-            self.selectedGalleryIndexRelay.onNext(galleryIndex)
+            self.selectedGalleryIndexRelay.accept(galleryIndex)
         }
         
         if let toAlbum = toAlbum {
@@ -147,7 +147,7 @@ class GalleryManager {
         if var galleryIndex = self.loadGalleryIndex() {
             galleryIndex.images.append(contentsOf: photos.map { AlbumImage(fileName: $0, date: Date()) })
             self.rebuildGalleryIndex(gallery: galleryIndex)
-            self.selectedGalleryIndexRelay.onNext(galleryIndex)
+            self.selectedGalleryIndexRelay.accept(galleryIndex)
         }
         
         if let toAlbum = toAlbum {
@@ -290,7 +290,7 @@ class GalleryManager {
         let json = try! JSONEncoder().encode(index)
         let url = self.selectedGalleryPath.appendingPathComponent(index.id.uuidString).appendingPathComponent(kAlbumIndex)
         if let galleryIndex: GalleryIndex = loadGalleryIndex() {
-            self.selectedGalleryIndexRelay.onNext(galleryIndex)
+            self.selectedGalleryIndexRelay.accept(galleryIndex)
         }
         try? json.write(to: url)
     }
@@ -413,7 +413,7 @@ class GalleryManager {
         
         let jsonEncoded = try? JSONEncoder().encode(newIndex)
         try! jsonEncoded?.write(to: galleryIndexPath)
-        self.selectedGalleryIndexRelay.onNext(newIndex)
+        self.selectedGalleryIndexRelay.accept(newIndex)
         
         return newIndex
     }
@@ -448,7 +448,7 @@ class GalleryManager {
         }
         
         try! jsonEncoded?.write(to: url)
-        self.selectedGalleryIndexRelay.onNext(newIndex)
+        self.selectedGalleryIndexRelay.accept(newIndex)
         return newIndex
     }
     

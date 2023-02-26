@@ -77,7 +77,7 @@ class AlbumScreenViewModel {
     }
     
     func loadGalleryIndex() -> Observable<GalleryIndex> {
-        self.galleryManager.selectedGalleryIndexRelay
+        self.galleryManager.selectedGalleryIndexRelay.asObservable()
     }
     
     func loadAlbumImages() -> Observable<AlbumImage> {

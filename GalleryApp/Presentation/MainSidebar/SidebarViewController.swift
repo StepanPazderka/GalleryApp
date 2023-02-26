@@ -20,7 +20,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate {
     let screenView = SidebarView()
     
     // MARK: - Properties
-    private var dataSource: UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>!
+    private var dataSource: UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>?
     let router: SidebarRouter
     var screens: [String: UIViewController]
     var mainbuttons: [SidebarItem] {
@@ -190,6 +190,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate {
     func refreshMenu() {
         var snapshot = NSDiffableDataSourceSnapshot<SidebarSection, SidebarItem>()
         snapshot.appendSections(SidebarSection.allCases)
+        guard let dataSource else { return }
         dataSource.apply(snapshot, animatingDifferences: true)
         
         for section in SidebarSection.allCases {
@@ -207,6 +208,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate {
     func refreshMainButtons() {
         mainButtonsSnapshot.deleteAll()
         mainButtonsSnapshot.append(mainbuttons)
+        guard let dataSource else { return }
         dataSource.apply(mainButtonsSnapshot, to: .mainButtons, animatingDifferences: true)
     }
     
@@ -218,6 +220,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate {
         smartAlbumsSnapshot.append([SidebarItem(id: UUID(), title: "Test", image: UIImage(systemName: "folder.badge.gearshape"))], to: smartalbums[1])
         smartAlbumsSnapshot.expand([smartalbums[1]])
         smartAlbumsSnapshot.expand([headerItem])
+        guard let dataSource else { return }
         dataSource.apply(smartAlbumsSnapshot, to: .smartAlbumsButtons)
     }
     
@@ -226,6 +229,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate {
         albumsSnapshot.append([albumsHeader])
         albumsSnapshot.append(viewModel.albumButtons, to: albumsHeader)
         albumsSnapshot.expand([albumsHeader])
+        guard let dataSource else { return }
         dataSource.apply(albumsSnapshot, to: .albumsButtons, animatingDifferences: true)
     }
 }

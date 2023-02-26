@@ -23,7 +23,7 @@ class SidebarViewModel {
     }
     
     func galleryIndex() -> Observable<GalleryIndex> {
-        galleryManager.selectedGalleryIndexRelay
+        galleryManager.selectedGalleryIndexRelay.asObservable()
     }
     
     func bindAlbums() {
