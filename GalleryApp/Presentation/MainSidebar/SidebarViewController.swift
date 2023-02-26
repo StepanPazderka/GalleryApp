@@ -21,7 +21,6 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate {
     
     // MARK: - Properties
     private var dataSource: UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>!
-    private var secondaryViewControllers: [UIViewController] = []
     let router: SidebarRouter
     var screens: [String: UIViewController]
     var mainbuttons: [SidebarItem] {

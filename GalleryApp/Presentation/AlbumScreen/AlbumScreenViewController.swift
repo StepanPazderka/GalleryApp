@@ -317,6 +317,8 @@ class AlbumScreenViewController: UIViewController {
     }
 }
 
+extension AlbumScreenViewController: UIPopoverPresentationControllerDelegate {}
+
 extension AlbumScreenViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -379,10 +381,6 @@ extension AlbumScreenViewController: UIDocumentPickerDelegate {
             }
         }
     }
-}
-
-extension AlbumScreenViewController: UIPopoverPresentationControllerDelegate {
-    
 }
 
 // TODO: Refactor - move this fction to viewModel

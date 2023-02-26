@@ -22,7 +22,6 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     var galleryManager: GalleryManager
     private var dataSource: UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>!
     private var collectionView: UICollectionView!
-    private var secondaryViewControllers: [UIViewController] = []
     private var screens: [String: UIViewController]
     var albums = [SidebarItem]()
     var selectedAlbum: UUID?

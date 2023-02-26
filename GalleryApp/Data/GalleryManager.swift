@@ -20,6 +20,11 @@ enum MoveImageError: Error {
     case imageAlreadyInAlbum
 }
 
+enum AlbumImageType: String {
+    case thumbnail
+    case fullSizeImage
+}
+
 class GalleryManager {
     
     // MARK: - Properties
@@ -461,5 +466,9 @@ class GalleryManager {
         for filename in files {
             try? FileManager.default.removeItem(at: self.selectedGalleryPath.appendingPathComponent(filename))
         }
+    }
+    
+    func resolvePathFor(imageName: String) -> URL {
+        return self.selectedGalleryPath.appendingPathComponent(imageName, conformingTo: .image)
     }
 }

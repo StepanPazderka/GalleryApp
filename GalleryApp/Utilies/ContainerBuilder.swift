@@ -37,7 +37,7 @@ class ContainerBuilder {
         container.register(PhotoDetailViewController.self) { (r, photoDetailSettings: PhotoDetailViewControllerSettings) in
             return PhotoDetailViewController(galleryInteractor: r.resolve(GalleryManager.self)!, settings: photoDetailSettings)
         }
-
+        
         container.register(AlbumScreenViewModel.self) { (r, albumID: UUID) in
             return AlbumScreenViewModel(albumID: albumID,
                                         galleryManager: r.resolve(GalleryManager.self)!)

@@ -32,6 +32,7 @@
 		7F479F1725B64963005AFB97 /* InteractiveImageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F479F1625B64963005AFB97 /* InteractiveImageViewCell.swift */; };
 		7F479F1A25B6496F005AFB97 /* InteractiveImageViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F479F1925B6496E005AFB97 /* InteractiveImageViewCell.xib */; };
 		7F49EC8E27D7A96900E6D2D8 /* PhotoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F49EC8D27D7A96900E6D2D8 /* PhotoDetailView.swift */; };
+		7F4B6DC629A7CCF500327EE2 /* PathResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4B6DC529A7CCF500327EE2 /* PathResolver.swift */; };
 		7F4BFCCE2602AB3B0058C051 /* ImageResizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4BFCCD2602AB3B0058C051 /* ImageResizer.swift */; };
 		7F5BBE4D2926660700DE9AF1 /* MutableProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5BBE4C2926660700DE9AF1 /* MutableProgress.swift */; };
 		7F5EE81D2908977F008B247B /* ZoomTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5EE81C2908977F008B247B /* ZoomTransitionController.swift */; };
@@ -110,6 +111,7 @@
 		7F479F1625B64963005AFB97 /* InteractiveImageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveImageViewCell.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		7F479F1925B6496E005AFB97 /* InteractiveImageViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InteractiveImageViewCell.xib; sourceTree = "<group>"; };
 		7F49EC8D27D7A96900E6D2D8 /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
+		7F4B6DC529A7CCF500327EE2 /* PathResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathResolver.swift; sourceTree = "<group>"; };
 		7F4BFCCD2602AB3B0058C051 /* ImageResizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageResizer.swift; sourceTree = "<group>"; };
 		7F5BBE4C2926660700DE9AF1 /* MutableProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableProgress.swift; sourceTree = "<group>"; };
 		7F5EE81C2908977F008B247B /* ZoomTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomTransitionController.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 				7FA67631284E479900B685F4 /* UnsecureStorage.swift */,
 				7F72D6682854E4A20016FC2A /* FileScannerManager.swift */,
 				7F8A167D27568BE900F4CB50 /* GalleryManager.swift */,
+				7F4B6DC529A7CCF500327EE2 /* PathResolver.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -247,12 +250,12 @@
 		7F235DFC2585B73C007BD075 /* GalleryApp */ = {
 			isa = PBXGroup;
 			children = (
-				7F235DFD2585B73C007BD075 /* AppDelegate.swift */,
-				7F235DFF2585B73C007BD075 /* SceneDelegate.swift */,
 				7F04C60C2760F03C001CD45F /* Utilies */,
 				7F04C60B2760E2DC001CD45F /* Data */,
 				7FFD64C227592F5900189AC4 /* Domain */,
 				7FCB40B925FAF1AC007ADF35 /* Presentation */,
+				7F235DFD2585B73C007BD075 /* AppDelegate.swift */,
+				7F235DFF2585B73C007BD075 /* SceneDelegate.swift */,
 				7F10F365258EA938000B6075 /* GalleryApp.entitlements */,
 				7F235E062585B73F007BD075 /* Assets.xcassets */,
 				7F235E082585B73F007BD075 /* LaunchScreen.storyboard */,
@@ -567,6 +570,7 @@
 				7F5EE81D2908977F008B247B /* ZoomTransitionController.swift in Sources */,
 				7F163B3E28F62DD7008C13A4 /* AlbumListViewModel.swift in Sources */,
 				7F5EE8212908979F008B247B /* ZoomDismissalInteractionController.swift in Sources */,
+				7F4B6DC629A7CCF500327EE2 /* PathResolver.swift in Sources */,
 				7F235E002585B73C007BD075 /* SceneDelegate.swift in Sources */,
 				7F0938B02842B86900F29123 /* SettingsManager.swift in Sources */,
 				7FC96D6627A9555100690CFB /* PhotoZoomViewController.swift in Sources */,

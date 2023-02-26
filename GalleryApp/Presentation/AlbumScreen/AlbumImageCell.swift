@@ -127,9 +127,7 @@ class AlbumImageCell: UICollectionViewCell {
                 self.checkBox.isHidden = !value
             }
         }).disposed(by: disposeBag)
-        
-        let overlay = UIVisualEffectView()
-        
+                
 //        viewModel?.showingTitles.subscribe(onNext: { value in
 //            UIView.animate(withDuration: 0.25,
 //                           animations: {

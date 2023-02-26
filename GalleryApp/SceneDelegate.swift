@@ -27,11 +27,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let splitView = UISplitViewController(style: .doubleColumn)
-        splitView.delegate = self
-//        splitView.preferredDisplayMode = .oneBesideSecondary
-        splitView.presentsWithGesture = true
-//        splitView.preferredSplitBehavior = .displace
-        splitView.preferredDisplayMode = .oneBesideSecondary
         
         
         let mainrouter = container.resolve(SidebarRouter.self)!
@@ -40,6 +35,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
 //        window.backgroundColor = .black
 //        window.rootViewController = UINavigationController(rootViewController: splitView)
+
         window.rootViewController = splitView
         
         self.window = window
@@ -72,11 +68,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
-    }
-}
-
-extension SceneDelegate: UISplitViewControllerDelegate {
-    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
-        return true
     }
 }
