@@ -20,18 +20,15 @@ enum MoveImageError: Error {
     case imageAlreadyInAlbum
 }
 
-enum AlbumImageType: String {
-    case thumbnail
-    case fullSizeImage
-}
-
 class GalleryManager {
     
     // MARK: - Properties
     var libraryPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     var userDefaults: UserDefaults = UserDefaults.standard
     var selectedGalleryPath: URL {
-        return libraryPath.appendingPathComponent(selectedGallery)
+        get {
+            return libraryPath.appendingPathComponent(selectedGallery)
+        }
     }
     var selectedGallery: String
     let settingsManager: SettingsManager

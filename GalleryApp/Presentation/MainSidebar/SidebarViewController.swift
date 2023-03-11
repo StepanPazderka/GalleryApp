@@ -9,8 +9,8 @@ import UIKit
 import UniformTypeIdentifiers
 import RxSwift
 import RxCocoa
-import SnapKit
 import RxDataSources
+import SnapKit
 import Swinject
 import DirectoryWatcher
 
@@ -183,7 +183,7 @@ class SidebarViewController: UIViewController, UINavigationControllerDelegate {
                 return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
             }
         }
-
+        
         refreshMenu()
     }
 
@@ -243,8 +243,9 @@ extension SidebarViewController: UICollectionViewDelegate {
         }
         
         if indexPath.section == 1 {
-            let albumID = self.viewModel.albumButtons[indexPath.row-1].identifier
-            router.show(album: albumID)
+            if let albumID = self.viewModel.albumButtons[indexPath.row-1].identifier {
+                router.show(album: albumID)
+            }
         }
     }
     

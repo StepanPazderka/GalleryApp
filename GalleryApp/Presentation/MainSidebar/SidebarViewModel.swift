@@ -92,6 +92,8 @@ class SidebarViewModel {
     
     func deleteAlbum(index: Int) {
         let selectedAlbumForDeletion = self.albumButtons[index - 1]
-        self.galleryManager.delete(album: selectedAlbumForDeletion.identifier)
+        if let id = selectedAlbumForDeletion.identifier {
+            self.galleryManager.delete(album: id)
+        }
     }
 }

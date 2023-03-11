@@ -11,17 +11,17 @@ import UIKit
 struct SidebarItem: Hashable {
     let title: String?
     let image: UIImage?
-    let identifier: UUID
+    let identifier: UUID?
 
-    internal init(id: UUID, title: String?, image: UIImage?) {
+    internal init(id: UUID? = UUID(), title: String?, image: UIImage? = nil) {
         self.identifier = id
         self.title = title
         self.image = image
     }
 
-    init?(from: AlbumIndex) {
-        self.identifier = from.id
-        self.title = from.name
+    init?(from album: AlbumIndex) {
+        self.identifier = album.id
+        self.title = album.name
         let thumbnailImage: UIImage? = nil
         self.image = thumbnailImage
     }

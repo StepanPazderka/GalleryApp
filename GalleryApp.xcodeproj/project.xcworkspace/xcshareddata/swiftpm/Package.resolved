@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "foldermonitorkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stoqn4opm/FolderMonitorKit",
+      "state" : {
+        "revision" : "43eb9715e4710406d8bdc7919e0c0e1e3bb796c6",
+        "version" : "2.0.0"
+      }
+    },
+    {
+      "identity" : "snapkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SnapKit/SnapKit.git",
+      "state" : {
+        "branch" : "develop",
+        "revision" : "58320fe80522414bf3a7e24c88123581dc586752"
+      }
+    }
+  ],
+  "version" : 2
+}

@@ -155,8 +155,10 @@ public final class Container {
     }
 
     /// Returns a synchronized view of the container for thread safety.
-    /// The returned container is ``Resolver`` type. Call this method after you finish all service registrations
-    /// to the original container.
+    /// The returned container is ``Resolver`` type and is not the original container. Continuing to add more
+    /// registrations after calling `synchronize()` will result in different graph scope.
+    ///
+    /// It is recommended to call this method after you finish all service registrations to the original container.
     ///
     /// - Returns: A synchronized container as ``Resolver``.
     public func synchronize() -> Resolver {
@@ -175,17 +177,27 @@ public final class Container {
         behaviors.append(behavior)
     }
 
+    /// Check if a `Service` of a given type and name has already been registered.
+    ///
+    /// - Parameters:
+    ///   - serviceType: The service type to compare.
+    ///   - name:        A registration name, which is used to differentiate from other registrations
+    ///                  that have the same service and factory types.
+    ///
+    /// - Returns: A  `Bool`  which represents whether or not the `Service` has been registered.
+    public func hasAnyRegistration<Service>(
+        of serviceType: Service.Type,
+        name: String? = nil
+    ) -> Bool {
+        getRegistrations().contains { key, _ in
+            key.serviceType == serviceType && key.name == name
+        }
+    }
+
+    /// Restores the object graph to match the given identifier.
+    /// Not synchronized, use lock to edit safely.
     internal func restoreObjectGraph(_ identifier: GraphIdentifier) {
-        let action = { [weak self] in
-            self?.currentObjectGraph = identifier
-        }
-        if synchronized {
-            lock.sync {
-                action()
-            }
-        } else {
-            action()
-        }
+        currentObjectGraph = identifier
     }
 }
 
@@ -232,7 +244,19 @@ extension Container: _Resolver {
         )
 
         if let entry = getEntry(for: key) {
-            let factory = { [weak self] in self?.resolve(entry: entry, invoker: invoker) as Any? }
+            let factory = { [weak self] (graphIdentifier: GraphIdentifier?) -> Any? in
+                let action = { [weak self] () -> Any? in
+                    if let graphIdentifier = graphIdentifier {
+                        self?.restoreObjectGraph(graphIdentifier)
+                    }
+                    return self?.resolve(entry: entry, invoker: invoker) as Any?
+                }
+                if self?.synchronized ?? true {
+                    return self?.lock.sync(action: action)
+                } else {
+                    return action()
+                }
+            }
             return wrapper.init(inContainer: self, withInstanceFactory: factory) as? Wrapper
         } else {
             return wrapper.init(inContainer: self, withInstanceFactory: nil) as? Wrapper
