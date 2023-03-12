@@ -12,7 +12,9 @@ import RxCocoa
 
 class SidebarView: UIView {
     
-    public var sidebarMenu: UICollectionView!
+    public var mainButtonsCollectionView: UICollectionView!
+    
+    public var albumsButtonsCollectionView: UICollectionView!
     
     var addAlbumButton: UIButton = {
         let view = UIButton(type: .system)
@@ -36,12 +38,13 @@ class SidebarView: UIView {
     
     // MARK: -- Setup Views
     func setupViews() {
-        self.sidebarMenu = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
+        self.albumsButtonsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
+        self.mainButtonsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
     }
     
     // MARK: -- Layout Views
     func layoutViews() {
-        self.sidebarMenu.snp.makeConstraints { (make) -> Void in
+        self.albumsButtonsCollectionView.snp.makeConstraints { (make) -> Void in
             make.edges.equalToSuperview()
         }
     }
@@ -49,7 +52,7 @@ class SidebarView: UIView {
     private func createLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { section, layoutEnvironment in
             var config = UICollectionLayoutListConfiguration(appearance: .sidebar)
-            config.headerMode = section == 0 ? .none : .firstItemInSection
+            config.headerMode = .supplementary
             return NSCollectionLayoutSection.list(using: config, layoutEnvironment: layoutEnvironment)
         }
     }

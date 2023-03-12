@@ -43,32 +43,19 @@ class SidebarViewModel {
         }
     }
     
-    func fetchAlbumButtons() {
-        fetchAlbums().subscribe(onNext: { albumsIDs in
-            self.albumButtons.append(contentsOf: albumsIDs.map { id in
-                if let album = self.galleryManager.loadAlbumIndex(id: id) {
-                    return SidebarItem(id: album.id, title: album.name, image: nil)
+    func loadSidebarContent() -> Observable<[SidebarSection]> {
+        galleryIndex().map { galleryIndex in
+            let mainButonsSection = SidebarSection(category: "Main", items: [
+                SidebarItem(id: UUID(), title: "All Photos", image: UIImage(systemName: "photo.on.rectangle.angled")?.withTintColor(.tintColor), buttonType: .allPhotos)
+            ])
+            let albumButtons = SidebarSection(category: "Albums", items: galleryIndex.albums.compactMap { albumID in
+                if let album = self.galleryManager.loadAlbumIndex(id: albumID) {
+                    return SidebarItem(id: UUID(uuidString: albumID.uuidString), title: album.name, image: nil, buttonType: .album)
                 } else {
-                    return SidebarItem.empty
+                    return nil
                 }
             })
-        }).disposed(by: disposeBag)
-    }
-    
-    func fetchAlbumButtons() -> Observable<[SidebarItem]> {
-        self.fetchAlbums().map { albumIDsArray in
-            return albumIDsArray.map { albumID in
-                if let album = self.galleryManager.loadAlbumIndex(id: albumID) {
-                    var thumbnailImage: UIImage?
-                    if !album.thumbnail.isEmpty {
-                        thumbnailImage = UIImage(contentsOfFile: self.galleryManager.selectedGalleryPath.appendingPathComponent(album.thumbnail).relativePath)
-                    }
-                    return SidebarItem(id: album.id, title: album.name, image: thumbnailImage?.resized(to: CGSize(width: 25.5, height: 25.5)) ?? nil) // TODO: - Resizing
-                }
-                else {
-                    return SidebarItem.empty
-                }
-            }
+            return [mainButonsSection, albumButtons]
         }
     }
     

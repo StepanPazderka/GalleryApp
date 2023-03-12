@@ -2,15 +2,30 @@
 //  SidebarSection.swift
 //  GalleryApp
 //
-//  Created by Štěpán Pazderka on 26.01.2022.
+//  Created by Štěpán Pazderka on 11.03.2023.
 //
 
 import Foundation
 import RxDataSources
 
-enum SidebarSection: String, CaseIterable {
-    case mainButtons
-    case albumsButtons = "Albums"
-    case smartAlbumsButtons = "Smart Albums"
+struct SidebarSection {
+    internal init(category: String, items: [SidebarItem]) {
+        self.category = category
+        self.items = items
+    }
+    
+    var category: String
+    var items: [SidebarItem]
 }
 
+extension SidebarSection: SectionModelType {
+    init(original: SidebarSection, items: [SidebarItem]) {
+        print("Creating section with category \(original.category)")
+        self.category = original.category
+        self.items = items
+    }
+    
+    var identity: String {
+        return category
+    }
+}

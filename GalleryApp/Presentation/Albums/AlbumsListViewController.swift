@@ -20,7 +20,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     // MARK: - Properties
     var container: Container!
     var galleryManager: GalleryManager
-    private var dataSource: UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>!
+    private var dataSource: UICollectionViewDiffableDataSource<SidebarSections, SidebarItem>!
     private var collectionView: UICollectionView!
     private var screens: [String: UIViewController]
     var albums = [SidebarItem]()
@@ -76,7 +76,6 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
                 }
                 return nil
             }
-            self.refreshMenu()
         }
         
         self.galleryManager.selectedGalleryIndexRelay.subscribe(onNext: { gallery in
@@ -86,7 +85,6 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
                 }
                 return nil
             }
-            self.refreshMenu()
         }).disposed(by: disposeBag)
     }
     
@@ -141,7 +139,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         collectionView.translatesAutoresizingMaskIntoConstraints = false // This line fixes issue with incorrect highlighting
         view.addSubview(collectionView)
 
-        dataSource = UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>(collectionView: collectionView) {
+        dataSource = UICollectionViewDiffableDataSource<SidebarSections, SidebarItem>(collectionView: collectionView) {
             (collectionView: UICollectionView, indexPath: IndexPath, item: SidebarItem) -> UICollectionViewCell? in
             if indexPath.item == 0 && indexPath.section != 0 {
                 return collectionView.dequeueConfiguredReusableCell(using: headerRegistration, for: indexPath, item: item)
@@ -188,29 +186,13 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
             cell.accessories = []
         }
         
-        dataSource = UICollectionViewDiffableDataSource<SidebarSection, SidebarItem>(collectionView: collectionView) {
+        dataSource = UICollectionViewDiffableDataSource<SidebarSections, SidebarItem>(collectionView: collectionView) {
             (collectionView: UICollectionView, indexPath: IndexPath, item: SidebarItem) -> UICollectionViewCell? in
             if indexPath.item == 0 && indexPath.section != 0 {
                 return collectionView.dequeueConfiguredReusableCell(using: headerRegistration, for: indexPath, item: item)
             } else {
                 return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
             }
-        }
-
-        refreshMenu()
-    }
-
-    func refreshMenu() {
-        let sections: [SidebarSection] = [.albumsButtons]
-        var snapshot = NSDiffableDataSourceSnapshot<SidebarSection, SidebarItem>()
-        dataSource.apply(snapshot, animatingDifferences: true)
-        
-        for section in sections {
-            let headerItem = SidebarItem(id: UUID(), title: sections.first?.rawValue, image: nil)
-            var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
-            sectionSnapshot.deleteAll()
-            sectionSnapshot.append(albums)
-            dataSource.apply(sectionSnapshot, to: section)
         }
     }
 }

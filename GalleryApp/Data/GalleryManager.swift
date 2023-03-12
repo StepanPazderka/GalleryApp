@@ -313,14 +313,10 @@ class GalleryManager {
     func loadAlbumIndex(id: UUID) -> Observable<AlbumIndex> {
         return Observable.create { observer in
             let albumIndex: AlbumIndex? = self.loadAlbumIndex(id: id)
-            let albumMonitor = try! FolderMonitor(url: self.selectedGalleryPath.appendingPathComponent(albumIndex?.id.uuidString ?? UUID().uuidString), trackingEvent: .all, onChange: { [weak self] in
-                if let albumIndex = self?.loadAlbumIndex(id: id) {
-                    observer.onNext(albumIndex)
-                }
-            })
-            try! albumMonitor.start()
+            if let albumIndex = self.loadAlbumIndex(id: id) {
+                observer.onNext(albumIndex)
+            }
             return Disposables.create {
-                albumMonitor.stop()
             }
         }
     }
