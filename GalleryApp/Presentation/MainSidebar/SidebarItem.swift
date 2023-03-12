@@ -10,7 +10,17 @@ import UIKit
 
 struct SidebarItem: Hashable {
     let title: String?
-    let image: UIImage?
+    private let originalImage: UIImage?
+    var image: UIImage? {
+        get {
+            switch self.type {
+            case .allPhotos:
+                return UIImage(systemName: "photo.on.rectangle.angled")?.withTintColor(.tintColor)
+            case .album:
+                return originalImage
+            }
+        }
+    }
     let identifier: UUID?
     let type: buttonType
     
@@ -22,7 +32,7 @@ struct SidebarItem: Hashable {
     internal init(id: UUID? = UUID(), title: String?, image: UIImage? = nil, buttonType: buttonType) {
         self.identifier = id
         self.title = title
-        self.image = image
+        self.originalImage = image
         self.type = buttonType
     }
 
@@ -30,7 +40,7 @@ struct SidebarItem: Hashable {
         self.identifier = album.id
         self.title = album.name
         let thumbnailImage: UIImage? = nil
-        self.image = thumbnailImage
+        self.originalImage = thumbnailImage
         self.type = .album
     }
     
