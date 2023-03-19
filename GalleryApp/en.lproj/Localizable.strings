@@ -9,7 +9,7 @@
 "kCANCEL" = "Cancel";
 "SELECTFROMFILES" = "Select from Files";
 "CreateSubAlbum" = "Create SubAlbum";
-"DUPLICATEALBUM" = "Duplicate Album";
+"kDUPLICATEALBUM" = "Duplicate Album";
 "kDELETEIMAGE" = "Delete Image";
 "DeleteTitle" = "Delete";
 "kDETAILS" = "Details";

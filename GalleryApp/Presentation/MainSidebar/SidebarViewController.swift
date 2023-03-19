@@ -14,7 +14,7 @@ import SnapKit
 import Swinject
 import DirectoryWatcher
 
-class SidebarViewController: UIViewController, UINavigationControllerDelegate {
+class SidebarViewController: UIViewController {
     
     // MARK: - Views
     let screenView = SidebarView()
@@ -202,15 +202,22 @@ extension SidebarViewController: UICollectionViewDelegate {
                 
             }
             let duplicateAction =
-            UIAction(title: NSLocalizedString("DUPLICATEALBUM", comment: ""),
+            UIAction(title: NSLocalizedString("kDUPLICATEALBUM", comment: ""),
                      image: UIImage(systemName: "plus.square.on.square")) { action in
-                //                self.performDuplicate(indexPath)
+//                self.viewModel.duplicateAlbum(index: indexPath.row)
+                
+                if let albumId = self.dataSource?[indexPath].identifier {
+                    self.viewModel.duplicateAlbum(id: albumId)
+                }
+
             }
             let deleteAction =
             UIAction(title: NSLocalizedString(kDeleteAlbum, comment: ""),
                      image: UIImage(systemName: "trash"),
                      attributes: .destructive) { action in
-                self.viewModel.deleteAlbum(index: indexPath.row)
+                if let albumId = self.dataSource?[indexPath].identifier {
+                    self.viewModel.deleteAlbum(id: albumId)
+                }
             }
             return UIMenu(title: "", children: [inspectAction, duplicateAction, deleteAction])
         })

@@ -74,6 +74,18 @@ class GalleryManager {
         rebuildGalleryIndex()
     }
     
+    func dubplicateAlbum(index: AlbumIndex) {
+        var newAlbumIndex = index
+        newAlbumIndex.id = UUID()
+        newAlbumIndex.name = newAlbumIndex.name + " Copy"
+        let newAlbumPath = selectedGalleryPath.appendingPathComponent(newAlbumIndex.id.uuidString)
+        try? FileManager.default.createDirectory(at: newAlbumPath, withIntermediateDirectories: true, attributes: nil)
+        if let json = try? JSONEncoder().encode(newAlbumIndex) {
+            try? json.write(to: newAlbumPath.appendingPathComponent(kAlbumIndex))
+        }
+        rebuildGalleryIndex()
+    }
+    
     func delete(album: UUID) {
         do {
             try FileManager.default.removeItem(at: selectedGalleryPath.appendingPathComponent(album.uuidString))

@@ -12,29 +12,16 @@ class SidebarViewModel {
     
     // MARK: -- Properties
     private var galleryManager: GalleryManager
-    var albumButtons = [SidebarItem]()
     
     let disposeBag = DisposeBag()
     
     init(galleryInteractor: GalleryManager) {
         self.galleryManager = galleryInteractor
         
-        bindAlbums()
     }
     
-    func galleryIndex() -> Observable<GalleryIndex> {
+    func loadGalleryIndex() -> Observable<GalleryIndex> {
         galleryManager.selectedGalleryIndexRelay.asObservable()
-    }
-    
-    func bindAlbums() {
-        galleryManager.selectedGalleryIndexRelay.subscribe(onNext: { gallery in
-            self.albumButtons = gallery.albums.compactMap { albumID in
-                if let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
-                    return SidebarItem(from: albumIndex)
-                }
-                return nil
-            }
-        }).disposed(by: disposeBag)
     }
     
     func fetchAlbums() -> Observable<[UUID]> {
@@ -43,8 +30,14 @@ class SidebarViewModel {
         }
     }
     
+    func duplicateAlbum(id: UUID) {
+        if let album: AlbumIndex = self.galleryManager.loadAlbumIndex(id: id) {
+            self.galleryManager.dubplicateAlbum(index: album)
+        }
+    }
+    
     func loadSidebarContent() -> Observable<[SidebarSection]> {
-        galleryIndex().map { galleryIndex in
+        loadGalleryIndex().map { galleryIndex in
             let mainButonsSection = SidebarSection(category: "Main", items: [
                 SidebarItem(id: UUID(), title: "All Photos", image: nil, buttonType: .allPhotos)
             ])
@@ -77,10 +70,7 @@ class SidebarViewModel {
         }
     }
     
-    func deleteAlbum(index: Int) {
-        let selectedAlbumForDeletion = self.albumButtons[index - 1]
-        if let id = selectedAlbumForDeletion.identifier {
-            self.galleryManager.delete(album: id)
-        }
+    func deleteAlbum(id: UUID) {
+        self.galleryManager.delete(album: id)
     }
 }
