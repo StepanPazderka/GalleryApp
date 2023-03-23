@@ -10,6 +10,7 @@
 "SELECTFROMFILES" = "Select from Files";
 "CreateSubAlbum" = "Create SubAlbum";
 "kDUPLICATEALBUM" = "Duplicate Album";
+"kRenameAlbum" = "Rename Album";
 "kDELETEIMAGE" = "Delete Image";
 "DeleteTitle" = "Delete";
 "kDETAILS" = "Details";

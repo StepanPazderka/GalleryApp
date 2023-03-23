@@ -30,6 +30,13 @@ class SidebarViewModel {
         }
     }
     
+    func renameAlbum(id: UUID, withNewAlbumName: String) {
+        if var albumIndex = self.galleryManager.loadAlbumIndex(id: id) {
+            albumIndex.name = withNewAlbumName
+            self.galleryManager.updateAlbumIndex(index: albumIndex)
+        }
+    }
+    
     func duplicateAlbum(id: UUID) {
         if let album: AlbumIndex = self.galleryManager.loadAlbumIndex(id: id) {
             self.galleryManager.dubplicateAlbum(index: album)

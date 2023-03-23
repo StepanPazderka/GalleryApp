@@ -11,10 +11,8 @@ import SnapKit
 import RxCocoa
 
 class SidebarView: UIView {
-    
-    public var mainButtonsCollectionView: UICollectionView!
-    
-    public var albumsButtonsCollectionView: UICollectionView!
+        
+    public var sidebarCollectionView: UICollectionView!
     
     var addAlbumButton: UIButton = {
         let view = UIButton(type: .system)
@@ -38,13 +36,12 @@ class SidebarView: UIView {
     
     // MARK: -- Setup Views
     func setupViews() {
-        self.albumsButtonsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
-        self.mainButtonsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
+        self.sidebarCollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
     }
     
     // MARK: -- Layout Views
     func layoutViews() {
-        self.albumsButtonsCollectionView.snp.makeConstraints { (make) -> Void in
+        self.sidebarCollectionView.snp.makeConstraints { (make) -> Void in
             make.edges.equalToSuperview()
         }
     }

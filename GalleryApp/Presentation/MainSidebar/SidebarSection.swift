@@ -20,7 +20,6 @@ struct SidebarSection {
 
 extension SidebarSection: SectionModelType {
     init(original: SidebarSection, items: [SidebarItem]) {
-        print("Creating section with category \(original.category)")
         self.category = original.category
         self.items = items
     }

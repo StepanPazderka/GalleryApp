@@ -68,11 +68,16 @@ class SidebarViewController: UIViewController {
     }
     
     // MARK: - Create Album Popover
-    @objc func showCreateAlbumPopover() {
+    @objc func showRenameAlbumDialog(withPrepulatedName: String? = nil, callback: ((String) -> Void)? = nil) {
+        var returnString: String?
         let createAlbumAlert = UIAlertController(title: NSLocalizedString("kEnterAlbumName", comment: ""), message: nil, preferredStyle: .alert)
 
         createAlbumAlert.addTextField { textField in
             textField.placeholder = "Album name"
+            
+            if let withPrepulatedName {
+                textField.text = withPrepulatedName
+            }
         }
                 
         let confirmAction = UIAlertAction(title: NSLocalizedString("kOK", comment: ""), style: .default) { [weak createAlbumAlert] _ in
@@ -84,11 +89,16 @@ class SidebarViewController: UIViewController {
                 let noAlbumAlert = UIAlertController(title: NSLocalizedString("kAlbumNameCantBeEmpty", comment: ""), message: nil, preferredStyle: .alert)
                 noAlbumAlert.addAction(okAction)
                 self.present(noAlbumAlert, animated: true)
+                returnString = nil
                 return
             }
             
             if let albumName = textField.text, !text.isEmpty {
-                self.viewModel.createAlbum(name: albumName)
+                returnString = albumName
+            }
+            
+            if let callback, let returnString {
+                callback(returnString)
             }
         }
         createAlbumAlert.addAction(confirmAction)
@@ -107,7 +117,7 @@ class SidebarViewController: UIViewController {
             .disposed(by: disposeBag)
     
         viewModel.loadSidebarContent()
-            .bind(to: screenView.albumsButtonsCollectionView.rx.items(dataSource: dataSource!))
+            .bind(to: screenView.sidebarCollectionView.rx.items(dataSource: dataSource!))
             .disposed(by: disposeBag)
     }
     
@@ -120,10 +130,12 @@ class SidebarViewController: UIViewController {
         }).disposed(by: disposeBag)
 
         self.screenView.addAlbumButton.rx.tap.subscribe(onNext: { [weak self] in
-            self?.showCreateAlbumPopover()
+            self?.showRenameAlbumDialog() { newAlbumName in
+                self?.viewModel.createAlbum(name: newAlbumName)
+            }
         }).disposed(by: disposeBag)
         
-        self.screenView.albumsButtonsCollectionView.rx.itemSelected
+        self.screenView.sidebarCollectionView.rx.itemSelected
             .subscribe(onNext: { indexPath in
                 let item = self.dataSource![indexPath]
                 if item.type == .album {
@@ -132,12 +144,12 @@ class SidebarViewController: UIViewController {
                     self.router.showAllPhotos()
                 }
                 // Deselect the previously selected cell, if any
-                if let selectedIndexPath = self.screenView.albumsButtonsCollectionView.indexPathsForSelectedItems?.first {
-                    self.screenView.albumsButtonsCollectionView.deselectItem(at: selectedIndexPath, animated: true)
+                if let selectedIndexPath = self.screenView.sidebarCollectionView.indexPathsForSelectedItems?.first {
+                    self.screenView.sidebarCollectionView.deselectItem(at: selectedIndexPath, animated: true)
                 }
                 
                 // Select the newly selected cell
-                self.screenView.albumsButtonsCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+                self.screenView.sidebarCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
                 
             }).disposed(by: disposeBag)
     }
@@ -146,10 +158,10 @@ class SidebarViewController: UIViewController {
     func setupViews() {
         self.view = screenView
         
-        view.addSubviews(self.screenView.albumsButtonsCollectionView, self.screenView.mainButtonsCollectionView)
+        view.addSubviews(self.screenView.sidebarCollectionView)
         
-        self.screenView.albumsButtonsCollectionView.delegate = self
-        self.screenView.albumsButtonsCollectionView.translatesAutoresizingMaskIntoConstraints = true
+        self.screenView.sidebarCollectionView.delegate = self
+        self.screenView.sidebarCollectionView.translatesAutoresizingMaskIntoConstraints = true
         
         self.navigationController?.navigationBar.prefersLargeTitles = false
         self.navigationItem.titleView = self.screenView.selectGalleryButton
@@ -190,7 +202,7 @@ class SidebarViewController: UIViewController {
 }
 
 extension SidebarViewController: UICollectionViewDelegate {
-
+    
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil,
                                           previewProvider: nil,
@@ -203,13 +215,11 @@ extension SidebarViewController: UICollectionViewDelegate {
             }
             let duplicateAction =
             UIAction(title: NSLocalizedString("kDUPLICATEALBUM", comment: ""),
-                     image: UIImage(systemName: "plus.square.on.square")) { action in
-//                self.viewModel.duplicateAlbum(index: indexPath.row)
-                
+                     image: UIImage(systemName: "plus.square.on.square")) { action in                
                 if let albumId = self.dataSource?[indexPath].identifier {
                     self.viewModel.duplicateAlbum(id: albumId)
                 }
-
+                
             }
             let deleteAction =
             UIAction(title: NSLocalizedString(kDeleteAlbum, comment: ""),
@@ -219,7 +229,18 @@ extension SidebarViewController: UICollectionViewDelegate {
                     self.viewModel.deleteAlbum(id: albumId)
                 }
             }
-            return UIMenu(title: "", children: [inspectAction, duplicateAction, deleteAction])
+            let renameAction =
+            UIAction(title: NSLocalizedString("kRenameAlbum", comment: ""),
+                     image: UIImage(systemName: "pencil")) { action in
+                
+                if let albumName = self.dataSource?[indexPath].title, let albumID = self.dataSource?[indexPath].identifier {
+                    self.showRenameAlbumDialog(withPrepulatedName: albumName) { [indexPath] newAlbumName in
+                        self.viewModel.renameAlbum(id: albumID, withNewAlbumName: newAlbumName)
+                        self.screenView.sidebarCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .top)
+                    }
+                }
+            }
+            return UIMenu(title: "", children: [renameAction, inspectAction, duplicateAction, deleteAction])
         })
     }
 }
