@@ -170,7 +170,6 @@ class AlbumScreenViewModel {
                 if itemProvider.canLoadObject(ofClass: UIImage.self) {
                     guard let suggestedName = itemProvider.suggestedName else { return }
                     itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.image.identifier) { filePath, error in
-                        print("File Path: \(filePath?.lastPathComponent)")
                         guard let filePath else {
                             self.filesThatCouldntBeAdded.append(suggestedName)
                             newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
@@ -193,7 +192,7 @@ class AlbumScreenViewModel {
                                 self.galleryManager.buildThumb(forImage: AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
                                 imagesToBeAdded.append(AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
                             }
-                        } catch {
+                        } catch let error as NSError {
                             print(error)
                         }
                     }

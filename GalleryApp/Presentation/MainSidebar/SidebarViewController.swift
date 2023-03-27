@@ -25,11 +25,6 @@ class SidebarViewController: UIViewController {
     let viewModel: SidebarViewModel
     let disposeBag = DisposeBag()
 
-    // MARK: - Sidebar Snapshots
-    var mainButtonsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarCell>()
-    var albumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarCell>()
-    var smartAlbumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarCell>()
-    
     // MARK: - Init
     init(router: SidebarRouter, container: Container, viewModel: SidebarViewModel) {
         self.router = router
