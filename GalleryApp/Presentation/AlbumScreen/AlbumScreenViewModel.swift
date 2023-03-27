@@ -12,10 +12,6 @@ import FolderMonitorKit
 import PhotosUI
 
 class AlbumScreenViewModel {
-    
-    // MARK: -- Model
-    var model = AlbumScreenModel(name: "Test", images: [AlbumImage(fileName: "Something", date: Date())], thumbnail: "Test")
-    
     // MARK: -- Properties
     var isEditing = BehaviorRelay(value: false)
     var showingTitles = BehaviorRelay(value: false)
@@ -71,8 +67,8 @@ class AlbumScreenViewModel {
             }).disposed(by: disposeBag)
         }
         
-        self.showingTitles.distinctUntilChanged().subscribe(onNext: { value in
-            self.switchTitles(value: value)
+        self.showingTitles.distinctUntilChanged().subscribe(onNext: { isShowingTitles in
+            self.switchTitles(value: isShowingTitles)
         }).disposed(by: disposeBag)
     }
     
@@ -164,10 +160,12 @@ class AlbumScreenViewModel {
         var imagesToBeAdded = [AlbumImage]()
         self.filesThatCouldntBeAdded = [String]()
         
+        guard results.count > 0 else { return }
+        
         DispatchQueue.global(qos: .unspecified).async {
             for itemProvider in results.map({ $0.itemProvider }) {
                 
-                var newTaskProgress = Progress(totalUnitCount: 1000)
+                let newTaskProgress = Progress(totalUnitCount: 1000)
                 
                 if itemProvider.canLoadObject(ofClass: UIImage.self) {
                     guard let suggestedName = itemProvider.suggestedName else { return }
@@ -205,8 +203,7 @@ class AlbumScreenViewModel {
                 self.importProgress.addChild(newTaskProgress)
             }
         }
-        
-        guard results.count > 0 else { return }
+
         
         self.showingLoading.accept(true)
         var timer: Timer?
@@ -216,7 +213,6 @@ class AlbumScreenViewModel {
         
         sleep(1)
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (t) in
-            var progress = Float(self.importProgress.fractionCompleted)
 
             if self.importProgress.fractionCompleted == 1.0 {
                 self.addPhotos(images: imagesToBeAdded)

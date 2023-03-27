@@ -17,7 +17,11 @@ struct SidebarCell: Hashable {
             case .allPhotos:
                 return UIImage(systemName: "photo.on.rectangle.angled")?.withTintColor(.tintColor)
             case .album:
-                return originalImage
+                if originalImage != nil {
+                    return originalImage
+                } else {
+                    return UIImage(systemName: "square")?.withTintColor(.tintColor)
+                }
             }
         }
     }

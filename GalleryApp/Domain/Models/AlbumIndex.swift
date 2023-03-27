@@ -25,23 +25,22 @@ struct AlbumIndex: Codable {
     }
 
     init?(from entity: URL) {
-        let indexPath = entity.lastPathComponent == kAlbumIndex ? entity.relativePath : entity.appendingPathComponent(kAlbumIndex).relativePath
-        
-        let jsonDATA = try? String(contentsOfFile: indexPath).data(using: .unicode)
-        if let jsonData = jsonDATA {
-            let decodedData = try? JSONDecoder().decode(AlbumIndex.self, from: jsonData)
-            if let album = decodedData {
-                self.name = album.name
-                self.images = album.images
-                self.thumbnail = album.thumbnail
-                self.id = album.id
-                self.thumbnailsSize = album.thumbnailsSize
-                self.showingAnnotations = album.showingAnnotations
-                return
-            }
+        let albumIndexPath = entity.lastPathComponent == kAlbumIndex ? entity.relativePath : entity.appendingPathComponent(kAlbumIndex).relativePath
+
+        guard let jsonData = try? String(contentsOfFile: albumIndexPath).data(using: .unicode) else {
+            return nil
         }
-        
-        return nil
+    
+        guard let decodedData = try? JSONDecoder().decode(AlbumIndex.self, from: jsonData) else {
+            return nil
+        }
+
+        self.name = decodedData.name
+        self.images = decodedData.images
+        self.thumbnail = decodedData.thumbnail
+        self.id = decodedData.id
+        self.thumbnailsSize = decodedData.thumbnailsSize
+        self.showingAnnotations = decodedData.showingAnnotations
     }
     
     static var empty: Self {

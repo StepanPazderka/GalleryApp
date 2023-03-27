@@ -93,6 +93,14 @@ class SidebarViewModel {
         }
     }
     
+    func removeThumbnail(albumID: UUID) {
+        var albumIndex: AlbumIndex? = self.galleryManager.loadAlbumIndex(id: albumID)
+        if var albumIndex {
+            albumIndex.thumbnail = nil
+            self.galleryManager.updateAlbumIndex(index: albumIndex)
+        }
+    }
+    
     func deleteAlbum(id: UUID) {
         self.galleryManager.delete(album: id)
     }

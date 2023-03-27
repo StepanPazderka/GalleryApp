@@ -22,10 +22,7 @@ class SidebarViewController: UIViewController {
     // MARK: - Properties
     private var dataSource: RxCollectionViewSectionedReloadDataSource<SidebarSection>?
     let router: SidebarRouter
-    var screens: [String: UIViewController]
-
     let viewModel: SidebarViewModel
-        
     let disposeBag = DisposeBag()
 
     // MARK: - Sidebar Snapshots
@@ -35,8 +32,6 @@ class SidebarViewController: UIViewController {
     
     // MARK: - Init
     init(router: SidebarRouter, container: Container, viewModel: SidebarViewModel) {
-        screens = ["allPhotos": UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self)!),
-                   "search": UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self)!)]
         self.router = router
         self.viewModel = viewModel
         
@@ -62,7 +57,6 @@ class SidebarViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         
         screenView.layoutViews()
     }
@@ -181,7 +175,11 @@ class SidebarViewController: UIViewController {
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarCell> { (cell, indexPath, item) in
             var content = cell.defaultContentConfiguration()
             content.text = item.title
-            content.image = item.image?.resized(to: CGSize(width: 25, height: 25))
+            if item.type == .album {
+                content.image = item.image?.resized(to: CGSize(width: 25, height: 25))
+            } else {
+                content.image = item.image
+            }
             
             cell.contentConfiguration = content
             cell.accessories = []
@@ -230,6 +228,13 @@ extension SidebarViewController: UICollectionViewDelegate {
                     self.viewModel.deleteAlbum(id: albumId)
                 }
             }
+            let removeThumbnail =
+            UIAction(title: NSLocalizedString(kRemoveThumbnail, comment: ""),
+                     image: UIImage(systemName: "square.slash")) { action in
+                if let albumID = self.dataSource?[indexPath].identifier {
+                    self.viewModel.removeThumbnail(albumID: albumID)
+                }
+            }
             let renameAction =
             UIAction(title: NSLocalizedString("kRenameAlbum", comment: ""),
                      image: UIImage(systemName: "pencil")) { action in
@@ -241,7 +246,7 @@ extension SidebarViewController: UICollectionViewDelegate {
                     }
                 }
             }
-            return UIMenu(title: "", children: [renameAction, inspectAction, duplicateAction, deleteAction])
+            return UIMenu(title: "", children: [renameAction, inspectAction, removeThumbnail, duplicateAction, deleteAction])
         })
     }
 }

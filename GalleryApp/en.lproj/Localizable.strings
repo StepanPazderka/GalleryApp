@@ -11,6 +11,7 @@
 "CreateSubAlbum" = "Create SubAlbum";
 "kALLPHOTOS" = "All Photos";
 "kDUPLICATEALBUM" = "Duplicate Album";
+"kREMOVETHUMBNAIL" = "Remove Thumbnail";
 "kRenameAlbum" = "Rename Album";
 "kDELETEIMAGE" = "Delete Image";
 "DeleteTitle" = "Delete";

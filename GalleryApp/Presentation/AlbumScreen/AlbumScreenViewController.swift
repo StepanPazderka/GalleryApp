@@ -121,7 +121,7 @@ class AlbumScreenViewController: UIViewController {
     }
 
     func showImagePicker() {
-        var imagePicker = self.screenView.imagePicker()
+        let imagePicker = self.screenView.imagePicker()
         
         imagePicker.delegate = self
         self.present(imagePicker, animated: true)
@@ -339,7 +339,6 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
         let thumbnailURL = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(self.viewModel.images[indexPath.row].fileName).deletingPathExtension().appendingPathExtension("jpg").relativePath
-        let fullImageURL = self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(self.viewModel.images[indexPath.row].fileName)
         self.viewModel.galleryManager.buildThumb(forImage: self.viewModel.images[indexPath.row])
 
         cell.imageView.image = UIImage(contentsOfFile: thumbnailURL)

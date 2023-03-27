@@ -123,7 +123,7 @@ class GalleryManager {
     }
     
     func move(Image: AlbumImage, toAlbum: UUID, callback: (() -> ())? = nil) throws {
-        guard var targetAlbumIndex = loadAlbumIndex(id: toAlbum) else { return }
+        guard let targetAlbumIndex = loadAlbumIndex(id: toAlbum) else { return }
         var newIndex = targetAlbumIndex
         for albumImage in targetAlbumIndex.images {
             if albumImage.fileName == Image.fileName {
@@ -247,17 +247,6 @@ class GalleryManager {
         guard !FileManager.default.fileExists(atPath: thumbPath.relativePath) else { return }
         
         guard let images else { return }
-        
-        let selectedImage = images.first(where: {
-            
-            var fileName = URL(string: $0.fileName)
-            
-            if let fileName {
-                print(fileName.deletingPathExtension())
-            }
-            
-            return $0.fileName == albumImage.fileName
-        })
         
         let image = UIImage(contentsOfFile: selectedGalleryPath.appendingPathComponent(albumImage.fileName).relativePath)
         

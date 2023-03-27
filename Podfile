@@ -17,3 +17,6 @@ target 'GalleryApp' do
   pod 'IQKeyboardManagerSwift'
 
 end
+
+# ignore all warnings from all pods
+inhibit_all_warnings!
