@@ -9,6 +9,7 @@
 "kCANCEL" = "Cancel";
 "SELECTFROMFILES" = "Select from Files";
 "CreateSubAlbum" = "Create SubAlbum";
+"kALLPHOTOS" = "All Photos";
 "kDUPLICATEALBUM" = "Duplicate Album";
 "kRenameAlbum" = "Rename Album";
 "kDELETEIMAGE" = "Delete Image";

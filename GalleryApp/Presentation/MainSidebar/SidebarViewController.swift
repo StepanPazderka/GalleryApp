@@ -29,9 +29,9 @@ class SidebarViewController: UIViewController {
     let disposeBag = DisposeBag()
 
     // MARK: - Sidebar Snapshots
-    var mainButtonsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
-    var albumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
-    var smartAlbumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
+    var mainButtonsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarCell>()
+    var albumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarCell>()
+    var smartAlbumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarCell>()
     
     // MARK: - Init
     init(router: SidebarRouter, container: Container, viewModel: SidebarViewModel) {
@@ -178,10 +178,11 @@ class SidebarViewController: UIViewController {
             }
         }
         
-        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarCell> { (cell, indexPath, item) in
             var content = cell.defaultContentConfiguration()
             content.text = item.title
-            content.image = item.image
+            content.image = item.image?.resized(to: CGSize(width: 25, height: 25))
+            
             cell.contentConfiguration = content
             cell.accessories = []
         }

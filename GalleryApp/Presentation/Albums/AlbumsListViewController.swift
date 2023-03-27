@@ -20,15 +20,15 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     // MARK: - Properties
     var container: Container!
     var galleryManager: GalleryManager
-    private var dataSource: UICollectionViewDiffableDataSource<SidebarSections, SidebarItem>!
+    private var dataSource: UICollectionViewDiffableDataSource<SidebarSections, SidebarCell>!
     private var collectionView: UICollectionView!
     private var screens: [String: UIViewController]
-    var albums = [SidebarItem]()
+    var albums = [SidebarCell]()
     var selectedAlbum: UUID?
     var selectedImages: [String]
-    var mainButtonsRX = PublishSubject<[SidebarItem]>()
-    var albumRX = PublishSubject<[SidebarItem]>()
-    var albumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
+    var mainButtonsRX = PublishSubject<[SidebarCell]>()
+    var albumRX = PublishSubject<[SidebarCell]>()
+    var albumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarCell>()
     let disposeBag = DisposeBag()
     
     
@@ -72,7 +72,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         if let index = index {
             self.albums = index.albums.compactMap { albumID in
                 if let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
-                    return SidebarItem(from: albumIndex)
+                    return SidebarCell(from: albumIndex)
                 }
                 return nil
             }
@@ -81,7 +81,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         self.galleryManager.selectedGalleryIndexRelay.subscribe(onNext: { gallery in
             self.albums = gallery.albums.compactMap { albumID in
                 if let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
-                    return SidebarItem(from: albumIndex)
+                    return SidebarCell(from: albumIndex)
                 }
                 return nil
             }
@@ -91,14 +91,14 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        let headerRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
+        let headerRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarCell> { (cell, indexPath, item) in
             var content = cell.defaultContentConfiguration()
             content.text = item.title
             cell.contentConfiguration = content
             cell.accessories = [.outlineDisclosure()]
         }
         
-        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarCell> { (cell, indexPath, item) in
             var content = cell.defaultContentConfiguration()
             content.text = item.title
             content.image = item.image?.roundedImage
@@ -139,8 +139,8 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         collectionView.translatesAutoresizingMaskIntoConstraints = false // This line fixes issue with incorrect highlighting
         view.addSubview(collectionView)
 
-        dataSource = UICollectionViewDiffableDataSource<SidebarSections, SidebarItem>(collectionView: collectionView) {
-            (collectionView: UICollectionView, indexPath: IndexPath, item: SidebarItem) -> UICollectionViewCell? in
+        dataSource = UICollectionViewDiffableDataSource<SidebarSections, SidebarCell>(collectionView: collectionView) {
+            (collectionView: UICollectionView, indexPath: IndexPath, item: SidebarCell) -> UICollectionViewCell? in
             if indexPath.item == 0 && indexPath.section != 0 {
                 return collectionView.dequeueConfiguredReusableCell(using: headerRegistration, for: indexPath, item: item)
             } else {
@@ -149,7 +149,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         }
 
         mainButtonsRX.subscribe(onNext: { mainButtons in
-            var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
+            var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarCell>()
             sectionSnapshot.append(mainButtons)
             self.dataSource.apply(sectionSnapshot, to: .mainButtons)
         }).dispose()
@@ -171,14 +171,14 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     }
 
     func ConfigureDataSource() {
-        let headerRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
+        let headerRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarCell> { (cell, indexPath, item) in
             var content = cell.defaultContentConfiguration()
             content.text = item.title
             cell.contentConfiguration = content
             cell.accessories = [.outlineDisclosure()]
         }
         
-        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarCell> { (cell, indexPath, item) in
             var content = cell.defaultContentConfiguration()
             content.text = item.title
             content.image = item.image?.roundedImage
@@ -186,8 +186,8 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
             cell.accessories = []
         }
         
-        dataSource = UICollectionViewDiffableDataSource<SidebarSections, SidebarItem>(collectionView: collectionView) {
-            (collectionView: UICollectionView, indexPath: IndexPath, item: SidebarItem) -> UICollectionViewCell? in
+        dataSource = UICollectionViewDiffableDataSource<SidebarSections, SidebarCell>(collectionView: collectionView) {
+            (collectionView: UICollectionView, indexPath: IndexPath, item: SidebarCell) -> UICollectionViewCell? in
             if indexPath.item == 0 && indexPath.section != 0 {
                 return collectionView.dequeueConfiguredReusableCell(using: headerRegistration, for: indexPath, item: item)
             } else {

@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-struct SidebarItem: Hashable {
+struct SidebarCell: Hashable {
     let title: String?
     private let originalImage: UIImage?
     var image: UIImage? {

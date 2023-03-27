@@ -46,11 +46,27 @@ class SidebarViewModel {
     func loadSidebarContent() -> Observable<[SidebarSection]> {
         loadGalleryIndex().map { galleryIndex in
             let mainButonsSection = SidebarSection(category: "Main", items: [
-                SidebarItem(id: UUID(), title: "All Photos", image: nil, buttonType: .allPhotos)
+                SidebarCell(id: UUID(), title: NSLocalizedString("kALLPHOTOS", comment: "Title for sidebar cell to show All Photos in library"), image: nil, buttonType: .allPhotos)
             ])
             let albumButtons = SidebarSection(category: "Albums", items: galleryIndex.albums.compactMap { albumID in
                 if let album = self.galleryManager.loadAlbumIndex(id: albumID) {
-                    return SidebarItem(id: UUID(uuidString: albumID.uuidString), title: album.name, image: nil, buttonType: .album)
+                    var thumbnailImage: UIImage?
+
+                    if let FirstAlbumImage = album.images.first {
+                        let path = self.galleryManager.resolvePathFor(imageName: FirstAlbumImage.fileName)
+                        
+                        let thumbnailImageURL = self.galleryManager.selectedGalleryPath.appendingPathComponent(FirstAlbumImage.fileName)
+                        thumbnailImage = UIImage(contentsOfFile: path)
+                    }
+                    
+                    if let thumbnail = album.thumbnail {
+                        if !thumbnail.isEmpty {
+                            let thumbnailImageURL = self.galleryManager.selectedGalleryPath.appendingPathComponent(thumbnail)
+                            thumbnailImage = UIImage(contentsOfFile: thumbnailImageURL.relativePath)
+                        }
+                    }
+                    
+                    return SidebarCell(id: UUID(uuidString: albumID.uuidString), title: album.name, image: thumbnailImage ?? nil, buttonType: .album)
                 } else {
                     return nil
                 }

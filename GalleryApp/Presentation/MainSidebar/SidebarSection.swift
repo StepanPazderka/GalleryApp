@@ -8,18 +8,19 @@
 import Foundation
 import RxDataSources
 
+/// Struct representing Sidebar Section
 struct SidebarSection {
-    internal init(category: String, items: [SidebarItem]) {
+    internal init(category: String, items: [SidebarCell]) {
         self.category = category
         self.items = items
     }
     
     var category: String
-    var items: [SidebarItem]
+    var items: [SidebarCell]
 }
 
 extension SidebarSection: SectionModelType {
-    init(original: SidebarSection, items: [SidebarItem]) {
+    init(original: SidebarSection, items: [SidebarCell]) {
         self.category = original.category
         self.items = items
     }

@@ -11,7 +11,7 @@ struct AlbumIndex: Codable {
     var id: UUID = UUID()
     var name: String
     var images: [AlbumImage]
-    var thumbnail: String
+    var thumbnail: String?
     var thumbnailsSize: Float = 200
     var showingAnnotations: Bool? = false
 

@@ -474,7 +474,7 @@ class GalleryManager {
         }
     }
     
-    func resolvePathFor(imageName: String) -> URL {
-        return self.selectedGalleryPath.appendingPathComponent(imageName, conformingTo: .image)
+    func resolvePathFor(imageName: String) -> String {
+        return self.selectedGalleryPath.appendingPathComponent(imageName, conformingTo: .image).relativePath
     }
 }
