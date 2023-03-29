@@ -248,10 +248,6 @@ class AlbumScreenViewController: UIViewController {
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         self.screenView.collectionView.allowsMultipleSelection = editing
-        self.screenView.collectionView.indexPathsForVisibleItems.forEach { (indexPath) in
-            let cell = screenView.collectionView.cellForItem(at: indexPath) as! AlbumImageCell
-//            cell.isEditing = editing
-        }
     }
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {

@@ -21,6 +21,12 @@ class PhotoPropertiesView: UIView {
         return view
     }()
     
+    public let photoFileType = {
+        let view = UILabel(frame: .zero)
+        view.text = "File type"
+        return view
+    }()
+    
     public let photoSizeLabel = {
         let view = UILabel(frame: .zero)
         view.text = "File size"
@@ -76,6 +82,7 @@ class PhotoPropertiesView: UIView {
         self.addSubview(stackview)
         self.addSubview(imageView)
         self.backgroundColor = .white
+        self.stackview.addArrangedSubview(photoFileType)
         self.stackview.addArrangedSubview(photoSizeLabel)
         self.stackview.addArrangedSubview(photoDateLabel)
         self.stackview.addArrangedSubview(photoDateCreationLabel)
@@ -95,6 +102,11 @@ class PhotoPropertiesView: UIView {
             make.width.equalToSuperview().offset(-200)
             make.centerX.equalToSuperview()
             make.top.equalTo(imageView.snp_bottomMargin)
+        }
+        
+        photoFileType.snp.makeConstraints { make in
+            make.width.equalToSuperview()
+            make.height.equalTo(20)
         }
         
         photoSizeLabel.snp.makeConstraints { make in

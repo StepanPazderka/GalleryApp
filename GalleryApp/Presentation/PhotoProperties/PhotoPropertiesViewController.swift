@@ -37,6 +37,9 @@ class PhotoPropertiesViewController: UIViewController {
     func setupViews() {
         self.view = screenView
         self.screenView.imageView.image = viewModel.getImage()
+        if let fileType = viewModel.getFileType() {
+            self.screenView.photoFileType.text = "\(NSLocalizedString("kFileType", comment: "")) \(fileType)"
+        }
         self.screenView.photoSizeLabel.text = "\(NSLocalizedString("kFileSize", comment: "")) \(ByteCountFormatter().string(fromByteCount: Int64(viewModel.getFileSize())))"
         
         if let date = viewModel.getFileModifiedDate() {

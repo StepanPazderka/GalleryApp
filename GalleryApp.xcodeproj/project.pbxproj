@@ -70,7 +70,7 @@
 		7FEE73E427AC664400B8E02E /* AlbumScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEE73E327AC664400B8E02E /* AlbumScreenView.swift */; };
 		7FF3D7C6283A44B00090BECF /* FolderMonitorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7FF3D7C5283A44B00090BECF /* FolderMonitorKit */; };
 		7FFD64C52759318C00189AC4 /* AlbumImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FFD64C42759318C00189AC4 /* AlbumImageCell.swift */; };
-		7FFF484E27A05E3900DDABB4 /* SidebarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FFF484D27A05E3900DDABB4 /* SidebarCell.swift */; };
+		7FFF484E27A05E3900DDABB4 /* SidebarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FFF484D27A05E3900DDABB4 /* SidebarItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -149,7 +149,7 @@
 		7FEDEA8F284B5C7F001F40C0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		7FEE73E327AC664400B8E02E /* AlbumScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumScreenView.swift; sourceTree = "<group>"; };
 		7FFD64C42759318C00189AC4 /* AlbumImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumImageCell.swift; sourceTree = "<group>"; };
-		7FFF484D27A05E3900DDABB4 /* SidebarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarCell.swift; sourceTree = "<group>"; };
+		7FFF484D27A05E3900DDABB4 /* SidebarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarItem.swift; sourceTree = "<group>"; };
 		A376C1977261135FB0336E84 /* Pods-GalleryApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.debug.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.debug.xcconfig"; sourceTree = "<group>"; };
 		C244A4C5C4777768A21588A6 /* Pods-GalleryApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.release.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -222,7 +222,7 @@
 				7F39161A27814EB2003D688D /* SidebarRouter.swift */,
 				7F235E122585B856007BD075 /* SidebarViewController.swift */,
 				7F1267AC2777D612002A7038 /* SidebarViewModel.swift */,
-				7FFF484D27A05E3900DDABB4 /* SidebarCell.swift */,
+				7FFF484D27A05E3900DDABB4 /* SidebarItem.swift */,
 				7F90451527A1569D005BFB2D /* SidebarSections.swift */,
 				7F8B1EEE282029C00041D106 /* SidebarView.swift */,
 				7F9C758829BD1251003AA507 /* SidebarSection.swift */,
@@ -608,7 +608,7 @@
 				7FCDB80528FCBD6D00CC84F9 /* PhotoPropertiesView.swift in Sources */,
 				7F479F1725B64963005AFB97 /* InteractiveImageViewCell.swift in Sources */,
 				7F1C1C88275F8B3200929C95 /* UIImage+imageWidth.swift in Sources */,
-				7FFF484E27A05E3900DDABB4 /* SidebarCell.swift in Sources */,
+				7FFF484E27A05E3900DDABB4 /* SidebarItem.swift in Sources */,
 				7F8A167C2756859200F4CB50 /* GalleryIndex.swift in Sources */,
 				7FEE73E427AC664400B8E02E /* AlbumScreenView.swift in Sources */,
 				7FA67632284E479900B685F4 /* UnsecureStorage.swift in Sources */,

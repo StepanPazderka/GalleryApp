@@ -20,6 +20,12 @@ class PhotoPropertiesViewModel {
         self.galleryManager = galleryManager
     }
     
+    func getFileType() -> String? {
+        let fileURL = self.galleryManager.selectedGalleryPath.appendingPathComponent(images.first!.fileName)
+        
+        return fileURL.pathExtension.uppercased()
+    }
+    
     func getFileSize() -> UInt64 {
         var fileSize: UInt64 = 0
         

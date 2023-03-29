@@ -167,7 +167,7 @@ class SidebarViewController: UIViewController {
             }
         }
         
-        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarCell> { (cell, indexPath, item) in
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
             var content = cell.defaultContentConfiguration()
             content.text = item.title
             if item.type == .album {

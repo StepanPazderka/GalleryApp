@@ -46,7 +46,7 @@ class SidebarViewModel {
     func loadSidebarContent() -> Observable<[SidebarSection]> {
         loadGalleryIndex().map { galleryIndex in
             let mainButonsSection = SidebarSection(category: "Main", items: [
-                SidebarCell(id: UUID(), title: NSLocalizedString("kALLPHOTOS", comment: "Title for sidebar cell to show All Photos in library"), image: nil, buttonType: .allPhotos)
+                SidebarItem(id: UUID(), title: NSLocalizedString("kALLPHOTOS", comment: "Title for sidebar cell to show All Photos in library"), image: nil, buttonType: .allPhotos)
             ])
             let albumButtons = SidebarSection(category: "Albums", items: galleryIndex.albums.compactMap { albumID in
                 if let album = self.galleryManager.loadAlbumIndex(id: albumID) {
@@ -66,7 +66,7 @@ class SidebarViewModel {
                         }
                     }
                     
-                    return SidebarCell(id: UUID(uuidString: albumID.uuidString), title: album.name, image: thumbnailImage ?? nil, buttonType: .album)
+                    return SidebarItem(id: UUID(uuidString: albumID.uuidString), title: album.name, image: thumbnailImage ?? nil, buttonType: .album)
                 } else {
                     return nil
                 }

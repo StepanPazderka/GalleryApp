@@ -27,6 +27,7 @@
 "kThumbs" = "thumbs";
 "kCantAddImageToTheAlbum" = "Can't add image to the album";
 "kImageAlreadyInAlbum" = "Image already in album";
+"kFileType" = "File type: ";
 "kFileSize" = "File size: ";
 "kFileCreationDate" = "Date creation: ";
 "kFileModifiedDate" = "Date modified: ";
