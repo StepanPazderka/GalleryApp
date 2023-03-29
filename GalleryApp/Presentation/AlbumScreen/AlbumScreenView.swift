@@ -95,6 +95,7 @@ class AlbumScreenView: UIView {
     let imagePicker = {
         var configuration = PHPickerConfiguration()
         configuration.filter = .images
+        configuration.preferredAssetRepresentationMode = .current
         configuration.selectionLimit = 0
         let view = PHPickerViewController(configuration: configuration)
         return view
