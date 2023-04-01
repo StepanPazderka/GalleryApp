@@ -78,6 +78,16 @@ class AlbumScreenViewModel {
     func loadAlbumImages() -> Observable<AlbumImage> {
         return galleryManager.loadAlbumIndex(id: albumID!).flatMap { Observable.from($0.images) }
     }
+//    
+//    func loadAlbumImages2() -> Observable<[AlbumImage]> {
+//        return galleryManager.loadAlbumIndex(id: albumID!).flatMap {
+//            Observable.just($0.images.map { albumImage in
+//                var newAlbumImage = albumImage
+//                newAlbumImage.fileName = self.galleryManager.resolvePathFor(imageName: albumImage.fileName)
+//                return newAlbumImage
+//            })
+//        }
+//    }
     
     func loadAlbum(by: UUID) -> AlbumIndex? {
         return self.galleryManager.loadAlbumIndex(id: by)
@@ -160,41 +170,39 @@ class AlbumScreenViewModel {
         var filesThatCouldntBeAdded = [String]()
         
         guard results.count > 0 else { return }
-        
-        DispatchQueue.global(qos: .unspecified).async {
-            for itemProvider in results.map({ $0.itemProvider }) {
-                
-                let newTaskProgress = Progress(totalUnitCount: 1000)
-                
-                itemProvider.loadFileRepresentation(forTypeIdentifier: "public.image") { filePath, error in
-                    guard let filePath else {
-                        guard let suggestedName = itemProvider.suggestedName else { return }
-                        filesThatCouldntBeAdded.append(suggestedName)
-                        newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
-                        return
-                    }
-                    
-                    let filenameExtension = filePath.pathExtension
-                    
-                    newTaskProgress.completedUnitCount = 0
-                    if (error != nil) {
-                        print("Error while copying files \(String(describing: error))")
-                    }
-                    
-                    let targetPath = self.galleryManager.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
-                    do {
-                        try FileManager.default.moveItem(at: filePath, to: targetPath)
-                        newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
-                        self.galleryManager.buildThumb(forImage: AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
-                        imagesToBeAdded.append(AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
-                    } catch {
-                        print(error)
-                    }
+        for itemProvider in results.map({ $0.itemProvider }) {
+            
+            let newTaskProgress = Progress(totalUnitCount: 1000)
+            
+            itemProvider.loadFileRepresentation(forTypeIdentifier: "public.image") { filePath, error in
+                guard let filePath else {
+                    guard let suggestedName = itemProvider.suggestedName else { return }
+                    filesThatCouldntBeAdded.append(suggestedName)
+                    newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
+                    return
                 }
-                self.importProgress.addChild(newTaskProgress)
+                
+                let filenameExtension = filePath.pathExtension
+                
+                newTaskProgress.completedUnitCount = 0
+                if (error != nil) {
+                    print("Error while copying files \(String(describing: error))")
+                }
+                
+                let targetPath = self.galleryManager.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
+                do {
+                    try FileManager.default.moveItem(at: filePath, to: targetPath)
+                    newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
+                    self.galleryManager.buildThumb(forImage: AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
+                    imagesToBeAdded.append(AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
+                    
+                } catch {
+                    print(error)
+                }
             }
+            self.importProgress.addChild(newTaskProgress)
         }
-
+        
         
         self.showingLoading.accept(true)
         var timer: Timer?
@@ -204,7 +212,7 @@ class AlbumScreenViewModel {
         
         sleep(1)
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (t) in
-
+            
             if self.importProgress.fractionCompleted == 1.0 {
                 self.addPhotos(images: imagesToBeAdded)
                 usleep(UInt32(0.25))

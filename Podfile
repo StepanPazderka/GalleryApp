@@ -6,8 +6,8 @@ target 'GalleryApp' do
   use_frameworks!
 
   # Pods for GalleryApp
-  pod 'RxSwift',    '~> 4.0'
-  pod 'RxCocoa',    '~> 4.0'
+  pod 'RxSwift'
+  pod 'RxCocoa'
   pod 'RxDataSources'
   pod 'Swinject'
   pod 'DirectoryWatcher'

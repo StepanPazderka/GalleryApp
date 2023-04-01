@@ -113,7 +113,7 @@ class AlbumImageCell: UICollectionViewCell {
         print("Double tap")
     }
     
-    func configure(imageData: AlbumImage) {
+    func configure(with imageData: AlbumImage) {
         self.textLabel.text = imageData.title
         
         self.viewModel?.isEditing.subscribe(onNext: { value in

@@ -466,4 +466,8 @@ class GalleryManager {
     func resolvePathFor(imageName: String) -> String {
         return self.selectedGalleryPath.appendingPathComponent(imageName, conformingTo: .image).relativePath
     }
+    
+    func resolveThumbPathFor(imageName: String) -> String {
+        return self.selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(imageName).deletingPathExtension().appendingPathExtension("jpg").relativePath
+    }
 }
