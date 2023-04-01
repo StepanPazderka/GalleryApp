@@ -78,16 +78,26 @@ class AlbumScreenViewModel {
     func loadAlbumImages() -> Observable<AlbumImage> {
         return galleryManager.loadAlbumIndex(id: albumID!).flatMap { Observable.from($0.images) }
     }
-//    
-//    func loadAlbumImages2() -> Observable<[AlbumImage]> {
-//        return galleryManager.loadAlbumIndex(id: albumID!).flatMap {
-//            Observable.just($0.images.map { albumImage in
-//                var newAlbumImage = albumImage
-//                newAlbumImage.fileName = self.galleryManager.resolvePathFor(imageName: albumImage.fileName)
-//                return newAlbumImage
-//            })
-//        }
-//    }
+    
+    func loadAlbumImages2() -> Observable<[AlbumImage]> {
+        if let albumID {
+            return galleryManager.loadAlbumIndex(id: albumID).flatMap {
+                Observable.just($0.images.map { albumImage in
+                    var newAlbumImage = albumImage
+                    newAlbumImage.fileName = self.galleryManager.resolveThumbPathFor(imageName: albumImage.fileName)
+                    return newAlbumImage
+                })
+            }
+        } else {
+            return galleryManager.loadGalleryIndex().flatMap {
+                Observable.just($0.images.map { albumImage in
+                    var newAlbumImage = albumImage
+                    newAlbumImage.fileName = self.galleryManager.resolveThumbPathFor(imageName: albumImage.fileName)
+                    return newAlbumImage
+                })
+            }
+        }
+    }
     
     func loadAlbum(by: UUID) -> AlbumIndex? {
         return self.galleryManager.loadAlbumIndex(id: by)

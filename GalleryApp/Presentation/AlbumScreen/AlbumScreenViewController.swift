@@ -26,7 +26,7 @@ class AlbumScreenViewController: UIViewController {
     var viewModel: AlbumScreenViewModel
     let router: AlbumScreenRouter
     let disposeBag = DisposeBag()
-//    var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>
+    var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>
     
     // MARK: - Progress
     var importProgress = MutableProgress()
@@ -36,14 +36,14 @@ class AlbumScreenViewController: UIViewController {
         self.router = router
         self.viewModel = viewModel
         
-//        dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>(
-//            configureCell: { (dataSource, collectionView, indexPath, item) in
-//                // Configure the collection view cell
-//                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
-//                cell.configure(with: item)
-//                return cell
-//            }
-//        )
+        dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>(
+            configureCell: { (dataSource, collectionView, indexPath, item) in
+                // Configure the collection view cell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
+                cell.configure(with: item)
+                return cell
+            }
+        )
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -81,10 +81,15 @@ class AlbumScreenViewController: UIViewController {
             }
         }).disposed(by: disposeBag)
         
-//        self.viewModel.loadAlbumImages2().bind(to: self.screenView.collectionView.rx.items(cellIdentifier: AlbumImageCell.identifier)) { indexPath, title, cell in
-//            var cell = cell as! AlbumImageCell
-//            cell.imageView.image = UIImage(contentsOfFile: self.viewModel.images[indexPath].fileName)
-//        }.disposed(by: disposeBag)
+        self.viewModel.loadAlbumImages2().bind(to: self.screenView.collectionView.rx.items(cellIdentifier: AlbumImageCell.identifier)) { indexPath, title, cell in
+            var cell = cell as! AlbumImageCell
+            let url = title.fileName
+            cell.router = self.router
+            cell.index = indexPath
+            cell.viewModel = self.viewModel
+            cell.configure(with: title)
+            cell.imageView.image = UIImage(contentsOfFile: url)
+        }.disposed(by: disposeBag)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -107,7 +112,7 @@ class AlbumScreenViewController: UIViewController {
         longPressRecognizer.numberOfTapsRequired = 1
         
         self.screenView.collectionView.delegate = self
-        self.screenView.collectionView.dataSource = self
+//        self.screenView.collectionView.dataSource = self
         self.screenView.collectionView.addGestureRecognizer(longPressRecognizer)
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
         self.screenView.collectionView.register(AlbumScreenFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenFooter.identifier)
@@ -344,20 +349,6 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
         return footer
     }
     
-    // MARK: - Dequeing main cell
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
-        let thumbnailURL = self.viewModel.galleryManager.resolveThumbPathFor(imageName: viewModel.images[indexPath.row].fileName)
-        self.viewModel.galleryManager.buildThumb(forImage: self.viewModel.images[indexPath.row])
-
-        cell.imageView.image = UIImage(contentsOfFile: thumbnailURL)
-        cell.router = self.router
-        cell.index = indexPath.row
-        cell.viewModel = self.viewModel
-        cell.configure(with: self.viewModel.images[indexPath.row])
-        return cell
-    }
-    
     func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
         true
     }
@@ -365,15 +356,16 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         CGSize(width: view.frame.width, height: 200)
     }
-}
-
-extension AlbumScreenViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.viewModel.images.count
-    }
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        1
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // Handle the tap on the selected item here
+        
+        // You can access the selected item using the index path
+        //            let selectedItem = myData[indexPath.item]
+        print("User tapped")
+        
+        // Do something with the selected item
+        //            print("Selected item: \(selectedItem)")
     }
 }
 

@@ -22,12 +22,12 @@ struct AlbumImage: Codable {
     }
 }
 
-//extension AlbumImage: IdentifiableType {
-//    typealias Identity = UUID
-//    
-//    var identity: UUID {
-//        return id
-//    }
-//}
-//
-//extension AlbumImage: Equatable { }
+extension AlbumImage: IdentifiableType {
+    typealias Identity = UUID
+    
+    var identity: UUID {
+        return id
+    }
+}
+
+extension AlbumImage: Equatable { }
