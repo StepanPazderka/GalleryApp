@@ -33,3 +33,5 @@
 "kFileCreationDate" = "Date creation: ";
 "kFileModifiedDate" = "Date modified: ";
 "SetThumbnail" = "Set as Album Thumbnail";
+"kREMOVEFROMALBUM" = "Remove image from Album";
+"kSelectDestination" = "Select destination";

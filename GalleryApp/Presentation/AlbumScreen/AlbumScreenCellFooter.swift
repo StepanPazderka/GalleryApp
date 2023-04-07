@@ -8,11 +8,10 @@
 import Foundation
 import UIKit
 
-class AlbumScreenFooter: UICollectionReusableView {
-    static public let identifier = String(describing: AlbumScreenFooter.self)
+class AlbumScreenCellFooter: UICollectionReusableView {
+    static public let identifier = String(describing: AlbumScreenCellFooter.self)
     
     func setup() {
         self.backgroundColor = .red
-        
     }
 }

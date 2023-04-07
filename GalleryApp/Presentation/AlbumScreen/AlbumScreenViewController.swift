@@ -10,10 +10,7 @@ import RxSwift
 import RxDataSources
 import RxCocoa
 import UniformTypeIdentifiers
-import SnapKit
-import LocalAuthentication
 import Swinject
-import Photos
 import PhotosUI
 import ImageViewer
 
@@ -115,7 +112,7 @@ class AlbumScreenViewController: UIViewController {
 //        self.screenView.collectionView.dataSource = self
         self.screenView.collectionView.addGestureRecognizer(longPressRecognizer)
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
-        self.screenView.collectionView.register(AlbumScreenFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenFooter.identifier)
+        self.screenView.collectionView.register(AlbumScreenCellFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenCellFooter.identifier)
         
         if let thumbnailSize = self.viewModel.albumIndex?.thumbnailsSize {
             self.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(thumbnailSize), height: CGFloat(thumbnailSize))
@@ -145,10 +142,6 @@ class AlbumScreenViewController: UIViewController {
     
     // MARK: - Data Binding
     func bindData() {
-        self.viewModel.loadGalleryIndex().subscribe(onNext: { galleryIndex in
-            self.refreshData()
-        }).disposed(by: disposeBag)
-        
         self.screenView.progressView.observedProgress = self.viewModel.importProgress
         
         self.viewModel.showingLoading.map { value in
@@ -234,12 +227,6 @@ class AlbumScreenViewController: UIViewController {
     func addPhoto(filename: AlbumImage, to album: UUID? = nil) {
         self.viewModel.addPhoto(image: filename)
     }
-
-    public func refreshData() {
-        DispatchQueue.main.async {
-            self.screenView.collectionView.reloadData()
-        }
-    }
     
     @objc func longPressed(_ gesture: UILongPressGestureRecognizer) {
         guard let targetIndexPath = self.screenView.collectionView.indexPathForItem(at: gesture.location(in: self.screenView.collectionView)) else {
@@ -274,7 +261,6 @@ class AlbumScreenViewController: UIViewController {
 
         let newGalleryIndex = AlbumIndex(name: self.viewModel.galleryManager.selectedGalleryPath.lastPathComponent, images: self.viewModel.images, thumbnail: self.viewModel.images.first?.fileName ?? "")
         self.viewModel.galleryManager.updateAlbumIndex(index: newGalleryIndex)
-        collectionView.reloadData()
         return
     }
 
@@ -295,7 +281,6 @@ class AlbumScreenViewController: UIViewController {
             
             let selectedImage = self.viewModel.images[indexPath.row]
             
-            
             let moveToAlbum = UIAction(title: NSLocalizedString("MoveToAlbum", comment: ""),
                                        image: UIImage(systemName: "square.and.arrow.down")) { [weak self] action in
                 let container = ContainerBuilder.build()
@@ -315,6 +300,13 @@ class AlbumScreenViewController: UIViewController {
                 let selectedThumbnailFileName = self.viewModel.images[indexPath.row].fileName
                 self.viewModel.setAlbumThumbnail(imageName: selectedThumbnailFileName)
             }
+            let removeFromAlbum =
+            UIAction(title: NSLocalizedString("kREMOVEFROMALBUM", comment: ""),
+                     image: UIImage(systemName: "rectangle.stack.badge.minus"),
+                     attributes: .destructive) { action in
+                let imageName = self.viewModel.images[indexPath.row].fileName
+                self.viewModel.removeFromAlbum(imageName: imageName)
+            }
             let deleteAction =
             UIAction(title: NSLocalizedString("kDELETEIMAGE", comment: ""),
                      image: UIImage(systemName: "trash"),
@@ -323,7 +315,7 @@ class AlbumScreenViewController: UIViewController {
                 self.viewModel.delete(image: imageName)
             }
             if viewModel.albumID != nil {
-                return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, setThumbnailAction, deleteAction])
+                return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, setThumbnailAction, removeFromAlbum, deleteAction])
             } else {
                 return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, deleteAction])
             }
@@ -345,12 +337,8 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     
     // MARK: - Dequeing footer cell
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let footer = screenView.collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenFooter.identifier, for: indexPath) as! AlbumScreenFooter
+        let footer = screenView.collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenCellFooter.identifier, for: indexPath) as! AlbumScreenCellFooter
         return footer
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
-        true
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
@@ -366,6 +354,11 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
         
         // Do something with the selected item
         //            print("Selected item: \(selectedItem)")
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+        // Return true for cells that can be moved
+        return true
     }
 }
 

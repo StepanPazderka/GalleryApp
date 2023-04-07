@@ -66,13 +66,10 @@ class PhotoDetailViewController: UIViewController {
             return nil
         }
         self.screenView.imageSlideShow.setImageInputs(imagesSources)
-        
-                self.screenView.imageSlideShow.setCurrentPage(photoDetailView.selectedIndex, animated: false)
-
-        
+        self.screenView.imageSlideShow.setCurrentPage(photoDetailView.selectedIndex, animated: false)
         self.bindInteractions()
     }
-
+    
     
     @objc func didSingleTapWith(gestureRecognizer: UITapGestureRecognizer) {
         self.screenView.imageSlideShow.presentFullScreenController(from: self)
@@ -104,7 +101,6 @@ class PhotoDetailViewController: UIViewController {
     }
     
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        var didHandleEvent = false
         for press in presses {
             guard let key = press.key else { continue }
             if key.charactersIgnoringModifiers == UIKeyCommand.inputEscape {

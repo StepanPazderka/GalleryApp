@@ -132,6 +132,8 @@ class AlbumScreenView: UIView {
     
     private func setupViews() {
         self.collectionView.collectionViewLayout = collectionLayout
+        self.collectionView.collectionViewLayout.invalidateLayout()
+        self.collectionView.dragInteractionEnabled = true
         self.rightStackView.addArrangedSubview(editButton)
         self.rightStackView.addArrangedSubview(searchButton)
         self.rightStackView.addArrangedSubview(addImageButton)

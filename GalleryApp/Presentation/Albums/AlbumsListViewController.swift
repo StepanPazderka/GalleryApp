@@ -14,17 +14,17 @@ import RxDataSources
 import Swinject
 import DirectoryWatcher
 
-class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UISplitViewControllerDelegate {
-
+class AlbumsListViewController: UIViewController {
+    
     // MARK: - Properties
     var container: Container!
     var galleryManager: GalleryManager
     private var dataSource: RxCollectionViewSectionedReloadDataSource<SidebarSection>?
-    private var collectionView: UICollectionView!
     var albums = [SidebarItem]()
     var selectedAlbum: UUID?
     var selectedImages: [String]
     let viewModel: AlbumListViewModel
+    let screenView = AlbumListView()
     let disposeBag = DisposeBag()
     
     // MARK: - Init
@@ -84,50 +84,25 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
             }
         }).disposed(by: disposeBag)
         
-        self.viewModel.fetchAlbums().bind(to: self.collectionView.rx.items(dataSource: dataSource!)).disposed(by: disposeBag)
+        self.viewModel.fetchAlbums()
+            .bind(to: self.screenView.albumsCollectionView.rx.items(dataSource: dataSource!))
+            .disposed(by: disposeBag)
     }
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        let selectAlbumButton = UIButton(type: .system)
-        selectAlbumButton.setTitle(NSLocalizedString("kSELECTALBUM", comment: ""), for: .normal)
-        selectAlbumButton.tintColor = .systemBlue
-        selectAlbumButton.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
-        selectAlbumButton.rx.tap.subscribe(onNext: { [weak self] in
+        
+        screenView.selectAlbumButton.rx.tap.subscribe(onNext: { [weak self] in
             if let selectedAlbum = self?.selectedAlbum, let selectedImages = self?.selectedImages {
                 self?.viewModel.moveToAlbum(images: selectedImages, album: selectedAlbum)
             }
         }).disposed(by: disposeBag)
-        
-        navigationItem.title = "Hey"
-        let selectGalleryButton: UIButton = { let view = UIButton()
-            view.setTitle("Hey", for: .normal)
-            view.setTitleColor(.label, for: .normal)
-            view.frame = CGRect(x: 0, y: 0, width: 100, height: 50)
-            return view
-        }()
-        
-        selectGalleryButton.rx.tap.subscribe(onNext: { [weak self] in
-            let newController = UIViewController()
-            newController.view.backgroundColor = .systemBackground
-            self?.present(newController, animated: true, completion: nil)
-        }).disposed(by: disposeBag)
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: selectAlbumButton)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: #selector(closeWindow))
-        navigationController?.navigationBar.prefersLargeTitles = false
 
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: self.createLayout())
-        collectionView.delegate = self
-        collectionView.translatesAutoresizingMaskIntoConstraints = false // This line fixes issue with incorrect highlighting
-        view.addSubview(collectionView)
+        screenView.albumsCollectionView.delegate = self
+        screenView.albumsCollectionView.translatesAutoresizingMaskIntoConstraints = false // This line fixes issue with incorrect highlighting
         
-        collectionView.snp.makeConstraints { make in
-            make.size.equalToSuperview()
-        }
-
+        setupViews()
         configureDataSource()
         bindAlbums()
         bindAlert()
@@ -137,15 +112,22 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     @objc func closeWindow(sender: Any) {
         self.dismiss(animated: true)
     }
-
-    private func createLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout { section, layoutEnvironment in
-            var config = UICollectionLayoutListConfiguration(appearance: .sidebar)
-            config.headerMode = section == 0 ? .none : .firstItemInSection
-            return NSCollectionLayoutSection.list(using: config, layoutEnvironment: layoutEnvironment)
-        }
+    
+    func setupViews() {
+        view = screenView
+        
+        navigationItem.title = NSLocalizedString("kSelectDestination", comment: "")
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: screenView.selectAlbumButton)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: nil)
+        
+        navigationItem.leftBarButtonItem?.rx.tap.subscribe(onNext: { [weak self] in
+            self?.dismiss(animated: true)
+        }).disposed(by: disposeBag)
+        
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
-
+    
     // MARK: - Data Source Configuration
     func configureDataSource() {
         let headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { (headerView, elementKind, indexPath) in
@@ -182,6 +164,15 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
                 }
         )
     }
+    
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        for press in presses {
+            guard let key = press.key else { continue }
+            if key.charactersIgnoringModifiers == UIKeyCommand.inputEscape {
+                self.dismiss(animated: true)
+            }
+        }
+    }
 }
 
 extension AlbumsListViewController: UICollectionViewDelegate {
@@ -190,4 +181,5 @@ extension AlbumsListViewController: UICollectionViewDelegate {
         self.selectedAlbum = albums[indexPath.row].identifier
     }
 }
+
 

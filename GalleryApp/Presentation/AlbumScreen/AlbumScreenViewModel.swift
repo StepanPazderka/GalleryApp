@@ -115,6 +115,17 @@ class AlbumScreenViewModel {
         self.galleryManager.deleteImage(imageName: image)
     }
     
+    func removeFromAlbum(imageName: String) {
+        guard let albumID else { return }
+        
+        if var albumIndex: AlbumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
+            albumIndex.images.removeAll(where: { image in
+                image.fileName == imageName
+            })
+            self.galleryManager.updateAlbumIndex(index: albumIndex)
+        }
+    }
+    
     func delete(images: [String]) {
         for image in images {
             self.galleryManager.deleteImage(imageName: image)
