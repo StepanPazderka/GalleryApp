@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import UniformTypeIdentifiers
 import RxSwift
 import RxCocoa
 import RxDataSources
@@ -85,16 +84,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
             }
         }).disposed(by: disposeBag)
         
-        self.galleryManager.selectedGalleryIndexRelay.map { index in
-            return index.albums.compactMap { albumID in
-                if let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
-                    return SidebarItem(title: albumIndex.name, buttonType: .album)
-                }
-                return nil
-            }
-        }.map { items in
-            return [SidebarSection(category: "Albums", items: items)]
-        }.asObservable().bind(to: self.collectionView.rx.items(dataSource: dataSource!)).disposed(by: disposeBag)
+        self.viewModel.fetchAlbums().bind(to: self.collectionView.rx.items(dataSource: dataSource!)).disposed(by: disposeBag)
     }
     
     // MARK: - Lifecycle
