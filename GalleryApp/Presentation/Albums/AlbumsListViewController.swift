@@ -20,25 +20,20 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
     // MARK: - Properties
     var container: Container!
     var galleryManager: GalleryManager
-    private var dataSource: UICollectionViewDiffableDataSource<SidebarSections, SidebarItem>!
+    private var dataSource: RxCollectionViewSectionedReloadDataSource<SidebarSection>?
     private var collectionView: UICollectionView!
-    private var screens: [String: UIViewController]
     var albums = [SidebarItem]()
     var selectedAlbum: UUID?
     var selectedImages: [String]
-    var mainButtonsRX = PublishSubject<[SidebarItem]>()
-    var albumRX = PublishSubject<[SidebarItem]>()
-    var albumsSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
+    let viewModel: AlbumListViewModel
     let disposeBag = DisposeBag()
-    
     
     // MARK: - Init
     init(galleryInteractor: GalleryManager, container: Container, selectedImages: [String]) {
         self.galleryManager = galleryInteractor
         self.selectedImages = selectedImages
         self.container = container
-        screens = ["allPhotos": UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self)!),
-                   "search": UINavigationController(rootViewController: container.resolve(AlbumScreenViewController.self)!)]
+        self.viewModel = AlbumListViewModel(galleryManager: galleryManager)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -46,23 +41,26 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         fatalError("init(coder:) has not been implemented")
     }
     
-    func moveToAlbum(images: [String], album: UUID) {
-        do {
-            try self.galleryManager.move(Image: AlbumImage(fileName: images.first!, date: Date()), toAlbum: album) {
-                self.dismiss(animated: true)
+    func bindAlert() {
+        self.viewModel.showErrorCantAddImageToAlbum.distinctUntilChanged().subscribe(onNext: { value in
+            if value {
+                let imageAlreadyInAlbumString = NSLocalizedString("kImageAlreadyInAlbum", comment: "")
+                let UIAlert = UIAlertController(title: NSLocalizedString("kCantAddImageToTheAlbum", comment: ""), message: imageAlreadyInAlbumString, preferredStyle: .alert)
+                let OKButton = UIAlertAction(title: NSLocalizedString("kOK", comment: ""), style: .default) { UIAlertAction in
+                    self.dismiss(animated: true)
+                }
+                UIAlert.addAction(OKButton)
+                self.present(UIAlert, animated: true)
             }
-        } catch MoveImageError.imageAlreadyInAlbum {
-            let imageAlreadyInAlbumString = NSLocalizedString("kImageAlreadyInAlbum", comment: "")
-            let UIAlert = UIAlertController(title: NSLocalizedString("kCantAddImageToTheAlbum", comment: ""), message: imageAlreadyInAlbumString, preferredStyle: .alert)
-            let OKButton = UIAlertAction(title: NSLocalizedString("kOK", comment: ""), style: .default) { UIAlertAction in
-                self.dismiss(animated: true)
+        }).disposed(by: disposeBag)
+    }
+    
+    func bindDissmisal() {
+        self.viewModel.shouldDismiss.subscribe(onNext: { [weak self] value in
+            if value {
+                self?.dismiss(animated: false)
             }
-            UIAlert.addAction(OKButton)
-            self.present(UIAlert, animated: true)
-        } catch {
-            self.dismiss(animated: true)
-        }
-        
+        }).disposed(by: disposeBag)
     }
     
     // MARK: - Data Binding
@@ -86,33 +84,30 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
                 return nil
             }
         }).disposed(by: disposeBag)
+        
+        self.galleryManager.selectedGalleryIndexRelay.map { index in
+            return index.albums.compactMap { albumID in
+                if let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
+                    return SidebarItem(title: albumIndex.name, buttonType: .album)
+                }
+                return nil
+            }
+        }.map { items in
+            return [SidebarSection(category: "Albums", items: items)]
+        }.asObservable().bind(to: self.collectionView.rx.items(dataSource: dataSource!)).disposed(by: disposeBag)
     }
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        let headerRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
-            var content = cell.defaultContentConfiguration()
-            content.text = item.title
-            cell.contentConfiguration = content
-            cell.accessories = [.outlineDisclosure()]
-        }
-        
-        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
-            var content = cell.defaultContentConfiguration()
-            content.text = item.title
-            content.image = item.image?.roundedImage
-            cell.contentConfiguration = content
-            cell.accessories = []
-        }
-        
-        let selectAlbum = UIButton(type: .system)
-        selectAlbum.setTitle(NSLocalizedString("kSELECTALBUM", comment: ""), for: .normal)
-        selectAlbum.tintColor = .systemBlue
-        selectAlbum.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
-        selectAlbum.rx.tap.subscribe(onNext: { [weak self] in
+
+        let selectAlbumButton = UIButton(type: .system)
+        selectAlbumButton.setTitle(NSLocalizedString("kSELECTALBUM", comment: ""), for: .normal)
+        selectAlbumButton.tintColor = .systemBlue
+        selectAlbumButton.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+        selectAlbumButton.rx.tap.subscribe(onNext: { [weak self] in
             if let selectedAlbum = self?.selectedAlbum, let selectedImages = self?.selectedImages {
-                self?.moveToAlbum(images: selectedImages, album: selectedAlbum)
+                self?.viewModel.moveToAlbum(images: selectedImages, album: selectedAlbum)
             }
         }).disposed(by: disposeBag)
         
@@ -130,7 +125,7 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
             self?.present(newController, animated: true, completion: nil)
         }).disposed(by: disposeBag)
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: selectAlbum)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: selectAlbumButton)
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: #selector(closeWindow))
         navigationController?.navigationBar.prefersLargeTitles = false
 
@@ -138,24 +133,15 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         collectionView.delegate = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false // This line fixes issue with incorrect highlighting
         view.addSubview(collectionView)
-
-        dataSource = UICollectionViewDiffableDataSource<SidebarSections, SidebarItem>(collectionView: collectionView) {
-            (collectionView: UICollectionView, indexPath: IndexPath, item: SidebarItem) -> UICollectionViewCell? in
-            if indexPath.item == 0 && indexPath.section != 0 {
-                return collectionView.dequeueConfiguredReusableCell(using: headerRegistration, for: indexPath, item: item)
-            } else {
-                return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
-            }
+        
+        collectionView.snp.makeConstraints { make in
+            make.size.equalToSuperview()
         }
 
-        mainButtonsRX.subscribe(onNext: { mainButtons in
-            var sectionSnapshot = NSDiffableDataSourceSectionSnapshot<SidebarItem>()
-            sectionSnapshot.append(mainButtons)
-            self.dataSource.apply(sectionSnapshot, to: .mainButtons)
-        }).dispose()
-
+        configureDataSource()
         bindAlbums()
-        ConfigureDataSource()
+        bindAlert()
+        bindDissmisal()
     }
     
     @objc func closeWindow(sender: Any) {
@@ -170,30 +156,41 @@ class AlbumsListViewController: UIViewController, UIImagePickerControllerDelegat
         }
     }
 
-    func ConfigureDataSource() {
-        let headerRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
-            var content = cell.defaultContentConfiguration()
-            content.text = item.title
-            cell.contentConfiguration = content
-            cell.accessories = [.outlineDisclosure()]
+    // MARK: - Data Source Configuration
+    func configureDataSource() {
+        let headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { (headerView, elementKind, indexPath) in
+            if let category = self.dataSource?[indexPath.section].category {
+                var content = headerView.defaultContentConfiguration()
+                content.text = category
+                headerView.contentConfiguration = content
+            }
         }
         
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
             var content = cell.defaultContentConfiguration()
             content.text = item.title
-            content.image = item.image?.roundedImage
+            if item.type == .album {
+                content.image = item.image?.resized(to: CGSize(width: 25, height: 25))
+            } else {
+                content.image = item.image
+            }
+            
             cell.contentConfiguration = content
             cell.accessories = []
         }
         
-        dataSource = UICollectionViewDiffableDataSource<SidebarSections, SidebarItem>(collectionView: collectionView) {
-            (collectionView: UICollectionView, indexPath: IndexPath, item: SidebarItem) -> UICollectionViewCell? in
-            if indexPath.item == 0 && indexPath.section != 0 {
-                return collectionView.dequeueConfiguredReusableCell(using: headerRegistration, for: indexPath, item: item)
-            } else {
+        dataSource = RxCollectionViewSectionedReloadDataSource<SidebarSection>(
+            configureCell: { dataSource, collectionView, indexPath, item in
+                // Use content cell registration for all other items
                 return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
-            }
-        }
+            },
+            configureSupplementaryView: { dataSource, collectionView, kind, indexPath in
+                    guard kind == UICollectionView.elementKindSectionHeader else {
+                        fatalError("Unexpected supplementary view kind: \(kind)")
+                    }
+                    return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
+                }
+        )
     }
 }
 

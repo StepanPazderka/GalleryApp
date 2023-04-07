@@ -17,6 +17,10 @@ struct SidebarSection {
     
     var category: String
     var items: [SidebarItem]
+    
+    static var empty: Self {
+        Self(category: "None", items: [SidebarItem]())
+    }
 }
 
 extension SidebarSection: SectionModelType {
