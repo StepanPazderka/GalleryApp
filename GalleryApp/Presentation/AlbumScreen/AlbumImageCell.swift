@@ -63,8 +63,6 @@ class AlbumImageCell: UICollectionViewCell {
         self.textLabel.text = "ahoj!"
         self.imageView.backgroundColor = .none
         self.backgroundColor = .none
-
-        self.addGestureRecognizer(navigateToImageRecognizer)
         
         self.setupViews()
         self.layoutViews()

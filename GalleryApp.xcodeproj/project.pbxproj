@@ -57,7 +57,6 @@
 		7FA67630284E367200B685F4 /* SettingsKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FA6762F284E367200B685F4 /* SettingsKey.swift */; };
 		7FA67632284E479900B685F4 /* UnsecureStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FA67631284E479900B685F4 /* UnsecureStorage.swift */; };
 		7FC5503B258EE7C2000290F6 /* AlbumImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC5503A258EE7C2000290F6 /* AlbumImage.swift */; };
-		7FC55041258F24F3000290F6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7FC55043258F24F3000290F6 /* Localizable.strings */; };
 		7FC96D5A27A74B9800690CFB /* PhotoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC96D5927A74B9800690CFB /* PhotoDetailViewController.swift */; };
 		7FC96D5C27A76DA900690CFB /* PhotoDetailViewControllerSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC96D5B27A76DA900690CFB /* PhotoDetailViewControllerSettings.swift */; };
 		7FC96D6627A9555100690CFB /* PhotoZoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC96D6527A9555100690CFB /* PhotoZoomViewController.swift */; };
@@ -66,6 +65,7 @@
 		7FCDB80528FCBD6D00CC84F9 /* PhotoPropertiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCDB80428FCBD6D00CC84F9 /* PhotoPropertiesView.swift */; };
 		7FD0A0F42819F1BD00A33913 /* AlbumScreenCellFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD0A0F32819F1BD00A33913 /* AlbumScreenCellFooter.swift */; };
 		7FDCEE732905741C00395F10 /* GalleryManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FDCEE722905741C00395F10 /* GalleryManagerTest.swift */; };
+		7FE5507A29ECA4D40066BC62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7FE5507929ECA4D40066BC62 /* Localizable.strings */; };
 		7FEDEA90284B5C7F001F40C0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEDEA8F284B5C7F001F40C0 /* Constants.swift */; };
 		7FEDEA93284CD8AD001F40C0 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7FEDEA92284CD8AD001F40C0 /* SnapKit */; };
 		7FEE73E427AC664400B8E02E /* AlbumScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEE73E327AC664400B8E02E /* AlbumScreenView.swift */; };
@@ -141,7 +141,6 @@
 		7FA6762F284E367200B685F4 /* SettingsKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsKey.swift; sourceTree = "<group>"; };
 		7FA67631284E479900B685F4 /* UnsecureStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnsecureStorage.swift; sourceTree = "<group>"; };
 		7FC5503A258EE7C2000290F6 /* AlbumImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumImage.swift; sourceTree = "<group>"; };
-		7FC55042258F24F3000290F6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7FC96D5927A74B9800690CFB /* PhotoDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailViewController.swift; sourceTree = "<group>"; };
 		7FC96D5B27A76DA900690CFB /* PhotoDetailViewControllerSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailViewControllerSettings.swift; sourceTree = "<group>"; };
 		7FC96D6527A9555100690CFB /* PhotoZoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoZoomViewController.swift; sourceTree = "<group>"; };
@@ -150,6 +149,7 @@
 		7FCDB80428FCBD6D00CC84F9 /* PhotoPropertiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPropertiesView.swift; sourceTree = "<group>"; };
 		7FD0A0F32819F1BD00A33913 /* AlbumScreenCellFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumScreenCellFooter.swift; sourceTree = "<group>"; };
 		7FDCEE722905741C00395F10 /* GalleryManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryManagerTest.swift; sourceTree = "<group>"; };
+		7FE5507929ECA4D40066BC62 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		7FEDEA8F284B5C7F001F40C0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		7FEE73E327AC664400B8E02E /* AlbumScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumScreenView.swift; sourceTree = "<group>"; };
 		7FFD64C42759318C00189AC4 /* AlbumImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumImageCell.swift; sourceTree = "<group>"; };
@@ -267,7 +267,7 @@
 				7F235E062585B73F007BD075 /* Assets.xcassets */,
 				7F235E082585B73F007BD075 /* LaunchScreen.storyboard */,
 				7F235E0B2585B73F007BD075 /* Info.plist */,
-				7FC55043258F24F3000290F6 /* Localizable.strings */,
+				7FE5507929ECA4D40066BC62 /* Localizable.strings */,
 				7F67EFE125B50BEE00435148 /* ListsImages.swift */,
 				7F86A6F425B5DD0700428F92 /* UICheckBox.swift */,
 				7F479F1625B64963005AFB97 /* InteractiveImageViewCell.swift */,
@@ -482,7 +482,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7FC55041258F24F3000290F6 /* Localizable.strings in Resources */,
+				7FE5507A29ECA4D40066BC62 /* Localizable.strings in Resources */,
 				7F235E0A2585B73F007BD075 /* LaunchScreen.storyboard in Resources */,
 				7F235E072585B73F007BD075 /* Assets.xcassets in Resources */,
 				7F479F1A25B6496F005AFB97 /* InteractiveImageViewCell.xib in Resources */,
@@ -649,14 +649,6 @@
 				7F235E092585B73F007BD075 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-		7FC55043258F24F3000290F6 /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				7FC55042258F24F3000290F6 /* en */,
-			);
-			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

@@ -75,11 +75,7 @@ class AlbumScreenViewModel {
         self.galleryManager.selectedGalleryIndexRelay.asObservable()
     }
     
-    func loadAlbumImages() -> Observable<AlbumImage> {
-        return galleryManager.loadAlbumIndex(id: albumID!).flatMap { Observable.from($0.images) }
-    }
-    
-    func loadAlbumImages2() -> Observable<[AlbumImage]> {
+    func loadAlbumImagesObservable() -> Observable<[AlbumImage]> {
         if let albumID {
             return galleryManager.loadAlbumIndex(id: albumID).flatMap {
                 Observable.just($0.images.map { albumImage in

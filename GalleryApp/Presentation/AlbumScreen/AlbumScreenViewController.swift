@@ -23,7 +23,7 @@ class AlbumScreenViewController: UIViewController {
     var viewModel: AlbumScreenViewModel
     let router: AlbumScreenRouter
     let disposeBag = DisposeBag()
-    var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>
+    var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>!
     
     // MARK: - Progress
     var importProgress = MutableProgress()
@@ -32,15 +32,6 @@ class AlbumScreenViewController: UIViewController {
     init(router: AlbumScreenRouter, viewModel: AlbumScreenViewModel) {
         self.router = router
         self.viewModel = viewModel
-        
-        dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>(
-            configureCell: { (dataSource, collectionView, indexPath, item) in
-                // Configure the collection view cell
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
-                cell.configure(with: item)
-                return cell
-            }
-        )
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -52,6 +43,7 @@ class AlbumScreenViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.configureDataSource()
         
         self.router.start(navigationController: self.navigationController)
         
@@ -78,15 +70,23 @@ class AlbumScreenViewController: UIViewController {
             }
         }).disposed(by: disposeBag)
         
-        self.viewModel.loadAlbumImages2().bind(to: self.screenView.collectionView.rx.items(cellIdentifier: AlbumImageCell.identifier)) { indexPath, title, cell in
-            var cell = cell as! AlbumImageCell
-            let url = title.fileName
-            cell.router = self.router
-            cell.index = indexPath
-            cell.viewModel = self.viewModel
-            cell.configure(with: title)
-            cell.imageView.image = UIImage(contentsOfFile: url)
-        }.disposed(by: disposeBag)
+        self.viewModel.loadAlbumImagesObservable().flatMap { albumImages in
+            return Observable.just([AnimatableSectionModel(model: "Something", items: albumImages)])
+        }.bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource)).disposed(by: disposeBag)
+    }
+    
+    func configureDataSource() {
+        dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>(
+            configureCell: { (dataSource, collectionView, indexPath, item) in
+                // Configure the collection view cell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
+                cell.configure(with: item)
+                cell.imageView.image = UIImage(contentsOfFile: item.fileName)
+                cell.router = self.router
+                cell.index = indexPath.item
+                return cell
+            }
+        )
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -169,6 +169,11 @@ class AlbumScreenViewController: UIViewController {
             } else {
                 self?.viewModel.isEditing.accept(false)
             }
+        }).disposed(by: disposeBag)
+        
+        self.screenView.collectionView.rx.itemSelected.subscribe(onNext: { indexPath in
+            print(indexPath)
+            self.router.showPhotoDetail(images: self.viewModel.images, index: indexPath.row)
         }).disposed(by: disposeBag)
         
         self.viewModel.isEditing.subscribe(onNext: { [weak self] value in
