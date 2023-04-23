@@ -27,32 +27,33 @@ class GalleryManager {
     var userDefaults: UserDefaults = UserDefaults.standard
     var selectedGalleryPath: URL {
         get {
-            return libraryPath.appendingPathComponent(selectedGallery)
+            return libraryPath.appendingPathComponent(settingsManager.selectedGallery)
         }
     }
-    var selectedGallery: String
     let settingsManager: SettingsManager
     let fileScannerManager: FileScannerManager
     
     let selectedGalleryIndexRelay = BehaviorRelay<GalleryIndex>(value: .empty)
     let selectedAlbumIndexRelay = BehaviorRelay<AlbumIndex>(value: .empty)
+    let disposeBag = DisposeBag()
     
     // MARK: - Init
     init(settingsManager: SettingsManager, fileScannerManger: FileScannerManager) {
         self.settingsManager = settingsManager
         self.fileScannerManager = fileScannerManger
         
-        if let loadedSelectedGallery = userDefaults.string(forKey: kSelectedGallery) {
-            selectedGallery = loadedSelectedGallery
-        } else {
-            selectedGallery = "Default Gallery"
-        }
-        
         if let galleryIndex = loadGalleryIndex() {
             selectedGalleryIndexRelay.accept(galleryIndex)
         }
         
-//        purgeGallery()
+        self.settingsManager.selectedGalleryAsObservable.subscribe(onNext: { selectedGalleryName in
+            let galleryIndex: GalleryIndex? = self.loadGalleryIndex()
+            if let galleryIndex {
+                self.selectedGalleryIndexRelay.accept(galleryIndex)
+            } else {
+                self.rebuildGalleryIndex()
+            }
+        }).disposed(by: disposeBag)
     }
     
     func galleryObservable() -> Observable<GalleryIndex> {
@@ -427,7 +428,7 @@ class GalleryManager {
             }
         }
         
-        var newIndex = GalleryIndex(mainGalleryName: selectedGallery, images: self.fileScannerManager.scanAlbumFolderForImages(), albums: scanFolderForAlbums().map { $0.id })
+        var newIndex = GalleryIndex(mainGalleryName: settingsManager.selectedGallery, images: self.fileScannerManager.scanAlbumFolderForImages(), albums: scanFolderForAlbums().map { $0.id })
         var newAlbums = scanFolderForAlbums().map { $0.id }
 
         oldAlbums.append(contentsOf: newAlbums.removingDuplicates())
@@ -453,14 +454,6 @@ class GalleryManager {
         try? jsonEncoded?.write(to: url)
         
         return GalleryIndex(mainGalleryName: gallery.mainGalleryName, images: self.listAllImagesInGalleryFolder(), albums: gallery.albums)
-    }
-    
-    func purgeGallery() {
-        let files = try? FileManager.default.contentsOfDirectory(atPath: self.selectedGalleryPath.relativePath)
-        guard let files else { return }
-        for filename in files {
-            try? FileManager.default.removeItem(at: self.selectedGalleryPath.appendingPathComponent(filename))
-        }
     }
     
     func resolvePathFor(imageName: String) -> String {

@@ -20,10 +20,12 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<false/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>GalleryApp uses Face ID to lock and unlock albums</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
+		<true/>
 		<key>UISceneConfigurations</key>
 		<dict>
 			<key>UIWindowSceneSessionRoleApplication</key>
@@ -60,7 +62,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSFaceIDUsageDescription</key>
-	<string>GalleryApp uses Face ID to lock and unlock albums</string>
 </dict>
 </plist>

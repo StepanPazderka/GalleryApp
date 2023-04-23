@@ -81,12 +81,21 @@ class ContainerBuilder {
     }
     
     static func registerPresentationLayer() {
+        container.register(SelectLibraryViewModel.self) { r in
+            return SelectLibraryViewModel(settingsManager: r.resolve(SettingsManager.self)!)
+        }
+        
+        container.register(SelectLibraryViewController.self) { r in
+            return SelectLibraryViewController(viewModel: r.resolve(SelectLibraryViewModel.self)!)
+        }
+        
         container.register(SidebarRouter.self) { r in
             return SidebarRouter(container: container, galleryManager: r.resolve(GalleryManager.self)!)
         }
         
         container.register(SidebarViewModel.self) { r in
-            return SidebarViewModel(galleryInteractor: r.resolve(GalleryManager.self)!)
+            return SidebarViewModel(galleryInteractor: r.resolve(GalleryManager.self)!,
+                                    settingsManager: r.resolve(SettingsManager.self)!)
         }
         
         container.register(SidebarViewController.self) { r in

@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import SnapKit
 
-class AlbumListView: UIView {
+class AlbumsListView: UIView {
     
     var albumsCollectionView: UICollectionView!
     

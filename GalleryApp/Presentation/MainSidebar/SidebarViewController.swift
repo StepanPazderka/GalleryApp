@@ -48,12 +48,13 @@ class SidebarViewController: UIViewController {
         self.bindInteractions()
 
         self.router.showAllPhotos()
+        self.screenView.sidebarCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: .centeredVertically)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        screenView.layoutViews()
+        self.screenView.layoutViews()
     }
     
     // MARK: - Create Album Popover
@@ -92,7 +93,7 @@ class SidebarViewController: UIViewController {
         }
         createAlbumAlert.addAction(confirmAction)
 
-        let cancelAction = UIAlertAction(title: NSLocalizedString("kCANCEL", comment: ""), style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: NSLocalizedString("kCANCEL", comment: "Cancel"), style: .cancel, handler: nil)
         createAlbumAlert.addAction(cancelAction)
 
         self.present(createAlbumAlert, animated: true, completion: nil)
@@ -100,7 +101,7 @@ class SidebarViewController: UIViewController {
     
     // MARK: - Data Binding
     private func bindData() {
-        viewModel.loadGalleryName()
+        viewModel.getSelectedLibraryNameAsObservable()
             .asDriver(onErrorJustReturn: "")
             .drive(self.screenView.selectGalleryButton.rx.title())
             .disposed(by: disposeBag)
@@ -108,14 +109,20 @@ class SidebarViewController: UIViewController {
         viewModel.loadSidebarContent()
             .bind(to: screenView.sidebarCollectionView.rx.items(dataSource: dataSource!))
             .disposed(by: disposeBag)
+        
+        viewModel.getSelectedLibraryNameAsObservable()
+            .distinctUntilChanged()
+            .subscribe(onNext: { libraryName in
+                self.screenView.sidebarCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: true, scrollPosition: .top)
+                self.router.showAllPhotos()
+            })
+            .disposed(by: disposeBag)
     }
     
     // MARK: - User Interaction Bindings
     func bindInteractions() {
         self.screenView.selectGalleryButton.rx.tap.subscribe(onNext: { [weak self] in
-            let newController = UIViewController()
-            newController.view.backgroundColor = .systemBackground
-            self?.present(newController, animated: true, completion: nil)
+            self?.router.showLibrarySelectionScreen()
         }).disposed(by: disposeBag)
 
         self.screenView.addAlbumButton.rx.tap.subscribe(onNext: { [weak self] in

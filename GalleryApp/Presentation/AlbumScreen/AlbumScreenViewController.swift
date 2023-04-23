@@ -9,7 +9,6 @@ import UIKit
 import RxSwift
 import RxDataSources
 import RxCocoa
-import UniformTypeIdentifiers
 import Swinject
 import PhotosUI
 import ImageViewer
@@ -81,8 +80,6 @@ class AlbumScreenViewController: UIViewController {
                 // Configure the collection view cell
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
                 cell.configure(with: item)
-                cell.imageView.image = UIImage(contentsOfFile: item.fileName)
-                cell.router = self.router
                 cell.index = indexPath.item
                 return cell
             }
@@ -109,7 +106,6 @@ class AlbumScreenViewController: UIViewController {
         longPressRecognizer.numberOfTapsRequired = 1
         
         self.screenView.collectionView.delegate = self
-//        self.screenView.collectionView.dataSource = self
         self.screenView.collectionView.addGestureRecognizer(longPressRecognizer)
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
         self.screenView.collectionView.register(AlbumScreenCellFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenCellFooter.identifier)

@@ -12,12 +12,13 @@ class SidebarViewModel {
     
     // MARK: -- Properties
     private var galleryManager: GalleryManager
+    private var settingsManager: SettingsManager
     
     let disposeBag = DisposeBag()
     
-    init(galleryInteractor: GalleryManager) {
+    init(galleryInteractor: GalleryManager, settingsManager: SettingsManager) {
         self.galleryManager = galleryInteractor
-        
+        self.settingsManager = settingsManager
     }
     
     func loadGalleryIndex() -> Observable<GalleryIndex> {
@@ -74,12 +75,6 @@ class SidebarViewModel {
         }
     }
     
-    func loadGalleryName() -> Observable<String> {
-        return galleryManager.loadGalleryIndex().map { galleryIndex in
-            return galleryIndex.mainGalleryName
-        }
-    }
-    
     func createAlbum(name: String, parentAlbumID: UUID? = nil,  ID: UUID? = nil) {
         do {
             if let parentAlbumID = parentAlbumID {
@@ -102,5 +97,9 @@ class SidebarViewModel {
     
     func deleteAlbum(id: UUID) {
         self.galleryManager.delete(album: id)
+    }
+    
+    func getSelectedLibraryNameAsObservable() -> Observable<String> {
+        self.settingsManager.selectedGalleryAsObservable
     }
 }

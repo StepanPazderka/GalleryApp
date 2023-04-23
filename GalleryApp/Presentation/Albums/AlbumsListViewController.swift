@@ -24,7 +24,7 @@ class AlbumsListViewController: UIViewController {
     var selectedAlbum: UUID?
     var selectedImages: [String]
     let viewModel: AlbumListViewModel
-    let screenView = AlbumListView()
+    let screenView = AlbumsListView()
     let disposeBag = DisposeBag()
     
     // MARK: - Init

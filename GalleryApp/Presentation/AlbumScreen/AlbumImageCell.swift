@@ -15,7 +15,6 @@ class AlbumImageCell: UICollectionViewCell {
 
     // MARK: - Properties
     var viewModel: AlbumScreenViewModel?
-    var router: AlbumScreenRouter?
     let checkBox = {
         let view = UICheckBox(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
         view.isHidden = true
@@ -95,12 +94,6 @@ class AlbumImageCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var navigateToImageRecognizer: UITapGestureRecognizer {
-        let recognizer = UITapGestureRecognizer(target: self, action: #selector(galleryImageTapped(_:)))
-        recognizer.numberOfTapsRequired = 1
-        return recognizer
-    }
-    
     var selectCellRecognizer: UITapGestureRecognizer {
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(galleryImageCheckboxTapped(_:)))
         recognizer.numberOfTapsRequired = 1
@@ -113,15 +106,13 @@ class AlbumImageCell: UICollectionViewCell {
     
     func configure(with imageData: AlbumImage) {
         self.textLabel.text = imageData.title
-        
+        self.imageView.image = UIImage(contentsOfFile: imageData.fileName)
         self.viewModel?.isEditing.subscribe(onNext: { value in
             if value {
-                self.removeGestureRecognizer(self.navigateToImageRecognizer)
                 self.addGestureRecognizer(self.selectCellRecognizer)
                 self.checkBox.isHidden = !value
             } else {
                 self.removeGestureRecognizer(self.selectCellRecognizer)
-                self.addGestureRecognizer(self.navigateToImageRecognizer)
                 self.checkBox.isHidden = !value
             }
         }).disposed(by: disposeBag)
@@ -133,17 +124,6 @@ class AlbumImageCell: UICollectionViewCell {
 //            })
 //        }).disposed(by: disposeBag)
         bindData()
-    }
-    
-    @objc func galleryImageTapped(_ sender: UITapGestureRecognizer) {
-        if let viewModel = viewModel, let router = router {
-            if sender.numberOfTouches == 2 {
-                viewModel.isEditing.accept(true)
-                return
-            } else {
-                router.showPhotoDetail(images: viewModel.images, index: self.index)
-            }
-        }
     }
 
     @objc func galleryImageCheckboxTapped(_ sender: UITapGestureRecognizer) {

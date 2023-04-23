@@ -85,7 +85,7 @@ class AlbumScreenViewModel {
                 })
             }
         } else {
-            return galleryManager.loadGalleryIndex().flatMap {
+            return galleryManager.selectedGalleryIndexRelay.flatMap {
                 Observable.just($0.images.map { albumImage in
                     var newAlbumImage = albumImage
                     newAlbumImage.fileName = self.galleryManager.resolveThumbPathFor(imageName: albumImage.fileName)

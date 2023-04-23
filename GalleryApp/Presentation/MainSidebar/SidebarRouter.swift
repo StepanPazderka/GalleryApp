@@ -51,6 +51,11 @@ class SidebarRouter {
         splitViewController.showDetailViewController(navVC, sender: nil)
     }
     
+    func showLibrarySelectionScreen() {
+        let librarySelectionScreen = container.resolve(SelectLibraryViewController.self)!
+        splitViewController.present(UINavigationController(rootViewController: librarySelectionScreen), animated: true)
+    }
+    
     func showDetails() {
 //        splitViewController.preferredSupplementaryColumnWidth = CGFloat(250.0)
 //        splitViewController.setViewController(UIViewController(), for: .supplementary)
