@@ -25,7 +25,7 @@ class SelectLibraryViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         
         self.configureDataSource()
-        self.screenView.galleriesCollectionView.register(GalleryCell.self, forCellWithReuseIdentifier: "Cell")
+        self.screenView.galleriesCollectionView.register(GalleryCell.self, forCellWithReuseIdentifier: GalleryCell.identifier)
         self.viewModel.libraries.bind(to: screenView.galleriesCollectionView.rx.items(dataSource: dataSource!)).disposed(by: disposeBag)
     }
     
@@ -85,7 +85,7 @@ class SelectLibraryViewController: UIViewController {
     
     func configureDataSource() {
         self.dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, String>>(configureCell: { dataSource, collectionView, indexPath, item in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! GalleryCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GalleryCell.identifier, for: indexPath) as! GalleryCell
             cell.text.text = item
             return cell})
     }

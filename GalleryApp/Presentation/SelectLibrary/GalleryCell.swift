@@ -25,6 +25,8 @@ class GalleryCell: UICollectionViewCell {
         return view
     }
     
+    static let identifier = "GalleryCell"
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
