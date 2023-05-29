@@ -25,6 +25,7 @@ class AlbumsListView: UIView {
         var view = UIButton()
         view.setTitle(NSLocalizedString("kSELECTALBUM", comment: ""), for: .normal)
         view.tintColor = .systemBlue
+        view.setTitleColor(.systemBlue, for: .normal)
         view.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
         return view
     }()
