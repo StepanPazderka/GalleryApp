@@ -8,7 +8,6 @@
 import Foundation
 import RxSwift
 import RxCocoa
-import FolderMonitorKit
 import PhotosUI
 
 class AlbumScreenViewModel {
@@ -75,6 +74,9 @@ class AlbumScreenViewModel {
         self.galleryManager.selectedGalleryIndexRelay.asObservable()
     }
     
+    /**
+     Loads images from Album as Observable
+     */
     func loadAlbumImagesObservable() -> Observable<[AlbumImage]> {
         if let albumID {
             return galleryManager.loadAlbumIndex(id: albumID).flatMap {

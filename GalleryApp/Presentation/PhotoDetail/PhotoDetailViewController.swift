@@ -9,9 +9,11 @@ import UIKit
 import simd
 import RxSwift
 import ImageSlideshow
+import ImageTransition
 
 class PhotoDetailViewController: UIViewController {
     
+    // MARK: - Properties
     var singleTapGestureRecognizer = UITapGestureRecognizer()
     var swipeDownGestureRecognizer = {
         let view = UISwipeGestureRecognizer()
@@ -19,8 +21,9 @@ class PhotoDetailViewController: UIViewController {
         return view
     }()
     let screenView = PhotoDetailView()
-    var photoDetailView: PhotoDetailViewControllerSettings
+    var photoDetailViewSettings: PhotoDetailViewControllerSettings
     var galleryManager: GalleryManager
+    var transitionImageView: UIImageView?
     
     let disposeBag = DisposeBag()
     
@@ -32,7 +35,7 @@ class PhotoDetailViewController: UIViewController {
     // MARK: - Init
     internal init(galleryInteractor: GalleryManager, settings: PhotoDetailViewControllerSettings) {
         self.galleryManager = galleryInteractor
-        self.photoDetailView = settings
+        self.photoDetailViewSettings = settings
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -55,7 +58,7 @@ class PhotoDetailViewController: UIViewController {
         self.view.addGestureRecognizer(self.singleTapGestureRecognizer)
         self.view.addGestureRecognizer(self.swipeDownGestureRecognizer)
                 
-        let newArray = Array(photoDetailView.selectedImages)
+        let newArray = Array(photoDetailViewSettings.selectedImages)
         
         let imagesSources: [ImageSource] = newArray.compactMap {
             let image = UIImage(contentsOfFile: galleryManager.selectedGalleryPath.appendingPathComponent($0.fileName).relativePath)
@@ -66,8 +69,12 @@ class PhotoDetailViewController: UIViewController {
             return nil
         }
         self.screenView.imageSlideShow.setImageInputs(imagesSources)
-        self.screenView.imageSlideShow.setCurrentPage(photoDetailView.selectedIndex, animated: false)
+        self.screenView.imageSlideShow.setCurrentPage(photoDetailViewSettings.selectedIndex, animated: false)
         self.bindInteractions()
+        let imageName = photoDetailViewSettings.selectedImages[photoDetailViewSettings.selectedIndex].fileName
+        let image = UIImage(contentsOfFile: self.galleryManager.resolvePathFor(imageName: imageName))
+        transitionImageView = UIImageView()
+        transitionImageView?.image = image
     }
     
     
@@ -88,9 +95,7 @@ class PhotoDetailViewController: UIViewController {
         self.screenView.closeButton.rx.tap.subscribe(onNext:  { [weak self] in
             self?.dismiss(animated: true)
         }).disposed(by: disposeBag)
-        
-        self.screenView.imageSlideShow.delegate = self
-        
+                
         singleTapGestureRecognizer.rx.event.subscribe(onNext: { [weak self] event in
             self?.didSingleTapWith(gestureRecognizer: event)
         }).disposed(by: disposeBag)
@@ -126,7 +131,6 @@ class PhotoDetailViewController: UIViewController {
             }, completion: { completed in
             })
         } else {
-            
             self.navigationController?.setNavigationBarHidden(true, animated: false)
             UIView.animate(withDuration: 0.25,
                            animations: { [weak self] in
@@ -165,8 +169,8 @@ extension PhotoDetailViewController: UIGestureRecognizerDelegate {
     }
 }
 
-extension PhotoDetailViewController: ImageSlideshowDelegate {
-    func imageSlideshow(_ imageSlideshow: ImageSlideshow, didChangeCurrentPageTo page: Int) {
-        
+extension PhotoDetailViewController: ImageTransitionable {
+    var imageViewForTransition: UIImageView? {
+        return self.transitionImageView
     }
 }

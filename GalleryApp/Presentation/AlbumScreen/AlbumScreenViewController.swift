@@ -12,6 +12,7 @@ import RxCocoa
 import Swinject
 import PhotosUI
 import ImageViewer
+import ImageTransition
 
 class AlbumScreenViewController: UIViewController {
     
@@ -23,6 +24,7 @@ class AlbumScreenViewController: UIViewController {
     let router: AlbumScreenRouter
     let disposeBag = DisposeBag()
     var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>!
+    var transitionImageView: UIImageView?
     
     // MARK: - Progress
     var importProgress = MutableProgress()
@@ -168,7 +170,9 @@ class AlbumScreenViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         self.screenView.collectionView.rx.itemSelected.subscribe(onNext: { indexPath in
-            print(indexPath)
+            if let cell = self.screenView.collectionView.cellForItem(at: indexPath) as? AlbumImageCell {
+                self.transitionImageView = cell.imageView
+            }
             self.router.showPhotoDetail(images: self.viewModel.images, index: indexPath.row)
         }).disposed(by: disposeBag)
         
@@ -383,5 +387,11 @@ extension AlbumScreenViewController: PHPickerViewControllerDelegate {
         picker.dismiss(animated: true)
         let photos = results
         self.viewModel.importPhotos(results: photos)
+    }
+}
+
+extension AlbumScreenViewController: ImageTransitionable {
+    var imageViewForTransition: UIImageView? {
+        return self.transitionImageView
     }
 }

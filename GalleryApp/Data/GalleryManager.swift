@@ -10,7 +10,6 @@ import UIKit
 import UniformTypeIdentifiers
 import RxSwift
 import RxCocoa
-import FolderMonitorKit
 
 enum GalleryManagerError: Error {
     case cantStartMonitor
@@ -362,33 +361,33 @@ class GalleryManager {
         }
     }
     
-    func loadGalleryIndex(named: String? = nil) -> Observable<GalleryIndex> {
-        return Observable.create { observer in
-            var galleryIndexMonitor: FolderMonitor?
-            if let galleryIndex = self.loadGalleryIndex() {
-                observer.onNext(galleryIndex)
-            }
-            if !FileManager.default.fileExists(atPath: self.selectedGalleryPath.appendingPathComponent(kGalleryIndex).relativePath) {
-                self.rebuildGalleryIndex()
-            }
-            let url = self.selectedGalleryPath.appendingPathComponent(kGalleryIndex)
-            galleryIndexMonitor = try? FolderMonitor(url: url, trackingEvent: .all, onChange: {
-                if let galleryIndex = self.loadGalleryIndex() {
-                    print("Index changed")
-                    observer.onNext(galleryIndex)
-                }
-            })
-            do {
-                try galleryIndexMonitor?.start()
-            } catch {
-                observer.onError(GalleryManagerError.cantStartMonitor)
-            }
-        
-            return Disposables.create {
+//    func loadGalleryIndex(named: String? = nil) -> Observable<GalleryIndex> {
+//        return Observable.create { observer in
+//            var galleryIndexMonitor: FolderMonitor?
+//            if let galleryIndex = self.loadGalleryIndex() {
+//                observer.onNext(galleryIndex)
+//            }
+//            if !FileManager.default.fileExists(atPath: self.selectedGalleryPath.appendingPathComponent(kGalleryIndex).relativePath) {
+//                self.rebuildGalleryIndex()
+//            }
+//            let url = self.selectedGalleryPath.appendingPathComponent(kGalleryIndex)
+//            galleryIndexMonitor = try? FolderMonitor(url: url, trackingEvent: .all, onChange: {
+//                if let galleryIndex = self.loadGalleryIndex() {
+//                    print("Index changed")
+//                    observer.onNext(galleryIndex)
+//                }
+//            })
+//            do {
+//                try galleryIndexMonitor?.start()
+//            } catch {
+//                observer.onError(GalleryManagerError.cantStartMonitor)
+//            }
+//        
+//            return Disposables.create {
 //                galleryMonitor?.stop()
-            }
-        }
-    }
+//            }
+//        }
+//    }
     
     // MARK: - Update Album Image
     func updateAlbumImage(image: AlbumImage) {

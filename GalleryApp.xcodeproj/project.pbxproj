@@ -73,10 +73,8 @@
 		7FEDEA90284B5C7F001F40C0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEDEA8F284B5C7F001F40C0 /* Constants.swift */; };
 		7FEDEA93284CD8AD001F40C0 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7FEDEA92284CD8AD001F40C0 /* SnapKit */; };
 		7FEE73E427AC664400B8E02E /* AlbumScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FEE73E327AC664400B8E02E /* AlbumScreenView.swift */; };
-		7FF3D7C6283A44B00090BECF /* FolderMonitorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7FF3D7C5283A44B00090BECF /* FolderMonitorKit */; };
 		7FFD64C52759318C00189AC4 /* AlbumImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FFD64C42759318C00189AC4 /* AlbumImageCell.swift */; };
 		7FFF484E27A05E3900DDABB4 /* SidebarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FFF484D27A05E3900DDABB4 /* SidebarItem.swift */; };
-		FED30058EBCABEE057C3F6CB /* Pods_GalleryApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC55D5A15EC3A4EF75B18724 /* Pods_GalleryApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -163,7 +161,6 @@
 		7FFD64C42759318C00189AC4 /* AlbumImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumImageCell.swift; sourceTree = "<group>"; };
 		7FFF484D27A05E3900DDABB4 /* SidebarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarItem.swift; sourceTree = "<group>"; };
 		983365A048FEB4408A91E89A /* Pods-GalleryApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.debug.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.debug.xcconfig"; sourceTree = "<group>"; };
-		EC55D5A15EC3A4EF75B18724 /* Pods_GalleryApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GalleryApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,8 +169,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7FEDEA93284CD8AD001F40C0 /* SnapKit in Frameworks */,
-				7FF3D7C6283A44B00090BECF /* FolderMonitorKit in Frameworks */,
-				FED30058EBCABEE057C3F6CB /* Pods_GalleryApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,7 +409,6 @@
 		963F046D509C9F702CD50C74 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				EC55D5A15EC3A4EF75B18724 /* Pods_GalleryApp.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -439,7 +433,6 @@
 			);
 			name = GalleryApp;
 			packageProductDependencies = (
-				7FF3D7C5283A44B00090BECF /* FolderMonitorKit */,
 				7FEDEA92284CD8AD001F40C0 /* SnapKit */,
 			);
 			productName = GalleryApp;
@@ -492,7 +485,6 @@
 			);
 			mainGroup = 7F235DF12585B73C007BD075;
 			packageReferences = (
-				7FF3D7C4283A44B00090BECF /* XCRemoteSwiftPackageReference "FolderMonitorKit" */,
 				7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit" */,
 			);
 			productRefGroup = 7F235DFB2585B73C007BD075 /* Products */;
@@ -814,6 +806,10 @@
 				CODE_SIGN_ENTITLEMENTS = GalleryApp/GalleryApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3HV23S92WL;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = GalleryApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iGallery;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -841,6 +837,10 @@
 				CODE_SIGN_ENTITLEMENTS = GalleryApp/GalleryApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3HV23S92WL;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = GalleryApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iGallery;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -866,6 +866,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3HV23S92WL;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
@@ -889,6 +893,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3HV23S92WL;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
@@ -945,14 +953,6 @@
 				kind = branch;
 			};
 		};
-		7FF3D7C4283A44B00090BECF /* XCRemoteSwiftPackageReference "FolderMonitorKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/stoqn4opm/FolderMonitorKit";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -960,11 +960,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
-		};
-		7FF3D7C5283A44B00090BECF /* FolderMonitorKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7FF3D7C4283A44B00090BECF /* XCRemoteSwiftPackageReference "FolderMonitorKit" */;
-			productName = FolderMonitorKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

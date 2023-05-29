@@ -26,7 +26,7 @@ class SidebarViewModel {
     }
     
     func fetchAlbums() -> Observable<[UUID]> {
-        return galleryManager.loadGalleryIndex().map { galleryIndex in
+        return galleryManager.selectedGalleryIndexRelay.map { galleryIndex in
             return galleryIndex.albums
         }
     }
