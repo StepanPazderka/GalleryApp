@@ -11,23 +11,23 @@ import UIKit
     var checker: Bool = false {
         didSet {
             if checker == false {
-                image.image = UIImage(systemName: "checkmark.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 16, weight: .light))
+                checkBoxImageView.image = UIImage(systemName: "checkmark.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 16, weight: .light))
             } else {
-                image.image = UIImage(systemName: "checkmark.circle.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 16, weight: .light))
+                checkBoxImageView.image = UIImage(systemName: "checkmark.circle.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 16, weight: .light))
             }
         }
     }
-    var image: UIImageView = UIImageView()
+    var checkBoxImageView: UIImageView = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.image.image = UIImage(systemName: "checkmark.circle")
-        self.addSubview(image)
+        self.checkBoxImageView.image = UIImage(systemName: "checkmark.circle")
+        self.addSubview(checkBoxImageView)
         
         self.addTarget(self, action: #selector(buttonClicked(sender:)), for: UIControl.Event.touchUpInside)
         self.checker = false
         
-        image.snp.makeConstraints { make in
+        checkBoxImageView.snp.makeConstraints { make in
             make.size.height.equalTo(self.frame.size.height)
             make.centerY.equalToSuperview()
         }

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file original="GalleryApp/en.lproj/InfoPlist.strings" source-language="en" target-language="en" datatype="plaintext">
+    <header>
+      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="14.2" build-num="14C18"/>
+    </header>
+    <body>
+      <trans-unit id="CFBundleName" xml:space="preserve">
+        <source>GalleryApp</source>
+        <target>GalleryApp</target>
+        <note>Bundle name</note>
+      </trans-unit>
+      <trans-unit id="NSFaceIDUsageDescription" xml:space="preserve">
+        <source>GalleryApp uses Face ID to lock and unlock albums</source>
+        <target>GalleryApp uses Face ID to lock and unlock albums</target>
+        <note>Privacy - Face ID Usage Description</note>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="GalleryApp/en.lproj/Localizable.strings" source-language="en" target-language="en" datatype="plaintext">
+    <header>
+      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="14.2" build-num="14C18"/>
+    </header>
+    <body>
+      <trans-unit id="CreateSubAlbum" xml:space="preserve">
+        <source>Create SubAlbum</source>
+        <target>Create SubAlbum</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="DeleteTitle" xml:space="preserve">
+        <source>Delete</source>
+        <target>Delete</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="DuplicateTitle" xml:space="preserve">
+        <source>DuplicateTitle</source>
+        <target>DuplicateTitle</target>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="IMPORTFROM" xml:space="preserve">
+        <source>Import photo from</source>
+        <target>Import photo from</target>
+        <note>Select import location</note>
+      </trans-unit>
+      <trans-unit id="MoveToAlbum" xml:space="preserve">
+        <source>Move to Album</source>
+        <target>Move to Album</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="SELECTFROMFILES" xml:space="preserve">
+        <source>Select from Files</source>
+        <target>Select from Files</target>
+        <note>Default action</note>
+      </trans-unit>
+      <trans-unit id="Select from Gallery" xml:space="preserve">
+        <source>Select from Gallery</source>
+        <target>Select from Gallery</target>
+        <note>Default action</note>
+      </trans-unit>
+      <trans-unit id="SetThumbnail" xml:space="preserve">
+        <source>Set as Album Thumbnail</source>
+        <target>Set as Album Thumbnail</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kALLPHOTOS" xml:space="preserve">
+        <source>All Photos</source>
+        <target>All Photos</target>
+        <note>Title for sidebar cell to show All Photos in library</note>
+      </trans-unit>
+      <trans-unit id="kAlbumNameCantBeEmpty" xml:space="preserve">
+        <source>Album name can't be empty</source>
+        <target>Album name can't be empty</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kCANCEL" xml:space="preserve">
+        <source>Cancel</source>
+        <target>Cancel</target>
+        <note>Localizable.strings
+  GalleryApp
+
+  Created by Štěpán Pazderka on 20.12.2020.</note>
+      </trans-unit>
+      <trans-unit id="kCantAddImageToTheAlbum" xml:space="preserve">
+        <source>Can't add image to the album</source>
+        <target>Can't add image to the album</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kDELETEALBUM" xml:space="preserve">
+        <source>Delete Album</source>
+        <target>Delete Album</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kDELETEIMAGE" xml:space="preserve">
+        <source>Delete Image</source>
+        <target>Delete Image</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kDETAILS" xml:space="preserve">
+        <source>Details</source>
+        <target>Details</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kDONE" xml:space="preserve">
+        <source>Done</source>
+        <target>Done</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kDUPLICATEALBUM" xml:space="preserve">
+        <source>Duplicate Album</source>
+        <target>Duplicate Album</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kEDIT" xml:space="preserve">
+        <source>Edit</source>
+        <target>Edit</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kEnterAlbumName" xml:space="preserve">
+        <source>Enter Album name</source>
+        <target>Enter Album name</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kFileCreationDate" xml:space="preserve">
+        <source>Date creation: </source>
+        <target>Date creation: </target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kFileModifiedDate" xml:space="preserve">
+        <source>Date modified: </source>
+        <target>Date modified: </target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kFileSize" xml:space="preserve">
+        <source>File size: </source>
+        <target>File size: </target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kFileType" xml:space="preserve">
+        <source>File type: </source>
+        <target>File type: </target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kImageAlreadyInAlbum" xml:space="preserve">
+        <source>Image already in album</source>
+        <target>Image already in album</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kOK" xml:space="preserve">
+        <source>OK</source>
+        <target>OK</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kREMOVEFROMALBUM" xml:space="preserve">
+        <source>Remove image from Album</source>
+        <target>Remove image from Album</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kREMOVETHUMBNAIL" xml:space="preserve">
+        <source>Remove Thumbnail</source>
+        <target>Remove Thumbnail</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kRenameAlbum" xml:space="preserve">
+        <source>Rename Album</source>
+        <target>Rename Album</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kSELECTALBUM" xml:space="preserve">
+        <source>Select Album</source>
+        <target>Select Album</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kSelectDestination" xml:space="preserve">
+        <source>Select destination</source>
+        <target>Select destination</target>
+        <note/>
+      </trans-unit>
+      <trans-unit id="kThumbs" xml:space="preserve">
+        <source>thumbs</source>
+        <target>thumbs</target>
+        <note/>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

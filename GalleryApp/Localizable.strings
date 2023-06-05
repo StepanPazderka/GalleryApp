@@ -1,0 +1,40 @@
+/* 
+  Localizable.strings
+  GalleryApp
+
+  Created by Štěpán Pazderka on 20.12.2020.
+  
+*/
+
+"kCANCEL" = "Cancel";
+"SELECTFROMFILES" = "Select from Files";
+"CreateSubAlbum" = "Create SubAlbum";
+"MoveToAlbum" = "Move to Album";
+"kALLPHOTOS" = "All Photos";
+"kDUPLICATEALBUM" = "Duplicate Album";
+"kREMOVETHUMBNAIL" = "Remove Thumbnail";
+"kRenameAlbum" = "Rename Album";
+"kDELETEIMAGE" = "Delete Image";
+"DeleteTitle" = "Delete";
+"kDETAILS" = "Details";
+"IMPORTFROM" = "Import photo from";
+"kSELECTALBUM" = "Select Album";
+"kEDIT" = "Edit";
+"kDONE" = "Done";
+"kOK" = "OK";
+"kDELETEALBUM" = "Delete Album";
+"kAlbumNameCantBeEmpty" = "Album name can't be empty";
+"kEnterAlbumName" = "Enter Album name";
+"kThumbs" = "thumbs";
+"kCantAddImageToTheAlbum" = "Can't add image to the album";
+"kImageAlreadyInAlbum" = "Image already in album";
+"kFileType" = "File type: ";
+"kFileSize" = "File size: ";
+"kFileCreationDate" = "Date creation: ";
+"kFileModifiedDate" = "Date modified: ";
+"SetThumbnail" = "Set as Album Thumbnail";
+"kREMOVEFROMALBUM" = "Remove image from Album";
+"kSelectDestination" = "Select destination";
+"kSELECTLIBRARY" = "Select library";
+"kEnterLibraryName" = "Enter Library Name";
+"kLibraryName" = "Library Name";

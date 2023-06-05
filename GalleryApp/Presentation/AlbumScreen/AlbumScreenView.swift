@@ -140,10 +140,10 @@ class AlbumScreenView: UIView {
         self.leftStackView.addArrangedSubview(deleteImageButton)
         self.checkBoxTitles.tintColor = .white
                 
-        self.checkBoxTitles.image.layer.shadowColor = UIColor.black.cgColor
-        self.checkBoxTitles.image.layer.shadowOpacity = 1
-        self.checkBoxTitles.image.layer.shadowOffset = .zero
-        self.checkBoxTitles.image.layer.shadowRadius = 15
+        self.checkBoxTitles.checkBoxImageView.layer.shadowColor = UIColor.black.cgColor
+        self.checkBoxTitles.checkBoxImageView.layer.shadowOpacity = 1
+        self.checkBoxTitles.checkBoxImageView.layer.shadowOffset = .zero
+        self.checkBoxTitles.checkBoxImageView.layer.shadowRadius = 15
         
         collectionLayout.itemSize = CGSize(width: 200, height: 200)
     }

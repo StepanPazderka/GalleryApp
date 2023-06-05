@@ -1,0 +1,4 @@
+/* Bundle name */
+"CFBundleName" = "GalleryApp";
+/* Privacy - Face ID Usage Description */
+"NSFaceIDUsageDescription" = "GalleryApp uses Face ID to lock and unlock albums";

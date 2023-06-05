@@ -57,15 +57,19 @@ class AlbumScreenViewController: UIViewController {
             if let editButton = self?.screenView.editButton {
                 if value {
                     editButton.setTitle(NSLocalizedString("kDONE", comment: ""), for: .normal)
+                    editButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
                     self?.setEditing(true, animated: true)
+                    self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
+                        let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumImageCell
+                        cell.isEditing = true
+                    }
                 } else {
                     editButton.setTitle(NSLocalizedString("kEDIT", comment: ""), for: .normal)
+                    editButton.titleLabel?.font = .systemFont(ofSize: 18)
                     self?.setEditing(false, animated: true)
                     self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
                         let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumImageCell
-//                        cell.isEditing = false
-                        cell.checkBox.checker = false
-                        cell.checkBox.isEnabled = false
+                        cell.isEditing = false
                     }
                 }
             }
@@ -169,11 +173,15 @@ class AlbumScreenViewController: UIViewController {
             }
         }).disposed(by: disposeBag)
         
-        self.screenView.collectionView.rx.itemSelected.subscribe(onNext: { indexPath in
-            if let cell = self.screenView.collectionView.cellForItem(at: indexPath) as? AlbumImageCell {
-                self.transitionImageView = cell.imageView
+        self.screenView.collectionView.rx.itemSelected.subscribe(onNext: { [unowned self] indexPath in
+            if self.isEditing == false {
+                if let cell = self.screenView.collectionView.cellForItem(at: indexPath) as? AlbumImageCell {
+                    self.transitionImageView = cell.imageView
+                }
+                self.router.showPhotoDetail(images: self.viewModel.images, index: indexPath.row)
+            } else {
+                
             }
-            self.router.showPhotoDetail(images: self.viewModel.images, index: indexPath.row)
         }).disposed(by: disposeBag)
         
         self.viewModel.isEditing.subscribe(onNext: { [weak self] value in

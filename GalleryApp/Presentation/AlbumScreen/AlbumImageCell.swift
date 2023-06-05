@@ -14,8 +14,13 @@ import ImageViewer
 class AlbumImageCell: UICollectionViewCell {
 
     // MARK: - Properties
+    var isEditing: Bool = false {
+        didSet {
+            checkBox.isHidden = !isEditing
+        }
+    }
     var viewModel: AlbumScreenViewModel?
-    let checkBox = {
+    var checkBox = {
         let view = UICheckBox(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
         view.isHidden = true
         view.tintColor = .systemGray
@@ -42,7 +47,6 @@ class AlbumImageCell: UICollectionViewCell {
     
     let disposeBag = DisposeBag()
     
-    // MARK: - Properties
     static let identifier: String = String(describing: type(of: AlbumImageCell.self))
     
     // MARK: - Init
@@ -116,13 +120,7 @@ class AlbumImageCell: UICollectionViewCell {
                 self.checkBox.isHidden = !value
             }
         }).disposed(by: disposeBag)
-                
-//        viewModel?.showingTitles.subscribe(onNext: { value in
-//            UIView.animate(withDuration: 0.25,
-//                           animations: {
-//                self.textLabel.isHidden = value
-//            })
-//        }).disposed(by: disposeBag)
+
         bindData()
     }
 
