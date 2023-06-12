@@ -16,7 +16,6 @@ target 'GalleryApp' do
   pod 'ImageViewer'
   pod 'IQKeyboardManagerSwift'
   pod 'ImageTransition'
-  pod 'FolderMonitor'
 
 end
 

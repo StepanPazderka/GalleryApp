@@ -113,10 +113,10 @@ class AlbumImageCell: UICollectionViewCell {
         self.imageView.image = UIImage(contentsOfFile: imageData.fileName)
         self.viewModel?.isEditing.subscribe(onNext: { value in
             if value {
-                self.addGestureRecognizer(self.selectCellRecognizer)
+//                self.addGestureRecognizer(self.selectCellRecognizer)
                 self.checkBox.isHidden = !value
             } else {
-                self.removeGestureRecognizer(self.selectCellRecognizer)
+//                self.removeGestureRecognizer(self.selectCellRecognizer)
                 self.checkBox.isHidden = !value
             }
         }).disposed(by: disposeBag)

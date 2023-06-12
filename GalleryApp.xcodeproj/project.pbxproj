@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D199F6FF2A10E82F9E22CE5 /* Pods_GalleryApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BE12233158C7EF023B0479 /* Pods_GalleryApp.framework */; };
 		7F0031CE25B7A21B00D93B75 /* ImageView+BlurEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0031CD25B7A21B00D93B75 /* ImageView+BlurEffect.swift */; };
 		7F0031D125B7AC7400D93B75 /* UIWindow+isLandscape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0031D025B7AC7400D93B75 /* UIWindow+isLandscape.swift */; };
 		7F032DDE29E0272100ADDC86 /* AlbumsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F032DDD29E0272100ADDC86 /* AlbumsListView.swift */; };
@@ -89,6 +90,7 @@
 
 /* Begin PBXFileReference section */
 		11F848A477FFC4228499079E /* Pods-GalleryApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.release.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.release.xcconfig"; sourceTree = "<group>"; };
+		63BE12233158C7EF023B0479 /* Pods_GalleryApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GalleryApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F0031CD25B7A21B00D93B75 /* ImageView+BlurEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageView+BlurEffect.swift"; sourceTree = "<group>"; };
 		7F0031D025B7AC7400D93B75 /* UIWindow+isLandscape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+isLandscape.swift"; sourceTree = "<group>"; };
 		7F032DDD29E0272100ADDC86 /* AlbumsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsListView.swift; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7FEDEA93284CD8AD001F40C0 /* SnapKit in Frameworks */,
+				0D199F6FF2A10E82F9E22CE5 /* Pods_GalleryApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -409,6 +412,7 @@
 		963F046D509C9F702CD50C74 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				63BE12233158C7EF023B0479 /* Pods_GalleryApp.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -817,6 +821,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.pazderka.GalleryApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -848,6 +853,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.pazderka.GalleryApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

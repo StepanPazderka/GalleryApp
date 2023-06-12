@@ -173,14 +173,15 @@ class AlbumScreenViewController: UIViewController {
             }
         }).disposed(by: disposeBag)
         
+        // MARK: - User Selected Cell
         self.screenView.collectionView.rx.itemSelected.subscribe(onNext: { [unowned self] indexPath in
+            let cell = self.screenView.collectionView.cellForItem(at: indexPath) as! AlbumImageCell
+            
             if self.isEditing == false {
-                if let cell = self.screenView.collectionView.cellForItem(at: indexPath) as? AlbumImageCell {
-                    self.transitionImageView = cell.imageView
-                }
                 self.router.showPhotoDetail(images: self.viewModel.images, index: indexPath.row)
             } else {
-                
+                cell.checkBox.checker.toggle()
+
             }
         }).disposed(by: disposeBag)
         
@@ -230,7 +231,7 @@ class AlbumScreenViewController: UIViewController {
             let newValue = CGFloat(value)
             
             self.screenView.collectionLayout.itemSize = CGSize(width: newValue, height: newValue)
-
+            
             DispatchQueue.global(qos: .userInteractive).async {
                 self.viewModel.newThumbnailSize(size: value)
             }
@@ -311,7 +312,7 @@ class AlbumScreenViewController: UIViewController {
             UIAction(title: NSLocalizedString("SetThumbnail", comment: ""),
                      image: UIImage(systemName: "rectangle.portrait.inset.filled")) { action in
                 let selectedThumbnailFileName = self.viewModel.images[indexPath.row].fileName
-                self.viewModel.setAlbumThumbnail(imageName: selectedThumbnailFileName)
+                self.viewModel.setAlbumThumbnailImage(imageName: selectedThumbnailFileName)
             }
             let removeFromAlbum =
             UIAction(title: NSLocalizedString("kREMOVEFROMALBUM", comment: ""),

@@ -16,6 +16,8 @@ class AlbumScreenViewModel {
     var showingTitles = BehaviorRelay(value: false)
     var showingLoading = BehaviorRelay(value: false)
     
+    var lastRecordedSliderValue: Float
+    
     var albumID: UUID?
     var albumIndex: AlbumIndex?
     let galleryManager: GalleryManager
@@ -30,8 +32,12 @@ class AlbumScreenViewModel {
         self.albumID = albumID
         self.galleryManager = galleryManager
         
+        let galleryIndex: GalleryIndex = self.galleryManager.loadGalleryIndex()!
+        self.lastRecordedSliderValue = galleryIndex.thumbnailSize!
+        
         if let albumID {
             self.albumIndex = loadAlbum(by: albumID)
+            self.lastRecordedSliderValue = loadAlbum(by: albumID)?.thumbnailsSize ?? 0.0
         }
 
         if let albumID {
@@ -97,6 +103,9 @@ class AlbumScreenViewModel {
         }
     }
     
+    /**
+     Loads album Index by its unique UUID
+     */
     func loadAlbum(by: UUID) -> AlbumIndex? {
         return self.galleryManager.loadAlbumIndex(id: by)
     }
@@ -151,23 +160,33 @@ class AlbumScreenViewModel {
     
     func newThumbnailSize(size: Float) {
         if let albumID = albumID, var newIndex = loadAlbum(by: albumID) {
-            let seconds = 1.0
+            let seconds = 2.0
             DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-                newIndex.thumbnailsSize = size
-                self.galleryManager.updateAlbumIndex(index: newIndex)
+                if size != self.lastRecordedSliderValue {
+                    self.lastRecordedSliderValue = size
+                } else {
+                    newIndex.thumbnailsSize = size
+                    self.galleryManager.updateAlbumIndex(index: newIndex)
+                    print("Album Index thumb updated with size \(size)")
+                }
             }
         }
         
         if albumIndex == nil, var galleryIndex = self.galleryManager.loadGalleryIndex() {
-            let seconds = 1.0
+            let seconds = 2.0
             DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-                galleryIndex.thumbnailSize = size
-                self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
+                if size != self.lastRecordedSliderValue {
+                    self.lastRecordedSliderValue = size
+                } else {
+                    galleryIndex.thumbnailSize = size
+                    self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
+                    print("Gallery Manager thumb updated with size \(size)")
+                }
             }
         }
     }
     
-    func setAlbumThumbnail(imageName: String) {
+    func setAlbumThumbnailImage(imageName: String) {
         if var updatedAlbum = self.albumIndex {
             updatedAlbum.thumbnail = imageName
             self.galleryManager.updateAlbumIndex(index: updatedAlbum)
@@ -185,10 +204,11 @@ class AlbumScreenViewModel {
     }
     
     func importPhotos(results: [PHPickerResult]) {
-        var imagesToBeAdded = [AlbumImage]()
-        var filesThatCouldntBeAdded = [String]()
+        guard !results.isEmpty else { return }
         
-        guard results.count > 0 else { return }
+        var filesSelectedForImport = [AlbumImage]()
+        var filesThatCouldntBeImported = [String]()
+        
         for itemProvider in results.map({ $0.itemProvider }) {
             
             let newTaskProgress = Progress(totalUnitCount: 1000)
@@ -196,7 +216,7 @@ class AlbumScreenViewModel {
             itemProvider.loadFileRepresentation(forTypeIdentifier: "public.image") { filePath, error in
                 guard let filePath else {
                     guard let suggestedName = itemProvider.suggestedName else { return }
-                    filesThatCouldntBeAdded.append(suggestedName)
+                    filesThatCouldntBeImported.append(suggestedName)
                     newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
                     return
                 }
@@ -213,7 +233,7 @@ class AlbumScreenViewModel {
                     try FileManager.default.moveItem(at: filePath, to: targetPath)
                     newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
                     self.galleryManager.buildThumb(forImage: AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
-                    imagesToBeAdded.append(AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
+                    filesSelectedForImport.append(AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
                     
                 } catch {
                     print(error)
@@ -233,11 +253,11 @@ class AlbumScreenViewModel {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (t) in
             
             if self.importProgress.fractionCompleted == 1.0 {
-                self.addPhotos(images: imagesToBeAdded)
+                self.addPhotos(images: filesSelectedForImport)
                 usleep(UInt32(0.25))
                 self.showingLoading.accept(false)
-                imagesToBeAdded.removeAll()
-                self.showImportError.accept(filesThatCouldntBeAdded)
+                filesSelectedForImport.removeAll()
+                self.showImportError.accept(filesThatCouldntBeImported)
                 stopTimer()
             }
         }
