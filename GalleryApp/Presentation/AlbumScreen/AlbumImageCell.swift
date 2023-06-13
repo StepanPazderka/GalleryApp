@@ -17,6 +17,9 @@ class AlbumImageCell: UICollectionViewCell {
     var isEditing: Bool = false {
         didSet {
             checkBox.isHidden = !isEditing
+            if isEditing {
+                checkBox.checker = false
+            }
         }
     }
     var viewModel: AlbumScreenViewModel?
@@ -127,11 +130,11 @@ class AlbumImageCell: UICollectionViewCell {
     @objc func galleryImageCheckboxTapped(_ sender: UITapGestureRecognizer) {
         if !self.checkBox.checker {
             if let images = self.viewModel?.images {
-                self.viewModel?.filesSelectedInEditMode.insert(images[self.index].fileName)
+                self.viewModel?.filesSelectedInEditMode.append(images[self.index].fileName)
             }
         } else {
             if let images = self.viewModel?.images {
-                self.viewModel?.filesSelectedInEditMode.remove(images[self.index].fileName)
+                self.viewModel?.filesSelectedInEditMode.removeAll { $0 == images[self.index].fileName } 
             }
         }
         self.checkBox.checker.toggle()

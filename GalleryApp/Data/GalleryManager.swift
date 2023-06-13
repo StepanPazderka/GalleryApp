@@ -345,19 +345,25 @@ class GalleryManager {
         return nil
     }
     
-    func deleteImage(imageName: String) {
+    func delete(images: [String]) {
         if var galleryIndex = self.loadGalleryIndex() {
-            var newImageList = galleryIndex.images
-            newImageList.removeAll { AlbumImage in
-                AlbumImage.fileName == imageName ? true : false
+            for name in images {
+                galleryIndex.images.removeAll { image in
+                    image.fileName == name
+                }
             }
-            galleryIndex.images = newImageList
-            do {
-                try FileManager.default.removeItem(atPath: self.selectedGalleryPath.appendingPathComponent(imageName).relativePath)
-            } catch {
-                
+            
+//            newImageList.filter { !imageName.contains($0) }
+            updateGalleryIndex(newGalleryIndex: galleryIndex)
+            for image in images {
+                do {
+                    try FileManager.default.removeItem(atPath: self.selectedGalleryPath.appendingPathComponent(image).relativePath)
+                } catch {
+                    
+                }
             }
-            self.rebuildGalleryIndex()
+           
+//            self.rebuildGalleryIndex()
         }
     }
     

@@ -25,7 +25,7 @@ class AlbumScreenViewModel {
     
     var importProgress = MutableProgress()
     var showImportError = BehaviorRelay(value: [String]())
-    var filesSelectedInEditMode = Set<String>()
+    var filesSelectedInEditMode = Array<String>()
     let disposeBag = DisposeBag()
     
     internal init(albumID: UUID? = nil, galleryManager: GalleryManager) {
@@ -118,8 +118,8 @@ class AlbumScreenViewModel {
         }
     }
     
-    func delete(image: String) {
-        self.galleryManager.deleteImage(imageName: image)
+    func delete(_ images: [String]) {
+        self.galleryManager.delete(images: images)
     }
     
     func removeFromAlbum(imageName: String) {
@@ -131,13 +131,6 @@ class AlbumScreenViewModel {
             })
             self.galleryManager.updateAlbumIndex(index: albumIndex)
         }
-    }
-    
-    func delete(images: [String]) {
-        for image in images {
-            self.galleryManager.deleteImage(imageName: image)
-        }
-        self.filesSelectedInEditMode.removeAll()
     }
     
     func addPhoto(image: AlbumImage) {

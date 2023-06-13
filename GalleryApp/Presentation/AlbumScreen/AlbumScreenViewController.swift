@@ -70,6 +70,7 @@ class AlbumScreenViewController: UIViewController {
                     self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
                         let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumImageCell
                         cell.isEditing = false
+                        self?.viewModel.filesSelectedInEditMode.removeAll()
                     }
                 }
             }
@@ -83,7 +84,6 @@ class AlbumScreenViewController: UIViewController {
     func configureDataSource() {
         dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>(
             configureCell: { (dataSource, collectionView, indexPath, item) in
-                // Configure the collection view cell
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
                 cell.configure(with: item)
                 cell.index = indexPath.item
@@ -181,7 +181,11 @@ class AlbumScreenViewController: UIViewController {
                 self.router.showPhotoDetail(images: self.viewModel.images, index: indexPath.row)
             } else {
                 cell.checkBox.checker.toggle()
-
+                if cell.checkBox.checker == true {
+                    viewModel.filesSelectedInEditMode.append(viewModel.images[indexPath.row].fileName)
+                } else {
+                    viewModel.filesSelectedInEditMode.removeAll { $0 == viewModel.images[indexPath.row].fileName }
+                }
             }
         }).disposed(by: disposeBag)
         
@@ -215,7 +219,8 @@ class AlbumScreenViewController: UIViewController {
         
         self.screenView.deleteImageButton.rx.tap.subscribe(onNext: { [weak self] in
             guard let self else { return }
-            self.viewModel.delete(images: Array(self.viewModel.filesSelectedInEditMode))
+            self.viewModel.delete(self.viewModel.filesSelectedInEditMode)
+            self.viewModel.isEditing.accept(false)
         }).disposed(by: disposeBag)
         
         self.screenView.checkBoxTitles.rx.tap.subscribe(onNext: { [weak self] in
@@ -326,7 +331,7 @@ class AlbumScreenViewController: UIViewController {
                      image: UIImage(systemName: "trash"),
                      attributes: .destructive) { action in
                 let imageName = self.viewModel.images[indexPath.row].fileName
-                self.viewModel.delete(image: imageName)
+                self.viewModel.delete([imageName])
             }
             if viewModel.albumID != nil {
                 return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, setThumbnailAction, removeFromAlbum, deleteAction])
