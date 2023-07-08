@@ -232,17 +232,20 @@ class AlbumScreenViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         // MARK: - Slider binding
-        self.screenView.slider.rx.value.changed.subscribe(onNext: { value in
-            let newValue = CGFloat(value)
-            
-            self.screenView.collectionLayout.itemSize = CGSize(width: newValue, height: newValue)
-        }).disposed(by: disposeBag)
+//        self.screenView.slider.rx.value.changed.subscribe(onNext: { value in
+//            let newValue = CGFloat(value)
+//
+//            self.screenView.collectionLayout.itemSize = CGSize(width: newValue, height: newValue)
+//        }).disposed(by: disposeBag)
         
-        self.screenView.slider.rx.value.changed.debounce(.milliseconds(500), scheduler: MainScheduler.instance).subscribe(onNext: { value in
-            let newValue = CGFloat(value)
-            
+        self.screenView.slider.rx.value.changed
+            .map { CGFloat($0) }
+            .do(onNext: { value in
+                self.screenView.collectionLayout.itemSize = CGSize(width: value, height: value)
+            })
+            .debounce(.milliseconds(500), scheduler: MainScheduler.instance).subscribe(onNext: { value in
             DispatchQueue.global(qos: .userInteractive).async {
-                self.viewModel.newThumbnailSize(size: value)
+                self.viewModel.newThumbnailSize(size: Float(value))
             }
         }).disposed(by: disposeBag)
     }
