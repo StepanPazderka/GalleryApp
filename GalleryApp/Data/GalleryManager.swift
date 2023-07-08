@@ -71,7 +71,10 @@ class GalleryManager {
         let albumID = UUID()
         try? FileManager.default.createDirectory(at: selectedGalleryPath.appendingPathComponent(albumID.uuidString), withIntermediateDirectories: true, attributes: nil)
         rebuildAlbumIndex(folder: selectedGalleryPath.appendingPathComponent(albumID.uuidString), albumName: name)
-        rebuildGalleryIndex()
+        if var galleryIndex = loadGalleryIndex() {
+            galleryIndex.albums.append(albumID)
+            self.selectedGalleryIndexRelay.accept(galleryIndex)
+        }
     }
     
     func dubplicateAlbum(index: AlbumIndex) {
