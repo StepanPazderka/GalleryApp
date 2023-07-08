@@ -30,8 +30,8 @@
             filePath = "GalleryApp/Presentation/AlbumScreen/AlbumScreenViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "77"
-            endingLineNumber = "77"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
             landmarkName = "init(albumID:galleryManager:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -65,6 +65,22 @@
             startingLineNumber = "352"
             endingLineNumber = "352"
             landmarkName = "delete(images:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "25695846-7CE1-4C52-826B-39E019173800"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "245"
+            endingLineNumber = "245"
+            landmarkName = "bindInteractions()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

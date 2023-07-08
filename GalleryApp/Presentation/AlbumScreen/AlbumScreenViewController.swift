@@ -236,6 +236,10 @@ class AlbumScreenViewController: UIViewController {
             let newValue = CGFloat(value)
             
             self.screenView.collectionLayout.itemSize = CGSize(width: newValue, height: newValue)
+        }).disposed(by: disposeBag)
+        
+        self.screenView.slider.rx.value.changed.debounce(.milliseconds(500), scheduler: MainScheduler.instance).subscribe(onNext: { value in
+            let newValue = CGFloat(value)
             
             DispatchQueue.global(qos: .userInteractive).async {
                 self.viewModel.newThumbnailSize(size: value)

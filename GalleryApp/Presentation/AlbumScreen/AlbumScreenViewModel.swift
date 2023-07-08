@@ -15,9 +15,7 @@ class AlbumScreenViewModel {
     var isEditing = BehaviorRelay(value: false)
     var showingTitles = BehaviorRelay(value: false)
     var showingLoading = BehaviorRelay(value: false)
-    
-    var lastRecordedSliderValue: Float
-    
+        
     var albumID: UUID?
     var albumIndex: AlbumIndex?
     let galleryManager: GalleryManager
@@ -33,11 +31,9 @@ class AlbumScreenViewModel {
         self.galleryManager = galleryManager
         
         let galleryIndex: GalleryIndex = self.galleryManager.loadGalleryIndex()!
-        self.lastRecordedSliderValue = galleryIndex.thumbnailSize!
         
         if let albumID {
             self.albumIndex = loadAlbum(by: albumID)
-            self.lastRecordedSliderValue = loadAlbum(by: albumID)?.thumbnailsSize ?? 0.0
         }
 
         if let albumID {
@@ -153,29 +149,15 @@ class AlbumScreenViewModel {
     
     func newThumbnailSize(size: Float) {
         if let albumID = albumID, var newIndex = loadAlbum(by: albumID) {
-            let seconds = 2.0
-            DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-                if size != self.lastRecordedSliderValue {
-                    self.lastRecordedSliderValue = size
-                } else {
-                    newIndex.thumbnailsSize = size
-                    self.galleryManager.updateAlbumIndex(index: newIndex)
-                    print("Album Index thumb updated with size \(size)")
-                }
-            }
+            newIndex.thumbnailsSize = size
+            self.galleryManager.updateAlbumIndex(index: newIndex)
+            print("Album Index thumb updated with size \(size)")
         }
         
         if albumIndex == nil, var galleryIndex = self.galleryManager.loadGalleryIndex() {
-            let seconds = 2.0
-            DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-                if size != self.lastRecordedSliderValue {
-                    self.lastRecordedSliderValue = size
-                } else {
-                    galleryIndex.thumbnailSize = size
-                    self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
-                    print("Gallery Manager thumb updated with size \(size)")
-                }
-            }
+            galleryIndex.thumbnailSize = size
+            self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
+            print("Gallery Manager thumb updated with size \(size)")
         }
     }
     
