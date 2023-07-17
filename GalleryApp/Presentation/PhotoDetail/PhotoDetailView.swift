@@ -20,6 +20,7 @@ class PhotoDetailView: UIView {
     
     let imageView: UIImageView = {
         let view = UIImageView(frame: .infinite)
+        view.contentMode = .scaleAspectFit
         return view
     }()
         
