@@ -22,7 +22,6 @@ class PhotoDetailViewController: UIViewController {
     let screenView = PhotoDetailView()
     var photoDetailViewSettings: PhotoDetailViewControllerSettings
     var galleryManager: GalleryManager
-    var transitionImageView: UIImageView?
     
     let disposeBag = DisposeBag()
     
@@ -72,8 +71,6 @@ class PhotoDetailViewController: UIViewController {
         self.bindInteractions()
         let imageName = photoDetailViewSettings.selectedImages[photoDetailViewSettings.selectedIndex].fileName
         let image = UIImage(contentsOfFile: self.galleryManager.resolvePathFor(imageName: imageName))
-        transitionImageView = UIImageView()
-        transitionImageView?.image = image
     }
     
     
