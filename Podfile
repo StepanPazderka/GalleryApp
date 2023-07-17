@@ -12,8 +12,6 @@ target 'GalleryApp' do
   pod 'Swinject'
   pod 'DirectoryWatcher'
   pod 'SwiftLint'
-  pod 'ImageSlideshow', '~> 1.9.0'
-  pod 'ImageViewer'
   pod 'IQKeyboardManagerSwift'
 
 end

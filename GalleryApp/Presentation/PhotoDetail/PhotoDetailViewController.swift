@@ -8,7 +8,6 @@
 import UIKit
 import simd
 import RxSwift
-import ImageSlideshow
 
 class PhotoDetailViewController: UIViewController {
     
@@ -56,26 +55,16 @@ class PhotoDetailViewController: UIViewController {
         self.view.addGestureRecognizer(self.singleTapGestureRecognizer)
         self.view.addGestureRecognizer(self.swipeDownGestureRecognizer)
                 
-        let newArray = Array(photoDetailViewSettings.selectedImages)
         
-        let imagesSources: [ImageSource] = newArray.compactMap {
-            let image = UIImage(contentsOfFile: galleryManager.selectedGalleryPath.appendingPathComponent($0.fileName).relativePath)
-            if let image = image {
-                let imageSource = ImageSource(image: image)
-                return imageSource
-            }
-            return nil
-        }
-        self.screenView.imageSlideShow.setImageInputs(imagesSources)
-        self.screenView.imageSlideShow.setCurrentPage(photoDetailViewSettings.selectedIndex, animated: false)
         self.bindInteractions()
         let imageName = photoDetailViewSettings.selectedImages[photoDetailViewSettings.selectedIndex].fileName
         let image = UIImage(contentsOfFile: self.galleryManager.resolvePathFor(imageName: imageName))
+        
+        self.screenView.imageView.image = image
     }
     
     
     @objc func didSingleTapWith(gestureRecognizer: UITapGestureRecognizer) {
-        self.screenView.imageSlideShow.presentFullScreenController(from: self)
         
         if self.currentMode == .full {
             changeScreenMode(to: .normal)
@@ -109,9 +98,7 @@ class PhotoDetailViewController: UIViewController {
             }
     
             if key.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
-                self.screenView.imageSlideShow.previousPage(animated: true)
             } else if key.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
-                self.screenView.imageSlideShow.nextPage(animated: true)
             }
         }
     }

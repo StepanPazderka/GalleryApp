@@ -11,7 +11,6 @@ import RxDataSources
 import RxCocoa
 import Swinject
 import PhotosUI
-import ImageViewer
 
 class AlbumScreenViewController: UIViewController {
     

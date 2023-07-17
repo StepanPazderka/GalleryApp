@@ -9,7 +9,6 @@ import Foundation
 import UIKit
 import Swinject
 import RxCocoa
-import ImageTransition
 
 class AlbumScreenRouter {
     
@@ -34,7 +33,6 @@ class AlbumScreenRouter {
         let navigationController = UINavigationController(rootViewController: vc)
         
         navigationController.modalPresentationStyle = .fullScreen
-        vc.transitioningDelegate = ImageTransitionDelegate.shared
         topMostController()?.present(navigationController, animated: true)
     }
     

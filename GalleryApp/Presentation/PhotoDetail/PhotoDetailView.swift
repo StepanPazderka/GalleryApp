@@ -7,13 +7,9 @@
 
 import Foundation
 import UIKit
-import ImageSlideshow
 
 class PhotoDetailView: UIView {
-    
-    // MARK: - Aliases
-    typealias ViewModel = PhotoDetailViewModel
-    
+
     // MARK: - Views
     let closeButton: UIButton = {        
         let view = UIButton(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
@@ -22,14 +18,8 @@ class PhotoDetailView: UIView {
         return view
     }()
     
-    let imageSlideShow: ImageSlideshow = {
-        let view = ImageSlideshow()
-        view.frame = .zero
-        view.zoomEnabled = true
-        view.circular = false
-        view.maximumScale = 10.0
-        view.pageIndicator = .none
-        view.preload = .fixed(offset: 1)
+    let imageView: UIImageView = {
+        let view = UIImageView(frame: .infinite)
         return view
     }()
         
@@ -47,13 +37,12 @@ class PhotoDetailView: UIView {
     
     // MARK: -- Setup Views
     func setupViews() {
-        self.addSubview(imageSlideShow)
-        self.addSubview(closeButton)
+        self.addSubviews(imageView, closeButton)
     }
     
     func layoutViews() {
-        imageSlideShow.snp.makeConstraints { (make) -> Void in
-            make.edges.equalToSuperview()
+        imageView.snp.makeConstraints { make in
+            make.size.equalToSuperview()
         }
         
         closeButton.snp.makeConstraints { make in
