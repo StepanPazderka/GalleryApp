@@ -12,7 +12,6 @@ import RxCocoa
 import Swinject
 import PhotosUI
 import ImageViewer
-import ImageTransition
 
 class AlbumScreenViewController: UIViewController {
     
@@ -232,12 +231,6 @@ class AlbumScreenViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         // MARK: - Slider binding
-//        self.screenView.slider.rx.value.changed.subscribe(onNext: { value in
-//            let newValue = CGFloat(value)
-//
-//            self.screenView.collectionLayout.itemSize = CGSize(width: newValue, height: newValue)
-//        }).disposed(by: disposeBag)
-        
         self.screenView.slider.rx.value.changed
             .map { CGFloat($0) }
             .do(onNext: { value in
@@ -408,11 +401,5 @@ extension AlbumScreenViewController: PHPickerViewControllerDelegate {
         picker.dismiss(animated: true)
         let photos = results
         self.viewModel.importPhotos(results: photos)
-    }
-}
-
-extension AlbumScreenViewController: ImageTransitionable {
-    var imageViewForTransition: UIImageView? {
-        return self.transitionImageView
     }
 }

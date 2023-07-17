@@ -15,7 +15,6 @@ target 'GalleryApp' do
   pod 'ImageSlideshow', '~> 1.9.0'
   pod 'ImageViewer'
   pod 'IQKeyboardManagerSwift'
-  pod 'ImageTransition'
 
 end
 

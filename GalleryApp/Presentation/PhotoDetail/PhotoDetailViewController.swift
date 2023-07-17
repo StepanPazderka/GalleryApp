@@ -9,7 +9,6 @@ import UIKit
 import simd
 import RxSwift
 import ImageSlideshow
-import ImageTransition
 
 class PhotoDetailViewController: UIViewController {
     
@@ -166,11 +165,5 @@ extension PhotoDetailViewController: UIGestureRecognizerDelegate {
         }
         
         return true
-    }
-}
-
-extension PhotoDetailViewController: ImageTransitionable {
-    var imageViewForTransition: UIImageView? {
-        return self.transitionImageView
     }
 }

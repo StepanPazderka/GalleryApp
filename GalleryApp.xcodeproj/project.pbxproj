@@ -45,7 +45,6 @@
 		7F6F6726281884D8000AA747 /* AlbumScreenRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F6F6725281884D8000AA747 /* AlbumScreenRouter.swift */; };
 		7F71AC2029F58EF800218931 /* EdgeInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F71AC1F29F58EF800218931 /* EdgeInsets.swift */; };
 		7F72D6692854E4A20016FC2A /* FileScannerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F72D6682854E4A20016FC2A /* FileScannerManager.swift */; };
-		7F7D4B3D29D61AEB00A05760 /* AlbumSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F7D4B3C29D61AEB00A05760 /* AlbumSection.swift */; };
 		7F86A6F525B5DD0700428F92 /* UICheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F86A6F425B5DD0700428F92 /* UICheckBox.swift */; };
 		7F8A167C2756859200F4CB50 /* GalleryIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8A167B2756859200F4CB50 /* GalleryIndex.swift */; };
 		7F8A167E27568BE900F4CB50 /* GalleryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8A167D27568BE900F4CB50 /* GalleryManager.swift */; };
@@ -132,7 +131,6 @@
 		7F6F6725281884D8000AA747 /* AlbumScreenRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumScreenRouter.swift; sourceTree = "<group>"; };
 		7F71AC1F29F58EF800218931 /* EdgeInsets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeInsets.swift; sourceTree = "<group>"; };
 		7F72D6682854E4A20016FC2A /* FileScannerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileScannerManager.swift; sourceTree = "<group>"; };
-		7F7D4B3C29D61AEB00A05760 /* AlbumSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumSection.swift; sourceTree = "<group>"; };
 		7F86A6F425B5DD0700428F92 /* UICheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICheckBox.swift; sourceTree = "<group>"; };
 		7F8A167B2756859200F4CB50 /* GalleryIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryIndex.swift; sourceTree = "<group>"; };
 		7F8A167D27568BE900F4CB50 /* GalleryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryManager.swift; sourceTree = "<group>"; };
@@ -362,7 +360,6 @@
 				7F6F6725281884D8000AA747 /* AlbumScreenRouter.swift */,
 				7FD0A0F32819F1BD00A33913 /* AlbumScreenCellFooter.swift */,
 				7F98D7CD292A48A300755D74 /* AlbumScreenModel.swift */,
-				7F7D4B3C29D61AEB00A05760 /* AlbumSection.swift */,
 			);
 			path = AlbumScreen;
 			sourceTree = "<group>";
@@ -635,7 +632,6 @@
 				7F5BBE4D2926660700DE9AF1 /* MutableProgress.swift in Sources */,
 				7FC96D5C27A76DA900690CFB /* PhotoDetailViewControllerSettings.swift in Sources */,
 				7F62762129F44F0D00C3CAF6 /* GalleryCell.swift in Sources */,
-				7F7D4B3D29D61AEB00A05760 /* AlbumSection.swift in Sources */,
 				7F9F0743277BB6D400503612 /* ContainerBuilder.swift in Sources */,
 				7FA67630284E367200B685F4 /* SettingsKey.swift in Sources */,
 				7F6F6726281884D8000AA747 /* AlbumScreenRouter.swift in Sources */,

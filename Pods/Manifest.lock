@@ -4,9 +4,8 @@ PODS:
   - ImageSlideshow (1.9.2):
     - ImageSlideshow/Core (= 1.9.2)
   - ImageSlideshow/Core (1.9.2)
-  - ImageTransition (0.5.0)
   - ImageViewer (6.0.0)
-  - IQKeyboardManagerSwift (6.5.11)
+  - IQKeyboardManagerSwift (6.5.12)
   - RxCocoa (6.5.0):
     - RxRelay (= 6.5.0)
     - RxSwift (= 6.5.0)
@@ -17,13 +16,12 @@ PODS:
   - RxRelay (6.5.0):
     - RxSwift (= 6.5.0)
   - RxSwift (6.5.0)
-  - SwiftLint (0.51.0)
+  - SwiftLint (0.52.4)
   - Swinject (2.8.3)
 
 DEPENDENCIES:
   - DirectoryWatcher
   - ImageSlideshow (~> 1.9.0)
-  - ImageTransition
   - ImageViewer
   - IQKeyboardManagerSwift
   - RxCocoa
@@ -37,7 +35,6 @@ SPEC REPOS:
     - Differentiator
     - DirectoryWatcher
     - ImageSlideshow
-    - ImageTransition
     - ImageViewer
     - IQKeyboardManagerSwift
     - RxCocoa
@@ -51,16 +48,15 @@ SPEC CHECKSUMS:
   Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
   DirectoryWatcher: 43e1ae45c7539d3deeea9db4384ab158bae368e3
   ImageSlideshow: be305b54eaf2b2cfc7a7141c7c734605d44dc07d
-  ImageTransition: 23f1f6ccef2d0ba3362a18f6674d72008f8ce751
   ImageViewer: cb88ef1c0ba19161bc10702adfdcebc116a7a59d
-  IQKeyboardManagerSwift: c7955c0bdbf7b2eb29bb7daaa44e3d90f55a9a85
+  IQKeyboardManagerSwift: 371b08cb39664fb56030f5345c815a4ffc74bbc0
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
   RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
-  SwiftLint: 1b7561918a19e23bfed960e40759086e70f4dba5
+  SwiftLint: 1cc5cd61ba9bacb2194e340aeb47a2a37fda00b3
   Swinject: 893c9a543000ac2f10ee4cbaf0933c6992c935d5
 
-PODFILE CHECKSUM: 85a041bb0f23cda673082e3ffcb32a51cae06c9c
+PODFILE CHECKSUM: 9c106205201d2dda52885424c5077d111acfc46a
 
 COCOAPODS: 1.11.3
