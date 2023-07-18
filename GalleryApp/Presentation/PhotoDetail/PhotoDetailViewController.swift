@@ -44,6 +44,7 @@ class PhotoDetailViewController: UIViewController {
     private func setupViews() {
         self.view = screenView
         self.view.backgroundColor = .systemBackground
+        self.screenView.scrollView.delegate = self
     }
     
     // MARK: - Lifecycle
@@ -58,11 +59,27 @@ class PhotoDetailViewController: UIViewController {
         
         self.bindInteractions()
         let imageName = photoDetailViewSettings.selectedImages[photoDetailViewSettings.selectedIndex].fileName
-        let image = UIImage(contentsOfFile: self.galleryManager.resolvePathFor(imageName: imageName))
-        
-        self.screenView.imageView.image = image
+
+        let image = UIImage(named: self.galleryManager.resolvePathFor(imageName: imageName))
+        let imageView = UIImageView(image: image)
+        self.screenView.imageView = imageView
+        self.screenView.scrollView.addSubview(imageView)
     }
     
+    
+    override func viewDidLayoutSubviews() {
+        setScrollViewBounds()
+    }
+    
+    func setScrollViewBounds() {
+        let imageViewBounds = self.screenView.imageView.frame.size
+        let scrollViewBounds = self.screenView.scrollView.frame.size
+        let minimumZoomScale = min(scrollViewBounds.width / imageViewBounds.width, scrollViewBounds.height / imageViewBounds.height)
+        
+        self.screenView.scrollView.minimumZoomScale = minimumZoomScale
+        self.screenView.scrollView.zoomScale = minimumZoomScale
+        self.screenView.scrollView.maximumZoomScale = 3.0
+    }
     
     @objc func didSingleTapWith(gestureRecognizer: UITapGestureRecognizer) {
         
@@ -149,5 +166,37 @@ extension PhotoDetailViewController: UIGestureRecognizerDelegate {
         }
         
         return true
+    }
+}
+
+extension PhotoDetailViewController: UIScrollViewDelegate {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return self.screenView.imageView
+    }
+    
+//    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+//        func scrollViewDidZoom(_ scrollView: UIScrollView) {
+//            guard let subView = scrollView.subviews.first else {
+//                return
+//            }
+//            
+//            let offsetX = max((scrollView.bounds.size.width - scrollView.contentSize.width) * 0.5, 0.0)
+//            let offsetY = max((scrollView.bounds.size.height - scrollView.contentSize.height) * 0.5, 0.0)
+//            
+//            subView.center = CGPoint(x: scrollView.contentSize.width * 0.5 + offsetX,
+//                                     y: scrollView.contentSize.height * 0.5 + offsetY)
+//        }
+//        
+//        recenterImage()
+//    }
+    
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        let offsetX = max((scrollView.bounds.width - scrollView.contentSize.width) * 0.5, 0)
+        let offsetY = max((scrollView.bounds.height - scrollView.contentSize.height) * 0.5, 0)
+        scrollView.contentInset = UIEdgeInsets(top: offsetY, left: offsetX, bottom: 0, right: 0)
+    }
+    
+    func recenterImage() {
+        
     }
 }

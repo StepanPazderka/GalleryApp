@@ -31,7 +31,6 @@ class AlbumScreenRouter {
     func showPhotoDetail(images: [AlbumImage], index: Int) {
         let vc = container.resolve(PhotoDetailViewController.self, argument: PhotoDetailViewControllerSettings(selectedImages: images, selectedIndex: index))!
         let navigationController = UINavigationController(rootViewController: vc)
-        
         navigationController.modalPresentationStyle = .fullScreen
         topMostController()?.present(navigationController, animated: true)
     }
