@@ -9,26 +9,17 @@ import Foundation
 import UIKit
 
 class PhotoDetailView: UIView {
-
+    
+    private var oldBoundsSize: CGSize = .zero
+    
     // MARK: - Views
-    let closeButton: UIButton = {        
+    let closeButton: UIButton = {
         let view = UIButton(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
         view.setImage(UIImage(systemName: "xmark"), for: .normal)
         view.frame = CGRect(x: 10, y: 10, width: 40, height: 40)
         return view
     }()
     
-    var imageView: UIImageView = {
-        let view = UIImageView()
-        view.contentMode = .scaleAspectFit
-        return view
-    }()
-    
-    let scrollView: UIScrollView = {
-        let view = UIScrollView(frame: .zero)
-        return view
-    }()
-        
     // MARK: -- Init
     init() {
         super.init(frame: .zero)
@@ -43,16 +34,20 @@ class PhotoDetailView: UIView {
     
     // MARK: -- Setup Views
     func setupViews() {
-        self.addSubviews(scrollView, closeButton)
-        self.scrollView.addSubview(imageView)
-        self.scrollView.contentSize = self.imageView.bounds.size
+        self.addSubviews(closeButton)
+    }
+    
+    override func layoutSubviews() {
+        if oldBoundsSize != self.bounds.size {
+            oldBoundsSize = self.bounds.size
+            
+            //            self.scrollView.contentSize = self.stackView.bounds.size
+        }
+        
+        super.layoutSubviews()
     }
     
     func layoutViews() {
-        scrollView.snp.makeConstraints { make in
-            make.size.equalToSuperview()
-        }
-        
         closeButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(10)
             make.top.equalToSuperview().offset(20)

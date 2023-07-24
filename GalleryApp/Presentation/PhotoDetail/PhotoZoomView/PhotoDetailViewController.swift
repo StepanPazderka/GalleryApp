@@ -19,6 +19,7 @@ class PhotoDetailViewController: UIViewController {
         return view
     }()
     let screenView = PhotoDetailView()
+    var photoSliderViewController: PhotoSlideViewController!
     var photoDetailViewSettings: PhotoDetailViewControllerSettings
     var galleryManager: GalleryManager
     
@@ -44,7 +45,14 @@ class PhotoDetailViewController: UIViewController {
     private func setupViews() {
         self.view = screenView
         self.view.backgroundColor = .systemBackground
-        self.screenView.scrollView.delegate = self
+    }
+    
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
+    override var prefersHomeIndicatorAutoHidden: Bool {
+        true
     }
     
     // MARK: - Lifecycle
@@ -57,32 +65,20 @@ class PhotoDetailViewController: UIViewController {
         self.view.addGestureRecognizer(self.swipeDownGestureRecognizer)
                 
         
-        self.bindInteractions()
-        let imageName = photoDetailViewSettings.selectedImages[photoDetailViewSettings.selectedIndex].fileName
-
-        let image = UIImage(named: self.galleryManager.resolvePathFor(imageName: imageName))
-        let imageView = UIImageView(image: image)
-        self.screenView.imageView = imageView
-        self.screenView.scrollView.addSubview(imageView)
-    }
-    
-    
-    override func viewDidLayoutSubviews() {
-        setScrollViewBounds()
-    }
-    
-    func setScrollViewBounds() {
-        let imageViewBounds = self.screenView.imageView.frame.size
-        let scrollViewBounds = self.screenView.scrollView.frame.size
-        let minimumZoomScale = min(scrollViewBounds.width / imageViewBounds.width, scrollViewBounds.height / imageViewBounds.height)
+        self.bindInteractions()        
+        let imagesToShow = photoDetailViewSettings.selectedImages.map {
+            UIImage(contentsOfFile: self.galleryManager.resolvePathFor(imageName: $0.fileName))!
+        }
         
-        self.screenView.scrollView.minimumZoomScale = minimumZoomScale
-        self.screenView.scrollView.zoomScale = minimumZoomScale
-        self.screenView.scrollView.maximumZoomScale = 3.0
+        let photoSliderViewController = PhotoSlideViewController(images: imagesToShow, index: photoDetailViewSettings.selectedIndex)
+        self.add(photoSliderViewController)
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
     }
     
     @objc func didSingleTapWith(gestureRecognizer: UITapGestureRecognizer) {
-        
         if self.currentMode == .full {
             changeScreenMode(to: .normal)
             self.currentMode = .normal
@@ -115,6 +111,7 @@ class PhotoDetailViewController: UIViewController {
             }
     
             if key.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
+                
             } else if key.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
             }
         }
@@ -166,21 +163,5 @@ extension PhotoDetailViewController: UIGestureRecognizerDelegate {
         }
         
         return true
-    }
-}
-
-extension PhotoDetailViewController: UIScrollViewDelegate {
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return self.screenView.imageView
-    }
-    
-    func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        let offsetX = max((scrollView.bounds.width - scrollView.contentSize.width) * 0.5, 0)
-        let offsetY = max((scrollView.bounds.height - scrollView.contentSize.height) * 0.5, 0)
-        scrollView.contentInset = UIEdgeInsets(top: offsetY, left: offsetX, bottom: 0, right: 0)
-    }
-    
-    func recenterImage() {
-        
     }
 }
