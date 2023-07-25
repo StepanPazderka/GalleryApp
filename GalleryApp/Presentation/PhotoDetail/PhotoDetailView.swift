@@ -18,14 +18,9 @@ class PhotoDetailView: UIView {
         return view
     }()
     
-    var imageView: UIImageView = {
-        let view = UIImageView()
-        view.contentMode = .scaleAspectFit
-        return view
-    }()
-    
-    let scrollView: UIScrollView = {
-        let view = UIScrollView(frame: .zero)
+    var swipeDownGestureRecognizer = {
+        let view = UISwipeGestureRecognizer()
+        view.direction = .down
         return view
     }()
         
@@ -43,16 +38,10 @@ class PhotoDetailView: UIView {
     
     // MARK: -- Setup Views
     func setupViews() {
-        self.addSubviews(scrollView, closeButton)
-        self.scrollView.addSubview(imageView)
-        self.scrollView.contentSize = self.imageView.bounds.size
+        self.addSubviews(closeButton)
     }
     
     func layoutViews() {
-        scrollView.snp.makeConstraints { make in
-            make.size.equalToSuperview()
-        }
-        
         closeButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(10)
             make.top.equalToSuperview().offset(20)

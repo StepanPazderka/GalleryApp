@@ -13,6 +13,7 @@ target 'GalleryApp' do
   pod 'DirectoryWatcher'
   pod 'SwiftLint'
   pod 'IQKeyboardManagerSwift'
+  pod 'Lightbox'
 
 end
 

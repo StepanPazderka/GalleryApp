@@ -8,19 +8,19 @@
 import UIKit
 import simd
 import RxSwift
+import Lightbox
 
 class PhotoDetailViewController: UIViewController {
     
     // MARK: - Properties
     var singleTapGestureRecognizer = UITapGestureRecognizer()
-    var swipeDownGestureRecognizer = {
-        let view = UISwipeGestureRecognizer()
-        view.direction = .down
-        return view
-    }()
+    
     let screenView = PhotoDetailView()
     var photoDetailViewSettings: PhotoDetailViewControllerSettings
     var galleryManager: GalleryManager
+    var viewModel: PhotoDetailViewModel
+    
+    var lightboxController: LightboxController!
     
     let disposeBag = DisposeBag()
     
@@ -33,6 +33,8 @@ class PhotoDetailViewController: UIViewController {
     internal init(galleryInteractor: GalleryManager, settings: PhotoDetailViewControllerSettings) {
         self.galleryManager = galleryInteractor
         self.photoDetailViewSettings = settings
+        self.viewModel = PhotoDetailViewModel(images: settings.selectedImages, index: settings.selectedIndex)
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -44,7 +46,24 @@ class PhotoDetailViewController: UIViewController {
     private func setupViews() {
         self.view = screenView
         self.view.backgroundColor = .systemBackground
-        self.screenView.scrollView.delegate = self
+    }
+    
+    private func configureLightbox() {
+        
+        let images = viewModel.images.map { image in
+            LightboxImage(image: UIImage(contentsOfFile: galleryManager.resolvePathFor(imageName: image.fileName))!)
+        }
+        
+        self.lightboxController = LightboxController(images: images, startIndex: viewModel.index)
+        LightboxConfig.hideStatusBar = true
+        lightboxController.dynamicBackground = false
+        LightboxConfig.InfoLabel.enabled = false
+        LightboxConfig.PageIndicator.enabled = false
+        
+        self.add(lightboxController)
+        
+        lightboxController.view.frame = view.frame
+        lightboxController.pageDelegate = self
     }
     
     // MARK: - Lifecycle
@@ -52,37 +71,16 @@ class PhotoDetailViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
         super.viewDidLoad()
         self.setupViews()
-                
+        self.configureLightbox()
+        
         self.view.addGestureRecognizer(self.singleTapGestureRecognizer)
-        self.view.addGestureRecognizer(self.swipeDownGestureRecognizer)
-                
+        self.view.addGestureRecognizer(self.screenView.swipeDownGestureRecognizer)
         
         self.bindInteractions()
-        let imageName = photoDetailViewSettings.selectedImages[photoDetailViewSettings.selectedIndex].fileName
-
-        let image = UIImage(named: self.galleryManager.resolvePathFor(imageName: imageName))
-        let imageView = UIImageView(image: image)
-        self.screenView.imageView = imageView
-        self.screenView.scrollView.addSubview(imageView)
-    }
-    
-    
-    override func viewDidLayoutSubviews() {
-        setScrollViewBounds()
-    }
-    
-    func setScrollViewBounds() {
-        let imageViewBounds = self.screenView.imageView.frame.size
-        let scrollViewBounds = self.screenView.scrollView.frame.size
-        let minimumZoomScale = min(scrollViewBounds.width / imageViewBounds.width, scrollViewBounds.height / imageViewBounds.height)
-        
-        self.screenView.scrollView.minimumZoomScale = minimumZoomScale
-        self.screenView.scrollView.zoomScale = minimumZoomScale
-        self.screenView.scrollView.maximumZoomScale = 3.0
+        self.bindData()
     }
     
     @objc func didSingleTapWith(gestureRecognizer: UITapGestureRecognizer) {
-        
         if self.currentMode == .full {
             changeScreenMode(to: .normal)
             self.currentMode = .normal
@@ -97,14 +95,18 @@ class PhotoDetailViewController: UIViewController {
         self.screenView.closeButton.rx.tap.subscribe(onNext:  { [weak self] in
             self?.dismiss(animated: true)
         }).disposed(by: disposeBag)
-                
+        
         singleTapGestureRecognizer.rx.event.subscribe(onNext: { [weak self] event in
             self?.didSingleTapWith(gestureRecognizer: event)
         }).disposed(by: disposeBag)
         
-        swipeDownGestureRecognizer.rx.event.subscribe(onNext: { [weak self] event in
+        self.screenView.swipeDownGestureRecognizer.rx.event.subscribe(onNext: { [weak self] event in
             self?.dismiss(animated: true)
         }).disposed(by: disposeBag)
+    }
+    
+    private func bindData() {
+        
     }
     
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
@@ -113,9 +115,11 @@ class PhotoDetailViewController: UIViewController {
             if key.charactersIgnoringModifiers == UIKeyCommand.inputEscape {
                 self.dismiss(animated: true)
             }
-    
+            
             if key.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
+                lightboxController.previous()
             } else if key.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
+                lightboxController.next()
             }
         }
     }
@@ -125,21 +129,21 @@ class PhotoDetailViewController: UIViewController {
             self.navigationController?.setNavigationBarHidden(true, animated: false)
             UIView.animate(withDuration: 0.25,
                            animations: { [weak self] in
-                            self?.view.backgroundColor = .black
-                            self?.screenView.closeButton.isHidden = true
-
+                self?.view.backgroundColor = .black
+                self?.screenView.closeButton.isHidden = true
+                
             }, completion: { completed in
             })
         } else {
             self.navigationController?.setNavigationBarHidden(true, animated: false)
             UIView.animate(withDuration: 0.25,
                            animations: { [weak self] in
-                            if #available(iOS 13.0, *) {
-                                self?.view.backgroundColor = .systemBackground
-                            } else {
-                                self?.view.backgroundColor = .white
-                            }
-                            self?.screenView.closeButton.isHidden = false
+                if #available(iOS 13.0, *) {
+                    self?.view.backgroundColor = .systemBackground
+                } else {
+                    self?.view.backgroundColor = .white
+                }
+                self?.screenView.closeButton.isHidden = false
             }, completion: { completed in
             })
         }
@@ -169,18 +173,8 @@ extension PhotoDetailViewController: UIGestureRecognizerDelegate {
     }
 }
 
-extension PhotoDetailViewController: UIScrollViewDelegate {
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return self.screenView.imageView
-    }
-    
-    func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        let offsetX = max((scrollView.bounds.width - scrollView.contentSize.width) * 0.5, 0)
-        let offsetY = max((scrollView.bounds.height - scrollView.contentSize.height) * 0.5, 0)
-        scrollView.contentInset = UIEdgeInsets(top: offsetY, left: offsetX, bottom: 0, right: 0)
-    }
-    
-    func recenterImage() {
+extension PhotoDetailViewController: LightboxControllerPageDelegate {
+    func lightboxController(_ controller: Lightbox.LightboxController, didMoveToPage page: Int) {
         
     }
 }
