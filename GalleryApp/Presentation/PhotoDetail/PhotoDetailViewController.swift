@@ -16,7 +16,6 @@ class PhotoDetailViewController: UIViewController {
     var singleTapGestureRecognizer = UITapGestureRecognizer()
     
     let screenView = PhotoDetailView()
-    var photoDetailViewSettings: PhotoDetailViewControllerSettings
     var galleryManager: GalleryManager
     var viewModel: PhotoDetailViewModel
     
@@ -30,9 +29,8 @@ class PhotoDetailViewController: UIViewController {
     var currentMode: ScreenMode = .normal
     
     // MARK: - Init
-    internal init(galleryInteractor: GalleryManager, settings: PhotoDetailViewControllerSettings) {
+    internal init(galleryInteractor: GalleryManager, settings: PhotoDetailModel) {
         self.galleryManager = galleryInteractor
-        self.photoDetailViewSettings = settings
         self.viewModel = PhotoDetailViewModel(images: settings.selectedImages, index: settings.selectedIndex)
         
         super.init(nibName: nil, bundle: nil)
@@ -48,7 +46,7 @@ class PhotoDetailViewController: UIViewController {
         self.view.backgroundColor = .systemBackground
     }
     
-    private func configureLightbox() {
+    private func setupLightbox() {
         
         let images = viewModel.images.map { image in
             LightboxImage(image: UIImage(contentsOfFile: galleryManager.resolvePathFor(imageName: image.fileName))!)
@@ -59,6 +57,7 @@ class PhotoDetailViewController: UIViewController {
         lightboxController.dynamicBackground = false
         LightboxConfig.InfoLabel.enabled = false
         LightboxConfig.PageIndicator.enabled = false
+        lightboxController.imageTouchDelegate = self
         
         self.add(lightboxController)
         
@@ -71,7 +70,7 @@ class PhotoDetailViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
         super.viewDidLoad()
         self.setupViews()
-        self.configureLightbox()
+        self.setupLightbox()
         
         self.view.addGestureRecognizer(self.singleTapGestureRecognizer)
         self.view.addGestureRecognizer(self.screenView.swipeDownGestureRecognizer)
@@ -90,13 +89,23 @@ class PhotoDetailViewController: UIViewController {
         }
     }
     
+    func switchScreenMode() {
+        if self.currentMode == .full {
+            changeScreenMode(to: .normal)
+            self.currentMode = .normal
+        } else {
+            changeScreenMode(to: .full)
+            self.currentMode = .full
+        }
+    }
+    
     // MARK: - Binding Interactions
     private func bindInteractions() {
         self.screenView.closeButton.rx.tap.subscribe(onNext:  { [weak self] in
             self?.dismiss(animated: true)
         }).disposed(by: disposeBag)
         
-        singleTapGestureRecognizer.rx.event.subscribe(onNext: { [weak self] event in
+        self.singleTapGestureRecognizer.rx.event.subscribe(onNext: { [weak self] event in
             self?.didSingleTapWith(gestureRecognizer: event)
         }).disposed(by: disposeBag)
         
@@ -176,5 +185,11 @@ extension PhotoDetailViewController: UIGestureRecognizerDelegate {
 extension PhotoDetailViewController: LightboxControllerPageDelegate {
     func lightboxController(_ controller: Lightbox.LightboxController, didMoveToPage page: Int) {
         
+    }
+}
+
+extension PhotoDetailViewController: LightboxControllerTouchDelegate {
+    func lightboxController(_ controller: LightboxController, didTouch image: LightboxImage, at index: Int) {
+        switchScreenMode()
     }
 }

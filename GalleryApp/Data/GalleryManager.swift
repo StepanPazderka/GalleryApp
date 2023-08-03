@@ -53,6 +53,14 @@ class GalleryManager {
                 self.rebuildGalleryIndex()
             }
         }).disposed(by: disposeBag)
+        
+        self.monitorGalleryIndexChanges()
+    }
+    
+    func monitorGalleryIndexChanges() {
+        self.selectedGalleryIndexRelay.asObservable().distinctUntilChanged().subscribe(onNext: { [weak self] galleryIndex in
+            self?.updateGalleryIndex(newGalleryIndex: galleryIndex)
+        }).disposed(by: disposeBag)
     }
     
     func galleryObservable() -> Observable<GalleryIndex> {

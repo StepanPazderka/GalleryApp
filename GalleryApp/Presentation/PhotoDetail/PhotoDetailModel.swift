@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PhotoDetailViewControllerSettings {
+struct PhotoDetailModel {
     var selectedImages: [AlbumImage]
     var selectedIndex: Int
 }

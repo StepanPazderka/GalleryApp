@@ -26,38 +26,33 @@ class SidebarRouter {
         self.galleryManager = galleryManager
     }
     
-    func start(splitViewController: UISplitViewController) {
+    public func start(splitViewController: UISplitViewController) {
         self.splitViewController = splitViewController
 
-        let masterVC = UINavigationController(rootViewController: container.resolve(SidebarViewController.self)!)
+        let sidebarViewController = UINavigationController(rootViewController: container.resolve(SidebarViewController.self)!)
         
-        splitViewController.viewControllers = [masterVC, navVC]
+        splitViewController.viewControllers = [sidebarViewController, navVC]
 
         splitViewController.setViewController(navVC, for: .secondary)
-        splitViewController.setViewController(masterVC, for: .primary)
+        splitViewController.setViewController(sidebarViewController, for: .primary)
         splitViewController.preferredDisplayMode = .automatic
         splitViewController.presentsWithGesture = true
     }
     
-    func showAllPhotos() {
+    public func showAllPhotos() {
         let allPhotosVC = container.resolve(AlbumScreenViewController.self)!
         navVC.setViewControllers([allPhotosVC], animated: false)
         splitViewController.showDetailViewController(navVC, sender: nil)
     }
     
-    func show(album albumID: UUID) {
+    public func show(album albumID: UUID) {
         let albumVC = container.resolve(AlbumScreenViewController.self, argument: albumID)!
         navVC.setViewControllers([albumVC], animated: false)
         splitViewController.showDetailViewController(navVC, sender: nil)
     }
     
-    func showLibrarySelectionScreen() {
+    public func showLibrarySelectionScreen() {
         let librarySelectionScreen = container.resolve(SelectLibraryViewController.self)!
         splitViewController.present(UINavigationController(rootViewController: librarySelectionScreen), animated: true)
-    }
-    
-    func showDetails() {
-//        splitViewController.preferredSupplementaryColumnWidth = CGFloat(250.0)
-//        splitViewController.setViewController(UIViewController(), for: .supplementary)
     }
 }

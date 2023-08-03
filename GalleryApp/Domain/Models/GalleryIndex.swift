@@ -19,3 +19,5 @@ struct GalleryIndex: Codable {
         Self(mainGalleryName: "", images: [AlbumImage](), albums: [UUID](), thumbnailSize: 200, showingAnnotations: false)
     }
 }
+
+extension GalleryIndex: Equatable { }
