@@ -110,9 +110,10 @@ class AlbumImageCell: UICollectionViewCell {
         print("Double tap")
     }
     
-    func configure(with imageData: AlbumImage) {
+    func configure(with imageData: AlbumImage, viewModel: AlbumScreenViewModel) {
         self.textLabel.text = imageData.title
         self.imageView.image = UIImage(contentsOfFile: imageData.fileName)
+        self.viewModel = viewModel
         self.viewModel?.isEditing.subscribe(onNext: { value in
             if value {
 //                self.addGestureRecognizer(self.selectCellRecognizer)

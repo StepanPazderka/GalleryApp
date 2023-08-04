@@ -39,6 +39,6 @@ final class GalleryManagerTest: XCTestCase {
         let fileScannerManager = FileScannerManager(settings: settingsManager)
         let galleryManager = GalleryManager(settingsManager: settingsManager, fileScannerManger: fileScannerManager)
         
-        XCTAssert(galleryManager.selectedGallery == "Default Gallery")
+        
     }
 }

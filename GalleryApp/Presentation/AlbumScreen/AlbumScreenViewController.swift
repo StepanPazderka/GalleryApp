@@ -83,7 +83,7 @@ class AlbumScreenViewController: UIViewController {
         dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>(
             configureCell: { (dataSource, collectionView, indexPath, item) in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
-                cell.configure(with: item)
+                cell.configure(with: item, viewModel: self.viewModel)
                 cell.index = indexPath.item
                 return cell
             }
@@ -156,8 +156,10 @@ class AlbumScreenViewController: UIViewController {
             }
         }).disposed(by: disposeBag)
         
-        self.viewModel.showingTitles.subscribe(onNext: { value in
-            self.screenView.checkBoxTitles.checker = value
+        self.viewModel.showingTitles
+            .distinctUntilChanged()
+            .subscribe(onNext: { value in
+                self.screenView.checkBoxTitles.checker = value
         }).disposed(by: disposeBag)
     }
     
@@ -232,6 +234,7 @@ class AlbumScreenViewController: UIViewController {
         // MARK: - Slider binding
         self.screenView.slider.rx.value.changed
             .map { CGFloat($0) }
+            .observe(on: MainScheduler.instance)
             .do(onNext: { value in
                 self.screenView.collectionLayout.itemSize = CGSize(width: value, height: value)
             })

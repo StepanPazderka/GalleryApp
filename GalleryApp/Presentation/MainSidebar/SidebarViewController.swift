@@ -12,7 +12,6 @@ import RxCocoa
 import RxDataSources
 import SnapKit
 import Swinject
-//import DirectoryWatcher
 
 class SidebarViewController: UIViewController {
     
@@ -251,8 +250,4 @@ extension SidebarViewController: UICollectionViewDelegate {
             return UIMenu(title: "", children: [renameAction, inspectAction, removeThumbnail, duplicateAction, deleteAction])
         })
     }
-}
-
-extension SidebarViewController: UIImagePickerControllerDelegate {
-    
 }
