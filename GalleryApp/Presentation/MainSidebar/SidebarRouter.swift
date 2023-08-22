@@ -29,7 +29,7 @@ class SidebarRouter {
     public func start(splitViewController: UISplitViewController) {
         self.splitViewController = splitViewController
 
-        let sidebarViewController = UINavigationController(rootViewController: container.resolve(SidebarViewController.self)!)
+        let sidebarViewController = container.resolve(SidebarViewController.self)!
         
         splitViewController.viewControllers = [sidebarViewController, navVC]
 
