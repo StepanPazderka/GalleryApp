@@ -46,7 +46,6 @@ class SidebarViewController: UIViewController {
         self.bindData()
         self.bindInteractions()
         
-        self.router.showAllPhotos()
         self.screenView.sidebarCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: .centeredVertically)
     }
     
