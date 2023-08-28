@@ -19,7 +19,13 @@ class PhotoDetailView: UIView {
         view.frame = CGRect(x: 10, y: 10, width: 40, height: 40)
         return view
     }()
-    
+
+    var swipeDownGestureRecognizer = {
+        let view = UISwipeGestureRecognizer()
+        view.direction = .down
+        return view
+    }()
+        
     // MARK: -- Init
     init() {
         super.init(frame: .zero)
@@ -35,16 +41,6 @@ class PhotoDetailView: UIView {
     // MARK: -- Setup Views
     func setupViews() {
         self.addSubviews(closeButton)
-    }
-    
-    override func layoutSubviews() {
-        if oldBoundsSize != self.bounds.size {
-            oldBoundsSize = self.bounds.size
-            
-            //            self.scrollView.contentSize = self.stackView.bounds.size
-        }
-        
-        super.layoutSubviews()
     }
     
     func layoutViews() {

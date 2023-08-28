@@ -83,7 +83,7 @@ class AlbumScreenViewController: UIViewController {
         dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>(
             configureCell: { (dataSource, collectionView, indexPath, item) in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
-                cell.configure(with: item)
+                cell.configure(with: item, viewModel: self.viewModel)
                 cell.index = indexPath.item
                 return cell
             }
@@ -94,12 +94,12 @@ class AlbumScreenViewController: UIViewController {
         super.viewWillTransition(to: size, with: coordinator)
         screenView.collectionLayout.invalidateLayout()
     }
-
+    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         screenView.collectionLayout.invalidateLayout()
     }
-
+    
     // MARK: - Layout
     func setupViews() {
         self.view = screenView
@@ -126,13 +126,13 @@ class AlbumScreenViewController: UIViewController {
             }).disposed(by: disposeBag)
         }
     }
-
+    
     func showDocumentPicker() {
         self.screenView.documentPicker.delegate = self
         self.screenView.documentPicker.allowsMultipleSelection = true
         self.present(self.screenView.documentPicker, animated: true)
     }
-
+    
     func showImagePicker() {
         let imagePicker = self.screenView.imagePicker()
         
@@ -156,9 +156,11 @@ class AlbumScreenViewController: UIViewController {
             }
         }).disposed(by: disposeBag)
         
-        self.viewModel.showingTitles.subscribe(onNext: { value in
-            self.screenView.checkBoxTitles.checker = value
-        }).disposed(by: disposeBag)
+        self.viewModel.showingTitles
+            .distinctUntilChanged()
+            .subscribe(onNext: { value in
+                self.screenView.checkBoxTitles.checker = value
+            }).disposed(by: disposeBag)
     }
     
     // MARK: - Interactions Binding
@@ -186,7 +188,7 @@ class AlbumScreenViewController: UIViewController {
                 }
             }
         }).disposed(by: disposeBag)
-        
+                
         self.viewModel.isEditing.subscribe(onNext: { [weak self] value in
             guard let self else { return }
             
@@ -205,13 +207,13 @@ class AlbumScreenViewController: UIViewController {
             alert.addAction(UIAlertAction(title: NSLocalizedString("kSELECTFROMPHOTOLIBRARY", comment: "Default action"), style: .default) { [weak self] _ in
                 self?.showImagePicker()
             })
-
+            
             if let presenter = alert.popoverPresentationController {
                 presenter.sourceView = self?.screenView.addImageButton
                 presenter.sourceRect = self?.screenView.addImageButton.bounds ?? CGRect(origin: .zero, size: .zero)
                 presenter.delegate = self
             }
-
+            
             self?.present(alert, animated: true, completion: nil)
         }).disposed(by: disposeBag)
         
@@ -232,16 +234,17 @@ class AlbumScreenViewController: UIViewController {
         // MARK: - Slider binding
         self.screenView.slider.rx.value.changed
             .map { CGFloat($0) }
+            .observe(on: MainScheduler.instance)
             .do(onNext: { value in
                 self.screenView.collectionLayout.itemSize = CGSize(width: value, height: value)
             })
             .debounce(.milliseconds(500), scheduler: MainScheduler.instance).subscribe(onNext: { value in
-            DispatchQueue.global(qos: .userInteractive).async {
-                self.viewModel.newThumbnailSize(size: Float(value))
-            }
-        }).disposed(by: disposeBag)
-    }
-
+                DispatchQueue.global(qos: .userInteractive).async {
+                    self.viewModel.newThumbnailSize(size: Float(value))
+                }
+            }).disposed(by: disposeBag)
+                }
+    
     func addPhoto(filename: AlbumImage, to album: UUID? = nil) {
         self.viewModel.addPhoto(image: filename)
     }
@@ -250,7 +253,7 @@ class AlbumScreenViewController: UIViewController {
         guard let targetIndexPath = self.screenView.collectionView.indexPathForItem(at: gesture.location(in: self.screenView.collectionView)) else {
             return
         }
-
+        
         switch gesture.state {
         case .began:
             UIView.animate(withDuration: 0.1, animations: {
@@ -276,24 +279,26 @@ class AlbumScreenViewController: UIViewController {
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let temp = self.viewModel.images.remove(at: sourceIndexPath.item)
         self.viewModel.images.insert(temp, at: destinationIndexPath.item)
-
+        
         let newGalleryIndex = AlbumIndex(name: self.viewModel.galleryManager.selectedGalleryPath.lastPathComponent, images: self.viewModel.images, thumbnail: self.viewModel.images.first?.fileName ?? "")
         self.viewModel.galleryManager.updateAlbumIndex(index: newGalleryIndex)
         return
     }
+}
 
-    // Long Press Menu on Image cell
+// MARK: - Contextual Menu Setup
+extension AlbumScreenViewController {
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil,
                                           previewProvider: nil,
                                           actionProvider: { [self] suggestedActions in
             let inspectAction = UIAction(title: NSLocalizedString("kDETAILS", comment: ""),
-                     image: UIImage(systemName: "info.circle")) { action in
+                                         image: UIImage(systemName: "info.circle")) { action in
                 let newView = UIView()
                 newView.backgroundColor = .green
-
+                
                 let photoID = self.viewModel.images[indexPath.row]
-                                
+                
                 self.router.showDetails(images: [photoID])
             }
             
@@ -348,7 +353,7 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         0
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         UIEdgeInsets.init(top: 0, left: 0, bottom: 0, right: 0)
     }
@@ -361,22 +366,6 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         CGSize(width: view.frame.width, height: 200)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // Handle the tap on the selected item here
-        
-        // You can access the selected item using the index path
-        //            let selectedItem = myData[indexPath.item]
-        print("User tapped")
-        
-        // Do something with the selected item
-        //            print("Selected item: \(selectedItem)")
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
-        // Return true for cells that can be moved
-        return true
     }
 }
 
@@ -395,7 +384,6 @@ extension AlbumScreenViewController: UIDocumentPickerDelegate {
 
 // TODO: Refactor - move this fction to viewModel
 extension AlbumScreenViewController: PHPickerViewControllerDelegate {
-    
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
         let photos = results

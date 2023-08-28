@@ -12,7 +12,6 @@ import RxCocoa
 import RxDataSources
 import SnapKit
 import Swinject
-import DirectoryWatcher
 
 class SidebarViewController: UIViewController {
     
@@ -21,10 +20,10 @@ class SidebarViewController: UIViewController {
     
     // MARK: - Properties
     private var dataSource: RxCollectionViewSectionedReloadDataSource<SidebarSection>?
-    let router: SidebarRouter
-    let viewModel: SidebarViewModel
-    let disposeBag = DisposeBag()
-
+    private let router: SidebarRouter
+    private let viewModel: SidebarViewModel
+    private let disposeBag = DisposeBag()
+    
     // MARK: - Init
     init(router: SidebarRouter, container: Container, viewModel: SidebarViewModel) {
         self.router = router
@@ -46,8 +45,7 @@ class SidebarViewController: UIViewController {
         self.setupViews()
         self.bindData()
         self.bindInteractions()
-
-        self.router.showAllPhotos()
+        
         self.screenView.sidebarCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: .centeredVertically)
     }
     
@@ -58,18 +56,18 @@ class SidebarViewController: UIViewController {
     }
     
     // MARK: - Create Album Popover
-    @objc func showRenameAlbumDialog(withPrepulatedName: String? = nil, callback: ((String) -> Void)? = nil) {
+    @objc func showRenameAlbumDialog(withPrepopulatedName: String? = nil, callback: ((String) -> Void)? = nil) {
         var returnString: String?
         let createAlbumAlert = UIAlertController(title: NSLocalizedString("kEnterAlbumName", comment: ""), message: nil, preferredStyle: .alert)
-
+        
         createAlbumAlert.addTextField { textField in
             textField.placeholder = "Album name"
             
-            if let withPrepulatedName {
-                textField.text = withPrepulatedName
+            if let withPrepopulatedName {
+                textField.text = withPrepopulatedName
             }
         }
-                
+        
         let confirmAction = UIAlertAction(title: NSLocalizedString("kOK", comment: ""), style: .default) { [weak createAlbumAlert] _ in
             guard let alertController = createAlbumAlert, let textField = alertController.textFields?.first, let text = textField.text else { return }
             
@@ -92,10 +90,10 @@ class SidebarViewController: UIViewController {
             }
         }
         createAlbumAlert.addAction(confirmAction)
-
+        
         let cancelAction = UIAlertAction(title: NSLocalizedString("kCANCEL", comment: "Cancel"), style: .cancel, handler: nil)
         createAlbumAlert.addAction(cancelAction)
-
+        
         self.present(createAlbumAlert, animated: true, completion: nil)
     }
     
@@ -105,16 +103,16 @@ class SidebarViewController: UIViewController {
             .asDriver(onErrorJustReturn: "")
             .drive(self.screenView.selectGalleryButton.rx.title())
             .disposed(by: disposeBag)
-    
+        
         viewModel.loadSidebarContent()
             .bind(to: screenView.sidebarCollectionView.rx.items(dataSource: dataSource!))
             .disposed(by: disposeBag)
         
         viewModel.getSelectedLibraryNameAsObservable()
             .distinctUntilChanged()
-            .subscribe(onNext: { libraryName in
-                self.screenView.sidebarCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: true, scrollPosition: .top)
-                self.router.showAllPhotos()
+            .subscribe(onNext: { [weak self] libraryName in
+                self?.screenView.sidebarCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: true, scrollPosition: .top)
+                self?.router.showAllPhotos()
             })
             .disposed(by: disposeBag)
     }
@@ -124,7 +122,7 @@ class SidebarViewController: UIViewController {
         self.screenView.selectGalleryButton.rx.tap.subscribe(onNext: { [weak self] in
             self?.router.showLibrarySelectionScreen()
         }).disposed(by: disposeBag)
-
+        
         self.screenView.addAlbumButton.rx.tap.subscribe(onNext: { [weak self] in
             self?.showRenameAlbumDialog() { newAlbumName in
                 self?.viewModel.createAlbum(name: newAlbumName)
@@ -151,7 +149,7 @@ class SidebarViewController: UIViewController {
     }
     
     // MARK: - Views Setup
-    func setupViews() {
+    private func setupViews() {
         self.view = screenView
         
         view.addSubviews(self.screenView.sidebarCollectionView)
@@ -193,11 +191,11 @@ class SidebarViewController: UIViewController {
                 return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
             },
             configureSupplementaryView: { dataSource, collectionView, kind, indexPath in
-                    guard kind == UICollectionView.elementKindSectionHeader else {
-                        fatalError("Unexpected supplementary view kind: \(kind)")
-                    }
-                    return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
+                guard kind == UICollectionView.elementKindSectionHeader else {
+                    fatalError("Unexpected supplementary view kind: \(kind)")
                 }
+                return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
+            }
         )
     }
 }
@@ -216,7 +214,7 @@ extension SidebarViewController: UICollectionViewDelegate {
             }
             let duplicateAction =
             UIAction(title: NSLocalizedString("kDUPLICATEALBUM", comment: ""),
-                     image: UIImage(systemName: "plus.square.on.square")) { action in                
+                     image: UIImage(systemName: "plus.square.on.square")) { action in
                 if let albumId = self.dataSource?[indexPath].identifier {
                     self.viewModel.duplicateAlbum(id: albumId)
                 }
@@ -242,7 +240,7 @@ extension SidebarViewController: UICollectionViewDelegate {
                      image: UIImage(systemName: "pencil")) { action in
                 
                 if let albumName = self.dataSource?[indexPath].title, let albumID = self.dataSource?[indexPath].identifier {
-                    self.showRenameAlbumDialog(withPrepulatedName: albumName) { [indexPath] newAlbumName in
+                    self.showRenameAlbumDialog(withPrepopulatedName: albumName) { [indexPath] newAlbumName in
                         self.viewModel.renameAlbum(id: albumID, withNewAlbumName: newAlbumName)
                         self.screenView.sidebarCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .top)
                     }
@@ -251,8 +249,4 @@ extension SidebarViewController: UICollectionViewDelegate {
             return UIMenu(title: "", children: [renameAction, inspectAction, removeThumbnail, duplicateAction, deleteAction])
         })
     }
-}
-
-extension SidebarViewController: UIImagePickerControllerDelegate {
-    
 }

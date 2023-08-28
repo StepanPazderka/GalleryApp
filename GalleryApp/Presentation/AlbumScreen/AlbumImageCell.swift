@@ -42,6 +42,7 @@ class AlbumImageCell: UICollectionViewCell {
         let view = UIStackView()
         view.axis = .vertical
         view.distribution = .fillProportionally
+        view.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         return view
     }()
     
@@ -56,9 +57,6 @@ class AlbumImageCell: UICollectionViewCell {
         self.index = 0
         
         super.init(frame: frame)
-        
-        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTap(_:)))
-        doubleTap.numberOfTapsRequired = 2
 
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(galleryImageLongPress(_:)))
         imageView.isUserInteractionEnabled = true
@@ -105,20 +103,15 @@ class AlbumImageCell: UICollectionViewCell {
         recognizer.numberOfTapsRequired = 1
         return recognizer
     }
-
-    @objc func doubleTap(_ sender: UITapGestureRecognizer) {
-        print("Double tap")
-    }
     
-    func configure(with imageData: AlbumImage) {
+    func configure(with imageData: AlbumImage, viewModel: AlbumScreenViewModel) {
         self.textLabel.text = imageData.title
         self.imageView.image = UIImage(contentsOfFile: imageData.fileName)
+        self.viewModel = viewModel
         self.viewModel?.isEditing.subscribe(onNext: { value in
             if value {
-//                self.addGestureRecognizer(self.selectCellRecognizer)
                 self.checkBox.isHidden = !value
             } else {
-//                self.removeGestureRecognizer(self.selectCellRecognizer)
                 self.checkBox.isHidden = !value
             }
         }).disposed(by: disposeBag)
@@ -161,7 +154,6 @@ class AlbumImageCell: UICollectionViewCell {
         
         stackView.snp.makeConstraints { make in
             make.size.equalToSuperview()
-            make.margins.equalTo(0)
         }
     }
 }

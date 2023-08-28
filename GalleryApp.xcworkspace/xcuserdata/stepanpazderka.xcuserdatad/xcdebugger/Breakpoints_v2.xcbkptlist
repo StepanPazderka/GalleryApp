@@ -48,7 +48,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "356"
             endingLineNumber = "356"
-            landmarkName = "delete(images:)"
+            landmarkName = "loadGalleryIndex(named:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -64,7 +64,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "352"
             endingLineNumber = "352"
-            landmarkName = "delete(images:)"
+            landmarkName = "loadGalleryIndex(named:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -206,9 +206,9 @@
             filePath = "GalleryApp/Presentation/PhotoDetail/PhotoZoomView/PhotoDetailViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "61"
+            endingLineNumber = "61"
+            landmarkName = "setupLightbox()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

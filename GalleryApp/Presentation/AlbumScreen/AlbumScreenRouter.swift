@@ -29,13 +29,7 @@ class AlbumScreenRouter {
     }
     
     func showPhotoDetail(images: [AlbumImage], index: Int) {
-        let vc = container.resolve(PhotoDetailViewController.self, argument: PhotoDetailViewControllerSettings(selectedImages: images, selectedIndex: index))!
-        
-        
-        let galleryManager = container.resolve(GalleryManager.self)!
-        let image = galleryManager.resolvePathFor(imageName: "93B10631-E4F5-43AD-915D-A76E81C3D832.heic")
-//        let vc2 = ImageViewController(image: UIImage(contentsOfFile: image)!)
-        
+        let vc = container.resolve(PhotoDetailViewController.self, argument: PhotoDetailModel(selectedImages: images, selectedIndex: index))!
         let navigationController = UINavigationController(rootViewController: vc)
         navigationController.modalPresentationStyle = .fullScreen
         topMostController()?.present(navigationController, animated: true)
