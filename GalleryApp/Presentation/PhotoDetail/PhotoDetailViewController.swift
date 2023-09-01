@@ -47,22 +47,19 @@ class PhotoDetailViewController: UIViewController {
     }
     
     private func setupLightbox() {
+        LightboxConfig.hideStatusBar = true
+        LightboxConfig.InfoLabel.enabled = false
+        LightboxConfig.PageIndicator.enabled = false
         
         let images = viewModel.images.map { image in
             LightboxImage(image: UIImage(contentsOfFile: galleryManager.resolvePathFor(imageName: image.fileName))!)
         }
         
         self.lightboxController = LightboxController(images: images, startIndex: viewModel.index)
-        LightboxConfig.hideStatusBar = true
-        lightboxController.dynamicBackground = false
-        LightboxConfig.InfoLabel.enabled = false
-        LightboxConfig.PageIndicator.enabled = false
-        lightboxController.imageTouchDelegate = self
-        
+        self.lightboxController.dynamicBackground = false
+        self.lightboxController.view.frame = view.frame
+        self.lightboxController.pageDelegate = self
         self.add(lightboxController)
-        
-        lightboxController.view.frame = view.frame
-        lightboxController.pageDelegate = self
     }
     
     // MARK: - Lifecycle
@@ -79,34 +76,10 @@ class PhotoDetailViewController: UIViewController {
         self.bindData()
     }
     
-    @objc func didSingleTapWith(gestureRecognizer: UITapGestureRecognizer) {
-        if self.currentMode == .full {
-            changeScreenMode(to: .normal)
-            self.currentMode = .normal
-        } else {
-            changeScreenMode(to: .full)
-            self.currentMode = .full
-        }
-    }
-    
-    func switchScreenMode() {
-        if self.currentMode == .full {
-            changeScreenMode(to: .normal)
-            self.currentMode = .normal
-        } else {
-            changeScreenMode(to: .full)
-            self.currentMode = .full
-        }
-    }
-    
     // MARK: - Binding Interactions
     private func bindInteractions() {
         self.screenView.closeButton.rx.tap.subscribe(onNext:  { [weak self] in
             self?.dismiss(animated: true)
-        }).disposed(by: disposeBag)
-        
-        self.singleTapGestureRecognizer.rx.event.subscribe(onNext: { [weak self] event in
-            self?.didSingleTapWith(gestureRecognizer: event)
         }).disposed(by: disposeBag)
         
         self.screenView.swipeDownGestureRecognizer.rx.event.subscribe(onNext: { [weak self] event in
@@ -130,31 +103,6 @@ class PhotoDetailViewController: UIViewController {
             } else if key.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
                 lightboxController.next()
             }
-        }
-    }
-    
-    func changeScreenMode(to: ScreenMode) {
-        if to == .full {
-            self.navigationController?.setNavigationBarHidden(true, animated: false)
-            UIView.animate(withDuration: 0.25,
-                           animations: { [weak self] in
-                self?.view.backgroundColor = .black
-                self?.screenView.closeButton.isHidden = true
-                
-            }, completion: { completed in
-            })
-        } else {
-            self.navigationController?.setNavigationBarHidden(true, animated: false)
-            UIView.animate(withDuration: 0.25,
-                           animations: { [weak self] in
-                if #available(iOS 13.0, *) {
-                    self?.view.backgroundColor = .systemBackground
-                } else {
-                    self?.view.backgroundColor = .white
-                }
-                self?.screenView.closeButton.isHidden = false
-            }, completion: { completed in
-            })
         }
     }
 }
@@ -185,11 +133,5 @@ extension PhotoDetailViewController: UIGestureRecognizerDelegate {
 extension PhotoDetailViewController: LightboxControllerPageDelegate {
     func lightboxController(_ controller: Lightbox.LightboxController, didMoveToPage page: Int) {
         
-    }
-}
-
-extension PhotoDetailViewController: LightboxControllerTouchDelegate {
-    func lightboxController(_ controller: LightboxController, didTouch image: LightboxImage, at index: Int) {
-        switchScreenMode()
     }
 }
