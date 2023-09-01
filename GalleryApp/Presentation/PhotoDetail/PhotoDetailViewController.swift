@@ -23,11 +23,6 @@ class PhotoDetailViewController: UIViewController {
     
     let disposeBag = DisposeBag()
     
-    enum ScreenMode {
-        case full, normal
-    }
-    var currentMode: ScreenMode = .normal
-    
     // MARK: - Init
     internal init(galleryInteractor: GalleryManager, settings: PhotoDetailModel) {
         self.galleryManager = galleryInteractor
@@ -83,7 +78,29 @@ class PhotoDetailViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         self.screenView.swipeDownGestureRecognizer.rx.event.subscribe(onNext: { [weak self] event in
-            self?.dismiss(animated: true)
+            
+            guard let self = self else { return }
+            
+            let translation = screenView.swipeDownGestureRecognizer.translation(in: view)
+            
+            switch self.screenView.swipeDownGestureRecognizer.state {
+            case .changed:
+                if translation.y > 0 {  // Only allow dragging downwards
+                    view.transform = CGAffineTransform(translationX: 0, y: translation.y)
+                }
+            case .ended:
+                // Dismiss the view controller if dragged beyond a certain distance
+                if translation.y > 100 {
+                    dismiss(animated: true, completion: nil)
+                } else {
+                    // Reset the transformation if the distance is less than the threshold
+                    UIView.animate(withDuration: 0.3) {
+                        self.screenView.transform = CGAffineTransform.identity
+                    }
+                }
+            default:
+                break
+            }
         }).disposed(by: disposeBag)
     }
     
@@ -104,29 +121,6 @@ class PhotoDetailViewController: UIViewController {
                 lightboxController.next()
             }
         }
-    }
-}
-
-extension PhotoDetailViewController: UIGestureRecognizerDelegate {
-    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        
-        if let gestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
-            let velocity = gestureRecognizer.velocity(in: self.view)
-            
-            var velocityCheck : Bool = false
-            
-            if UIDevice.current.orientation.isLandscape {
-                velocityCheck = velocity.x < 0
-            }
-            else {
-                velocityCheck = velocity.y < 0
-            }
-            if velocityCheck {
-                return false
-            }
-        }
-        
-        return true
     }
 }
 

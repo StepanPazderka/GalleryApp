@@ -21,12 +21,13 @@ class SelectLibraryViewModel {
         self.updateLibraries()
     }
     
+    /// Scans app directory for subdirectories and updates libraries
     func updateLibraries() {
-        var directories: [String] = [String]()
+        var foundDirectoriesInDocumentsFolder: [String] = [String]()
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         do {
             let directoryContents = try FileManager.default.contentsOfDirectory(atPath: documentsDirectory.path)
-            directories = directoryContents.filter { (path: String) -> Bool in
+            foundDirectoriesInDocumentsFolder = directoryContents.filter { (path: String) -> Bool in
                 var isDirectory: ObjCBool = false
                 let fullPath = documentsDirectory.appendingPathComponent(path).path
                 FileManager.default.fileExists(atPath: fullPath, isDirectory: &isDirectory)
@@ -36,11 +37,11 @@ class SelectLibraryViewModel {
             print("Error getting directory contents: \(error)")
         }
         
-        let sorted = directories.sorted { library1, library2 in
-            library1 < library2
+        let librariesSortedByName = foundDirectoriesInDocumentsFolder.sorted { libraryLHS, libraryRHS in
+            libraryLHS < libraryRHS
         }
         
-        self.libraries.onNext([AnimatableSectionModel(model: "Nothing", items: sorted)])
+        self.libraries.onNext([AnimatableSectionModel(model: "Nothing", items: librariesSortedByName)])
     }
     
     func loadGalleriesAsObservable() -> Observable<[SectionModel<Void, String>]> {
