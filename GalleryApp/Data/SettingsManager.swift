@@ -35,8 +35,8 @@ class SettingsManager {
             selectedGalleryAsObservable.onNext("Default Gallery")
         }
         
-        self.selectedGalleryAsObservable.subscribe(onNext: { value in
-            self.selectedGallery = value
+        self.selectedGalleryAsObservable.subscribe(onNext: { [weak self] value in
+            self?.selectedGallery = value
         }).disposed(by: disposeBag)
     }
     

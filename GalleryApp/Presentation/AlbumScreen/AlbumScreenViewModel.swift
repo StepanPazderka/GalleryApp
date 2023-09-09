@@ -29,9 +29,7 @@ class AlbumScreenViewModel {
     internal init(albumID: UUID? = nil, galleryManager: GalleryManager) {
         self.albumID = albumID
         self.galleryManager = galleryManager
-        
-        let galleryIndex: GalleryIndex = self.galleryManager.loadGalleryIndex()!
-        
+                
         if let albumID {
             self.albumIndex = loadAlbum(by: albumID)
         }

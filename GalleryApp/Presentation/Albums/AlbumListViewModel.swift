@@ -20,14 +20,15 @@ class AlbumListViewModel {
     }
 
     func moveToAlbum(images: [String], album: UUID) {
-        do {
-            try self.galleryManager.move(Image: AlbumImage(fileName: images.first!, date: Date()), toAlbum: album) {
+        for image in images {
+            do {
+                try self.galleryManager.move(Image: AlbumImage(fileName: image, date: Date()), toAlbum: album)
                 self.shouldDismiss.accept(true)
+            } catch MoveImageError.imageAlreadyInAlbum {
+                showErrorCantAddImageToAlbum.accept(true)
+            } catch {
+                shouldDismiss.accept(true)
             }
-        } catch MoveImageError.imageAlreadyInAlbum {
-            showErrorCantAddImageToAlbum.accept(true)
-        } catch {
-            shouldDismiss.accept(true)
         }
     }
     

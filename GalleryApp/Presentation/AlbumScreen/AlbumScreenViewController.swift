@@ -75,13 +75,13 @@ class AlbumScreenViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         self.viewModel.loadAlbumImagesObservable().flatMap { albumImages in
-            return Observable.just([AnimatableSectionModel(model: "Something", items: albumImages)])
+            return Observable.just([AnimatableSectionModel(model: "Section", items: albumImages)])
         }.bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource)).disposed(by: disposeBag)
     }
     
     func configureDataSource() {
         dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>(
-            configureCell: { (dataSource, collectionView, indexPath, item) in
+            configureCell: { [unowned self] (dataSource, collectionView, indexPath, item) in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
                 cell.configure(with: item, viewModel: self.viewModel)
                 cell.index = indexPath.item
@@ -291,23 +291,33 @@ extension AlbumScreenViewController {
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil,
                                           previewProvider: nil,
-                                          actionProvider: { [self] suggestedActions in
+                                          actionProvider: { [weak self] suggestedActions in
             let inspectAction = UIAction(title: NSLocalizedString("kDETAILS", comment: ""),
                                          image: UIImage(systemName: "info.circle")) { action in
                 let newView = UIView()
                 newView.backgroundColor = .green
                 
-                let photoID = self.viewModel.images[indexPath.row]
-                
-                self.router.showDetails(images: [photoID])
+                let photoID = self?.viewModel.images[indexPath.row]
+                if let photoID {
+                    self?.router.showDetails(images: [photoID])
+                }
             }
-            
-            let selectedImage = self.viewModel.images[indexPath.row]
+            var selectedImages = [String]()
+            if let filesSelectedInEditMode = self?.viewModel.filesSelectedInEditMode {
+                
+                if filesSelectedInEditMode.isEmpty {
+                    if let selectedImageFileName = self?.viewModel.images[indexPath.row].fileName {
+                        selectedImages = [selectedImageFileName]
+                    }
+                } else {
+                    selectedImages = filesSelectedInEditMode
+                }
+            }
             
             let moveToAlbum = UIAction(title: NSLocalizedString("MoveToAlbum", comment: ""),
                                        image: UIImage(systemName: "square.and.arrow.down")) { [weak self] action in
                 let container = ContainerBuilder.build()
-                let albumsVC = container.resolve(AlbumsListViewController.self, argument: [selectedImage.fileName])! // TODO: Send actual picture names
+                let albumsVC = container.resolve(AlbumsListViewController.self, argument: selectedImages)! // TODO: Send actual picture names
                 let newController = UINavigationController(rootViewController: albumsVC)
                 newController.view.backgroundColor = .systemBackground
                 self?.present(newController, animated: true, completion: nil)
@@ -320,24 +330,27 @@ extension AlbumScreenViewController {
             let setThumbnailAction =
             UIAction(title: NSLocalizedString("SetThumbnail", comment: ""),
                      image: UIImage(systemName: "rectangle.portrait.inset.filled")) { action in
-                let selectedThumbnailFileName = self.viewModel.images[indexPath.row].fileName
-                self.viewModel.setAlbumThumbnailImage(imageName: selectedThumbnailFileName)
+                if let selectedThumbnailFileName = self?.viewModel.images[indexPath.row].fileName {
+                    self?.viewModel.setAlbumThumbnailImage(imageName: selectedThumbnailFileName)
+                }
             }
             let removeFromAlbum =
             UIAction(title: NSLocalizedString("kREMOVEFROMALBUM", comment: ""),
                      image: UIImage(systemName: "rectangle.stack.badge.minus"),
                      attributes: .destructive) { action in
-                let imageName = self.viewModel.images[indexPath.row].fileName
-                self.viewModel.removeFromAlbum(imageName: imageName)
+                if let imageName = self?.viewModel.images[indexPath.row].fileName {
+                    self?.viewModel.removeFromAlbum(imageName: imageName)
+                }
             }
             let deleteAction =
             UIAction(title: NSLocalizedString("kDELETEIMAGE", comment: ""),
                      image: UIImage(systemName: "trash"),
                      attributes: .destructive) { action in
-                let imageName = self.viewModel.images[indexPath.row].fileName
-                self.viewModel.delete([imageName])
+                if let imageName = self?.viewModel.images[indexPath.row].fileName {
+                    self?.viewModel.delete([imageName])
+                }
             }
-            if viewModel.albumID != nil {
+            if self?.viewModel.albumID != nil {
                 return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, setThumbnailAction, removeFromAlbum, deleteAction])
             } else {
                 return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, deleteAction])

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0D199F6FF2A10E82F9E22CE5 /* Pods_GalleryApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BE12233158C7EF023B0479 /* Pods_GalleryApp.framework */; };
+		291AA710F07C47ED12CA87BA /* Pods_GalleryApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C4EC8CDC8DE278CEE5E096B /* Pods_GalleryApp.framework */; };
 		7F62EA7929056C3600FCD97F /* GalleryAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */; };
 		7FDCEE732905741C00395F10 /* GalleryManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FDCEE722905741C00395F10 /* GalleryManagerTest.swift */; };
 		7FEDEA93284CD8AD001F40C0 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7FEDEA92284CD8AD001F40C0 /* SnapKit */; };
@@ -89,8 +89,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		11F848A477FFC4228499079E /* Pods-GalleryApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.release.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.release.xcconfig"; sourceTree = "<group>"; };
-		63BE12233158C7EF023B0479 /* Pods_GalleryApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GalleryApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3357635DC6D5A8FC6E5C7155 /* Pods-GalleryApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.debug.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.debug.xcconfig"; sourceTree = "<group>"; };
+		7C4EC8CDC8DE278CEE5E096B /* Pods_GalleryApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GalleryApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F235DFA2585B73C007BD075 /* GalleryApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GalleryApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F62EA7629056C3600FCD97F /* GalleryAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GalleryAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryAppTests.swift; sourceTree = "<group>"; };
@@ -162,7 +162,7 @@
 		7FF5C0642A9D2C65001CA982 /* AlbumsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumsListViewController.swift; sourceTree = "<group>"; };
 		7FF5C0652A9D2C65001CA982 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7FF5C0662A9D2C65001CA982 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		983365A048FEB4408A91E89A /* Pods-GalleryApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.debug.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.debug.xcconfig"; sourceTree = "<group>"; };
+		9E63EE18BBFDF980A5A19A9C /* Pods-GalleryApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.release.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,7 +171,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7FEDEA93284CD8AD001F40C0 /* SnapKit in Frameworks */,
-				0D199F6FF2A10E82F9E22CE5 /* Pods_GalleryApp.framework in Frameworks */,
+				291AA710F07C47ED12CA87BA /* Pods_GalleryApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,11 +185,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		58BDD945DE5DDA737A4485F5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7C4EC8CDC8DE278CEE5E096B /* Pods_GalleryApp.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		58EE590C8CD4A31706325B59 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				983365A048FEB4408A91E89A /* Pods-GalleryApp.debug.xcconfig */,
-				11F848A477FFC4228499079E /* Pods-GalleryApp.release.xcconfig */,
+				3357635DC6D5A8FC6E5C7155 /* Pods-GalleryApp.debug.xcconfig */,
+				9E63EE18BBFDF980A5A19A9C /* Pods-GalleryApp.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -201,7 +209,7 @@
 				7F62EA7729056C3600FCD97F /* GalleryAppTests */,
 				7F235DFB2585B73C007BD075 /* Products */,
 				58EE590C8CD4A31706325B59 /* Pods */,
-				963F046D509C9F702CD50C74 /* Frameworks */,
+				58BDD945DE5DDA737A4485F5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -417,14 +425,6 @@
 			path = Albums;
 			sourceTree = "<group>";
 		};
-		963F046D509C9F702CD50C74 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				63BE12233158C7EF023B0479 /* Pods_GalleryApp.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -432,12 +432,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7F235E0E2585B73F007BD075 /* Build configuration list for PBXNativeTarget "GalleryApp" */;
 			buildPhases = (
-				BFDBD09DFC125C48A93EBCD7 /* [CP] Check Pods Manifest.lock */,
+				C03EA67C2533FB5D931ED8A2 /* [CP] Check Pods Manifest.lock */,
 				7F6F67282818B01A000AA747 /* [CP] Swiftlint */,
 				7F235DF62585B73C007BD075 /* Sources */,
 				7F235DF72585B73C007BD075 /* Frameworks */,
 				7F235DF82585B73C007BD075 /* Resources */,
-				076E638B26D725A11D79D366 /* [CP] Embed Pods Frameworks */,
+				0F8916A015218B0C449BFBB8 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -497,7 +497,7 @@
 			);
 			mainGroup = 7F235DF12585B73C007BD075;
 			packageReferences = (
-				7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit.git" */,
 			);
 			productRefGroup = 7F235DFB2585B73C007BD075 /* Products */;
 			projectDirPath = "";
@@ -532,7 +532,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		076E638B26D725A11D79D366 /* [CP] Embed Pods Frameworks */ = {
+		0F8916A015218B0C449BFBB8 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -567,7 +567,7 @@
 			shellPath = /bin/sh;
 			shellScript = "# ${PODS_ROOT}/SwiftLint/swiftlint\n";
 		};
-		BFDBD09DFC125C48A93EBCD7 /* [CP] Check Pods Manifest.lock */ = {
+		C03EA67C2533FB5D931ED8A2 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -810,7 +810,7 @@
 		};
 		7F235E0F2585B73F007BD075 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 983365A048FEB4408A91E89A /* Pods-GalleryApp.debug.xcconfig */;
+			baseConfigurationReference = 3357635DC6D5A8FC6E5C7155 /* Pods-GalleryApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -842,7 +842,7 @@
 		};
 		7F235E102585B73F007BD075 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 11F848A477FFC4228499079E /* Pods-GalleryApp.release.xcconfig */;
+			baseConfigurationReference = 9E63EE18BBFDF980A5A19A9C /* Pods-GalleryApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -961,7 +961,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+		7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
 			requirement = {
@@ -974,7 +974,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		7FEDEA92284CD8AD001F40C0 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			package = 7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit.git" */;
 			productName = SnapKit;
 		};
 /* End XCSwiftPackageProductDependency section */
