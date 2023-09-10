@@ -11,6 +11,7 @@ import RxCocoa
 import PhotosUI
 
 class AlbumScreenViewModel {
+
     // MARK: -- Properties
     var isEditing = BehaviorRelay(value: false)
     var showingTitles = BehaviorRelay(value: false)
@@ -190,13 +191,12 @@ class AlbumScreenViewModel {
                 guard let filePath else {
                     guard let suggestedName = itemProvider.suggestedName else { return }
                     filesThatCouldntBeImported.append(suggestedName)
-                    newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
+                    newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount / 2
                     return
                 }
                 
                 let filenameExtension = filePath.pathExtension
                 
-                newTaskProgress.completedUnitCount = 0
                 if (error != nil) {
                     print("Error while copying files \(String(describing: error))")
                 }
@@ -207,7 +207,6 @@ class AlbumScreenViewModel {
                     newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
                     self.galleryManager.buildThumb(forImage: AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
                     filesSelectedForImport.append(AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
-                    
                 } catch {
                     print(error)
                 }

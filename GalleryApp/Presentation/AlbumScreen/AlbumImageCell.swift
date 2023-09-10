@@ -28,7 +28,6 @@ class AlbumImageCell: UICollectionViewCell {
         view.tintColor = .systemGray
         return view
     }()
-    var index: Int
     
     // MARK: - Views
     var textLabel = {
@@ -53,9 +52,7 @@ class AlbumImageCell: UICollectionViewCell {
     static let identifier: String = String(describing: type(of: AlbumImageCell.self))
     
     // MARK: - Init
-    override init(frame: CGRect) {
-        self.index = 0
-        
+    override init(frame: CGRect) {        
         super.init(frame: frame)
 
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(galleryImageLongPress(_:)))
@@ -98,12 +95,6 @@ class AlbumImageCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var selectCellRecognizer: UITapGestureRecognizer {
-        let recognizer = UITapGestureRecognizer(target: self, action: #selector(galleryImageCheckboxTapped(_:)))
-        recognizer.numberOfTapsRequired = 1
-        return recognizer
-    }
-    
     func configure(with imageData: AlbumImage, viewModel: AlbumScreenViewModel) {
         self.textLabel.text = imageData.title
         self.imageView.image = UIImage(contentsOfFile: imageData.fileName)
@@ -117,21 +108,6 @@ class AlbumImageCell: UICollectionViewCell {
         }).disposed(by: disposeBag)
 
         bindData()
-    }
-
-    @objc func galleryImageCheckboxTapped(_ sender: UITapGestureRecognizer) {
-        if !self.checkBox.checker {
-            if let images = self.viewModel?.images {
-                self.viewModel?.filesSelectedInEditMode.append(images[self.index].fileName)
-            }
-        } else {
-            if let images = self.viewModel?.images {
-                self.viewModel?.filesSelectedInEditMode.removeAll { $0 == images[self.index].fileName } 
-            }
-        }
-        self.checkBox.checker.toggle()
-        self.checkBox.isEnabled = false
-        
     }
 
     @objc func galleryImageLongPress(_ sender: UITapGestureRecognizer) {

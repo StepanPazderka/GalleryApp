@@ -22,8 +22,6 @@ class PhotoDetailView: UIView {
 
     var swipeDownGestureRecognizer = {
         let view = UIPanGestureRecognizer()
-//        view.direction = .down
-        
         return view
     }()
         

@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import simd
 import RxSwift
 import Lightbox
 

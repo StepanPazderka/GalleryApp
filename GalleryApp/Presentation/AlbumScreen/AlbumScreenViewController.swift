@@ -49,34 +49,6 @@ class AlbumScreenViewController: UIViewController {
         self.setupViews()
         self.bindData()
         self.bindInteractions()
-        
-        self.viewModel.isEditing.bind(onNext: { [weak self] value in
-            self?.setEditing(value, animated: true)
-            if let editButton = self?.screenView.editButton {
-                if value {
-                    editButton.setTitle(NSLocalizedString("kDONE", comment: ""), for: .normal)
-                    editButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-                    self?.setEditing(true, animated: true)
-                    self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
-                        let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumImageCell
-                        cell.isEditing = true
-                    }
-                } else {
-                    editButton.setTitle(NSLocalizedString("kEDIT", comment: ""), for: .normal)
-                    editButton.titleLabel?.font = .systemFont(ofSize: 18)
-                    self?.setEditing(false, animated: true)
-                    self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
-                        let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumImageCell
-                        cell.isEditing = false
-                        self?.viewModel.filesSelectedInEditMode.removeAll()
-                    }
-                }
-            }
-        }).disposed(by: disposeBag)
-        
-        self.viewModel.loadAlbumImagesObservable().flatMap { albumImages in
-            return Observable.just([AnimatableSectionModel(model: "Section", items: albumImages)])
-        }.bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource)).disposed(by: disposeBag)
     }
     
     func configureDataSource() {
@@ -84,7 +56,6 @@ class AlbumScreenViewController: UIViewController {
             configureCell: { [unowned self] (dataSource, collectionView, indexPath, item) in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
                 cell.configure(with: item, viewModel: self.viewModel)
-                cell.index = indexPath.item
                 return cell
             }
         )
@@ -161,6 +132,12 @@ class AlbumScreenViewController: UIViewController {
             .subscribe(onNext: { value in
                 self.screenView.checkBoxTitles.checker = value
             }).disposed(by: disposeBag)
+        
+        /// Loads images to show up and provides them to DataSource
+        self.viewModel.loadAlbumImagesObservable()
+            .flatMap { Observable.just([AnimatableSectionModel(model: "Section", items: $0)]) }
+            .bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource))
+            .disposed(by: disposeBag)
     }
     
     // MARK: - Interactions Binding
@@ -188,7 +165,33 @@ class AlbumScreenViewController: UIViewController {
                 }
             }
         }).disposed(by: disposeBag)
-                
+        
+        /// Switches Edit/Done button if in editing mode
+        self.viewModel.isEditing.bind(onNext: { [weak self] value in
+            self?.setEditing(value, animated: true)
+            if let editButton = self?.screenView.editButton {
+                if value {
+                    editButton.setTitle(NSLocalizedString("kDONE", comment: ""), for: .normal)
+                    editButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+                    self?.setEditing(true, animated: true)
+                    self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
+                        let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumImageCell
+                        cell.isEditing = true
+                    }
+                } else {
+                    editButton.setTitle(NSLocalizedString("kEDIT", comment: ""), for: .normal)
+                    editButton.titleLabel?.font = .systemFont(ofSize: 18)
+                    self?.setEditing(false, animated: true)
+                    self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
+                        let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumImageCell
+                        cell.isEditing = false
+                        self?.viewModel.filesSelectedInEditMode.removeAll()
+                    }
+                }
+            }
+        }).disposed(by: disposeBag)
+        
+        /// Hide/shows left Menu Bar based on if in editing mode
         self.viewModel.isEditing.subscribe(onNext: { [weak self] value in
             guard let self else { return }
             
