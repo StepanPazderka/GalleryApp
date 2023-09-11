@@ -18,22 +18,18 @@ class AlbumScreenViewModel {
     var showingLoading = BehaviorRelay(value: false)
         
     var albumID: UUID?
-    var albumIndex: AlbumIndex?
+//    var albumIndex: AlbumIndex?
     let galleryManager: GalleryManager
     var images = [AlbumImage]()
     
     var importProgress = MutableProgress()
     var showImportError = BehaviorRelay(value: [String]())
-    var filesSelectedInEditMode = Array<String>()
+    var filesSelectedInEditMode = [AlbumImage]()
     let disposeBag = DisposeBag()
     
     internal init(albumID: UUID? = nil, galleryManager: GalleryManager) {
         self.albumID = albumID
         self.galleryManager = galleryManager
-                
-        if let albumID {
-            self.albumIndex = loadAlbum(by: albumID)
-        }
 
         if let albumID {
             if var albumIndex: AlbumIndex = galleryManager.loadAlbumIndex(id: albumID) {
@@ -53,16 +49,16 @@ class AlbumScreenViewModel {
             }
             
             galleryManager.loadAlbumIndex(id: albumID).subscribe(onNext: { [weak self] albumIndex in
-                self?.albumIndex = albumIndex
+//                self?.albumIndex = albumIndex
                 self?.images = albumIndex.images
             }).disposed(by: disposeBag)
         } else {
             if let newImages = galleryManager.loadGalleryIndex()?.images {
                 self.images = newImages
             }
-            galleryManager.selectedGalleryIndexRelay.subscribe(onNext: { galleryIndex in
-                self.images = galleryIndex.images
-                self.showingTitles.accept(galleryIndex.showingAnnotations ?? false)
+            galleryManager.selectedGalleryIndexRelay.subscribe(onNext: { [weak self] galleryIndex in
+                self?.images = galleryIndex.images
+                self?.showingTitles.accept(galleryIndex.showingAnnotations ?? false)
             }).disposed(by: disposeBag)
         }
         
@@ -113,6 +109,10 @@ class AlbumScreenViewModel {
         }
     }
     
+    func loadAlbumIndexAsObservable() -> Observable<AlbumIndex> {
+        galleryManager.loadAlbumIndex(id: albumID!)
+    }
+    
     func delete(_ images: [String]) {
         self.galleryManager.delete(images: images)
     }
@@ -153,7 +153,7 @@ class AlbumScreenViewModel {
             print("Album Index thumb updated with size \(size)")
         }
         
-        if albumIndex == nil, var galleryIndex = self.galleryManager.loadGalleryIndex() {
+        if var galleryIndex = self.galleryManager.loadGalleryIndex() {
             galleryIndex.thumbnailSize = size
             self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
             print("Gallery Manager thumb updated with size \(size)")
@@ -161,9 +161,9 @@ class AlbumScreenViewModel {
     }
     
     func setAlbumThumbnailImage(imageName: String) {
-        if var updatedAlbum = self.albumIndex {
-            updatedAlbum.thumbnail = imageName
-            self.galleryManager.updateAlbumIndex(index: updatedAlbum)
+        if let albumID, var albumIndex = galleryManager.loadAlbumIndex(id: albumID) {
+            albumIndex.thumbnail = imageName
+            self.galleryManager.updateAlbumIndex(index: albumIndex)
         }
     }
     

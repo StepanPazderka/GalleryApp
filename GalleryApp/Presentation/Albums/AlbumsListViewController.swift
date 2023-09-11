@@ -92,12 +92,6 @@ class AlbumsListViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        screenView.selectAlbumButton.rx.tap.subscribe(onNext: { [weak self] in
-            if let selectedAlbum = self?.selectedAlbum, let selectedImages = self?.selectedImages {
-                self?.viewModel.moveToAlbum(images: selectedImages, album: selectedAlbum)
-            }
-        }).disposed(by: disposeBag)
 
         screenView.albumsCollectionView.delegate = self
         screenView.albumsCollectionView.translatesAutoresizingMaskIntoConstraints = false // This line fixes issue with incorrect highlighting
@@ -105,12 +99,22 @@ class AlbumsListViewController: UIViewController {
         setupViews()
         configureDataSource()
         bindAlbums()
+        bindInteractions()
         bindAlert()
         bindDissmisal()
     }
     
     @objc func closeWindow(sender: Any) {
         self.dismiss(animated: true)
+    }
+    
+    func bindInteractions() {
+        // MARK: - Select Album tapped button interaction
+        screenView.selectAlbumButton.rx.tap.subscribe(onNext: { [weak self] in
+            if let selectedAlbum = self?.selectedAlbum, let selectedImages = self?.selectedImages {
+                self?.viewModel.moveToAlbum(images: selectedImages, album: selectedAlbum)
+            }
+        }).disposed(by: disposeBag)
     }
     
     func setupViews() {
@@ -153,7 +157,6 @@ class AlbumsListViewController: UIViewController {
         
         dataSource = RxCollectionViewSectionedReloadDataSource<SidebarSection>(
             configureCell: { dataSource, collectionView, indexPath, item in
-                // Use content cell registration for all other items
                 return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
             },
             configureSupplementaryView: { dataSource, collectionView, kind, indexPath in

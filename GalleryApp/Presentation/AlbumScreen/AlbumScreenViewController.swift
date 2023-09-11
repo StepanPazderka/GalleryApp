@@ -22,7 +22,6 @@ class AlbumScreenViewController: UIViewController {
     let router: AlbumScreenRouter
     let disposeBag = DisposeBag()
     var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>!
-    var transitionImageView: UIImageView?
     
     // MARK: - Progress
     var importProgress = MutableProgress()
@@ -85,9 +84,11 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
         self.screenView.collectionView.register(AlbumScreenCellFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenCellFooter.identifier)
         
-        if let thumbnailSize = self.viewModel.albumIndex?.thumbnailsSize {
-            self.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(thumbnailSize), height: CGFloat(thumbnailSize))
-            self.screenView.slider.value = thumbnailSize
+        if let albumID = self.viewModel.albumID {
+            self.viewModel.loadAlbumIndexAsObservable().subscribe(onNext: { loadedIndex in
+                self.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(loadedIndex.thumbnailsSize), height: CGFloat(loadedIndex.thumbnailsSize))
+                self.screenView.slider.value = loadedIndex.thumbnailsSize
+            }).disposed(by: disposeBag)
         } else {
             self.viewModel.galleryManager.galleryObservable().subscribe(onNext: { index in
                 if let thumbnailSize = index.thumbnailSize {
@@ -115,9 +116,12 @@ class AlbumScreenViewController: UIViewController {
     func bindData() {
         self.screenView.progressView.observedProgress = self.viewModel.importProgress
         
-        self.viewModel.showingLoading.map { value in
-            !value
-        }.bind(to: self.screenView.loadingView.rx.isHidden).disposed(by: disposeBag)
+        self.viewModel.showingLoading
+            .map { value in
+                !value
+            }
+            .bind(to: self.screenView.loadingView.rx.isHidden)
+            .disposed(by: disposeBag)
         
         self.viewModel.showImportError.subscribe(onNext: { filesThatCouldntBeImported in
             if !filesThatCouldntBeImported.isEmpty {
@@ -133,7 +137,7 @@ class AlbumScreenViewController: UIViewController {
                 self.screenView.checkBoxTitles.checker = value
             }).disposed(by: disposeBag)
         
-        /// Loads images to show up and provides them to DataSource
+        // MARK: - Loading Images to Collection View
         self.viewModel.loadAlbumImagesObservable()
             .flatMap { Observable.just([AnimatableSectionModel(model: "Section", items: $0)]) }
             .bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource))
@@ -159,9 +163,9 @@ class AlbumScreenViewController: UIViewController {
             } else {
                 cell.checkBox.checker.toggle()
                 if cell.checkBox.checker == true {
-                    viewModel.filesSelectedInEditMode.append(viewModel.images[indexPath.row].fileName)
+                    viewModel.filesSelectedInEditMode.append(dataSource.sectionModels.first!.items[indexPath.row])
                 } else {
-                    viewModel.filesSelectedInEditMode.removeAll { $0 == viewModel.images[indexPath.row].fileName }
+                    viewModel.filesSelectedInEditMode.removeAll { $0 == dataSource.sectionModels.first!.items[indexPath.row] }
                 }
             }
         }).disposed(by: disposeBag)
@@ -222,7 +226,7 @@ class AlbumScreenViewController: UIViewController {
         
         self.screenView.deleteImageButton.rx.tap.subscribe(onNext: { [weak self] in
             guard let self else { return }
-            self.viewModel.delete(self.viewModel.filesSelectedInEditMode)
+            self.viewModel.delete(self.viewModel.filesSelectedInEditMode.map { $0.fileName })
             self.viewModel.isEditing.accept(false)
         }).disposed(by: disposeBag)
         
@@ -297,23 +301,22 @@ extension AlbumScreenViewController {
                                           actionProvider: { [weak self] suggestedActions in
             let inspectAction = UIAction(title: NSLocalizedString("kDETAILS", comment: ""),
                                          image: UIImage(systemName: "info.circle")) { action in
-                let newView = UIView()
-                newView.backgroundColor = .green
+                let selectedPhotos = self?.dataSource.sectionModels.first!.items[indexPath.row]
                 
-                let photoID = self?.viewModel.images[indexPath.row]
-                if let photoID {
-                    self?.router.showDetails(images: [photoID])
+                if let selectedPhotos {
+                    self?.router.showDetails(images: [selectedPhotos])
                 }
             }
+            
             var selectedImages = [String]()
             if let filesSelectedInEditMode = self?.viewModel.filesSelectedInEditMode {
                 
                 if filesSelectedInEditMode.isEmpty {
-                    if let selectedImageFileName = self?.viewModel.images[indexPath.row].fileName {
-                        selectedImages = [selectedImageFileName]
+                    if let selectedImageFileName = URL(string: self!.dataSource.sectionModels.first!.items[indexPath.row].fileName) {
+                        selectedImages = [selectedImageFileName.lastPathComponent]
                     }
                 } else {
-                    selectedImages = filesSelectedInEditMode
+                    selectedImages = filesSelectedInEditMode.map { $0.fileName }
                 }
             }
             
@@ -390,7 +393,7 @@ extension AlbumScreenViewController: UIDocumentPickerDelegate {
         for url in urls {
             do {
                 try FileManager.default.moveItem(at: url, to: self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(url.lastPathComponent))
-                self.addPhoto(filename: AlbumImage(fileName: url.lastPathComponent, date: Date()), to: viewModel.albumIndex?.id as UUID?)
+                self.addPhoto(filename: AlbumImage(fileName: url.lastPathComponent, date: Date()), to: viewModel.albumID as UUID?)
             } catch {
                 print(error.localizedDescription)
             }

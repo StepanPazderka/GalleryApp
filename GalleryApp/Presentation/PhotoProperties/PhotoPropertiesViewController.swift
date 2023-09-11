@@ -31,6 +31,7 @@ class PhotoPropertiesViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+
         setupViews()
     }
     

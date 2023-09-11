@@ -11,10 +11,6 @@ import UniformTypeIdentifiers
 import RxSwift
 import RxCocoa
 
-enum GalleryManagerError: Error {
-    case cantStartMonitor
-}
-
 enum MoveImageError: Error {
     case imageAlreadyInAlbum
 }
@@ -402,7 +398,6 @@ class GalleryManager {
     }
     
     // MARK: - Rebuilding Gallery Index
-    
     /**
         Will rebuild gallery index based on files in Gallery folder
      */

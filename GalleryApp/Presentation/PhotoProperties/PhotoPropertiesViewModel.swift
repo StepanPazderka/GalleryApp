@@ -30,7 +30,7 @@ class PhotoPropertiesViewModel {
         var fileSize: UInt64 = 0
         
         do {
-            var attr: NSDictionary? = try FileManager.default.attributesOfItem(atPath: self.galleryManager.selectedGalleryPath.appendingPathComponent(images.first!.fileName).relativePath) as NSDictionary
+            let attr: NSDictionary? = try FileManager.default.attributesOfItem(atPath: self.galleryManager.selectedGalleryPath.appendingPathComponent(images.first!.fileName).relativePath) as NSDictionary
             if let _attr = attr {
                 fileSize = _attr.fileSize();
             }
@@ -70,7 +70,7 @@ class PhotoPropertiesViewModel {
     }
     
     func getImage() -> UIImage {
-        UIImage(contentsOfFile: self.galleryManager.selectedGalleryPath.appendingPathComponent(images.first!.fileName).relativePath)!
+        UIImage(contentsOfFile: images.first!.fileName)!
     }
     
     func updateAlbumImage(albumImage: AlbumImage) {
