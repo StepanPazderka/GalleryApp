@@ -82,7 +82,6 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.collectionView.delegate = self
         self.screenView.collectionView.addGestureRecognizer(longPressRecognizer)
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
-        self.screenView.collectionView.register(AlbumScreenCellFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenCellFooter.identifier)
         
         if let albumID = self.viewModel.albumID {
             self.viewModel.loadAlbumIndexAsObservable().subscribe(onNext: { loadedIndex in
@@ -375,12 +374,6 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         UIEdgeInsets.init(top: 0, left: 0, bottom: 0, right: 0)
-    }
-    
-    // MARK: - Dequeing footer cell
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let footer = screenView.collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: AlbumScreenCellFooter.identifier, for: indexPath) as! AlbumScreenCellFooter
-        return footer
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {

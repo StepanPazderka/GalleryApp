@@ -170,13 +170,15 @@ class AlbumScreenView: UIView {
             make.width.equalToSuperview()
         }
         slider.snp.makeConstraints { make in
-            make.leftMargin.equalToSuperview().offset(20)
-            make.width.equalTo(300)
+            make.left.equalToSuperview().offset(20)
+            make.width.lessThanOrEqualTo(300)
+            make.right.greaterThanOrEqualTo(checkBoxTitles.snp.left).offset(-20)
             make.centerY.equalToSuperview()
         }
         checkBoxTitles.snp.makeConstraints { make in
-            make.rightMargin.equalToSuperview().offset(-20)
+            make.right.equalToSuperview().offset(-20)
             make.centerY.equalToSuperview()
+            make.width.lessThanOrEqualTo(200)
         }
         loadingView.snp.makeConstraints { make in
             make.width.equalToSuperview().offset(-400)

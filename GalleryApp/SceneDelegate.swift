@@ -23,9 +23,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        let splitView = UISplitViewController(style: .doubleColumn)
-        splitView.preferredDisplayMode = .oneBesideSecondary
         let mainrouter = container.resolve(SidebarRouter.self)!
+        let splitView = mainrouter.splitViewController
         mainrouter.start(splitViewController: splitView)
         let window = UIWindow(windowScene: windowScene)
         window.rootViewController = splitView

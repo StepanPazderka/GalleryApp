@@ -69,7 +69,6 @@
 		7FF5C0A12A9D2C65001CA982 /* AlbumScreenRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C05B2A9D2C65001CA982 /* AlbumScreenRouter.swift */; };
 		7FF5C0A22A9D2C65001CA982 /* AlbumScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C05C2A9D2C65001CA982 /* AlbumScreenViewModel.swift */; };
 		7FF5C0A32A9D2C65001CA982 /* AlbumScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C05D2A9D2C65001CA982 /* AlbumScreenViewController.swift */; };
-		7FF5C0A42A9D2C65001CA982 /* AlbumScreenCellFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C05E2A9D2C65001CA982 /* AlbumScreenCellFooter.swift */; };
 		7FF5C0A52A9D2C65001CA982 /* AlbumImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C05F2A9D2C65001CA982 /* AlbumImageCell.swift */; };
 		7FF5C0A62A9D2C65001CA982 /* AlbumScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0602A9D2C65001CA982 /* AlbumScreenModel.swift */; };
 		7FF5C0A72A9D2C65001CA982 /* AlbumScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0612A9D2C65001CA982 /* AlbumScreenView.swift */; };
@@ -154,7 +153,6 @@
 		7FF5C05B2A9D2C65001CA982 /* AlbumScreenRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumScreenRouter.swift; sourceTree = "<group>"; };
 		7FF5C05C2A9D2C65001CA982 /* AlbumScreenViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumScreenViewModel.swift; sourceTree = "<group>"; };
 		7FF5C05D2A9D2C65001CA982 /* AlbumScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumScreenViewController.swift; sourceTree = "<group>"; };
-		7FF5C05E2A9D2C65001CA982 /* AlbumScreenCellFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumScreenCellFooter.swift; sourceTree = "<group>"; };
 		7FF5C05F2A9D2C65001CA982 /* AlbumImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumImageCell.swift; sourceTree = "<group>"; };
 		7FF5C0602A9D2C65001CA982 /* AlbumScreenModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumScreenModel.swift; sourceTree = "<group>"; };
 		7FF5C0612A9D2C65001CA982 /* AlbumScreenView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumScreenView.swift; sourceTree = "<group>"; };
@@ -244,11 +242,11 @@
 				7FF5C02A2A9D2C65001CA982 /* InteractiveImageViewCell.swift */,
 				7FF5C02B2A9D2C65001CA982 /* UICheckBox.swift */,
 				7FF5C02C2A9D2C65001CA982 /* AppDelegate.swift */,
+				7FF5C0662A9D2C65001CA982 /* SceneDelegate.swift */,
 				7FF5C02D2A9D2C65001CA982 /* Data */,
 				7FF5C0352A9D2C65001CA982 /* Domain */,
 				7FF5C03C2A9D2C65001CA982 /* Presentation */,
 				7FF5C0652A9D2C65001CA982 /* Info.plist */,
-				7FF5C0662A9D2C65001CA982 /* SceneDelegate.swift */,
 			);
 			path = GalleryApp;
 			sourceTree = "<group>";
@@ -408,7 +406,6 @@
 				7FF5C05B2A9D2C65001CA982 /* AlbumScreenRouter.swift */,
 				7FF5C05C2A9D2C65001CA982 /* AlbumScreenViewModel.swift */,
 				7FF5C05D2A9D2C65001CA982 /* AlbumScreenViewController.swift */,
-				7FF5C05E2A9D2C65001CA982 /* AlbumScreenCellFooter.swift */,
 				7FF5C05F2A9D2C65001CA982 /* AlbumImageCell.swift */,
 				7FF5C0602A9D2C65001CA982 /* AlbumScreenModel.swift */,
 				7FF5C0612A9D2C65001CA982 /* AlbumScreenView.swift */,
@@ -497,7 +494,7 @@
 			);
 			mainGroup = 7F235DF12585B73C007BD075;
 			packageReferences = (
-				7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit.git" */,
+				7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit" */,
 			);
 			productRefGroup = 7F235DFB2585B73C007BD075 /* Products */;
 			projectDirPath = "";
@@ -624,7 +621,6 @@
 				7FF5C0952A9D2C65001CA982 /* PhotoDetailViewModel.swift in Sources */,
 				7FF5C08A2A9D2C65001CA982 /* SelectLibraryViewModel.swift in Sources */,
 				7FF5C0AB2A9D2C65001CA982 /* SceneDelegate.swift in Sources */,
-				7FF5C0A42A9D2C65001CA982 /* AlbumScreenCellFooter.swift in Sources */,
 				7FF5C06E2A9D2C65001CA982 /* UIImage+imageWidth.swift in Sources */,
 				7FF5C0712A9D2C65001CA982 /* ContainerBuilder.swift in Sources */,
 				7FF5C07C2A9D2C65001CA982 /* InteractiveImageViewCell.swift in Sources */,
@@ -961,7 +957,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit.git" */ = {
+		7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
 			requirement = {
@@ -974,7 +970,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		7FEDEA92284CD8AD001F40C0 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit.git" */;
+			package = 7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
 /* End XCSwiftPackageProductDependency section */
