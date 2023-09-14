@@ -245,11 +245,10 @@ class AlbumScreenViewController: UIViewController {
                 self.screenView.collectionLayout.itemSize = CGSize(width: value, height: value)
             })
             .debounce(.milliseconds(500), scheduler: MainScheduler.instance).subscribe(onNext: { value in
-                DispatchQueue.global(qos: .userInteractive).async {
-                    self.viewModel.newThumbnailSize(size: Float(value))
-                }
+                self.viewModel.newThumbnailSize(size: Float(value))
+                
             }).disposed(by: disposeBag)
-                }
+    }
     
     func addPhoto(filename: AlbumImage, to album: UUID? = nil) {
         self.viewModel.addPhoto(image: filename)
