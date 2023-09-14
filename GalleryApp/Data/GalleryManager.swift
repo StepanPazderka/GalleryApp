@@ -377,7 +377,7 @@ class GalleryManager {
     func updateAlbumImage(image: AlbumImage) {
         if var index = loadGalleryIndex() {
             if let element = index.images.firstIndex(where: { AlbumImage in
-                AlbumImage.fileName == image.fileName
+                AlbumImage.id == image.id
             }) {
                 index.images[element] = image
                 updateGalleryIndex(newGalleryIndex: index)

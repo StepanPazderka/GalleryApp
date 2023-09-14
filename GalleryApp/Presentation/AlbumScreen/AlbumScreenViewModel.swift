@@ -18,7 +18,6 @@ class AlbumScreenViewModel {
     var showingLoading = BehaviorRelay(value: false)
         
     var albumID: UUID?
-//    var albumIndex: AlbumIndex?
     let galleryManager: GalleryManager
     var images = [AlbumImage]()
     
@@ -49,7 +48,6 @@ class AlbumScreenViewModel {
             }
             
             galleryManager.loadAlbumIndex(id: albumID).subscribe(onNext: { [weak self] albumIndex in
-//                self?.albumIndex = albumIndex
                 self?.images = albumIndex.images
             }).disposed(by: disposeBag)
         } else {
@@ -77,19 +75,11 @@ class AlbumScreenViewModel {
     func loadAlbumImagesObservable() -> Observable<[AlbumImage]> {
         if let albumID {
             return galleryManager.loadAlbumIndex(id: albumID).flatMap {
-                Observable.just($0.images.map { albumImage in
-                    var newAlbumImage = albumImage
-                    newAlbumImage.fileName = self.galleryManager.resolveThumbPathFor(imageName: albumImage.fileName)
-                    return newAlbumImage
-                })
+                Observable.just($0.images)
             }
         } else {
             return galleryManager.selectedGalleryIndexRelay.flatMap {
-                Observable.just($0.images.map { albumImage in
-                    var newAlbumImage = albumImage
-                    newAlbumImage.fileName = self.galleryManager.resolveThumbPathFor(imageName: albumImage.fileName)
-                    return newAlbumImage
-                })
+                Observable.just($0.images)
             }
         }
     }
@@ -175,6 +165,10 @@ class AlbumScreenViewModel {
             galleryIndex.showingAnnotations = value
             self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
         }
+    }
+    
+    func resolveThumbPathFor(image: String) -> String {
+        self.galleryManager.resolveThumbPathFor(imageName: image)
     }
     
     func importPhotos(results: [PHPickerResult]) {

@@ -54,7 +54,9 @@ class AlbumScreenViewController: UIViewController {
         dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>(
             configureCell: { [unowned self] (dataSource, collectionView, indexPath, item) in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
-                cell.configure(with: item, viewModel: self.viewModel)
+                var itemWithResolvedPath = item
+                itemWithResolvedPath.fileName = self.viewModel.resolveThumbPathFor(image: itemWithResolvedPath.fileName)
+                cell.configure(with: itemWithResolvedPath, viewModel: self.viewModel)
                 return cell
             }
         )
@@ -302,7 +304,7 @@ extension AlbumScreenViewController {
                 let selectedPhotos = self?.dataSource.sectionModels.first!.items[indexPath.row]
                 
                 if let selectedPhotos {
-                    self?.router.showDetails(images: [selectedPhotos])
+                    self?.router.showProperties(images: [selectedPhotos])
                 }
             }
             

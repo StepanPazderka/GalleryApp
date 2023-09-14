@@ -70,7 +70,7 @@ class PhotoPropertiesViewModel {
     }
     
     func getImage() -> UIImage {
-        UIImage(contentsOfFile: images.first!.fileName)!
+        UIImage(contentsOfFile: galleryManager.resolvePathFor(imageName: images.first!.fileName))!
     }
     
     func updateAlbumImage(albumImage: AlbumImage) {
