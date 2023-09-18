@@ -13,8 +13,6 @@ class SidebarRouter {
     var splitViewController: UISplitViewController = {
         let view = UISplitViewController(style: .doubleColumn)
         view.preferredDisplayMode = .oneBesideSecondary
-        view.presentsWithGesture = true
-        view.preferredSplitBehavior = .tile
         return view
     }()
     var container: Container
