@@ -19,12 +19,29 @@ class PhotoDetailView: UIView {
         view.frame = CGRect(x: 10, y: 10, width: 40, height: 40)
         return view
     }()
-
+    
     var swipeDownGestureRecognizer = {
         let view = UIPanGestureRecognizer()
         return view
     }()
-        
+    
+    let scrollView: UIScrollView = {
+        let view = UIScrollView()
+        view.isPagingEnabled = true
+        view.isScrollEnabled = true
+        view.backgroundColor = .black
+        view.showsHorizontalScrollIndicator = false
+        return view
+    }()
+    
+    let stackView: UIStackView = {
+        let view = UIStackView()
+        view.backgroundColor = .black
+        view.distribution = .fillEqually
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     // MARK: -- Init
     init() {
         super.init(frame: .zero)
@@ -39,7 +56,9 @@ class PhotoDetailView: UIView {
     
     // MARK: -- Setup Views
     func setupViews() {
-        self.addSubviews(closeButton)
+        self.addSubviews(closeButton,
+                         scrollView)
+        self.scrollView.addSubviews(stackView)
     }
     
     func layoutViews() {
@@ -47,6 +66,18 @@ class PhotoDetailView: UIView {
             make.leading.equalToSuperview().offset(10)
             make.top.equalToSuperview().offset(20)
             make.size.equalTo(40)
+        }
+        
+        scrollView.snp.makeConstraints { make in
+            make.width.equalToSuperview()
+            make.top.equalTo(closeButton.snp.bottom)
+            make.bottom.equalToSuperview()
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+        }
+        
+        stackView.snp.makeConstraints { make in
+            make.height.equalToSuperview()
         }
     }
 }

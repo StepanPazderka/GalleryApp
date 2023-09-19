@@ -113,7 +113,6 @@ class AlbumScreenView: UIView {
         view.frame.size = CGSize(width: 200, height: 200)
         view.setTitle("Show titles", for: .normal)
         view.setTitleColor(UIColor.systemBlue, for: .normal)
-        view.contentEdgeInsets = UIEdgeInsets(top: 0, left: 50, bottom: 0, right: 0)
         return view
     }()
     

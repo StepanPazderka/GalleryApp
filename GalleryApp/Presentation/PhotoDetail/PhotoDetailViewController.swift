@@ -7,7 +7,7 @@
 
 import UIKit
 import RxSwift
-import Lightbox
+import SnapKit
 
 class PhotoDetailViewController: UIViewController {
     
@@ -15,17 +15,13 @@ class PhotoDetailViewController: UIViewController {
     var singleTapGestureRecognizer = UITapGestureRecognizer()
     
     let screenView = PhotoDetailView()
-    var galleryManager: GalleryManager
     var viewModel: PhotoDetailViewModel
-    
-    var lightboxController: LightboxController!
     
     let disposeBag = DisposeBag()
     
     // MARK: - Init
-    internal init(galleryInteractor: GalleryManager, settings: PhotoDetailModel) {
-        self.galleryManager = galleryInteractor
-        self.viewModel = PhotoDetailViewModel(images: settings.selectedImages, index: settings.selectedIndex)
+    internal init(viewModel: PhotoDetailViewModel) {
+        self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -34,40 +30,21 @@ class PhotoDetailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Layout
-    private func setupViews() {
-        self.view = screenView
-        self.view.backgroundColor = .systemBackground
-    }
-    
-    private func setupLightbox() {
-        LightboxConfig.hideStatusBar = true
-        LightboxConfig.InfoLabel.enabled = false
-        LightboxConfig.PageIndicator.enabled = false
-        
-        let images = viewModel.images.map { image in
-            LightboxImage(image: UIImage(contentsOfFile: galleryManager.resolvePathFor(imageName: image.fileName))!)
-        }
-        
-        self.lightboxController = LightboxController(images: images, startIndex: viewModel.index)
-        self.lightboxController.dynamicBackground = false
-        self.lightboxController.view.frame = view.frame
-        self.lightboxController.pageDelegate = self
-        self.add(lightboxController)
-    }
-    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
         super.viewDidLoad()
+        self.screenView.addGestureRecognizer(screenView.swipeDownGestureRecognizer)
         self.setupViews()
-        self.setupLightbox()
-        
-        self.view.addGestureRecognizer(self.singleTapGestureRecognizer)
-        self.view.addGestureRecognizer(self.screenView.swipeDownGestureRecognizer)
-        
         self.bindInteractions()
-        self.bindData()
+    }
+    
+    // MARK: - Layout
+    private func setupViews() {
+        self.view = screenView
+        self.view.backgroundColor = .systemBackground
+        screenView.scrollView.delegate = self
+
     }
     
     // MARK: - Binding Interactions
@@ -77,7 +54,6 @@ class PhotoDetailViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         self.screenView.swipeDownGestureRecognizer.rx.event.subscribe(onNext: { [weak self] event in
-            
             guard let self = self else { return }
             
             let translation = screenView.swipeDownGestureRecognizer.translation(in: view)
@@ -103,8 +79,66 @@ class PhotoDetailViewController: UIViewController {
         }).disposed(by: disposeBag)
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+    }
+    
+    // MARK: - Data Binding
     private func bindData() {
+        let numberOfImages = viewModel.getImages().count
         
+        let calculatedStackViewWidth: Double = screenView.bounds.width * Double(numberOfImages)
+        
+        screenView.stackView.snp.makeConstraints { make in
+            make.width.equalToSuperview().multipliedBy(numberOfImages)
+
+        }
+        screenView.stackView.sizeToFit()
+        for imageview in screenView.stackView.arrangedSubviews {
+            imageview.layoutIfNeeded()
+        }
+        
+        for image in viewModel.getImages() {
+            let imageView = PanZoomImageView(frame: screenView.bounds)
+            imageView.image = UIImage(contentsOfFile: image.fileName)
+            imageView.contentMode = .scaleAspectFit
+            self.screenView.stackView.addArrangedSubview(imageView)
+        }
+        screenView.scrollView.contentSize = screenView.stackView.frame.size
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.bindData()
+        
+        screenView.scrollView.contentSize = screenView.stackView.frame.size
+        
+        scrollToPage(page: viewModel.index, animated: false)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged), name: UIDevice.orientationDidChangeNotification, object: nil)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        screenView.scrollView.contentSize = screenView.stackView.frame.size
+    }
+    
+    func scrollToPage(page: Int, animated: Bool) {
+        var function: () -> () = {
+            var frame: CGRect = self.screenView.scrollView.frame
+            frame.origin.x = frame.size.width * CGFloat(page)
+            frame.origin.y = 0
+            self.screenView.scrollView.contentOffset = frame.origin
+        }
+        
+        if animated {
+            UIView.animate(withDuration: 0.25, animations: {
+                function()
+            })
+        } else {
+            function()
+        }
+       
     }
     
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
@@ -115,16 +149,58 @@ class PhotoDetailViewController: UIViewController {
             }
             
             if key.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
-                lightboxController.previous()
+                if viewModel.index == 0 {
+                    viewModel.index = viewModel.images.count-1
+                } else {
+                    viewModel.index = viewModel.index-1
+                }
+                scrollToPage(page: viewModel.index, animated: false)
             } else if key.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
-                lightboxController.next()
+                if viewModel.index == viewModel.images.count-1 {
+                    viewModel.index = 0
+                } else {
+                    viewModel.index += 1
+                }
+                scrollToPage(page: viewModel.index, animated: false)
             }
         }
     }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        screenView.scrollView.frame.size = CGSize(width: 10, height: 10)
+    }
+
+    @objc func orientationChanged() {
+        let numberOfImages = viewModel.getImages().count
+
+        for image in screenView.stackView.arrangedSubviews {
+            image.snp.makeConstraints { make in
+                make.size.equalTo(screenView.scrollView)
+            }
+        }
+        screenView.stackView.distribution = .fillEqually
+        screenView.stackView.snp.makeConstraints { make in
+            make.width.equalToSuperview().multipliedBy(numberOfImages)
+            make.height.equalToSuperview()
+        }
+        
+        scrollToPage(page: viewModel.index, animated: false)
+    }
 }
 
-extension PhotoDetailViewController: LightboxControllerPageDelegate {
-    func lightboxController(_ controller: Lightbox.LightboxController, didMoveToPage page: Int) {
-        
+extension PhotoDetailViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let number = screenView.scrollView.contentOffset.x / screenView.scrollView.frame.size.width
+        if number.truncatingRemainder(dividingBy: 1) == 0 {
+            if viewModel.index != Int(number) {
+                viewModel.index = Int(number)
+                
+                for imageView in screenView.stackView.arrangedSubviews {
+                    (imageView as! UIScrollView).zoomScale = 1
+                }
+            }
+        }
     }
 }

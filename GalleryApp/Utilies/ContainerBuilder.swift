@@ -13,10 +13,10 @@ class ContainerBuilder {
     static var container = Container(parent: nil, defaultObjectScope: .container)
     
     static func build() -> Container {
-
+        
         registerDataLayer()
         registerPresentationLayer()
-
+        
         container.register(AlbumsListViewController.self) { (r, selectedImages: [String]) in
             return AlbumsListViewController(galleryInteractor: r.resolve(GalleryManager.self)!, container: container, selectedImages: selectedImages)
         }
@@ -29,12 +29,13 @@ class ContainerBuilder {
     static func registerTransient() -> Container {
         let container = Container(parent: container, defaultObjectScope: .transient)
         
-        container.register(PhotoDetailViewModel.self) { (r, images: [AlbumImage], index: Int) in
-            return PhotoDetailViewModel(images: images, index: index)
+        container.register(PhotoDetailViewModel.self) { (r, settings: PhotoDetailModel) in
+            return PhotoDetailViewModel(galleryManager: r.resolve(GalleryManager.self)!, settings: settings)
         }
-
+        
         container.register(PhotoDetailViewController.self) { (r, photoDetailSettings: PhotoDetailModel) in
-            return PhotoDetailViewController(galleryInteractor: r.resolve(GalleryManager.self)!, settings: photoDetailSettings)
+            return PhotoDetailViewController(viewModel: r.resolve(PhotoDetailViewModel.self,
+                                                                  argument: photoDetailSettings)!)
         }
         
         container.register(AlbumScreenViewModel.self) { (r, albumID: UUID) in
@@ -44,8 +45,8 @@ class ContainerBuilder {
         
         container.register(AlbumScreenViewController.self) { (r, albumID: UUID) in
             return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!,
-                                             viewModel: container.resolve(AlbumScreenViewModel.self,
-                                                                          argument: albumID)!)
+                                             viewModel: r.resolve(AlbumScreenViewModel.self,
+                                                                  argument: albumID)!)
         }
         
         container.register(PhotoPropertiesViewModel.self) { (r, images: [AlbumImage]) in
@@ -59,20 +60,20 @@ class ContainerBuilder {
         self.container = container
         return container
     }
-
+    
     static func registerDataLayer() {
         container.register(UnsecureStorage.self) { r in
             return UnsecureStorage()
         }
-
+        
         container.register(SettingsManager.self) { r in
             return SettingsManager(unsecureStorage: r.resolve(UnsecureStorage.self)!)
         }
-
+        
         container.register(FileScannerManager.self) { r in
             return FileScannerManager(settings: r.resolve(SettingsManager.self)!)
         }
-
+        
         container.register(GalleryManager.self) { r in
             return GalleryManager(settingsManager: r.resolve(SettingsManager.self)!,
                                   fileScannerManger: r.resolve(FileScannerManager.self)!)
@@ -102,7 +103,7 @@ class ContainerBuilder {
                                          container: container,
                                          viewModel: r.resolve(SidebarViewModel.self)!)
         }
-
+        
         container.register(AlbumScreenRouter.self) { r in
             return AlbumScreenRouter(sidebarRouter: r.resolve(SidebarRouter.self)!,
                                      container: container)

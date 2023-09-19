@@ -88,6 +88,7 @@ class AlbumScreenViewController: UIViewController {
         if let albumID = self.viewModel.albumID {
             self.viewModel.loadAlbumIndexAsObservable().subscribe(onNext: { loadedIndex in
                 self.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(loadedIndex.thumbnailsSize), height: CGFloat(loadedIndex.thumbnailsSize))
+                loadedIndex.images.enumerated()
                 self.screenView.slider.value = loadedIndex.thumbnailsSize
             }).disposed(by: disposeBag)
         } else {
