@@ -111,16 +111,10 @@ class PhotoDetailViewController: UIViewController {
         super.viewWillAppear(animated)
         self.bindData()
         
-        screenView.scrollView.contentSize = screenView.stackView.frame.size
-        
-        scrollToPage(page: viewModel.index, animated: false)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged), name: UIDevice.orientationDidChangeNotification, object: nil)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        screenView.scrollView.contentSize = screenView.stackView.frame.size
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.1) { [weak self] in
+            guard let self = self else { return }
+            self.scrollToPage(page: self.viewModel.index, animated: false)
+        }
     }
     
     func scrollToPage(page: Int, animated: Bool) {
@@ -169,24 +163,13 @@ class PhotoDetailViewController: UIViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
-        screenView.scrollView.frame.size = CGSize(width: 10, height: 10)
-    }
-
-    @objc func orientationChanged() {
-        let numberOfImages = viewModel.getImages().count
-
-        for image in screenView.stackView.arrangedSubviews {
-            image.snp.makeConstraints { make in
-                make.size.equalTo(screenView.scrollView)
-            }
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.01) { [weak self] in
+            guard let self = self else { return }
+            self.screenView.stackView.layoutSubviews()
+            self.screenView.stackView.invalidateIntrinsicContentSize()
+            self.screenView.scrollView.contentSize = self.screenView.stackView.frame.size
+            self.scrollToPage(page: self.viewModel.index, animated: false)
         }
-        screenView.stackView.distribution = .fillEqually
-        screenView.stackView.snp.makeConstraints { make in
-            make.width.equalToSuperview().multipliedBy(numberOfImages)
-            make.height.equalToSuperview()
-        }
-        
-        scrollToPage(page: viewModel.index, animated: false)
     }
 }
 
