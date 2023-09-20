@@ -11,6 +11,7 @@
 		7F62EA7929056C3600FCD97F /* GalleryAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */; };
 		7F795F572AB749360090F6D1 /* UIColor+randomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F795F562AB749360090F6D1 /* UIColor+randomColor.swift */; };
 		7F795F592AB909CE0090F6D1 /* PanZoomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F795F582AB909CE0090F6D1 /* PanZoomImageView.swift */; };
+		7FC922622ABB65B700402C76 /* PhotoDetailCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC922612ABB65B700402C76 /* PhotoDetailCollectionViewCell.swift */; };
 		7FDCEE732905741C00395F10 /* GalleryManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FDCEE722905741C00395F10 /* GalleryManagerTest.swift */; };
 		7FEDEA93284CD8AD001F40C0 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7FEDEA92284CD8AD001F40C0 /* SnapKit */; };
 		7FF5C0672A9D2C65001CA982 /* en.xcloc in Resources */ = {isa = PBXBuildFile; fileRef = 7FF5C0112A9D2C65001CA982 /* en.xcloc */; };
@@ -97,6 +98,7 @@
 		7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryAppTests.swift; sourceTree = "<group>"; };
 		7F795F562AB749360090F6D1 /* UIColor+randomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+randomColor.swift"; sourceTree = "<group>"; };
 		7F795F582AB909CE0090F6D1 /* PanZoomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanZoomImageView.swift; sourceTree = "<group>"; };
+		7FC922612ABB65B700402C76 /* PhotoDetailCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailCollectionViewCell.swift; sourceTree = "<group>"; };
 		7FDCEE722905741C00395F10 /* GalleryManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryManagerTest.swift; sourceTree = "<group>"; };
 		7FF5C0112A9D2C65001CA982 /* en.xcloc */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = en.xcloc; sourceTree = "<group>"; };
 		7FF5C0122A9D2C65001CA982 /* GalleryApp.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = GalleryApp.entitlements; sourceTree = "<group>"; };
@@ -378,6 +380,7 @@
 				7FF5C04A2A9D2C65001CA982 /* PhotoDetailModel.swift */,
 				7FF5C04C2A9D2C65001CA982 /* PhotoDetailViewModel.swift */,
 				7FF5C04D2A9D2C65001CA982 /* PhotoDetailView.swift */,
+				7FC922612ABB65B700402C76 /* PhotoDetailCollectionViewCell.swift */,
 			);
 			path = PhotoDetail;
 			sourceTree = "<group>";
@@ -603,6 +606,7 @@
 				7FF5C06F2A9D2C65001CA982 /* UIView+addSubviews.swift in Sources */,
 				7FF5C08F2A9D2C65001CA982 /* AlbumsView.swift in Sources */,
 				7FF5C08B2A9D2C65001CA982 /* SelectLibraryView.swift in Sources */,
+				7FC922622ABB65B700402C76 /* PhotoDetailCollectionViewCell.swift in Sources */,
 				7FF5C07E2A9D2C65001CA982 /* AppDelegate.swift in Sources */,
 				7FF5C09D2A9D2C65001CA982 /* SidebarViewController.swift in Sources */,
 				7FF5C08C2A9D2C65001CA982 /* SelectLibraryViewController.swift in Sources */,

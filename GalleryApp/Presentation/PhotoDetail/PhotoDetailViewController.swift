@@ -7,7 +7,13 @@
 
 import UIKit
 import RxSwift
+import RxDataSources
 import SnapKit
+
+struct ZoomScale {
+    let x: CGFloat
+    let y: CGFloat
+}
 
 class PhotoDetailViewController: UIViewController {
     
@@ -17,6 +23,8 @@ class PhotoDetailViewController: UIViewController {
     let screenView = PhotoDetailView()
     var viewModel: PhotoDetailViewModel
     
+    var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>!
+    var zoomScale: ZoomScale?
     let disposeBag = DisposeBag()
     
     // MARK: - Init
@@ -36,15 +44,23 @@ class PhotoDetailViewController: UIViewController {
         super.viewDidLoad()
         self.screenView.addGestureRecognizer(screenView.swipeDownGestureRecognizer)
         self.setupViews()
+        self.configureDataSource()
+        self.bindData()
         self.bindInteractions()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        screenView.collectionViewLayout.itemSize = screenView.bounds.size
     }
     
     // MARK: - Layout
     private func setupViews() {
         self.view = screenView
         self.view.backgroundColor = .systemBackground
-        screenView.scrollView.delegate = self
-
+        
+        self.screenView.collectionView.register(PhotoDetailCollectionViewCell.self, forCellWithReuseIdentifier: PhotoDetailCollectionViewCell.identifier)
+        self.screenView.collectionView.delegate = self
     }
     
     // MARK: - Binding Interactions
@@ -79,60 +95,27 @@ class PhotoDetailViewController: UIViewController {
         }).disposed(by: disposeBag)
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-    }
-    
     // MARK: - Data Binding
     private func bindData() {
-        let numberOfImages = viewModel.getImages().count
-        
-        let calculatedStackViewWidth: Double = screenView.bounds.width * Double(numberOfImages)
-        
-        screenView.stackView.snp.makeConstraints { make in
-            make.width.equalToSuperview().multipliedBy(numberOfImages)
-
-        }
-        screenView.stackView.sizeToFit()
-        for imageview in screenView.stackView.arrangedSubviews {
-            imageview.layoutIfNeeded()
-        }
-        
-        for image in viewModel.getImages() {
-            let imageView = PanZoomImageView(frame: screenView.bounds)
-            imageView.image = UIImage(contentsOfFile: image.fileName)
-            imageView.contentMode = .scaleAspectFit
-            self.screenView.stackView.addArrangedSubview(imageView)
-        }
-        screenView.scrollView.contentSize = screenView.stackView.frame.size
+        Observable
+            .from(optional: viewModel.images)
+            .flatMap{
+                Observable.just([AnimatableSectionModel(model: "Section", items: $0)])
+            }
+            .bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource))
+            .disposed(by: disposeBag)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.bindData()
-        
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.1) { [weak self] in
-            guard let self = self else { return }
-            self.scrollToPage(page: self.viewModel.index, animated: false)
-        }
-    }
-    
-    func scrollToPage(page: Int, animated: Bool) {
-        var function: () -> () = {
-            var frame: CGRect = self.screenView.scrollView.frame
-            frame.origin.x = frame.size.width * CGFloat(page)
-            frame.origin.y = 0
-            self.screenView.scrollView.contentOffset = frame.origin
-        }
-        
-        if animated {
-            UIView.animate(withDuration: 0.25, animations: {
-                function()
-            })
-        } else {
-            function()
-        }
-       
+    func configureDataSource() {
+        dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>(
+            configureCell: { [unowned self] (dataSource, collectionView, indexPath, item) in
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoDetailCollectionViewCell.identifier, for: indexPath) as! PhotoDetailCollectionViewCell
+                var itemWithResolvedPath = item
+                itemWithResolvedPath.fileName = self.viewModel.resolveThumbPathFor(image: itemWithResolvedPath.fileName)
+                cell.configure(image: itemWithResolvedPath)
+                return cell
+            }
+        )
     }
     
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
@@ -143,19 +126,9 @@ class PhotoDetailViewController: UIViewController {
             }
             
             if key.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
-                if viewModel.index == 0 {
-                    viewModel.index = viewModel.images.count-1
-                } else {
-                    viewModel.index = viewModel.index-1
-                }
-                scrollToPage(page: viewModel.index, animated: false)
+                
             } else if key.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
-                if viewModel.index == viewModel.images.count-1 {
-                    viewModel.index = 0
-                } else {
-                    viewModel.index += 1
-                }
-                scrollToPage(page: viewModel.index, animated: false)
+                
             }
         }
     }
@@ -163,25 +136,46 @@ class PhotoDetailViewController: UIViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.01) { [weak self] in
-            guard let self = self else { return }
-            self.screenView.stackView.layoutSubviews()
-            self.screenView.stackView.invalidateIntrinsicContentSize()
-            self.screenView.scrollView.contentSize = self.screenView.stackView.frame.size
-            self.scrollToPage(page: self.viewModel.index, animated: false)
-        }
+        coordinator.animate(alongsideTransition: { context in
+            self.screenView.collectionViewLayout.invalidateLayout()
+            self.screenView.collectionViewLayout.itemSize = self.screenView.collectionView.frame.size
+            
+            let onePercentageOfX = self.screenView.collectionView.contentSize.width / 100
+            let offsetOfX = self.screenView.collectionView.contentOffset.x / onePercentageOfX
+            print(offsetOfX)
+            
+            let onePercentageOfY = self.screenView.collectionView.contentSize.height / 100
+            let offsetOfY = self.screenView.collectionView.contentOffset.y / onePercentageOfY
+            print(offsetOfY)
+            
+            self.zoomScale = ZoomScale(x: offsetOfX, y: offsetOfY)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
+                if let zoomScale = self.zoomScale {
+                    let onePercentageOfX = self.screenView.collectionView.contentSize.width / 100
+                    
+                    let onePercentageOfY = self.screenView.collectionView.contentSize.height / 100
+                    
+                    let cgPoint = CGPoint(x: onePercentageOfX * zoomScale.x, y: onePercentageOfY * zoomScale.y)
+                    self.screenView.collectionView.contentOffset = cgPoint
+                }
+            }
+        })
     }
 }
 
-extension PhotoDetailViewController: UIScrollViewDelegate {
+extension PhotoDetailViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let number = screenView.scrollView.contentOffset.x / screenView.scrollView.frame.size.width
-        if number.truncatingRemainder(dividingBy: 1) == 0 {
-            if viewModel.index != Int(number) {
-                viewModel.index = Int(number)
-                
-                for imageView in screenView.stackView.arrangedSubviews {
-                    (imageView as! UIScrollView).zoomScale = 1
+        let visibleCells = screenView.collectionView.visibleCells as! [PhotoDetailCollectionViewCell]
+        
+        for cell in visibleCells {
+            if let indexPath = screenView.collectionView.indexPath(for: cell) {
+                if let cellFrame = screenView.collectionView.layoutAttributesForItem(at: indexPath)?.frame {
+                    let cellVisibleRect = screenView.collectionView.convert(cellFrame, to: screenView.collectionView)
+                    
+                    if !screenView.collectionView.bounds.intersects(cellVisibleRect) {
+                        cell.imageView.zoomScale = 1.0
+                    }
                 }
             }
         }

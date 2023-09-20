@@ -18,7 +18,10 @@ class AlbumScreenView: UIView {
     
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionLayout)
     
-    lazy var collectionLayout = UICollectionViewFlowLayout()
+    var collectionLayout: UICollectionViewFlowLayout = {
+        let layout = UICollectionViewFlowLayout()
+        return layout
+    }()
     
     let editButton: UIButton = {
         let button = UIButton(type: .system)

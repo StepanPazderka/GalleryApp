@@ -28,4 +28,8 @@ class PhotoDetailViewModel {
             return mutatedImage
         }
     }
+    
+    func resolveThumbPathFor(image: String) -> String {
+        galleryManager.resolvePathFor(imageName: image)
+    }
 }
