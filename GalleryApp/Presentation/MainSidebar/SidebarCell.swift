@@ -14,14 +14,14 @@ class SidebarCell: UICollectionViewCell {
     
     var textView: UILabel = {
         let view = UILabel()
-        view.font = UIFont.systemFont(ofSize: 20, weight: .regular)
+        view.font = UIFont.systemFont(ofSize: 18, weight: .regular)
         return view
     }()
     
     var imageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFill
-        view.layer.cornerRadius = 5
+        view.layer.cornerRadius = 10
         view.layer.masksToBounds = true
         return view
     }()
@@ -48,7 +48,7 @@ class SidebarCell: UICollectionViewCell {
                          textView)
         
         self.focusEffect = .none
-        self.layer.cornerRadius = 5
+        self.layer.cornerRadius = 10
         self.layer.masksToBounds = true
     }
     

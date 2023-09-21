@@ -190,6 +190,11 @@ class SidebarViewController: UIViewController {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarCell.identifier, for: indexPath) as! SidebarCell
                 cell.textView.text = item.title
                 cell.imageView.image = item.image
+                if item.type == .allPhotos {
+                    cell.imageView.contentMode = .scaleAspectFit
+                } else {
+                    cell.imageView.contentMode = .scaleAspectFill
+                }
                 return cell
             },
             configureSupplementaryView: { dataSource, collectionView, kind, indexPath in
