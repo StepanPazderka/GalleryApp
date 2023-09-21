@@ -14,6 +14,14 @@ class SidebarView: UIView {
         
     public var sidebarCollectionView: UICollectionView!
     
+    let sidebarLayout: UICollectionViewCompositionalLayout = {
+        return UICollectionViewCompositionalLayout { section, layoutEnvironment in
+            var config = UICollectionLayoutListConfiguration(appearance: .sidebar)
+            config.headerMode = .supplementary
+            return NSCollectionLayoutSection.list(using: config, layoutEnvironment: layoutEnvironment)
+        }
+    }()
+    
     var addAlbumButton: UIButton = {
         let view = UIButton(type: .system)
         view.setImage(UIImage(systemName: "plus"), for: .normal)
@@ -36,7 +44,7 @@ class SidebarView: UIView {
     
     // MARK: -- Setup Views
     func setupViews() {
-        self.sidebarCollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
+        self.sidebarCollectionView = UICollectionView(frame: .zero, collectionViewLayout: sidebarLayout)
         self.addSubviews(sidebarCollectionView)
     }
     
@@ -47,13 +55,7 @@ class SidebarView: UIView {
         }
     }
     
-    private func createLayout() -> UICollectionViewCompositionalLayout {
-        return UICollectionViewCompositionalLayout { section, layoutEnvironment in
-            var config = UICollectionLayoutListConfiguration(appearance: .sidebar)
-            config.headerMode = .supplementary
-            return NSCollectionLayoutSection.list(using: config, layoutEnvironment: layoutEnvironment)
-        }
-    }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
