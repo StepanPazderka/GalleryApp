@@ -35,19 +35,26 @@ class AlbumListViewModel {
     func fetchAlbums() -> Observable<[SidebarSection]> {
         self.galleryManager.selectedGalleryIndexRelay.map { index in
             return index.albums.compactMap { albumID in
-                if let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
+                if let album = self.galleryManager.loadAlbumIndex(id: albumID) {
                     var thumbnailImage: UIImage?
-                    if let firstImage = albumIndex.images.first {
-                        thumbnailImage = UIImage(contentsOfFile: self.galleryManager.resolveThumbPathFor(imageName: firstImage.fileName))
+
+                    if let FirstAlbumImage = album.images.first {
+                        let path = self.galleryManager.resolveThumbPathFor(imageName: FirstAlbumImage.fileName)
+                        
+                        let thumbnailImageURL = self.galleryManager.selectedGalleryPath.appendingPathComponent(FirstAlbumImage.fileName)
+                        thumbnailImage = UIImage(contentsOfFile: path)
                     }
                     
-                    if let setThumbnail = albumIndex.thumbnail {
-                        thumbnailImage = UIImage(contentsOfFile: self.galleryManager.resolveThumbPathFor(imageName: setThumbnail))
+                    if let thumbnail = album.thumbnail {
+                        if !thumbnail.isEmpty {
+                            let thumbnailImageURL = self.galleryManager.selectedGalleryPath.appendingPathComponent(thumbnail)
+                            thumbnailImage = UIImage(contentsOfFile: thumbnailImageURL.relativePath)
+                        }
                     }
-                    
-                    return SidebarItem(title: albumIndex.name, image: thumbnailImage ?? nil, buttonType: .album)
+                    return SidebarItem(id: UUID(uuidString: albumID.uuidString), title: album.name, image: thumbnailImage ?? nil, buttonType: .album)
+                } else {
+                    return nil
                 }
-                return nil
             }
         }.map { items in
             return [SidebarSection(category: "Albums", items: items)]

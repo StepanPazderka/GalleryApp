@@ -69,9 +69,6 @@ class AlbumScreenViewModel {
         self.galleryManager.selectedGalleryIndexRelay.asObservable()
     }
     
-    /**
-     Loads images from Album as Observable
-     */
     func loadAlbumImagesObservable() -> Observable<[AlbumImage]> {
         if let albumID {
             return galleryManager.loadAlbumIndex(id: albumID).flatMap {
@@ -84,9 +81,6 @@ class AlbumScreenViewModel {
         }
     }
     
-    /**
-     Loads album Index by its unique UUID
-     */
     func loadAlbum(by: UUID) -> AlbumIndex? {
         return self.galleryManager.loadAlbumIndex(id: by)
     }

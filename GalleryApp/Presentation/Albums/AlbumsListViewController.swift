@@ -94,7 +94,7 @@ class AlbumsListViewController: UIViewController {
         super.viewDidLoad()
 
         screenView.albumsCollectionView.delegate = self
-        screenView.albumsCollectionView.translatesAutoresizingMaskIntoConstraints = false // This line fixes issue with incorrect highlighting
+        screenView.albumsCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
         setupViews()
         configureDataSource()
@@ -130,6 +130,8 @@ class AlbumsListViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         navigationController?.navigationBar.prefersLargeTitles = false
+        
+        self.screenView.albumsCollectionView.register(SidebarCell.self, forCellWithReuseIdentifier: SidebarCell.identifier)
     }
     
     // MARK: - Data Source Configuration
@@ -157,7 +159,15 @@ class AlbumsListViewController: UIViewController {
         
         dataSource = RxCollectionViewSectionedReloadDataSource<SidebarSection>(
             configureCell: { dataSource, collectionView, indexPath, item in
-                return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarCell.identifier, for: indexPath) as! SidebarCell
+                cell.textView.text = item.title
+                cell.imageView.image = item.image
+                if item.type == .allPhotos {
+                    cell.imageView.contentMode = .scaleAspectFit
+                } else {
+                    cell.imageView.contentMode = .scaleAspectFill
+                }
+                return cell
             },
             configureSupplementaryView: { dataSource, collectionView, kind, indexPath in
                     guard kind == UICollectionView.elementKindSectionHeader else {

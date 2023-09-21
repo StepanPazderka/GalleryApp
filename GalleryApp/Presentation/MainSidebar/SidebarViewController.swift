@@ -186,7 +186,6 @@ class SidebarViewController: UIViewController {
         
         dataSource = RxCollectionViewSectionedReloadDataSource<SidebarSection>(
             configureCell: { dataSource, collectionView, indexPath, item in
-                // Use content cell registration for all other items
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarCell.identifier, for: indexPath) as! SidebarCell
                 cell.textView.text = item.title
                 cell.imageView.image = item.image
