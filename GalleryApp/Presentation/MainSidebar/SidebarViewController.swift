@@ -152,7 +152,7 @@ class SidebarViewController: UIViewController {
     private func setupViews() {
         self.view = screenView
         
-        view.addSubviews(self.screenView.sidebarCollectionView)
+        self.screenView.sidebarCollectionView.register(SidebarCell.self, forCellWithReuseIdentifier: SidebarCell.identifier)
         
         self.screenView.sidebarCollectionView.delegate = self
         self.screenView.sidebarCollectionView.translatesAutoresizingMaskIntoConstraints = true
@@ -182,13 +182,15 @@ class SidebarViewController: UIViewController {
             }
             
             cell.contentConfiguration = content
-            cell.accessories = []
         }
         
         dataSource = RxCollectionViewSectionedReloadDataSource<SidebarSection>(
             configureCell: { dataSource, collectionView, indexPath, item in
                 // Use content cell registration for all other items
-                return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarCell.identifier, for: indexPath) as! SidebarCell
+                cell.textView.text = item.title
+                cell.imageView.image = item.image
+                return cell
             },
             configureSupplementaryView: { dataSource, collectionView, kind, indexPath in
                 guard kind == UICollectionView.elementKindSectionHeader else {

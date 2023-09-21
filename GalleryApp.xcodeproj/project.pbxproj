@@ -78,6 +78,7 @@
 		7FF5C0A82A9D2C65001CA982 /* AlbumListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0632A9D2C65001CA982 /* AlbumListViewModel.swift */; };
 		7FF5C0A92A9D2C65001CA982 /* AlbumsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0642A9D2C65001CA982 /* AlbumsListViewController.swift */; };
 		7FF5C0AB2A9D2C65001CA982 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0662A9D2C65001CA982 /* SceneDelegate.swift */; };
+		7FF9A0F02ABC59D8000DEF06 /* SidebarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF9A0EF2ABC59D8000DEF06 /* SidebarCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -166,6 +167,7 @@
 		7FF5C0642A9D2C65001CA982 /* AlbumsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumsListViewController.swift; sourceTree = "<group>"; };
 		7FF5C0652A9D2C65001CA982 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7FF5C0662A9D2C65001CA982 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		7FF9A0EF2ABC59D8000DEF06 /* SidebarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarCell.swift; sourceTree = "<group>"; };
 		9E63EE18BBFDF980A5A19A9C /* Pods-GalleryApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.release.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -395,6 +397,7 @@
 				7FF5C0532A9D2C65001CA982 /* SidebarView.swift */,
 				7FF5C0542A9D2C65001CA982 /* SidebarRouter.swift */,
 				7FF5C0552A9D2C65001CA982 /* SidebarViewController.swift */,
+				7FF9A0EF2ABC59D8000DEF06 /* SidebarCell.swift */,
 			);
 			path = MainSidebar;
 			sourceTree = "<group>";
@@ -612,6 +615,7 @@
 				7FF5C08C2A9D2C65001CA982 /* SelectLibraryViewController.swift in Sources */,
 				7FF5C0982A9D2C65001CA982 /* SidebarViewModel.swift in Sources */,
 				7FF5C06C2A9D2C65001CA982 /* ArrayExtension.swift in Sources */,
+				7FF9A0F02ABC59D8000DEF06 /* SidebarCell.swift in Sources */,
 				7FF5C0742A9D2C65001CA982 /* ImageView+BlurEffect.swift in Sources */,
 				7FF5C0682A9D2C65001CA982 /* Constants.swift in Sources */,
 				7FF5C06D2A9D2C65001CA982 /* EdgeInsets.swift in Sources */,

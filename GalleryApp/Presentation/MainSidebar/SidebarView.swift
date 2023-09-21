@@ -37,6 +37,7 @@ class SidebarView: UIView {
     // MARK: -- Setup Views
     func setupViews() {
         self.sidebarCollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
+        self.addSubviews(sidebarCollectionView)
     }
     
     // MARK: -- Layout Views
@@ -46,7 +47,7 @@ class SidebarView: UIView {
         }
     }
     
-    private func createLayout() -> UICollectionViewLayout {
+    private func createLayout() -> UICollectionViewCompositionalLayout {
         return UICollectionViewCompositionalLayout { section, layoutEnvironment in
             var config = UICollectionLayoutListConfiguration(appearance: .sidebar)
             config.headerMode = .supplementary

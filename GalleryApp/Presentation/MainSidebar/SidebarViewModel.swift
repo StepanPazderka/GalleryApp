@@ -54,7 +54,7 @@ class SidebarViewModel {
                     var thumbnailImage: UIImage?
 
                     if let FirstAlbumImage = album.images.first {
-                        let path = self.galleryManager.resolvePathFor(imageName: FirstAlbumImage.fileName)
+                        let path = self.galleryManager.resolveThumbPathFor(imageName: FirstAlbumImage.fileName)
                         
                         let thumbnailImageURL = self.galleryManager.selectedGalleryPath.appendingPathComponent(FirstAlbumImage.fileName)
                         thumbnailImage = UIImage(contentsOfFile: path)
