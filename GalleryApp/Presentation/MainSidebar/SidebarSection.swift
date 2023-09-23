@@ -11,11 +11,11 @@ import RxDataSources
 /// Struct representing Sidebar Section
 struct SidebarSection {
     internal init(category: String, items: [SidebarItem]) {
-        self.category = category
+        self.name = category
         self.items = items
     }
     
-    var category: String
+    var name: String
     var items: [SidebarItem]
     
     static var empty: Self {
@@ -25,11 +25,11 @@ struct SidebarSection {
 
 extension SidebarSection: SectionModelType {
     init(original: SidebarSection, items: [SidebarItem]) {
-        self.category = original.category
+        self.name = original.name
         self.items = items
     }
     
     var identity: String {
-        return category
+        return name
     }
 }

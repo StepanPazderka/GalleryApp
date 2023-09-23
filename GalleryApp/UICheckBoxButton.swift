@@ -6,8 +6,10 @@
 //
 
 import UIKit
+import SnapKit
+import RxCocoa
 
-@MainActor class UICheckBox: UIButton {
+@MainActor class UICheckBoxButton: UIButton {
     var checker: Bool = false {
         didSet {
             if checker == false {
@@ -17,24 +19,43 @@ import UIKit
             }
         }
     }
-    var checkBoxImageView: UIImageView = UIImageView()
+    
+    var checkBoxImageView: UIImageView = {
+        let view = UIImageView()
+        return view
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.checkBoxImageView.image = UIImage(systemName: "checkmark.circle")
-        self.addSubview(checkBoxImageView)
-        
-        self.addTarget(self, action: #selector(buttonClicked(sender:)), for: UIControl.Event.touchUpInside)
+        self.setupViews()
+        self.layoutViews()
+        self.bindInteractions()
         self.checker = false
-        
-        checkBoxImageView.snp.makeConstraints { make in
-            make.size.height.equalTo(self.frame.size.height)
-            make.centerY.equalToSuperview()
-        }
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setupViews() {
+        self.checkBoxImageView.image = UIImage(systemName: "checkmark.circle")
+        self.titleLabel?.textAlignment = .right
+        self.addSubview(checkBoxImageView)
+    }
+    
+    func layoutViews() {
+        self.checkBoxImageView.snp.makeConstraints { make in
+            make.size.height.equalTo(self.frame.size.height)
+            make.centerY.equalToSuperview()
+        }
+        
+        self.titleLabel?.snp.makeConstraints { make in
+            make.width.equalToSuperview()
+        }
+    }
+    
+    func bindInteractions() {
+        self.addTarget(self, action: #selector(buttonClicked(sender:)), for: UIControl.Event.touchUpInside)
     }
 
     @objc func buttonClicked(sender: UIButton) {

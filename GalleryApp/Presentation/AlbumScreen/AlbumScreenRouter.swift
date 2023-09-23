@@ -13,10 +13,9 @@ import RxCocoa
 class AlbumScreenRouter {
     
     // MARK: - Properties
-    let sidebarRouter: SidebarRouter
-    var navigationController: UINavigationController?
-    var isEditing = BehaviorRelay<Bool>.init(value: false)
-    let container: Container
+    private let sidebarRouter: SidebarRouter
+    private var navigationController: UINavigationController?
+    private let container: Container
     
     // MARK: - Init
     internal init(sidebarRouter: SidebarRouter, container: Container) {
@@ -28,10 +27,10 @@ class AlbumScreenRouter {
         self.navigationController = navigationController
     }
     
-    func showPhotoDetail(images: [AlbumImage], index: Int) {
+    func showPhotoDetail(images: [AlbumImage], index: IndexPath) {
         let settings = PhotoDetailModel(selectedImages: images, selectedIndex: index)
-        let vc = container.resolve(PhotoDetailViewController.self, argument: settings)!
-        let navigationController = UINavigationController(rootViewController: vc)
+        let PhotoDetailVC = container.resolve(PhotoDetailViewController.self, argument: settings)!
+        let navigationController = UINavigationController(rootViewController: PhotoDetailVC)
         navigationController.modalPresentationStyle = .fullScreen
         topMostController()?.present(navigationController, animated: true)
     }
@@ -40,7 +39,7 @@ class AlbumScreenRouter {
         
     }
     
-    func showProperties(images: [AlbumImage]) {
+    func showPropertiesScreen(of images: [AlbumImage]) {
         let vc = container.resolve(PhotoPropertiesViewController.self, argument: images)!
         sidebarRouter.splitViewController.present(vc, animated: true)
     }

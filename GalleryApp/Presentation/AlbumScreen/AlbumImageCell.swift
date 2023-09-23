@@ -23,7 +23,7 @@ class AlbumImageCell: UICollectionViewCell {
     }
     var viewModel: AlbumScreenViewModel?
     var checkBox = {
-        let view = UICheckBox(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        let view = UICheckBoxButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
         view.isHidden = true
         view.tintColor = .systemGray
         return view

@@ -29,7 +29,6 @@ class GalleryManager {
     let fileScannerManager: FileScannerManager
     
     let selectedGalleryIndexRelay = BehaviorRelay<GalleryIndex>(value: .empty)
-    let selectedAlbumIndexRelay = BehaviorRelay<AlbumIndex>(value: .empty)
     let disposeBag = DisposeBag()
     
     // MARK: - Init

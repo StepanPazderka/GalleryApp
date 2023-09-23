@@ -22,13 +22,13 @@ class AlbumsListViewController: UIViewController {
     private var dataSource: RxCollectionViewSectionedReloadDataSource<SidebarSection>?
     var albums = [SidebarItem]()
     var selectedAlbum: UUID?
-    var selectedImages: [String]
+    var selectedImages: [AlbumImage]
     let viewModel: AlbumListViewModel
     let screenView = AlbumsListView()
     let disposeBag = DisposeBag()
     
     // MARK: - Init
-    init(galleryInteractor: GalleryManager, container: Container, selectedImages: [String]) {
+    init(galleryInteractor: GalleryManager, container: Container, selectedImages: [AlbumImage]) {
         self.galleryManager = galleryInteractor
         self.selectedImages = selectedImages
         self.container = container
@@ -137,24 +137,11 @@ class AlbumsListViewController: UIViewController {
     // MARK: - Data Source Configuration
     func configureDataSource() {
         let headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { (headerView, elementKind, indexPath) in
-            if let category = self.dataSource?[indexPath.section].category {
+            if let category = self.dataSource?[indexPath.section].name {
                 var content = headerView.defaultContentConfiguration()
                 content.text = category
                 headerView.contentConfiguration = content
             }
-        }
-        
-        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
-            var content = cell.defaultContentConfiguration()
-            content.text = item.title
-            if item.type == .album {
-                content.image = item.image?.resized(to: CGSize(width: 25, height: 25))
-            } else {
-                content.image = item.image
-            }
-            
-            cell.contentConfiguration = content
-            cell.accessories = []
         }
         
         dataSource = RxCollectionViewSectionedReloadDataSource<SidebarSection>(

@@ -12,7 +12,7 @@ class PhotoDetailViewModel {
     let galleryManager: GalleryManager
     
     var images: [AlbumImage]
-    var index: Int
+    var index: IndexPath
     
     // MARK: - Init
     internal init(galleryManager: GalleryManager, settings: PhotoDetailModel) {

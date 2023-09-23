@@ -14,8 +14,6 @@ import PhotosUI
 
 class AlbumScreenView: UIView {
     
-    let toolbarHeight = 100
-    
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionLayout)
     
     var collectionLayout: UICollectionViewFlowLayout = {
@@ -36,7 +34,7 @@ class AlbumScreenView: UIView {
         view.spacing = 20
         return view
     }()
-
+    
     let rightStackView: UIStackView = {
         let view = UIStackView()
         view.distribution = .equalSpacing
@@ -57,14 +55,6 @@ class AlbumScreenView: UIView {
         button.setImage(UIImage(systemName: "trash"), for: .normal)
         button.sizeToFit()
         return button
-    }()
-    
-    let slider: UISlider = {
-        let view = UISlider()
-        view.minimumValue = 10
-        view.maximumValue = 300
-        view.value = calculateAverage([view.minimumValue, view.maximumValue])
-        return view
     }()
     
     let searchButton: UIButton = {
@@ -104,16 +94,23 @@ class AlbumScreenView: UIView {
         return view
     }
     
-    let bottomToolbar: UIView = {
+    let bottomToolbarStackView: UIView = {
         let view = UIView()
         view.backgroundColor = .secondarySystemBackground
         view.frame.size.height = 200
         return view
     }()
     
+    let slider: UISlider = {
+        let view = UISlider()
+        view.minimumValue = 10
+        view.maximumValue = 300
+        view.value = calculateAverage([view.minimumValue, view.maximumValue])
+        return view
+    }()
+
     let checkBoxTitles = {
-        let view = UICheckBox(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-        view.frame.size = CGSize(width: 200, height: 200)
+        let view = UICheckBoxButton(frame: CGRect(x: 0, y: 0, width: 80, height: 35))
         view.setTitle("Show titles", for: .normal)
         view.setTitleColor(UIColor.systemBlue, for: .normal)
         return view
@@ -136,12 +133,12 @@ class AlbumScreenView: UIView {
         self.collectionView.collectionViewLayout = collectionLayout
         self.collectionView.collectionViewLayout.invalidateLayout()
         self.collectionView.dragInteractionEnabled = true
-        self.rightStackView.addArrangedSubview(editButton)
-        self.rightStackView.addArrangedSubview(searchButton)
-        self.rightStackView.addArrangedSubview(addImageButton)
-        self.leftStackView.addArrangedSubview(deleteImageButton)
+        self.rightStackView.addArrangedSubviews(editButton,
+                                                searchButton,
+                                                addImageButton,
+                                                deleteImageButton)
         self.checkBoxTitles.tintColor = .white
-                
+        
         self.checkBoxTitles.checkBoxImageView.layer.shadowColor = UIColor.black.cgColor
         self.checkBoxTitles.checkBoxImageView.layer.shadowOpacity = 1
         self.checkBoxTitles.checkBoxImageView.layer.shadowOffset = .zero
@@ -151,36 +148,37 @@ class AlbumScreenView: UIView {
     }
     
     private func addSubviews() {
-        addSubviews(collectionView,
-                    bottomToolbar,
-                    loadingView)
+        self.addSubviews(collectionView,
+                         bottomToolbarStackView,
+                         loadingView)
         
         loadingView.addSubview(progressView)
-        bottomToolbar.addSubview(slider)
-        bottomToolbar.addSubview(checkBoxTitles)
+        
+        bottomToolbarStackView.addSubviews(slider,
+                                           checkBoxTitles)
     }
     
     private func layoutViews() {
         collectionView.snp.makeConstraints { make in
-            make.bottom.equalTo(bottomToolbar.snp.top)
+            make.bottom.equalTo(bottomToolbarStackView.snp.top)
             make.top.equalToSuperview()
             make.width.equalToSuperview()
         }
-        bottomToolbar.snp.makeConstraints { make in
-            make.bottom.equalTo(self)
-            make.height.equalTo(toolbarHeight)
+        bottomToolbarStackView.snp.makeConstraints { make in
+            make.bottom.equalToSuperview()
+            make.height.equalTo(100)
             make.width.equalToSuperview()
         }
         slider.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(20)
-            make.width.lessThanOrEqualTo(300)
-            make.right.greaterThanOrEqualTo(checkBoxTitles.snp.left).offset(-20)
+            make.right.equalTo(checkBoxTitles.snp.left).offset(-10).priority(.low)
+            make.width.lessThanOrEqualTo(400).priority(.required)
             make.centerY.equalToSuperview()
         }
         checkBoxTitles.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-20)
+            make.right.equalToSuperview().offset(-40)
             make.centerY.equalToSuperview()
-            make.width.lessThanOrEqualTo(200)
+            make.width.equalTo(130)
         }
         loadingView.snp.makeConstraints { make in
             make.width.equalToSuperview().offset(-400)

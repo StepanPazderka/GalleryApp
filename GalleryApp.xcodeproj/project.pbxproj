@@ -11,6 +11,7 @@
 		7F62EA7929056C3600FCD97F /* GalleryAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */; };
 		7F795F572AB749360090F6D1 /* UIColor+randomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F795F562AB749360090F6D1 /* UIColor+randomColor.swift */; };
 		7F795F592AB909CE0090F6D1 /* PanZoomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F795F582AB909CE0090F6D1 /* PanZoomImageView.swift */; };
+		7F8056AF2ABF0D3A00DB6D29 /* UIStackView+addArrangedSubviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8056AE2ABF0D3A00DB6D29 /* UIStackView+addArrangedSubviews.swift */; };
 		7FC922622ABB65B700402C76 /* PhotoDetailCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC922612ABB65B700402C76 /* PhotoDetailCollectionViewCell.swift */; };
 		7FDCEE732905741C00395F10 /* GalleryManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FDCEE722905741C00395F10 /* GalleryManagerTest.swift */; };
 		7FEDEA93284CD8AD001F40C0 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7FEDEA92284CD8AD001F40C0 /* SnapKit */; };
@@ -28,15 +29,12 @@
 		7FF5C0722A9D2C65001CA982 /* Average.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C01E2A9D2C65001CA982 /* Average.swift */; };
 		7FF5C0732A9D2C65001CA982 /* MutableProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C01F2A9D2C65001CA982 /* MutableProgress.swift */; };
 		7FF5C0742A9D2C65001CA982 /* ImageView+BlurEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0202A9D2C65001CA982 /* ImageView+BlurEffect.swift */; };
-		7FF5C0752A9D2C65001CA982 /* ZoomTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0222A9D2C65001CA982 /* ZoomTransitionController.swift */; };
-		7FF5C0762A9D2C65001CA982 /* ZoomDismissalInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0232A9D2C65001CA982 /* ZoomDismissalInteractionController.swift */; };
-		7FF5C0772A9D2C65001CA982 /* ZoomAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0242A9D2C65001CA982 /* ZoomAnimator.swift */; };
 		7FF5C0782A9D2C65001CA982 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FF5C0252A9D2C65001CA982 /* Assets.xcassets */; };
 		7FF5C0792A9D2C65001CA982 /* InteractiveImageViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7FF5C0262A9D2C65001CA982 /* InteractiveImageViewCell.xib */; };
 		7FF5C07A2A9D2C65001CA982 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FF5C0272A9D2C65001CA982 /* LaunchScreen.storyboard */; };
 		7FF5C07B2A9D2C65001CA982 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7FF5C0292A9D2C65001CA982 /* Localizable.strings */; };
 		7FF5C07C2A9D2C65001CA982 /* InteractiveImageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C02A2A9D2C65001CA982 /* InteractiveImageViewCell.swift */; };
-		7FF5C07D2A9D2C65001CA982 /* UICheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C02B2A9D2C65001CA982 /* UICheckBox.swift */; };
+		7FF5C07D2A9D2C65001CA982 /* UICheckBoxButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C02B2A9D2C65001CA982 /* UICheckBoxButton.swift */; };
 		7FF5C07E2A9D2C65001CA982 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C02C2A9D2C65001CA982 /* AppDelegate.swift */; };
 		7FF5C07F2A9D2C65001CA982 /* PathResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C02E2A9D2C65001CA982 /* PathResolver.swift */; };
 		7FF5C0802A9D2C65001CA982 /* UnsecureStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C02F2A9D2C65001CA982 /* UnsecureStorage.swift */; };
@@ -99,6 +97,7 @@
 		7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryAppTests.swift; sourceTree = "<group>"; };
 		7F795F562AB749360090F6D1 /* UIColor+randomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+randomColor.swift"; sourceTree = "<group>"; };
 		7F795F582AB909CE0090F6D1 /* PanZoomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanZoomImageView.swift; sourceTree = "<group>"; };
+		7F8056AE2ABF0D3A00DB6D29 /* UIStackView+addArrangedSubviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+addArrangedSubviews.swift"; sourceTree = "<group>"; };
 		7FC922612ABB65B700402C76 /* PhotoDetailCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailCollectionViewCell.swift; sourceTree = "<group>"; };
 		7FDCEE722905741C00395F10 /* GalleryManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryManagerTest.swift; sourceTree = "<group>"; };
 		7FF5C0112A9D2C65001CA982 /* en.xcloc */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = en.xcloc; sourceTree = "<group>"; };
@@ -116,15 +115,12 @@
 		7FF5C01E2A9D2C65001CA982 /* Average.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Average.swift; sourceTree = "<group>"; };
 		7FF5C01F2A9D2C65001CA982 /* MutableProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutableProgress.swift; sourceTree = "<group>"; };
 		7FF5C0202A9D2C65001CA982 /* ImageView+BlurEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageView+BlurEffect.swift"; sourceTree = "<group>"; };
-		7FF5C0222A9D2C65001CA982 /* ZoomTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomTransitionController.swift; sourceTree = "<group>"; };
-		7FF5C0232A9D2C65001CA982 /* ZoomDismissalInteractionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomDismissalInteractionController.swift; sourceTree = "<group>"; };
-		7FF5C0242A9D2C65001CA982 /* ZoomAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomAnimator.swift; sourceTree = "<group>"; };
 		7FF5C0252A9D2C65001CA982 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7FF5C0262A9D2C65001CA982 /* InteractiveImageViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InteractiveImageViewCell.xib; sourceTree = "<group>"; };
 		7FF5C0282A9D2C65001CA982 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7FF5C0292A9D2C65001CA982 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		7FF5C02A2A9D2C65001CA982 /* InteractiveImageViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InteractiveImageViewCell.swift; sourceTree = "<group>"; };
-		7FF5C02B2A9D2C65001CA982 /* UICheckBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICheckBox.swift; sourceTree = "<group>"; };
+		7FF5C02B2A9D2C65001CA982 /* UICheckBoxButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICheckBoxButton.swift; sourceTree = "<group>"; };
 		7FF5C02C2A9D2C65001CA982 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7FF5C02E2A9D2C65001CA982 /* PathResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PathResolver.swift; sourceTree = "<group>"; };
 		7FF5C02F2A9D2C65001CA982 /* UnsecureStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnsecureStorage.swift; sourceTree = "<group>"; };
@@ -248,7 +244,7 @@
 				7FF5C0272A9D2C65001CA982 /* LaunchScreen.storyboard */,
 				7FF5C0292A9D2C65001CA982 /* Localizable.strings */,
 				7FF5C02A2A9D2C65001CA982 /* InteractiveImageViewCell.swift */,
-				7FF5C02B2A9D2C65001CA982 /* UICheckBox.swift */,
+				7FF5C02B2A9D2C65001CA982 /* UICheckBoxButton.swift */,
 				7FF5C02C2A9D2C65001CA982 /* AppDelegate.swift */,
 				7FF5C0662A9D2C65001CA982 /* SceneDelegate.swift */,
 				7FF5C02D2A9D2C65001CA982 /* Data */,
@@ -283,21 +279,11 @@
 				7FF5C01E2A9D2C65001CA982 /* Average.swift */,
 				7FF5C01F2A9D2C65001CA982 /* MutableProgress.swift */,
 				7FF5C0202A9D2C65001CA982 /* ImageView+BlurEffect.swift */,
-				7FF5C0212A9D2C65001CA982 /* ZoomAnimation */,
 				7F795F562AB749360090F6D1 /* UIColor+randomColor.swift */,
 				7F795F582AB909CE0090F6D1 /* PanZoomImageView.swift */,
+				7F8056AE2ABF0D3A00DB6D29 /* UIStackView+addArrangedSubviews.swift */,
 			);
 			path = Utilies;
-			sourceTree = "<group>";
-		};
-		7FF5C0212A9D2C65001CA982 /* ZoomAnimation */ = {
-			isa = PBXGroup;
-			children = (
-				7FF5C0222A9D2C65001CA982 /* ZoomTransitionController.swift */,
-				7FF5C0232A9D2C65001CA982 /* ZoomDismissalInteractionController.swift */,
-				7FF5C0242A9D2C65001CA982 /* ZoomAnimator.swift */,
-			);
-			path = ZoomAnimation;
 			sourceTree = "<group>";
 		};
 		7FF5C02D2A9D2C65001CA982 /* Data */ = {
@@ -619,7 +605,6 @@
 				7FF5C0742A9D2C65001CA982 /* ImageView+BlurEffect.swift in Sources */,
 				7FF5C0682A9D2C65001CA982 /* Constants.swift in Sources */,
 				7FF5C06D2A9D2C65001CA982 /* EdgeInsets.swift in Sources */,
-				7FF5C0762A9D2C65001CA982 /* ZoomDismissalInteractionController.swift in Sources */,
 				7F795F592AB909CE0090F6D1 /* PanZoomImageView.swift in Sources */,
 				7FF5C0812A9D2C65001CA982 /* GalleryManager.swift in Sources */,
 				7FF5C08E2A9D2C65001CA982 /* AlbumsListView.swift in Sources */,
@@ -636,6 +621,7 @@
 				7FF5C0862A9D2C65001CA982 /* AlbumImage.swift in Sources */,
 				7FF5C0952A9D2C65001CA982 /* PhotoDetailViewModel.swift in Sources */,
 				7FF5C08A2A9D2C65001CA982 /* SelectLibraryViewModel.swift in Sources */,
+				7F8056AF2ABF0D3A00DB6D29 /* UIStackView+addArrangedSubviews.swift in Sources */,
 				7FF5C0AB2A9D2C65001CA982 /* SceneDelegate.swift in Sources */,
 				7FF5C06E2A9D2C65001CA982 /* UIImage+imageWidth.swift in Sources */,
 				7FF5C0712A9D2C65001CA982 /* ContainerBuilder.swift in Sources */,
@@ -651,7 +637,7 @@
 				7FF5C0A82A9D2C65001CA982 /* AlbumListViewModel.swift in Sources */,
 				7FF5C0872A9D2C65001CA982 /* AlbumsMenuIndex.swift in Sources */,
 				7FF5C0A62A9D2C65001CA982 /* AlbumScreenModel.swift in Sources */,
-				7FF5C07D2A9D2C65001CA982 /* UICheckBox.swift in Sources */,
+				7FF5C07D2A9D2C65001CA982 /* UICheckBoxButton.swift in Sources */,
 				7FF5C0A92A9D2C65001CA982 /* AlbumsListViewController.swift in Sources */,
 				7FF5C0882A9D2C65001CA982 /* ImageResizer.swift in Sources */,
 				7FF5C06A2A9D2C65001CA982 /* UIWindow+isLandscape.swift in Sources */,
@@ -661,12 +647,10 @@
 				7FF5C0A12A9D2C65001CA982 /* AlbumScreenRouter.swift in Sources */,
 				7FF5C0962A9D2C65001CA982 /* PhotoDetailView.swift in Sources */,
 				7FF5C0A72A9D2C65001CA982 /* AlbumScreenView.swift in Sources */,
-				7FF5C0772A9D2C65001CA982 /* ZoomAnimator.swift in Sources */,
 				7FF5C0A32A9D2C65001CA982 /* AlbumScreenViewController.swift in Sources */,
 				7FF5C0832A9D2C65001CA982 /* SettingsManager.swift in Sources */,
 				7FF5C08D2A9D2C65001CA982 /* GalleryCell.swift in Sources */,
 				7FF5C0732A9D2C65001CA982 /* MutableProgress.swift in Sources */,
-				7FF5C0752A9D2C65001CA982 /* ZoomTransitionController.swift in Sources */,
 				7FF5C0822A9D2C65001CA982 /* SettingsKey.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

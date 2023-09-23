@@ -44,7 +44,7 @@ class AlbumScreenViewController: UIViewController {
         self.configureDataSource()
         
         self.router.start(navigationController: self.navigationController)
-        
+
         self.setupViews()
         self.bindData()
         self.bindInteractions()
@@ -85,10 +85,9 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.collectionView.addGestureRecognizer(longPressRecognizer)
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
         
-        if let albumID = self.viewModel.albumID {
+        if self.viewModel.albumID != nil {
             self.viewModel.loadAlbumIndexAsObservable().subscribe(onNext: { loadedIndex in
                 self.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(loadedIndex.thumbnailsSize), height: CGFloat(loadedIndex.thumbnailsSize))
-                loadedIndex.images.enumerated()
                 self.screenView.slider.value = loadedIndex.thumbnailsSize
             }).disposed(by: disposeBag)
         } else {
@@ -109,7 +108,6 @@ class AlbumScreenViewController: UIViewController {
     
     func showImagePicker() {
         let imagePicker = self.screenView.imagePicker()
-        
         imagePicker.delegate = self
         self.present(imagePicker, animated: true)
     }
@@ -161,7 +159,7 @@ class AlbumScreenViewController: UIViewController {
             let cell = self.screenView.collectionView.cellForItem(at: indexPath) as! AlbumImageCell
             
             if self.isEditing == false {
-                self.router.showPhotoDetail(images: self.viewModel.images, index: indexPath.row)
+                self.router.showPhotoDetail(images: self.viewModel.images, index: indexPath)
             } else {
                 cell.checkBox.checker.toggle()
                 if cell.checkBox.checker == true {
@@ -300,31 +298,27 @@ extension AlbumScreenViewController {
         return UIContextMenuConfiguration(identifier: nil,
                                           previewProvider: nil,
                                           actionProvider: { [weak self] suggestedActions in
+            var selectedImages = [AlbumImage]()
+            
+            if let self = self {
+                if self.viewModel.filesSelectedInEditMode.isEmpty {
+                    selectedImages = [self.dataSource.sectionModels.first!.items[indexPath.row]]
+                }
+            }
+            
             let inspectAction = UIAction(title: NSLocalizedString("kDETAILS", comment: ""),
                                          image: UIImage(systemName: "info.circle")) { action in
                 let selectedPhotos = self?.dataSource.sectionModels.first!.items[indexPath.row]
                 
                 if let selectedPhotos {
-                    self?.router.showProperties(images: [selectedPhotos])
-                }
-            }
-            
-            var selectedImages = [String]()
-            if let filesSelectedInEditMode = self?.viewModel.filesSelectedInEditMode {
-                
-                if filesSelectedInEditMode.isEmpty {
-                    if let selectedImageFileName = URL(string: self!.dataSource.sectionModels.first!.items[indexPath.row].fileName) {
-                        selectedImages = [selectedImageFileName.lastPathComponent]
-                    }
-                } else {
-                    selectedImages = filesSelectedInEditMode.map { $0.fileName }
+                    self?.router.showPropertiesScreen(of: [selectedPhotos])
                 }
             }
             
             let moveToAlbum = UIAction(title: NSLocalizedString("MoveToAlbum", comment: ""),
                                        image: UIImage(systemName: "square.and.arrow.down")) { [weak self] action in
                 let container = ContainerBuilder.build()
-                let albumsVC = container.resolve(AlbumsListViewController.self, argument: selectedImages)! // TODO: Send actual picture names
+                let albumsVC = container.resolve(AlbumsListViewController.self, argument: selectedImages)!
                 let newController = UINavigationController(rootViewController: albumsVC)
                 newController.view.backgroundColor = .systemBackground
                 self?.present(newController, animated: true, completion: nil)
@@ -332,7 +326,7 @@ extension AlbumScreenViewController {
             let duplicateAction =
             UIAction(title: NSLocalizedString("DuplicateTitle", comment: ""),
                      image: UIImage(systemName: "plus.square.on.square")) { action in
-                //                self.performDuplicate(indexPath)
+
             }
             let setThumbnailAction =
             UIAction(title: NSLocalizedString("SetThumbnail", comment: ""),

@@ -9,5 +9,5 @@ import Foundation
 
 struct PhotoDetailModel {
     var selectedImages: [AlbumImage]
-    var selectedIndex: Int
+    var selectedIndex: IndexPath
 }

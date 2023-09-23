@@ -165,7 +165,7 @@ class SidebarViewController: UIViewController {
     // MARK: - Data Source Configuration
     func configureDataSource() {
         let headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { (headerView, elementKind, indexPath) in
-            if let category = self.dataSource?[indexPath.section].category {
+            if let category = self.dataSource?[indexPath.section].name {
                 var content = headerView.defaultContentConfiguration()
                 content.text = category
                 headerView.contentConfiguration = content

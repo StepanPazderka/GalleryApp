@@ -26,6 +26,7 @@ class PhotoDetailViewController: UIViewController {
     var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>!
     var zoomScale: ZoomScale?
     let disposeBag = DisposeBag()
+    var initialScrollDone = false
     
     // MARK: - Init
     internal init(viewModel: PhotoDetailViewModel) {
@@ -52,6 +53,17 @@ class PhotoDetailViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         screenView.collectionViewLayout.itemSize = screenView.bounds.size
+        self.screenView.collectionView.scrollToItem(at: viewModel.index, at: .left, animated: false)
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        if !self.initialScrollDone {
+            
+            self.initialScrollDone = true
+            self.screenView.collectionView.scrollToItem(at: viewModel.index, at: .centeredHorizontally, animated: true)
+        }
     }
     
     // MARK: - Layout
@@ -80,11 +92,9 @@ class PhotoDetailViewController: UIViewController {
                     view.transform = CGAffineTransform(translationX: 0, y: translation.y)
                 }
             case .ended:
-                // Dismiss the view controller if dragged beyond a certain distance
                 if translation.y > 100 {
                     dismiss(animated: true, completion: nil)
                 } else {
-                    // Reset the transformation if the distance is less than the threshold
                     UIView.animate(withDuration: 0.3) {
                         self.screenView.transform = CGAffineTransform.identity
                     }
@@ -136,10 +146,10 @@ class PhotoDetailViewController: UIViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
+        self.screenView.collectionViewLayout.invalidateLayout()
+        
         coordinator.animate(alongsideTransition: { context in
-            self.screenView.collectionViewLayout.invalidateLayout()
             self.screenView.collectionViewLayout.itemSize = self.screenView.collectionView.frame.size
-            
             let onePercentageOfX = self.screenView.collectionView.contentSize.width / 100
             let offsetOfX = self.screenView.collectionView.contentOffset.x / onePercentageOfX
             print(offsetOfX)
@@ -151,6 +161,8 @@ class PhotoDetailViewController: UIViewController {
             self.zoomScale = ZoomScale(x: offsetOfX, y: offsetOfY)
             
             DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
+                self.screenView.collectionViewLayout.itemSize = self.screenView.collectionView.frame.size
+                
                 if let zoomScale = self.zoomScale {
                     let onePercentageOfX = self.screenView.collectionView.contentSize.width / 100
                     

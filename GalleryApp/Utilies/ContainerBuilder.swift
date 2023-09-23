@@ -17,7 +17,7 @@ class ContainerBuilder {
         registerDataLayer()
         registerPresentationLayer()
         
-        container.register(AlbumsListViewController.self) { (r, selectedImages: [String]) in
+        container.register(AlbumsListViewController.self) { (r, selectedImages: [AlbumImage]) in
             return AlbumsListViewController(galleryInteractor: r.resolve(GalleryManager.self)!, container: container, selectedImages: selectedImages)
         }
         
