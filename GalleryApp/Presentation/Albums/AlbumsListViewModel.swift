@@ -9,21 +9,24 @@ import Foundation
 import RxCocoa
 import RxSwift
 
-class AlbumListViewModel {
+class AlbumsListViewModel {
     
     let galleryManager: GalleryManager
     let showErrorCantAddImageToAlbum = BehaviorRelay(value: false)
     let shouldDismiss = BehaviorRelay(value: false)
     
+    var delegate: AlbumListViewControllerDelegate?
+    
     init(galleryManager: GalleryManager) {
         self.galleryManager = galleryManager
     }
 
-    func moveToAlbum(images: [AlbumImage], album: UUID) {
+    func moveToAlbum(images: [GalleryImage], album: UUID) {
         for image in images {
             do {
                 try self.galleryManager.move(Image: image, toAlbum: album)
                 self.shouldDismiss.accept(true)
+                self.delegate?.didFinishMovingImages()
             } catch MoveImageError.imageAlreadyInAlbum {
                 showErrorCantAddImageToAlbum.accept(true)
             } catch {
@@ -46,7 +49,7 @@ class AlbumListViewModel {
                     }
                     
                     if let thumbnail = album.thumbnail {
-                        if !thumbnail.isEmpty {
+                        if !thumbnail.isEmpty && !album.images.isEmpty {
                             let thumbnailImageURL = self.galleryManager.selectedGalleryPath.appendingPathComponent(thumbnail)
                             thumbnailImage = UIImage(contentsOfFile: thumbnailImageURL.relativePath)
                         }

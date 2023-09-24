@@ -152,11 +152,10 @@ class SidebarViewController: UIViewController {
     private func setupViews() {
         self.view = screenView
         
-        self.screenView.sidebarCollectionView.register(SidebarCell.self, forCellWithReuseIdentifier: SidebarCell.identifier)
+        self.screenView.sidebarCollectionView.register(SidebarViewCell.self, forCellWithReuseIdentifier: SidebarViewCell.identifier)
         
         self.screenView.sidebarCollectionView.delegate = self
-        self.screenView.sidebarCollectionView.translatesAutoresizingMaskIntoConstraints = true
-        
+
         self.navigationController?.navigationBar.prefersLargeTitles = false
         self.navigationItem.titleView = self.screenView.selectGalleryButton
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: screenView.addAlbumButton)
@@ -172,23 +171,14 @@ class SidebarViewController: UIViewController {
             }
         }
         
-        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SidebarItem> { (cell, indexPath, item) in
-            var content = cell.defaultContentConfiguration()
-            content.text = item.title
-            if item.type == .album {
-                content.image = item.image?.resized(to: CGSize(width: 25, height: 25))
-            } else {
-                content.image = item.image
-            }
-            
-            cell.contentConfiguration = content
-        }
-        
         dataSource = RxCollectionViewSectionedReloadDataSource<SidebarSection>(
             configureCell: { dataSource, collectionView, indexPath, item in
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarCell.identifier, for: indexPath) as! SidebarCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarViewCell.identifier, for: indexPath) as! SidebarViewCell
                 cell.textView.text = item.title
                 cell.imageView.image = item.image
+                if item.image == nil {
+                    cell.imageView.image = UIImage(named: "rectangle")
+                }
                 if item.type == .allPhotos {
                     cell.imageView.contentMode = .scaleAspectFit
                 } else {

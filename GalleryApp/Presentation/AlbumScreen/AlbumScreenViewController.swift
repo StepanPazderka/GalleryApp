@@ -21,7 +21,7 @@ class AlbumScreenViewController: UIViewController {
     var viewModel: AlbumScreenViewModel
     let router: AlbumScreenRouter
     let disposeBag = DisposeBag()
-    var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>!
+    var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, GalleryImage>>!
     
     // MARK: - Progress
     var importProgress = MutableProgress()
@@ -44,14 +44,14 @@ class AlbumScreenViewController: UIViewController {
         self.configureDataSource()
         
         self.router.start(navigationController: self.navigationController)
-
+        
         self.setupViews()
         self.bindData()
         self.bindInteractions()
     }
     
     func configureDataSource() {
-        dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>(
+        dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, GalleryImage>>(
             configureCell: { [unowned self] (dataSource, collectionView, indexPath, item) in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
                 var itemWithResolvedPath = item
@@ -251,10 +251,6 @@ class AlbumScreenViewController: UIViewController {
             }).disposed(by: disposeBag)
     }
     
-    func addPhoto(filename: AlbumImage, to album: UUID? = nil) {
-        self.viewModel.addPhoto(image: filename)
-    }
-    
     @objc func longPressed(_ gesture: UILongPressGestureRecognizer) {
         guard let targetIndexPath = self.screenView.collectionView.indexPathForItem(at: gesture.location(in: self.screenView.collectionView)) else {
             return
@@ -296,13 +292,14 @@ class AlbumScreenViewController: UIViewController {
 extension AlbumScreenViewController {
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil,
-                                          previewProvider: nil,
-                                          actionProvider: { [weak self] suggestedActions in
-            var selectedImages = [AlbumImage]()
+                                          previewProvider: nil) { [weak self] suggestedActions in
+            var selectedImages = [GalleryImage]()
             
             if let self = self {
                 if self.viewModel.filesSelectedInEditMode.isEmpty {
-                    selectedImages = [self.dataSource.sectionModels.first!.items[indexPath.row]]
+                    selectedImages = [self.dataSource.sectionModels[indexPath.section].items[indexPath.row]]
+                } else {
+                    selectedImages = viewModel.filesSelectedInEditMode
                 }
             }
             
@@ -317,31 +314,27 @@ extension AlbumScreenViewController {
             
             let moveToAlbum = UIAction(title: NSLocalizedString("MoveToAlbum", comment: ""),
                                        image: UIImage(systemName: "square.and.arrow.down")) { [weak self] action in
-                let container = ContainerBuilder.build()
-                let albumsVC = container.resolve(AlbumsListViewController.self, argument: selectedImages)!
-                let newController = UINavigationController(rootViewController: albumsVC)
-                newController.view.backgroundColor = .systemBackground
-                self?.present(newController, animated: true, completion: nil)
+                self?.router.showMoveToAlbumScreen(with: selectedImages)
             }
             let duplicateAction =
             UIAction(title: NSLocalizedString("DuplicateTitle", comment: ""),
                      image: UIImage(systemName: "plus.square.on.square")) { action in
-
+                if let item = self?.dataSource.sectionModels[indexPath.section].items[indexPath.row] {
+                    self?.viewModel.duplicateItem(image: item)
+                }
             }
             let setThumbnailAction =
             UIAction(title: NSLocalizedString("SetThumbnail", comment: ""),
                      image: UIImage(systemName: "rectangle.portrait.inset.filled")) { action in
-                if let selectedThumbnailFileName = self?.viewModel.images[indexPath.row].fileName {
-                    self?.viewModel.setAlbumThumbnailImage(imageName: selectedThumbnailFileName)
+                if let selectedThumbnailFileName = self?.dataSource.sectionModels[indexPath.section].items[indexPath.row] {
+                    self?.viewModel.setAlbumThumbnailImage(image: selectedThumbnailFileName)
                 }
             }
             let removeFromAlbum =
             UIAction(title: NSLocalizedString("kREMOVEFROMALBUM", comment: ""),
                      image: UIImage(systemName: "rectangle.stack.badge.minus"),
                      attributes: .destructive) { action in
-                if let imageName = self?.viewModel.images[indexPath.row].fileName {
-                    self?.viewModel.removeFromAlbum(imageName: imageName)
-                }
+                self?.viewModel.removeFromAlbum(images: selectedImages)
             }
             let deleteAction =
             UIAction(title: NSLocalizedString("kDELETEIMAGE", comment: ""),
@@ -356,7 +349,7 @@ extension AlbumScreenViewController {
             } else {
                 return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, deleteAction])
             }
-        })
+        }
     }
 }
 
@@ -382,7 +375,8 @@ extension AlbumScreenViewController: UIDocumentPickerDelegate {
         for url in urls {
             do {
                 try FileManager.default.moveItem(at: url, to: self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(url.lastPathComponent))
-                self.addPhoto(filename: AlbumImage(fileName: url.lastPathComponent, date: Date()), to: viewModel.albumID as UUID?)
+                let newImage = GalleryImage(fileName: url.lastPathComponent, date: Date(), title: nil)
+                self.viewModel.addPhotos(images: [newImage])
             } catch {
                 print(error.localizedDescription)
             }
@@ -396,5 +390,11 @@ extension AlbumScreenViewController: PHPickerViewControllerDelegate {
         picker.dismiss(animated: true)
         let photos = results
         self.viewModel.importPhotos(results: photos)
+    }
+}
+
+extension AlbumScreenViewController: AlbumListViewControllerDelegate {
+    func didFinishMovingImages() {
+        self.viewModel.isEditing.accept(false)
     }
 }

@@ -11,11 +11,11 @@ import UIKit
 class PhotoPropertiesViewModel {
     
     // MARK: - Properties
-    let images: [AlbumImage]
+    let images: [GalleryImage]
     let galleryManager: GalleryManager
     
     //MARK: - Init
-    init(images: [AlbumImage], galleryManager: GalleryManager) {
+    init(images: [GalleryImage], galleryManager: GalleryManager) {
         self.images = images
         self.galleryManager = galleryManager
     }
@@ -64,7 +64,7 @@ class PhotoPropertiesViewModel {
     
     func getPhotoTitle() -> String {
         guard let photoID = images.first else { return "" }
-        var albumImage: AlbumImage?
+        var albumImage: GalleryImage?
         albumImage = self.galleryManager.loadAlbumImage(id: photoID.fileName)
         return albumImage?.title ?? ""
     }
@@ -73,7 +73,7 @@ class PhotoPropertiesViewModel {
         UIImage(contentsOfFile: galleryManager.resolvePathFor(imageName: images.first!.fileName))!
     }
     
-    func updateAlbumImage(albumImage: AlbumImage) {
+    func updateAlbumImage(albumImage: GalleryImage) {
         self.galleryManager.updateAlbumImage(image: albumImage)
     }
 }

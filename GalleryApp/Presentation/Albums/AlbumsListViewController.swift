@@ -22,18 +22,18 @@ class AlbumsListViewController: UIViewController {
     private var dataSource: RxCollectionViewSectionedReloadDataSource<SidebarSection>?
     var albums = [SidebarItem]()
     var selectedAlbum: UUID?
-    var selectedImages: [AlbumImage]
+    var selectedImages: [GalleryImage]
     let router: AlbumListRouter
-    let viewModel: AlbumListViewModel
+    public let viewModel: AlbumsListViewModel
     let screenView = AlbumsListView()
     let disposeBag = DisposeBag()
     
     // MARK: - Init
-    init(galleryInteractor: GalleryManager, container: Container, selectedImages: [AlbumImage], router: AlbumListRouter) {
+    init(galleryInteractor: GalleryManager, container: Container, selectedImages: [GalleryImage], router: AlbumListRouter) {
         self.galleryManager = galleryInteractor
         self.selectedImages = selectedImages
         self.container = container
-        self.viewModel = AlbumListViewModel(galleryManager: galleryManager)
+        self.viewModel = AlbumsListViewModel(galleryManager: galleryManager)
         self.router = router
         super.init(nibName: nil, bundle: nil)
     }
@@ -45,32 +45,14 @@ class AlbumsListViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        screenView.albumsCollectionView.delegate = self
-        screenView.albumsCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
         self.router.start(viewController: self)
         
-        setupViews()
-        configureDataSource()
-        bindAlbums()
-        bindInteractions()
-        bindAlert()
-        bindDissmisal()
-    }
-    
-    func bindAlert() {
-        self.viewModel.showErrorCantAddImageToAlbum.distinctUntilChanged().subscribe(onNext: { value in
-            if value {
-                let imageAlreadyInAlbumString = NSLocalizedString("kImageAlreadyInAlbum", comment: "")
-                let UIAlert = UIAlertController(title: NSLocalizedString("kCantAddImageToTheAlbum", comment: ""), message: imageAlreadyInAlbumString, preferredStyle: .alert)
-                let OKButton = UIAlertAction(title: NSLocalizedString("kOK", comment: ""), style: .default) { UIAlertAction in
-                    self.dismiss(animated: true)
-                }
-                UIAlert.addAction(OKButton)
-                self.present(UIAlert, animated: true)
-            }
-        }).disposed(by: disposeBag)
+        self.setupViews()
+        self.configureDataSource()
+        self.bindData()
+        self.bindInteractions()
+        self.bindDissmisal()
     }
     
     func bindDissmisal() {
@@ -82,34 +64,22 @@ class AlbumsListViewController: UIViewController {
     }
     
     // MARK: - Data Binding
-    func bindAlbums() {
-        let index: GalleryIndex? = self.galleryManager.loadGalleryIndex()
-        
-        if let index = index {
-            self.albums = index.albums.compactMap { albumID in
-                if let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
-                    return SidebarItem(from: albumIndex)
+    func bindData() {
+        self.viewModel.showErrorCantAddImageToAlbum.distinctUntilChanged().subscribe(onNext: { value in
+            if value {
+                let imageAlreadyInAlbumString = NSLocalizedString("kImageAlreadyInAlbum", comment: "")
+                let UIAlert = UIAlertController(title: NSLocalizedString("kCantAddImageToTheAlbum", comment: ""), message: imageAlreadyInAlbumString, preferredStyle: .alert)
+                let OKButton = UIAlertAction(title: NSLocalizedString("kOK", comment: ""), style: .default) { UIAlertAction in
+                    self.dismiss(animated: true)
                 }
-                return nil
-            }
-        }
-        
-        self.galleryManager.selectedGalleryIndexRelay.subscribe(onNext: { gallery in
-            self.albums = gallery.albums.compactMap { albumID in
-                if let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
-                    return SidebarItem(from: albumIndex)
-                }
-                return nil
+                UIAlert.addAction(OKButton)
+                self.present(UIAlert, animated: true)
             }
         }).disposed(by: disposeBag)
         
         self.viewModel.fetchAlbums()
             .bind(to: self.screenView.albumsCollectionView.rx.items(dataSource: dataSource!))
             .disposed(by: disposeBag)
-    }
-    
-    @objc func closeWindow(sender: Any) {
-        self.dismiss(animated: true)
     }
     
     func bindInteractions() {
@@ -127,6 +97,10 @@ class AlbumsListViewController: UIViewController {
         self.screenView.albumsCollectionView.rx.itemSelected.subscribe(onNext: { [weak self] indexPath in
             self?.screenView.selectAlbumButton.isEnabled = true
         }).disposed(by: disposeBag)
+        
+        self.screenView.albumsCollectionView.rx.modelSelected(SidebarItem.self).subscribe(onNext: { [weak self] item in
+            self?.selectedAlbum = item.identifier
+        }).disposed(by: disposeBag)
     }
     
     func setupViews() {
@@ -139,7 +113,7 @@ class AlbumsListViewController: UIViewController {
         
         self.navigationController?.navigationBar.prefersLargeTitles = false
         
-        self.screenView.albumsCollectionView.register(SidebarCell.self, forCellWithReuseIdentifier: SidebarCell.identifier)
+        self.screenView.albumsCollectionView.register(SidebarViewCell.self, forCellWithReuseIdentifier: SidebarViewCell.identifier)
         self.screenView.selectAlbumButton.isEnabled = false
     }
     
@@ -155,7 +129,7 @@ class AlbumsListViewController: UIViewController {
         
         dataSource = RxCollectionViewSectionedReloadDataSource<SidebarSection>(
             configureCell: { dataSource, collectionView, indexPath, item in
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarCell.identifier, for: indexPath) as! SidebarCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarViewCell.identifier, for: indexPath) as! SidebarViewCell
                 cell.textView.text = item.title
                 cell.imageView.image = item.image
                 if item.type == .allPhotos {
@@ -175,13 +149,6 @@ class AlbumsListViewController: UIViewController {
                 self.router.onCancelTap()
             }
         }
-    }
-}
-
-extension AlbumsListViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(albums[indexPath.row].title ?? "")
-        self.selectedAlbum = albums[indexPath.row].identifier
     }
 }
 

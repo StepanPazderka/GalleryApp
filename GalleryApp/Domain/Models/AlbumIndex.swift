@@ -10,12 +10,12 @@ import Foundation
 struct AlbumIndex: Codable {
     var id: UUID = UUID()
     var name: String
-    var images: [AlbumImage]
+    var images: [GalleryImage]
     var thumbnail: String?
     var thumbnailsSize: Float = 200
     var showingAnnotations: Bool? = false
 
-    internal init(id: UUID = UUID() ,name: String, images: [AlbumImage], thumbnail: String, showingAnnotations: Bool? = false) {
+    internal init(id: UUID = UUID() ,name: String, images: [GalleryImage], thumbnail: String, showingAnnotations: Bool? = false) {
         self.id = id
         self.name = name
         self.images = images

@@ -32,7 +32,7 @@ class PhotoDetailCollectionViewCell: UICollectionViewCell {
     }
     
     // MARK: - Configure
-    func configure(image: AlbumImage) {
+    func configure(image: GalleryImage) {
         self.imageView.image = UIImage(contentsOfFile: image.fileName)
         self.imageView.zoomScale = 1.0
     }

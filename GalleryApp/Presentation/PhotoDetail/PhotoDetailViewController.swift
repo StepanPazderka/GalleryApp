@@ -23,7 +23,7 @@ class PhotoDetailViewController: UIViewController {
     let screenView = PhotoDetailView()
     var viewModel: PhotoDetailViewModel
     
-    var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>!
+    var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, GalleryImage>>!
     var zoomScale: ZoomScale?
     let disposeBag = DisposeBag()
     var initialScrollDone = false
@@ -117,7 +117,7 @@ class PhotoDetailViewController: UIViewController {
     }
     
     func configureDataSource() {
-        dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, AlbumImage>>(
+        dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, GalleryImage>>(
             configureCell: { [unowned self] (dataSource, collectionView, indexPath, item) in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoDetailCollectionViewCell.identifier, for: indexPath) as! PhotoDetailCollectionViewCell
                 var itemWithResolvedPath = item

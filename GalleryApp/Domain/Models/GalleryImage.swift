@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import RxDataSources
 
-struct AlbumImage: Codable {
+struct GalleryImage: Codable {
     var fileName: String
     var date: Date
     var title: String?
@@ -22,7 +22,7 @@ struct AlbumImage: Codable {
     }
 }
 
-extension AlbumImage: IdentifiableType {
+extension GalleryImage: IdentifiableType {
     typealias Identity = UUID
     
     var identity: UUID {
@@ -30,4 +30,4 @@ extension AlbumImage: IdentifiableType {
     }
 }
 
-extension AlbumImage: Equatable { }
+extension GalleryImage: Equatable { }

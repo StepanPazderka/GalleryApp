@@ -10,13 +10,13 @@ import Foundation
 struct GalleryIndex: Codable {
     var id: UUID = UUID()
     var mainGalleryName: String
-    var images: [AlbumImage]
+    var images: [GalleryImage]
     var albums: [UUID]
     var thumbnailSize: Float? = 200
     var showingAnnotations: Bool? = false
     
     static var empty: Self {
-        Self(mainGalleryName: "", images: [AlbumImage](), albums: [UUID](), thumbnailSize: 200, showingAnnotations: false)
+        Self(mainGalleryName: "", images: [GalleryImage](), albums: [UUID](), thumbnailSize: 200, showingAnnotations: false)
     }
 }
 

@@ -8,6 +8,6 @@
 import Foundation
 
 struct PhotoDetailModel {
-    var selectedImages: [AlbumImage]
+    var selectedImages: [GalleryImage]
     var selectedIndex: IndexPath
 }

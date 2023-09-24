@@ -11,7 +11,7 @@ class PhotoDetailViewModel {
     // MARK: - Properties
     let galleryManager: GalleryManager
     
-    var images: [AlbumImage]
+    var images: [GalleryImage]
     var index: IndexPath
     
     // MARK: - Init
@@ -21,7 +21,7 @@ class PhotoDetailViewModel {
         self.galleryManager = galleryManager
     }
     
-    func getImages() -> [AlbumImage] {
+    func getImages() -> [GalleryImage] {
         self.images.map { image in
             var mutatedImage = image
             mutatedImage.fileName = galleryManager.resolvePathFor(imageName: image.fileName)

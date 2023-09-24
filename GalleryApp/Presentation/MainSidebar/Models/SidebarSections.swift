@@ -6,11 +6,9 @@
 //
 
 import Foundation
-import RxDataSources
 
 enum SidebarSections: String, CaseIterable {
     case mainButtons
     case albumsButtons = "Albums"
     case smartAlbumsButtons = "Smart Albums"
 }
-

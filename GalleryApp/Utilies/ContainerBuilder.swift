@@ -17,7 +17,7 @@ class ContainerBuilder {
         registerDataLayer()
         registerPresentationLayer()
         
-        container.register(AlbumsListViewController.self) { (r, selectedImages: [AlbumImage]) in
+        container.register(AlbumsListViewController.self) { (r, selectedImages: [GalleryImage]) in
             return AlbumsListViewController(galleryInteractor: r.resolve(GalleryManager.self)!, container: container, selectedImages: selectedImages, router: r.resolve(AlbumListRouter.self)!)
         }
         
@@ -49,11 +49,11 @@ class ContainerBuilder {
                                                                   argument: albumID)!)
         }
         
-        container.register(PhotoPropertiesViewModel.self) { (r, images: [AlbumImage]) in
+        container.register(PhotoPropertiesViewModel.self) { (r, images: [GalleryImage]) in
             return PhotoPropertiesViewModel(images: images, galleryManager: r.resolve(GalleryManager.self)!)
         }
         
-        container.register(PhotoPropertiesViewController.self) { (r, images: [AlbumImage]) in
+        container.register(PhotoPropertiesViewController.self) { (r, images: [GalleryImage]) in
             return PhotoPropertiesViewController(viewModel: container.resolve(PhotoPropertiesViewModel.self, argument: images)!)
         }
         

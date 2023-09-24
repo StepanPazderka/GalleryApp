@@ -14,8 +14,8 @@ class FileScannerManager {
         self.settings = settings
     }
     
-    func scanAlbumFolderForImages(albumName: String? = nil) -> [AlbumImage] {
-        var outputImageList: [AlbumImage] = []
+    func scanAlbumFolderForImages(albumName: String? = nil) -> [GalleryImage] {
+        var outputImageList: [GalleryImage] = []
         
         do {
             let scannedFiles = try FileManager.default.contentsOfDirectory(at: settings.selectedGalleryPath.appendingPathComponent(albumName ?? ""), includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
@@ -29,7 +29,7 @@ class FileScannerManager {
             outputImageList = scannedFiles.map {
                 let fileAttributes = try? FileManager.default.attributesOfItem(atPath: $0.path)
                 
-                return AlbumImage(fileName: $0.lastPathComponent,
+                return GalleryImage(fileName: $0.lastPathComponent,
                                   date: fileAttributes?[.creationDate] as? Date ?? Date(), title: nil)
             }
         } catch {

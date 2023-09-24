@@ -95,7 +95,7 @@ class AlbumImageCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with imageData: AlbumImage, viewModel: AlbumScreenViewModel) {
+    func configure(with imageData: GalleryImage, viewModel: AlbumScreenViewModel) {
         self.textLabel.text = imageData.title
         self.imageView.image = UIImage(contentsOfFile: imageData.fileName)
         self.viewModel = viewModel

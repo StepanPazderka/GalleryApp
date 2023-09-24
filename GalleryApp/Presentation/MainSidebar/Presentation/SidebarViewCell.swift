@@ -9,8 +9,8 @@ import Foundation
 import UIKit
 import SnapKit
 
-class SidebarCell: UICollectionViewCell {
-    static let identifier: String = String(describing: self)
+class SidebarViewCell: UICollectionViewCell {
+    static let identifier: String = String(describing: SidebarViewCell.self)
     
     var textView: UILabel = {
         let view = UILabel()

@@ -61,7 +61,7 @@ class SidebarViewModel {
                     }
                     
                     if let thumbnail = album.thumbnail {
-                        if !thumbnail.isEmpty {
+                        if !thumbnail.isEmpty && !album.images.isEmpty {
                             let thumbnailImageURL = self.galleryManager.selectedGalleryPath.appendingPathComponent(thumbnail)
                             thumbnailImage = UIImage(contentsOfFile: thumbnailImageURL.relativePath)
                         }

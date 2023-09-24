@@ -11,25 +11,25 @@ import RxCocoa
 import PhotosUI
 
 class AlbumScreenViewModel {
-
+    
     // MARK: -- Properties
     var isEditing = BehaviorRelay(value: false)
     var showingTitles = BehaviorRelay(value: false)
     var showingLoading = BehaviorRelay(value: false)
-        
+    var showImportError = BehaviorRelay(value: [String]())
+    
     var albumID: UUID?
     let galleryManager: GalleryManager
-    var images = [AlbumImage]()
+    var images = [GalleryImage]()
     
     var importProgress = MutableProgress()
-    var showImportError = BehaviorRelay(value: [String]())
-    var filesSelectedInEditMode = [AlbumImage]()
+    var filesSelectedInEditMode = [GalleryImage]()
     let disposeBag = DisposeBag()
     
     internal init(albumID: UUID? = nil, galleryManager: GalleryManager) {
         self.albumID = albumID
         self.galleryManager = galleryManager
-
+        
         if let albumID {
             if var albumIndex: AlbumIndex = galleryManager.loadAlbumIndex(id: albumID) {
                 let filteredImages = albumIndex.images.compactMap { albumImage in
@@ -44,7 +44,7 @@ class AlbumScreenViewModel {
                 albumIndex.images = filteredImages
                 self.galleryManager.updateAlbumIndex(index: albumIndex)
             } else {
-                self.images = [AlbumImage]()
+                self.images = [GalleryImage]()
             }
             
             galleryManager.loadAlbumIndex(id: albumID).subscribe(onNext: { [weak self] albumIndex in
@@ -69,7 +69,7 @@ class AlbumScreenViewModel {
         self.galleryManager.selectedGalleryIndexRelay.asObservable()
     }
     
-    func loadAlbumImagesObservable() -> Observable<[AlbumImage]> {
+    func loadAlbumImagesObservable() -> Observable<[GalleryImage]> {
         if let albumID {
             return galleryManager.loadAlbumIndex(id: albumID).flatMap {
                 Observable.just($0.images)
@@ -101,27 +101,19 @@ class AlbumScreenViewModel {
         self.galleryManager.delete(images: images)
     }
     
-    func removeFromAlbum(imageName: String) {
+    func removeFromAlbum(images: [GalleryImage]) {
         guard let albumID else { return }
-        
         if var albumIndex: AlbumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
-            albumIndex.images.removeAll(where: { image in
-                image.fileName == imageName
-            })
+            for image in images {
+                
+                albumIndex.images.removeAll { $0.fileName == image.fileName}
+            }
+            
             self.galleryManager.updateAlbumIndex(index: albumIndex)
         }
     }
     
-    func addPhoto(image: AlbumImage) {
-        self.galleryManager.addImage(photoID: image.fileName, toAlbum: albumID ?? nil)
-        if albumID != nil {
-            self.images.append(image)
-        } else {
-            self.images = self.galleryManager.loadGalleryIndex()?.images ?? []
-        }
-    }
-    
-    func addPhotos(images: [AlbumImage]) {
+    func addPhotos(images: [GalleryImage]) {
         self.galleryManager.addImages(photos: images.map { $0.fileName }, toAlbum: albumID)
         if albumID != nil {
             self.images.append(contentsOf: images)
@@ -144,11 +136,15 @@ class AlbumScreenViewModel {
         }
     }
     
-    func setAlbumThumbnailImage(imageName: String) {
+    func setAlbumThumbnailImage(image: GalleryImage) {
         if let albumID, var albumIndex = galleryManager.loadAlbumIndex(id: albumID) {
-            albumIndex.thumbnail = imageName
+            albumIndex.thumbnail = image.fileName
             self.galleryManager.updateAlbumIndex(index: albumIndex)
         }
+    }
+    
+    func duplicateItem(image: GalleryImage) {
+        
     }
     
     func switchTitles(value: Bool) {
@@ -168,17 +164,17 @@ class AlbumScreenViewModel {
     func importPhotos(results: [PHPickerResult]) {
         guard !results.isEmpty else { return }
         
-        var filesSelectedForImport = [AlbumImage]()
-        var filesThatCouldntBeImported = [String]()
+        var filesSelectedForImport = [GalleryImage]()
+        var filenamesThatCouldntBeImported = [String]()
         
-        for itemProvider in results.map({ $0.itemProvider }) {
+        for itemProvider in results.map(\.itemProvider) {
             
             let newTaskProgress = Progress(totalUnitCount: 1000)
             
             itemProvider.loadFileRepresentation(forTypeIdentifier: "public.image") { filePath, error in
                 guard let filePath else {
                     guard let suggestedName = itemProvider.suggestedName else { return }
-                    filesThatCouldntBeImported.append(suggestedName)
+                    filenamesThatCouldntBeImported.append(suggestedName)
                     newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount / 2
                     return
                 }
@@ -193,8 +189,8 @@ class AlbumScreenViewModel {
                 do {
                     try FileManager.default.moveItem(at: filePath, to: targetPath)
                     newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
-                    self.galleryManager.buildThumb(forImage: AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
-                    filesSelectedForImport.append(AlbumImage(fileName: targetPath.lastPathComponent, date: Date()))
+                    self.galleryManager.buildThumbnail(forImage: GalleryImage(fileName: targetPath.lastPathComponent, date: Date()))
+                    filesSelectedForImport.append(GalleryImage(fileName: targetPath.lastPathComponent, date: Date()))
                 } catch {
                     print(error)
                 }
@@ -217,7 +213,7 @@ class AlbumScreenViewModel {
                 usleep(UInt32(0.25))
                 self.showingLoading.accept(false)
                 filesSelectedForImport.removeAll()
-                self.showImportError.accept(filesThatCouldntBeImported)
+                self.showImportError.accept(filenamesThatCouldntBeImported)
                 stopTimer()
             }
         }

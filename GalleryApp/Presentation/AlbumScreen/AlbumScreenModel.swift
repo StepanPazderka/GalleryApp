@@ -10,7 +10,7 @@ import Foundation
 struct AlbumScreenModel {
     var id = UUID()
     var name: String
-    var images: [AlbumImage]
+    var images: [GalleryImage]
     var thumbnail: String
     var thumbnailsSize: Float = 200
 }

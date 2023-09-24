@@ -131,7 +131,7 @@ class GalleryManager {
         }
     }
     
-    func move(Image: AlbumImage, toAlbum: UUID, callback: (() -> ())? = nil) throws {
+    func move(Image: GalleryImage, toAlbum: UUID, callback: (() -> ())? = nil) throws {
         guard let targetAlbumIndex = loadAlbumIndex(id: toAlbum) else { return }
         var newIndex = targetAlbumIndex
         for albumImage in targetAlbumIndex.images {
@@ -148,14 +148,14 @@ class GalleryManager {
     
     func addImage(photoID: String, toAlbum: UUID? = nil) {
         if var galleryIndex = self.loadGalleryIndex() {
-            galleryIndex.images.append(AlbumImage(fileName: photoID, date: Date()))
+            galleryIndex.images.append(GalleryImage(fileName: photoID, date: Date()))
             self.rebuildGalleryIndex()
             self.selectedGalleryIndexRelay.accept(galleryIndex)
         }
         
         if let toAlbum = toAlbum {
             if var album = loadAlbumIndex(id: toAlbum) {
-                album.images.append(AlbumImage(fileName: photoID, date: Date()))
+                album.images.append(GalleryImage(fileName: photoID, date: Date()))
                 self.updateAlbumIndex(index: album)
             }
         }
@@ -163,14 +163,14 @@ class GalleryManager {
     
     func addImages(photos: [String], toAlbum: UUID? = nil) {
         if var galleryIndex = self.loadGalleryIndex() {
-            galleryIndex.images.append(contentsOf: photos.map { AlbumImage(fileName: $0, date: Date()) })
+            galleryIndex.images.append(contentsOf: photos.map { GalleryImage(fileName: $0, date: Date()) })
             self.rebuildGalleryIndex(gallery: galleryIndex)
             self.selectedGalleryIndexRelay.accept(galleryIndex)
         }
         
         if let toAlbum = toAlbum {
             if var album = loadAlbumIndex(id: toAlbum) {
-                album.images.append(contentsOf: photos.map { AlbumImage(fileName: $0, date: Date()) })
+                album.images.append(contentsOf: photos.map { GalleryImage(fileName: $0, date: Date()) })
                 self.updateAlbumIndex(index: album)
             }
         }
@@ -179,29 +179,6 @@ class GalleryManager {
     func loadImage() -> UIImage {
         let outputImage: UIImage = UIImage()
         return outputImage
-    }
-    
-    func moveImagesFromAlbumFoldersToMainGalleryFolder() {
-        let albumNames = scanFolderForAlbums(url: selectedGalleryPath).map { albumIndex in
-            albumIndex.name
-        }
-        
-        var imageURLs = [URL]()
-        for albumName in albumNames {
-            let images = fileScannerManager.scanAlbumFolderForImages(albumName: albumName)
-            let newImageURLs = images.map { imageName in
-                return selectedGalleryPath.appendingPathComponent(albumName).appendingPathComponent(imageName.fileName)
-            }
-            imageURLs.append(contentsOf: newImageURLs)
-        }
-        
-        for url in imageURLs {
-            do {
-                try FileManager.default.moveItem(at: url, to: selectedGalleryPath.appendingPathComponent(url.lastPathComponent))
-            } catch {
-                
-            }
-        }
     }
     
     func scanGalleryFolderForImages() -> [URL] {
@@ -220,35 +197,15 @@ class GalleryManager {
         return outputImageList
     }
     
-    func listAllImagesInGalleryFolder() -> [AlbumImage] {
-        var outputImageList: [AlbumImage] = []
+    func listAllImagesInGalleryFolder() -> [GalleryImage] {
+        var outputImageList: [GalleryImage] = []
         
         let list = fileScannerManager.scanAlbumFolderForImages()
         outputImageList = list
         return outputImageList
     }
     
-    func buildThumbs(forAlbum: String) {
-        let images = self.loadGalleryIndex()?.images
-        
-        guard let images else { return }
-        
-        for image in images {
-            let newFilename = image.fileName
-            let newImage = ImageResizer.resizeImage(image: UIImage(contentsOfFile: selectedGalleryPath.appendingPathComponent(image.fileName).relativePath)!, targetSize: CGSize(width: 300, height: 300))
-            if let jpegImage = newImage?.jpegData(compressionQuality: 0.6) {
-                if FileManager.default.fileExists(atPath: selectedGalleryPath.appendingPathComponent(kThumbs).path) == false {
-                    try? FileManager.default.createDirectory(atPath: selectedGalleryPath.appendingPathComponent(kThumbs).path, withIntermediateDirectories: false)
-                }
-                var filePath = selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(newFilename)
-                filePath = filePath.deletingPathExtension()
-                filePath = filePath.appendingPathExtension("jpg")
-                try! jpegImage.write(to: filePath)
-            }
-        }
-    }
-    
-    func buildThumb(forImage albumImage: AlbumImage) {
+    func buildThumbnail(forImage albumImage: GalleryImage) {
         let images = self.loadGalleryIndex()?.images
         
         let thumbPath = selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(albumImage.fileName).deletingPathExtension().appendingPathExtension("jpg")
@@ -335,7 +292,7 @@ class GalleryManager {
         return scanFolderForAlbums().filter { $0.id == id }.first ?? nil
     }
     
-    func loadAlbumImage(id: String) -> AlbumImage? {
+    func loadAlbumImage(id: String) -> GalleryImage? {
         let index: GalleryIndex? = loadGalleryIndex()
         let image = index?.images.first(where: { image in
             image.fileName == id
@@ -373,7 +330,7 @@ class GalleryManager {
     }
     
     // MARK: - Update Album Image
-    func updateAlbumImage(image: AlbumImage) {
+    func updateAlbumImage(image: GalleryImage) {
         if var index = loadGalleryIndex() {
             if let element = index.images.firstIndex(where: { AlbumImage in
                 AlbumImage.id == image.id
