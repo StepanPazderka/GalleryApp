@@ -23,21 +23,40 @@ class AlbumsListViewController: UIViewController {
     var albums = [SidebarItem]()
     var selectedAlbum: UUID?
     var selectedImages: [AlbumImage]
+    let router: AlbumListRouter
     let viewModel: AlbumListViewModel
     let screenView = AlbumsListView()
     let disposeBag = DisposeBag()
     
     // MARK: - Init
-    init(galleryInteractor: GalleryManager, container: Container, selectedImages: [AlbumImage]) {
+    init(galleryInteractor: GalleryManager, container: Container, selectedImages: [AlbumImage], router: AlbumListRouter) {
         self.galleryManager = galleryInteractor
         self.selectedImages = selectedImages
         self.container = container
         self.viewModel = AlbumListViewModel(galleryManager: galleryManager)
+        self.router = router
         super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Lifecycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        screenView.albumsCollectionView.delegate = self
+        screenView.albumsCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.router.start(viewController: self)
+        
+        setupViews()
+        configureDataSource()
+        bindAlbums()
+        bindInteractions()
+        bindAlert()
+        bindDissmisal()
     }
     
     func bindAlert() {
@@ -89,49 +108,39 @@ class AlbumsListViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
-    // MARK: - Lifecycle
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        screenView.albumsCollectionView.delegate = self
-        screenView.albumsCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        
-        setupViews()
-        configureDataSource()
-        bindAlbums()
-        bindInteractions()
-        bindAlert()
-        bindDissmisal()
-    }
-    
     @objc func closeWindow(sender: Any) {
         self.dismiss(animated: true)
     }
     
     func bindInteractions() {
         // MARK: - Select Album tapped button interaction
-        screenView.selectAlbumButton.rx.tap.subscribe(onNext: { [weak self] in
+        self.screenView.selectAlbumButton.rx.tap.subscribe(onNext: { [weak self] in
             if let selectedAlbum = self?.selectedAlbum, let selectedImages = self?.selectedImages {
                 self?.viewModel.moveToAlbum(images: selectedImages, album: selectedAlbum)
             }
+        }).disposed(by: disposeBag)
+        
+        self.navigationItem.leftBarButtonItem?.rx.tap.subscribe(onNext: { [weak self] in
+            self?.router.onCancelTap()
+        }).disposed(by: disposeBag)
+        
+        self.screenView.albumsCollectionView.rx.itemSelected.subscribe(onNext: { [weak self] indexPath in
+            self?.screenView.selectAlbumButton.isEnabled = true
         }).disposed(by: disposeBag)
     }
     
     func setupViews() {
         view = screenView
         
-        navigationItem.title = NSLocalizedString("kSelectDestination", comment: "")
+        self.navigationItem.title = NSLocalizedString("kSelectDestination", comment: "")
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: screenView.selectAlbumButton)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: nil)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.screenView.selectAlbumButton)
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: nil)
         
-        navigationItem.leftBarButtonItem?.rx.tap.subscribe(onNext: { [weak self] in
-            self?.dismiss(animated: true)
-        }).disposed(by: disposeBag)
-        
-        navigationController?.navigationBar.prefersLargeTitles = false
+        self.navigationController?.navigationBar.prefersLargeTitles = false
         
         self.screenView.albumsCollectionView.register(SidebarCell.self, forCellWithReuseIdentifier: SidebarCell.identifier)
+        self.screenView.selectAlbumButton.isEnabled = false
     }
     
     // MARK: - Data Source Configuration
@@ -155,13 +164,7 @@ class AlbumsListViewController: UIViewController {
                     cell.imageView.contentMode = .scaleAspectFill
                 }
                 return cell
-            },
-            configureSupplementaryView: { dataSource, collectionView, kind, indexPath in
-                    guard kind == UICollectionView.elementKindSectionHeader else {
-                        fatalError("Unexpected supplementary view kind: \(kind)")
-                    }
-                    return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
-                }
+            }
         )
     }
     
@@ -169,7 +172,7 @@ class AlbumsListViewController: UIViewController {
         for press in presses {
             guard let key = press.key else { continue }
             if key.charactersIgnoringModifiers == UIKeyCommand.inputEscape {
-                self.dismiss(animated: true)
+                self.router.onCancelTap()
             }
         }
     }

@@ -18,7 +18,7 @@ class ContainerBuilder {
         registerPresentationLayer()
         
         container.register(AlbumsListViewController.self) { (r, selectedImages: [AlbumImage]) in
-            return AlbumsListViewController(galleryInteractor: r.resolve(GalleryManager.self)!, container: container, selectedImages: selectedImages)
+            return AlbumsListViewController(galleryInteractor: r.resolve(GalleryManager.self)!, container: container, selectedImages: selectedImages, router: r.resolve(AlbumListRouter.self)!)
         }
         
         container = registerTransient()
@@ -81,6 +81,10 @@ class ContainerBuilder {
     }
     
     static func registerPresentationLayer() {
+        container.register(AlbumListRouter.self) { r in
+            return AlbumListRouter()
+        }
+        
         container.register(SelectLibraryViewModel.self) { r in
             return SelectLibraryViewModel(settingsManager: r.resolve(SettingsManager.self)!)
         }

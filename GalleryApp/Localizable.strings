@@ -18,7 +18,7 @@
 "DeleteTitle" = "Delete";
 "kDETAILS" = "Details";
 "IMPORTFROM" = "Import photo from";
-"kSELECTALBUM" = "Select Album";
+"kMOVETOALBUM" = "Move to Album";
 "kEDIT" = "Edit";
 "kDONE" = "Done";
 "kOK" = "OK";
