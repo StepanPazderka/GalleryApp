@@ -43,7 +43,6 @@ class PhotoDetailViewController: UIViewController {
     override func viewDidLoad() {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
         super.viewDidLoad()
-        self.screenView.addGestureRecognizer(screenView.swipeDownGestureRecognizer)
         self.setupViews()
         self.configureDataSource()
         self.bindData()
@@ -52,18 +51,15 @@ class PhotoDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        screenView.collectionViewLayout.itemSize = screenView.bounds.size
-        self.screenView.collectionView.scrollToItem(at: viewModel.index, at: .left, animated: false)
+        self.screenView.collectionViewLayout.itemSize = screenView.bounds.size
+        
     }
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         
-        if !self.initialScrollDone {
-            
-            self.initialScrollDone = true
-            self.screenView.collectionView.scrollToItem(at: viewModel.index, at: .centeredHorizontally, animated: true)
-        }
+        self.scrollTo(index: self.viewModel.index, animated: false)
+        
     }
     
     // MARK: - Layout
@@ -73,6 +69,8 @@ class PhotoDetailViewController: UIViewController {
         
         self.screenView.collectionView.register(PhotoDetailCollectionViewCell.self, forCellWithReuseIdentifier: PhotoDetailCollectionViewCell.identifier)
         self.screenView.collectionView.delegate = self
+        
+        self.screenView.addGestureRecognizer(screenView.swipeDownGestureRecognizer)
     }
     
     // MARK: - Binding Interactions
@@ -114,6 +112,10 @@ class PhotoDetailViewController: UIViewController {
             }
             .bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource))
             .disposed(by: disposeBag)
+        
+        self.viewModel.indexAsObservable.subscribe(onNext: { index in
+            self.scrollTo(index: index, animated: false)
+        }).disposed(by: disposeBag)
     }
     
     func configureDataSource() {
@@ -136,9 +138,15 @@ class PhotoDetailViewController: UIViewController {
             }
             
             if key.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
-                
+                if viewModel.index.item > 0 {
+                    self.viewModel.index.row -= 1
+                }
             } else if key.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
-                
+                if let count = dataSource.sectionModels.first?.items.count {
+                    if viewModel.index.item < count-1 {
+                        self.viewModel.index.row += 1
+                    }
+                }
             }
         }
     }
@@ -171,12 +179,46 @@ class PhotoDetailViewController: UIViewController {
                     let cgPoint = CGPoint(x: onePercentageOfX * zoomScale.x, y: onePercentageOfY * zoomScale.y)
                     self.screenView.collectionView.contentOffset = cgPoint
                 }
+                self.scrollTo(index: self.viewModel.index, animated: false)
             }
         })
+    }
+    
+    func scrollTo(index: IndexPath, animated: Bool) {
+        self.screenView.collectionView.isPagingEnabled = false
+        self.screenView.collectionView.scrollToItem(at: index, at: .centeredHorizontally, animated: animated)
+        self.screenView.collectionView.isPagingEnabled = true
     }
 }
 
 extension PhotoDetailViewController: UICollectionViewDelegate {
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        let visibleCells = screenView.collectionView.visibleCells as! [PhotoDetailCollectionViewCell]
+        //        for cell in visibleCells {
+        //            if let indexPath = screenView.collectionView.indexPath(for: cell) {
+        //                print(indexPath)
+        //            }
+        //        }
+        //        let cell = visibleCells.first!
+        //        print(screenView.collectionView.indexPath(for: cell))
+        
+        for cell in visibleCells {
+            if let indexPath = screenView.collectionView.indexPath(for: cell) {
+                if let cellFrame = screenView.collectionView.layoutAttributesForItem(at: indexPath)?.frame {
+                    let cellVisibleRect = screenView.collectionView.convert(cellFrame, to: screenView.collectionView)
+                    if !screenView.collectionView.bounds.intersects(cellVisibleRect) {
+                        cell.imageView.zoomScale = 1.0
+                    } else {
+                        let indexPath = screenView.collectionView.indexPath(for: cell)
+                        if viewModel.index != indexPath {
+                            self.viewModel.index = indexPath!
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let visibleCells = screenView.collectionView.visibleCells as! [PhotoDetailCollectionViewCell]
         
@@ -184,9 +226,15 @@ extension PhotoDetailViewController: UICollectionViewDelegate {
             if let indexPath = screenView.collectionView.indexPath(for: cell) {
                 if let cellFrame = screenView.collectionView.layoutAttributesForItem(at: indexPath)?.frame {
                     let cellVisibleRect = screenView.collectionView.convert(cellFrame, to: screenView.collectionView)
-                    
-                    if !screenView.collectionView.bounds.intersects(cellVisibleRect) {
-                        cell.imageView.zoomScale = 1.0
+                    if screenView.collectionView.bounds.intersects(cellVisibleRect) {
+                        screenView.collectionView.bounds.intersects(cellVisibleRect)
+                        let indexPath = self.screenView.collectionView.indexPath(for: cell)
+                        
+                        if self.viewModel.index != indexPath {
+                            DispatchQueue.main.asyncAfter(deadline: .now()+0.5) {
+                                self.viewModel.index = indexPath!
+                            }
+                        }
                     }
                 }
             }

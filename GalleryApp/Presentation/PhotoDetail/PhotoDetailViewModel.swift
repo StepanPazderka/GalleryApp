@@ -6,18 +6,26 @@
 //
 
 import Foundation
+import RxSwift
+import RxRelay
 
 class PhotoDetailViewModel {
     // MARK: - Properties
     let galleryManager: GalleryManager
     
     var images: [GalleryImage]
-    var index: IndexPath
+    var index: IndexPath {
+        didSet {
+            self.indexAsObservable.accept(index)
+        }
+    }
+    var indexAsObservable: BehaviorRelay<IndexPath>
     
     // MARK: - Init
     internal init(galleryManager: GalleryManager, settings: PhotoDetailModel) {
         self.images = settings.selectedImages
         self.index = settings.selectedIndex
+        self.indexAsObservable = BehaviorRelay<IndexPath>(value: index)
         self.galleryManager = galleryManager
     }
     

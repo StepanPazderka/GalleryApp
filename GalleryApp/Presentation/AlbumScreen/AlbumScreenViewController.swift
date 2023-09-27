@@ -76,12 +76,13 @@ class AlbumScreenViewController: UIViewController {
     func setupViews() {
         self.view = screenView
         
+        self.screenView.collectionView.delegate = self
+        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.screenView.rightStackView)
         
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(_:)))
         longPressRecognizer.numberOfTapsRequired = 1
         
-        self.screenView.collectionView.delegate = self
         self.screenView.collectionView.addGestureRecognizer(longPressRecognizer)
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
         
@@ -289,7 +290,7 @@ class AlbumScreenViewController: UIViewController {
 }
 
 // MARK: - Contextual Menu Setup
-extension AlbumScreenViewController {
+extension AlbumScreenViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil,
                                           previewProvider: nil) { [weak self] suggestedActions in
@@ -305,11 +306,7 @@ extension AlbumScreenViewController {
             
             let inspectAction = UIAction(title: NSLocalizedString("kDETAILS", comment: ""),
                                          image: UIImage(systemName: "info.circle")) { action in
-                let selectedPhotos = self?.dataSource.sectionModels.first!.items[indexPath.row]
-                
-                if let selectedPhotos {
-                    self?.router.showPropertiesScreen(of: [selectedPhotos])
-                }
+                self?.router.showPropertiesScreen(of: selectedImages)
             }
             
             let moveToAlbum = UIAction(title: NSLocalizedString("MoveToAlbum", comment: ""),
@@ -354,21 +351,6 @@ extension AlbumScreenViewController {
 }
 
 extension AlbumScreenViewController: UIPopoverPresentationControllerDelegate {}
-
-extension AlbumScreenViewController: UICollectionViewDelegate {
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        UIEdgeInsets.init(top: 0, left: 0, bottom: 0, right: 0)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        CGSize(width: view.frame.width, height: 200)
-    }
-}
 
 extension AlbumScreenViewController: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
