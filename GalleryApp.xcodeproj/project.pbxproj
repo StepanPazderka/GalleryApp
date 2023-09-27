@@ -32,7 +32,6 @@
 		7FF5C0732A9D2C65001CA982 /* MutableProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C01F2A9D2C65001CA982 /* MutableProgress.swift */; };
 		7FF5C0742A9D2C65001CA982 /* ImageView+BlurEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0202A9D2C65001CA982 /* ImageView+BlurEffect.swift */; };
 		7FF5C0782A9D2C65001CA982 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FF5C0252A9D2C65001CA982 /* Assets.xcassets */; };
-		7FF5C0792A9D2C65001CA982 /* InteractiveImageViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7FF5C0262A9D2C65001CA982 /* InteractiveImageViewCell.xib */; };
 		7FF5C07A2A9D2C65001CA982 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FF5C0272A9D2C65001CA982 /* LaunchScreen.storyboard */; };
 		7FF5C07B2A9D2C65001CA982 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7FF5C0292A9D2C65001CA982 /* Localizable.strings */; };
 		7FF5C07D2A9D2C65001CA982 /* UICheckBoxButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C02B2A9D2C65001CA982 /* UICheckBoxButton.swift */; };
@@ -50,7 +49,7 @@
 		7FF5C08A2A9D2C65001CA982 /* SelectLibraryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C03E2A9D2C65001CA982 /* SelectLibraryViewModel.swift */; };
 		7FF5C08B2A9D2C65001CA982 /* SelectLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C03F2A9D2C65001CA982 /* SelectLibraryView.swift */; };
 		7FF5C08C2A9D2C65001CA982 /* SelectLibraryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0402A9D2C65001CA982 /* SelectLibraryViewController.swift */; };
-		7FF5C08D2A9D2C65001CA982 /* GalleryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0412A9D2C65001CA982 /* GalleryCell.swift */; };
+		7FF5C08D2A9D2C65001CA982 /* SelectLibraryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0412A9D2C65001CA982 /* SelectLibraryCell.swift */; };
 		7FF5C08E2A9D2C65001CA982 /* AlbumsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0432A9D2C65001CA982 /* AlbumsListView.swift */; };
 		7FF5C08F2A9D2C65001CA982 /* AlbumsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0442A9D2C65001CA982 /* AlbumsView.swift */; };
 		7FF5C0912A9D2C65001CA982 /* PhotoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0482A9D2C65001CA982 /* PhotoDetailViewController.swift */; };
@@ -99,11 +98,11 @@
 		7F795F582AB909CE0090F6D1 /* PanZoomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanZoomImageView.swift; sourceTree = "<group>"; };
 		7F8056AE2ABF0D3A00DB6D29 /* UIStackView+addArrangedSubviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+addArrangedSubviews.swift"; sourceTree = "<group>"; };
 		7F8056B02AC069BE00DB6D29 /* AlbumListRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumListRouter.swift; sourceTree = "<group>"; };
+		7F85C04E2AC4684E002448D4 /* GalleryApp.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = GalleryApp.entitlements; sourceTree = "<group>"; };
 		7F8800DD2AC0B36F008C4648 /* AlbumListViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumListViewControllerDelegate.swift; sourceTree = "<group>"; };
 		7FC922612ABB65B700402C76 /* PhotoDetailCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailCollectionViewCell.swift; sourceTree = "<group>"; };
 		7FDCEE722905741C00395F10 /* GalleryManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryManagerTest.swift; sourceTree = "<group>"; };
 		7FF5C0112A9D2C65001CA982 /* en.xcloc */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = en.xcloc; sourceTree = "<group>"; };
-		7FF5C0122A9D2C65001CA982 /* GalleryApp.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = GalleryApp.entitlements; sourceTree = "<group>"; };
 		7FF5C0142A9D2C65001CA982 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		7FF5C0152A9D2C65001CA982 /* UIViewController+Child.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Child.swift"; sourceTree = "<group>"; };
 		7FF5C0162A9D2C65001CA982 /* UIWindow+isLandscape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIWindow+isLandscape.swift"; sourceTree = "<group>"; };
@@ -118,7 +117,6 @@
 		7FF5C01F2A9D2C65001CA982 /* MutableProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutableProgress.swift; sourceTree = "<group>"; };
 		7FF5C0202A9D2C65001CA982 /* ImageView+BlurEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageView+BlurEffect.swift"; sourceTree = "<group>"; };
 		7FF5C0252A9D2C65001CA982 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		7FF5C0262A9D2C65001CA982 /* InteractiveImageViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InteractiveImageViewCell.xib; sourceTree = "<group>"; };
 		7FF5C0282A9D2C65001CA982 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7FF5C0292A9D2C65001CA982 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		7FF5C02B2A9D2C65001CA982 /* UICheckBoxButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICheckBoxButton.swift; sourceTree = "<group>"; };
@@ -136,7 +134,7 @@
 		7FF5C03E2A9D2C65001CA982 /* SelectLibraryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectLibraryViewModel.swift; sourceTree = "<group>"; };
 		7FF5C03F2A9D2C65001CA982 /* SelectLibraryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectLibraryView.swift; sourceTree = "<group>"; };
 		7FF5C0402A9D2C65001CA982 /* SelectLibraryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectLibraryViewController.swift; sourceTree = "<group>"; };
-		7FF5C0412A9D2C65001CA982 /* GalleryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryCell.swift; sourceTree = "<group>"; };
+		7FF5C0412A9D2C65001CA982 /* SelectLibraryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectLibraryCell.swift; sourceTree = "<group>"; };
 		7FF5C0432A9D2C65001CA982 /* AlbumsListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumsListView.swift; sourceTree = "<group>"; };
 		7FF5C0442A9D2C65001CA982 /* AlbumsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumsView.swift; sourceTree = "<group>"; };
 		7FF5C0482A9D2C65001CA982 /* PhotoDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoDetailViewController.swift; sourceTree = "<group>"; };
@@ -161,7 +159,7 @@
 		7FF5C0612A9D2C65001CA982 /* AlbumScreenView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumScreenView.swift; sourceTree = "<group>"; };
 		7FF5C0632A9D2C65001CA982 /* AlbumsListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumsListViewModel.swift; sourceTree = "<group>"; };
 		7FF5C0642A9D2C65001CA982 /* AlbumsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumsListViewController.swift; sourceTree = "<group>"; };
-		7FF5C0652A9D2C65001CA982 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7FF5C0652A9D2C65001CA982 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = GalleryApp/Plists/Info.plist; sourceTree = SOURCE_ROOT; };
 		7FF5C0662A9D2C65001CA982 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		7FF9A0EF2ABC59D8000DEF06 /* SidebarViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewCell.swift; sourceTree = "<group>"; };
 		9E63EE18BBFDF980A5A19A9C /* Pods-GalleryApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.release.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -241,6 +239,31 @@
 			path = "Custom Views";
 			sourceTree = "<group>";
 		};
+		7F85C04A2AC4655E002448D4 /* Plists */ = {
+			isa = PBXGroup;
+			children = (
+				7FF5C0652A9D2C65001CA982 /* Info.plist */,
+			);
+			path = Plists;
+			sourceTree = "<group>";
+		};
+		7F85C04C2AC466E3002448D4 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7FF5C0292A9D2C65001CA982 /* Localizable.strings */,
+				7FF5C0252A9D2C65001CA982 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		7F85C04D2AC4671C002448D4 /* Entitlements */ = {
+			isa = PBXGroup;
+			children = (
+				7F85C04E2AC4684E002448D4 /* GalleryApp.entitlements */,
+			);
+			path = Entitlements;
+			sourceTree = "<group>";
+		};
 		7F8800DF2AC0B684008C4648 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -266,20 +289,18 @@
 		7FF5C00F2A9D2C65001CA982 /* GalleryApp */ = {
 			isa = PBXGroup;
 			children = (
-				7F7E24EE2AC0BBC8002041ED /* Custom Views */,
-				7FF5C0102A9D2C65001CA982 /* GalleryApp Localizations */,
-				7FF5C0122A9D2C65001CA982 /* GalleryApp.entitlements */,
-				7FF5C0132A9D2C65001CA982 /* Utilies */,
-				7FF5C0252A9D2C65001CA982 /* Assets.xcassets */,
-				7FF5C0262A9D2C65001CA982 /* InteractiveImageViewCell.xib */,
-				7FF5C0272A9D2C65001CA982 /* LaunchScreen.storyboard */,
-				7FF5C0292A9D2C65001CA982 /* Localizable.strings */,
 				7FF5C02C2A9D2C65001CA982 /* AppDelegate.swift */,
 				7FF5C0662A9D2C65001CA982 /* SceneDelegate.swift */,
+				7F7E24EE2AC0BBC8002041ED /* Custom Views */,
+				7FF5C0102A9D2C65001CA982 /* GalleryApp Localizations */,
+				7FF5C0132A9D2C65001CA982 /* Utilies */,
+				7FF5C0272A9D2C65001CA982 /* LaunchScreen.storyboard */,
 				7FF5C02D2A9D2C65001CA982 /* Data */,
 				7FF5C0352A9D2C65001CA982 /* Domain */,
 				7FF5C03C2A9D2C65001CA982 /* Presentation */,
-				7FF5C0652A9D2C65001CA982 /* Info.plist */,
+				7F85C04C2AC466E3002448D4 /* Resources */,
+				7F85C04D2AC4671C002448D4 /* Entitlements */,
+				7F85C04A2AC4655E002448D4 /* Plists */,
 			);
 			path = GalleryApp;
 			sourceTree = "<group>";
@@ -375,7 +396,7 @@
 				7FF5C03E2A9D2C65001CA982 /* SelectLibraryViewModel.swift */,
 				7FF5C03F2A9D2C65001CA982 /* SelectLibraryView.swift */,
 				7FF5C0402A9D2C65001CA982 /* SelectLibraryViewController.swift */,
-				7FF5C0412A9D2C65001CA982 /* GalleryCell.swift */,
+				7FF5C0412A9D2C65001CA982 /* SelectLibraryCell.swift */,
 			);
 			path = SelectLibrary;
 			sourceTree = "<group>";
@@ -536,7 +557,6 @@
 				7FF5C07B2A9D2C65001CA982 /* Localizable.strings in Resources */,
 				7FF5C0782A9D2C65001CA982 /* Assets.xcassets in Resources */,
 				7FF5C07A2A9D2C65001CA982 /* LaunchScreen.storyboard in Resources */,
-				7FF5C0792A9D2C65001CA982 /* InteractiveImageViewCell.xib in Resources */,
 				7FF5C0672A9D2C65001CA982 /* en.xcloc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -673,7 +693,7 @@
 				7FF5C0A72A9D2C65001CA982 /* AlbumScreenView.swift in Sources */,
 				7FF5C0A32A9D2C65001CA982 /* AlbumScreenViewController.swift in Sources */,
 				7FF5C0832A9D2C65001CA982 /* SettingsManager.swift in Sources */,
-				7FF5C08D2A9D2C65001CA982 /* GalleryCell.swift in Sources */,
+				7FF5C08D2A9D2C65001CA982 /* SelectLibraryCell.swift in Sources */,
 				7FF5C0732A9D2C65001CA982 /* MutableProgress.swift in Sources */,
 				7FF5C0822A9D2C65001CA982 /* SettingsKey.swift in Sources */,
 			);
@@ -835,14 +855,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = GalleryApp/GalleryApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = GalleryApp/Entitlements/GalleryApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3HV23S92WL;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				INFOPLIST_FILE = GalleryApp/Info.plist;
+				INFOPLIST_FILE = GalleryApp/Plists/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iGallery;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -867,14 +887,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = GalleryApp/GalleryApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = GalleryApp/Entitlements/GalleryApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3HV23S92WL;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				INFOPLIST_FILE = GalleryApp/Info.plist;
+				INFOPLIST_FILE = GalleryApp/Plists/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iGallery;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (

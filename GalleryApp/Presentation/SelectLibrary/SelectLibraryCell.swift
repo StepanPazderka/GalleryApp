@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import SnapKit
 
-class GalleryCell: UICollectionViewCell {
+class SelectLibraryCell: UICollectionViewCell {
     var text: UILabel = {
         let view = UILabel()
         view.textAlignment = .left
