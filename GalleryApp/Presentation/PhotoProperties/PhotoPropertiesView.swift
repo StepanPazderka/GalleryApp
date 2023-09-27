@@ -11,7 +11,12 @@ import UIKit
 class PhotoPropertiesView: UIView {
     
     // MARK: - Views
-    let imageView = {
+    let imagesContainer = {
+        let view = UIView()
+        return view
+    }()
+    
+    let imageView1 = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         view.layer.shadowColor = UIColor.systemGray2.cgColor
@@ -21,19 +26,45 @@ class PhotoPropertiesView: UIView {
         return view
     }()
     
-    public let photoFileType = {
+    let imageView2 = {
+        let view = UIImageView()
+        view.contentMode = .scaleAspectFit
+        view.layer.shadowColor = UIColor.systemGray2.cgColor
+        view.layer.shadowOpacity = 1
+        view.layer.shadowOffset = .zero
+        view.layer.shadowRadius = 10
+        let degrees: CGFloat = 45.0
+        let radians = degrees * .pi / 46.0
+        view.transform = CGAffineTransform(rotationAngle: radians)
+        return view
+    }()
+    
+    let imageView3 = {
+        let view = UIImageView()
+        view.contentMode = .scaleAspectFit
+        view.layer.shadowColor = UIColor.systemGray2.cgColor
+        view.layer.shadowOpacity = 1
+        view.layer.shadowOffset = .zero
+        view.layer.shadowRadius = 10
+        let degrees: CGFloat = 45.0
+        let radians = degrees * .pi / 47.0
+        view.transform = CGAffineTransform(rotationAngle: radians)
+        return view
+    }()
+    
+    public let itemFileTypeLabel = {
         let view = UILabel(frame: .zero)
         view.text = "File type"
         return view
     }()
     
-    public let photoSizeLabel = {
+    public let itemFileSizeLabel = {
         let view = UILabel(frame: .zero)
         view.text = "File size"
         return view
     }()
     
-    public let photoDateCreationLabel = {
+    public let itemCreationDateLabel = {
         let view = UILabel(frame: .zero)
         view.text = "Date"
         return view
@@ -60,8 +91,8 @@ class PhotoPropertiesView: UIView {
         let view = UIStackView()
         view.axis = .vertical
         view.distribution = .fillEqually
-        view.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        view.isLayoutMarginsRelativeArrangement = true
+        view.layoutMargins = UIEdgeInsets(top: 50, left: 0, bottom: 50, right: 0)
+        view.isLayoutMarginsRelativeArrangement = false
         return view
     }()
     
@@ -69,8 +100,8 @@ class PhotoPropertiesView: UIView {
     init() {
         super.init(frame: .zero)
         
-        setupViews()
-        layoutViews()
+        self.setupViews()
+        self.layoutViews()
     }
     
     required init?(coder: NSCoder) {
@@ -79,37 +110,52 @@ class PhotoPropertiesView: UIView {
     
     // MARK: - Setup
     func setupViews() {
-        self.addSubview(stackview)
-        self.addSubview(imageView)
         self.backgroundColor = .white
-        self.stackview.addArrangedSubview(photoFileType)
-        self.stackview.addArrangedSubview(photoSizeLabel)
-        self.stackview.addArrangedSubview(photoDateLabel)
-        self.stackview.addArrangedSubview(photoDateCreationLabel)
-        self.stackview.addArrangedSubview(textView)
+        imagesContainer.addSubviews(imageView3,
+                                    imageView2,
+                                    imageView1)
+        self.addSubviews(stackview,
+                         imagesContainer)
+        self.stackview.addArrangedSubviews(itemFileTypeLabel,
+                                           itemFileSizeLabel,
+                                           photoDateLabel,
+                                           itemCreationDateLabel,
+                                           textView)
     }
     
     func layoutViews() {
-        imageView.snp.makeConstraints { make in
+        imagesContainer.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(50)
             make.centerX.equalToSuperview()
             make.width.equalToSuperview()
             make.height.equalTo(400)
         }
         
-        stackview.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().offset(-50)
-            make.width.equalToSuperview().offset(-200)
-            make.centerX.equalToSuperview()
-            make.top.equalTo(imageView.snp_bottomMargin)
+        imageView1.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
         
-        photoFileType.snp.makeConstraints { make in
+        imageView2.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        imageView3.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        stackview.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().offset(-100)
+            make.width.equalToSuperview().offset(-200)
+            make.centerX.equalToSuperview()
+            make.top.equalTo(imagesContainer.snp.bottom).offset(30)
+        }
+        
+        itemFileTypeLabel.snp.makeConstraints { make in
             make.width.equalToSuperview()
             make.height.equalTo(20)
         }
         
-        photoSizeLabel.snp.makeConstraints { make in
+        itemFileSizeLabel.snp.makeConstraints { make in
             make.width.equalToSuperview()
             make.height.equalTo(20)
         }
@@ -119,7 +165,7 @@ class PhotoPropertiesView: UIView {
             make.height.equalTo(20)
         }
         
-        photoDateCreationLabel.snp.makeConstraints { make in
+        itemCreationDateLabel.snp.makeConstraints { make in
             make.width.equalToSuperview()
             make.height.equalTo(20)
         }

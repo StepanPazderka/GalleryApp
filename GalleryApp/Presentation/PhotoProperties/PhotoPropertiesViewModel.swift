@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 class PhotoPropertiesViewModel {
     
@@ -16,7 +15,11 @@ class PhotoPropertiesViewModel {
     
     //MARK: - Init
     init(images: [GalleryImage], galleryManager: GalleryManager) {
-        self.images = images
+        if images.count > 1 {
+            self.images = images.reversed()
+        } else {
+            self.images = images
+        }
         self.galleryManager = galleryManager
     }
     
@@ -30,9 +33,11 @@ class PhotoPropertiesViewModel {
         var fileSize: UInt64 = 0
         
         do {
-            let attr: NSDictionary? = try FileManager.default.attributesOfItem(atPath: self.galleryManager.selectedGalleryPath.appendingPathComponent(images.first!.fileName).relativePath) as NSDictionary
-            if let _attr = attr {
-                fileSize = _attr.fileSize();
+            for image in images {
+                let attr: NSDictionary? = try FileManager.default.attributesOfItem(atPath: self.galleryManager.selectedGalleryPath.appendingPathComponent(image.fileName).relativePath) as NSDictionary
+                if let attr {
+                    fileSize += attr.fileSize();
+                }
             }
         } catch {
             
@@ -42,6 +47,9 @@ class PhotoPropertiesViewModel {
     
     func getFileCreationDate() -> Date? {
         var date: Date?
+        
+        guard images.count == 1 else { return nil }
+        
         do {
             let attr = try FileManager.default.attributesOfItem(atPath: self.galleryManager.selectedGalleryPath.appendingPathComponent(images.first!.fileName).relativePath)
             date = attr[FileAttributeKey.creationDate] as? Date
@@ -53,6 +61,9 @@ class PhotoPropertiesViewModel {
     
     func getFileModifiedDate() -> Date? {
         var date: Date?
+        
+        guard images.count == 1 else { return nil }
+        
         do {
             let attr = try FileManager.default.attributesOfItem(atPath: self.galleryManager.selectedGalleryPath.appendingPathComponent(images.first!.fileName).relativePath)
             date = attr[FileAttributeKey.modificationDate] as? Date
@@ -69,8 +80,8 @@ class PhotoPropertiesViewModel {
         return albumImage?.title ?? ""
     }
     
-    func getImage() -> UIImage {
-        UIImage(contentsOfFile: galleryManager.resolvePathFor(imageName: images.first!.fileName))!
+    func resolveImagePaths() -> [String] {
+        images.map { self.galleryManager.resolveThumbPathFor(imageName: $0.fileName) }
     }
     
     func updateAlbumImage(albumImage: GalleryImage) {

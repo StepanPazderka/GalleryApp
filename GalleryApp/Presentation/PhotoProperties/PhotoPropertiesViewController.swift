@@ -32,23 +32,39 @@ class PhotoPropertiesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupViews()
+        self.setupViews()
     }
     
     func setupViews() {
         self.view = screenView
-        self.screenView.imageView.image = viewModel.getImage()
-        if let fileType = viewModel.getFileType() {
-            self.screenView.photoFileType.text = "\(NSLocalizedString("kFileType", comment: "")) \(fileType)"
-        }
-        self.screenView.photoSizeLabel.text = "\(NSLocalizedString("kFileSize", comment: "")) \(ByteCountFormatter().string(fromByteCount: Int64(viewModel.getFileSize())))"
         
-        if let date = viewModel.getFileModifiedDate() {
-            self.screenView.photoDateLabel.text = "\(NSLocalizedString("kFileModifiedDate", comment: "")) \(date)"
+        let imagesViews = [screenView.imageView1, screenView.imageView2, screenView.imageView3].reversed()
+        
+        for (index, imageView) in imagesViews.enumerated() {
+            if index < viewModel.images.count {
+                var resolvedImagePath = viewModel.resolveImagePaths()[index]
+                imageView.image = UIImage(contentsOfFile: resolvedImagePath)
+            }
         }
+
+        if let fileType = viewModel.getFileType() {
+            let localizedFileTypeText = NSLocalizedString("kFileType", comment: "")
+            self.screenView.itemFileTypeLabel.text = "\(localizedFileTypeText) \(fileType)"
+        }
+        self.screenView.itemFileSizeLabel.text = "\(NSLocalizedString("kFileSize", comment: "")) \(ByteCountFormatter().string(fromByteCount: Int64(viewModel.getFileSize())))"
         
         if let date = viewModel.getFileCreationDate() {
-            self.screenView.photoDateCreationLabel.text = "\(NSLocalizedString("kFileCreationDate", comment: "")) \(date)"
+            let dateFormatter = DateFormatter()
+            dateFormatter.timeStyle = .long
+            let localizedCreationDateText = NSLocalizedString("kFileCreationDate", comment: "")
+            self.screenView.itemCreationDateLabel.text = "\(localizedCreationDateText) \(dateFormatter.string(from: date))"
+        }
+        
+        if let date = viewModel.getFileModifiedDate() {
+            let dateFormatter = DateFormatter()
+            dateFormatter.timeStyle = .long
+            let localizedModifiedDateText = NSLocalizedString("kFileModifiedDate", comment: "")
+            self.screenView.photoDateLabel.text = "\(localizedModifiedDateText) \(dateFormatter.string(from: date))"
         }
         
         self.screenView.textView.text = viewModel.getPhotoTitle()
