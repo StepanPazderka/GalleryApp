@@ -12,12 +12,14 @@ import RxDataSources
 class SelectLibraryViewModel {
     
     var libraries = BehaviorSubject(value: [AnimatableSectionModel(model: "Nothing", items: [String]())])
-
+    
     var userDefaults: UserDefaults = UserDefaults.standard
     let settingsManager: SettingsManager
+    let galleryManager: GalleryManager
     
-    init(settingsManager: SettingsManager) {
+    init(settingsManager: SettingsManager, galleryManagery: GalleryManager) {
         self.settingsManager = settingsManager
+        self.galleryManager = galleryManagery
         self.updateLibraries()
     }
     
@@ -44,23 +46,34 @@ class SelectLibraryViewModel {
         self.libraries.onNext([AnimatableSectionModel(model: "Nothing", items: librariesSortedByName)])
     }
     
-    func loadGalleriesAsObservable() -> Observable<[SectionModel<Void, String>]> {
-        var directories: [String] = [String]()
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        do {
-            let directoryContents = try FileManager.default.contentsOfDirectory(atPath: documentsDirectory.path)
-            directories = directoryContents.filter { (path: String) -> Bool in
-                var isDirectory: ObjCBool = false
-                let fullPath = documentsDirectory.appendingPathComponent(path).path
-                FileManager.default.fileExists(atPath: fullPath, isDirectory: &isDirectory)
-                return isDirectory.boolValue
+    func SectionModelsGalleriesAsObservable() -> Observable<[AnimatableSectionModel<String, String>]> {
+        return Observable<Int>.interval(.milliseconds(1500), scheduler: MainScheduler.instance)
+            .flatMap { _ in self.listGalleryDirectoriesAsObservable() }
+            .distinctUntilChanged()
+            .map { [AnimatableSectionModel(model: "nothing", items: $0)] }
+    }
+    
+    
+    func listGalleryDirectoriesAsObservable() -> Observable<[String]> {
+        return Observable.create { observer in
+            var directories: [String] = [String]()
+            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            do {
+                let directoryContents = try FileManager.default.contentsOfDirectory(atPath: documentsDirectory.path)
+                directories = directoryContents.filter { (path: String) -> Bool in
+                    var isDirectory: ObjCBool = false
+                    let fullPath = documentsDirectory.appendingPathComponent(path).path
+                    FileManager.default.fileExists(atPath: fullPath, isDirectory: &isDirectory)
+                    return isDirectory.boolValue
+                }
+                NSLog("Directories in Documents directory: \(directories) Date: \(Date())")
+                observer.onNext(directories)
+            } catch {
+                print("Error getting directory contents: \(error)")
             }
-            print("Directories in Documents directory: \(directories)")
-        } catch {
-            print("Error getting directory contents: \(error)")
+            
+            return Disposables.create()
         }
-                
-        return Observable.just([SectionModel(model: (), items: directories)])
     }
     
     func createNewLibrary(withName: String, callback: (() -> (Void))? = nil) throws {
@@ -83,5 +96,9 @@ class SelectLibraryViewModel {
     
     func switchTo(library: String) {
         settingsManager.set(key: .selectedGallery, value: library)
+    }
+    
+    func delete(gallery: String) {
+        self.galleryManager.delete(gallery: gallery)
     }
 }

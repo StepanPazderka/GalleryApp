@@ -12,7 +12,7 @@ import SnapKit
 class SidebarViewCell: UICollectionViewCell {
     static let identifier: String = String(describing: SidebarViewCell.self)
     
-    var textView: UILabel = {
+    var label: UILabel = {
         let view = UILabel()
         view.font = UIFont.systemFont(ofSize: 18, weight: .regular)
         return view
@@ -45,7 +45,7 @@ class SidebarViewCell: UICollectionViewCell {
     
     func setupViews() {
         self.addSubviews(imageView, 
-                         textView)
+                         label)
         
         self.focusEffect = .none
         self.layer.cornerRadius = 10
@@ -59,7 +59,7 @@ class SidebarViewCell: UICollectionViewCell {
             make.centerY.equalToSuperview()
         }
         
-        self.textView.snp.makeConstraints { make in
+        self.label.snp.makeConstraints { make in
             make.left.equalTo(imageView.snp.right).offset(10)
             make.right.equalToSuperview()
             make.centerY.equalToSuperview()

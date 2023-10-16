@@ -11,22 +11,32 @@ import RxSwift
 import RxCocoa
 
 class AlbumImageCell: UICollectionViewCell {
-
+    
     // MARK: - Properties
-    var isEditing: Bool = false {
-        didSet {
-            checkBox.isHidden = !isEditing
-            if isEditing {
-                checkBox.checker = false
-            }
-        }
-    }
+    var isEditing = false
+    var isCellSelected: Bool = false
     var viewModel: AlbumScreenViewModel?
-    var checkBox = {
-        let view = UICheckBoxButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+    
+    var containerViewForCheck: UIView = {
+        let view = UIView()
         view.isHidden = true
-        view.tintColor = .systemGray
         return view
+    }()
+    
+    var checkmarkView: UIImageView = {
+        let image = UIImage(systemName: "checkmark.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 16, weight: .light))
+        let imageView = UIImageView()
+        imageView.image = image
+        imageView.tintColor = .white
+        return imageView
+    }()
+    
+    var checkmarkViewFill: UIImageView = {
+        let image = UIImage(systemName: "checkmark.circle.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 16, weight: .light))
+        let imageView = UIImageView()
+        imageView.image = image
+        imageView.tintColor = .systemBlue
+        return imageView
     }()
     
     // MARK: - Views
@@ -45,6 +55,14 @@ class AlbumImageCell: UICollectionViewCell {
         return view
     }()
     
+    var isSelectedOverlay = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.isHidden = true
+        view.alpha = 0.5
+        return view
+    }()
+    
     var checkBoxTapped: UITapGestureRecognizer?
     
     let disposeBag = DisposeBag()
@@ -52,15 +70,14 @@ class AlbumImageCell: UICollectionViewCell {
     static let identifier: String = String(describing: type(of: AlbumImageCell.self))
     
     // MARK: - Init
-    override init(frame: CGRect) {        
+    override init(frame: CGRect) {
         super.init(frame: frame)
-
+        
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(galleryImageLongPress(_:)))
-        imageView.isUserInteractionEnabled = true
+        self.imageView.isUserInteractionEnabled = true
         
         self.imageView.contentMode = .scaleAspectFit
         self.textLabel.textAlignment = .center
-        self.textLabel.text = "ahoj!"
         self.imageView.backgroundColor = .none
         self.backgroundColor = .none
         
@@ -84,11 +101,13 @@ class AlbumImageCell: UICollectionViewCell {
     }
     
     func setupViews() {
-        contentView.addSubviews(stackView,
-                                checkBox)
+        containerViewForCheck.addSubviews(checkmarkViewFill, checkmarkView)
         
-        stackView.addArrangedSubview(imageView)
-        stackView.addArrangedSubview(textLabel)
+        contentView.addSubviews(stackView,
+                                isSelectedOverlay,
+                                containerViewForCheck)
+        
+        stackView.addArrangedSubviews(imageView, textLabel)
     }
     
     required init?(coder: NSCoder) {
@@ -99,17 +118,14 @@ class AlbumImageCell: UICollectionViewCell {
         self.textLabel.text = imageData.title
         self.imageView.image = UIImage(contentsOfFile: imageData.fileName)
         self.viewModel = viewModel
-        self.viewModel?.isEditing.subscribe(onNext: { value in
-            if value {
-                self.checkBox.isHidden = !value
-            } else {
-                self.checkBox.isHidden = !value
-            }
+        self.isSelected = false
+        self.viewModel?.isEditing.subscribe(onNext: { [weak self] value in
+//            self?.containerViewForCheck.isHidden = !value
         }).disposed(by: disposeBag)
-
+        
         bindData()
     }
-
+    
     @objc func galleryImageLongPress(_ sender: UITapGestureRecognizer) {
         UIView.animate(withDuration: 0.1, animations: {
             self.imageView.transform = CGAffineTransform(scaleX: 1.25, y: 1.25)
@@ -117,11 +133,22 @@ class AlbumImageCell: UICollectionViewCell {
     }
     
     func layoutViews() {
-        checkBox.snp.makeConstraints { make in
-            make.bottom.equalToSuperview()
-            make.leadingMargin.equalToSuperview()
-            make.left.equalToSuperview()
-            make.size.equalTo(20)
+        checkmarkView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        checkmarkViewFill.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        containerViewForCheck.snp.makeConstraints { make in
+            make.size.equalTo(50)
+            make.right.equalTo(imageView.contentClippingRect.width)
+            make.bottom.equalTo(imageView.contentClippingRect.height)
+        }
+        
+        isSelectedOverlay.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
         
         textLabel.snp.makeConstraints { make in
@@ -131,5 +158,15 @@ class AlbumImageCell: UICollectionViewCell {
         stackView.snp.makeConstraints { make in
             make.size.equalToSuperview()
         }
+    }
+    
+    func showSelectedView() {
+        self.containerViewForCheck.isHidden = false
+        self.isSelectedOverlay.isHidden = false
+    }
+    
+    func hideSelectedView() {
+        self.containerViewForCheck.isHidden = true
+        self.isSelectedOverlay.isHidden = true
     }
 }

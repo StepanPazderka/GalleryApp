@@ -15,11 +15,7 @@ class PhotoPropertiesViewModel {
     
     //MARK: - Init
     init(images: [GalleryImage], galleryManager: GalleryManager) {
-        if images.count > 1 {
-            self.images = images.reversed()
-        } else {
-            self.images = images
-        }
+        self.images = images
         self.galleryManager = galleryManager
     }
     
@@ -81,7 +77,7 @@ class PhotoPropertiesViewModel {
     }
     
     func resolveImagePaths() -> [String] {
-        images.map { self.galleryManager.resolveThumbPathFor(imageName: $0.fileName) }
+        images.map { self.galleryManager.resolvePathFor(imageName: $0.fileName) }
     }
     
     func updateAlbumImage(albumImage: GalleryImage) {

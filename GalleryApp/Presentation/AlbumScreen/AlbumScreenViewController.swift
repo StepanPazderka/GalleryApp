@@ -79,11 +79,7 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.collectionView.delegate = self
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.screenView.rightStackView)
-        
-        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(_:)))
-        longPressRecognizer.numberOfTapsRequired = 1
-        
-        self.screenView.collectionView.addGestureRecognizer(longPressRecognizer)
+
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
         
         if self.viewModel.albumID != nil {
@@ -109,7 +105,7 @@ class AlbumScreenViewController: UIViewController {
     
     func showImagePicker() {
         let imagePicker = self.screenView.imagePicker()
-        imagePicker.delegate = self
+        imagePicker.delegate = self.viewModel
         self.present(imagePicker, animated: true)
     }
     
@@ -156,18 +152,29 @@ class AlbumScreenViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         // MARK: - User Selected Cell
-        self.screenView.collectionView.rx.itemSelected.subscribe(onNext: { [unowned self] indexPath in
-            let cell = self.screenView.collectionView.cellForItem(at: indexPath) as! AlbumImageCell
-            
-            if self.isEditing == false {
-                self.router.showPhotoDetail(images: self.viewModel.images, index: indexPath)
-            } else {
-                cell.checkBox.checker.toggle()
-                if cell.checkBox.checker == true {
-                    viewModel.filesSelectedInEditMode.append(dataSource.sectionModels.first!.items[indexPath.row])
-                } else {
-                    viewModel.filesSelectedInEditMode.removeAll { $0 == dataSource.sectionModels.first!.items[indexPath.row] }
-                }
+        //        self.screenView.collectionView.rx.itemSelected.subscribe(onNext: { [unowned self] indexPath in
+        //            let cell = self.screenView.collectionView.cellForItem(at: indexPath) as! AlbumImageCell
+        ////
+        ////            if self.isEditing == false {
+        ////                self.router.showPhotoDetail(images: self.viewModel.images, index: indexPath)
+        ////            }
+        ////            else {
+        ////                cell.isCellSelected.toggle()
+        ////                if cell.isCellSelected == true {
+        ////                    cell.containerViewForCheck.isHidden = false
+        ////                    viewModel.filesSelectedInEditMode.append(dataSource.sectionModels.first!.items[indexPath.row])
+        ////                } else {
+        ////                    cell.containerViewForCheck.isHidden = true
+        ////                    viewModel.filesSelectedInEditMode.removeAll { $0 == dataSource.sectionModels.first!.items[indexPath.row] }
+        ////                }
+        ////            }
+        //        }).disposed(by: disposeBag)
+        
+        self.viewModel.isEditing.bind(onNext: { [weak self] value in
+            guard let visibleCells = self?.screenView.collectionView.visibleCells else { return }
+            for cell in visibleCells {
+                let cell = cell as! AlbumImageCell
+                cell.isEditing = value
             }
         }).disposed(by: disposeBag)
         
@@ -178,19 +185,17 @@ class AlbumScreenViewController: UIViewController {
                 if value {
                     editButton.setTitle(NSLocalizedString("kDONE", comment: ""), for: .normal)
                     editButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-                    self?.setEditing(true, animated: true)
                     self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
                         let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumImageCell
-                        cell.isEditing = true
                     }
                 } else {
                     editButton.setTitle(NSLocalizedString("kEDIT", comment: ""), for: .normal)
                     editButton.titleLabel?.font = .systemFont(ofSize: 18)
-                    self?.setEditing(false, animated: true)
                     self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
                         let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumImageCell
-                        cell.isEditing = false
                         self?.viewModel.filesSelectedInEditMode.removeAll()
+                        cell.isSelected = false
+                        cell.hideSelectedView()
                     }
                 }
             }
@@ -252,28 +257,6 @@ class AlbumScreenViewController: UIViewController {
             }).disposed(by: disposeBag)
     }
     
-    @objc func longPressed(_ gesture: UILongPressGestureRecognizer) {
-        guard let targetIndexPath = self.screenView.collectionView.indexPathForItem(at: gesture.location(in: self.screenView.collectionView)) else {
-            return
-        }
-        
-        switch gesture.state {
-        case .began:
-            UIView.animate(withDuration: 0.1, animations: {
-                (self.screenView.collectionView.cellForItem(at: targetIndexPath) as! AlbumImageCell).transform = CGAffineTransform(scaleX: 1.25, y: 1.25)
-            })
-            self.screenView.collectionView.beginInteractiveMovementForItem(at: targetIndexPath)
-        case .changed:
-            self.screenView.collectionView.updateInteractiveMovementTargetPosition(gesture.location(in:self.screenView.collectionView))
-        case .ended:
-            self.screenView.collectionView.endInteractiveMovement()
-        case .cancelled:
-            self.screenView.collectionView.cancelInteractiveMovement()
-        default:
-            print("Default")
-        }
-    }
-    
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         self.screenView.collectionView.allowsMultipleSelection = editing
@@ -294,15 +277,21 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil,
                                           previewProvider: nil) { [weak self] suggestedActions in
-            var selectedImages = [GalleryImage]()
+            guard var selectedIndexes = self?.screenView.collectionView.indexPathsForSelectedItems else { return UIMenu() }
             
-            if let self = self {
-                if self.viewModel.filesSelectedInEditMode.isEmpty {
-                    selectedImages = [self.dataSource.sectionModels[indexPath.section].items[indexPath.row]]
-                } else {
-                    selectedImages = viewModel.filesSelectedInEditMode
-                }
+            var selectedImages: [GalleryImage] = selectedIndexes.compactMap { indexPath in
+                return self?.dataSource.sectionModels[indexPath.section].items[indexPath.item]
             }
+            
+            //            var selectedImages = [GalleryImage]()
+            
+//            if let self = self {
+//                if self.viewModel.filesSelectedInEditMode.isEmpty {
+//                    selectedImages = [self.dataSource.sectionModels[indexPath.section].items[indexPath.row]]
+//                } else {
+//                    selectedImages = viewModel.filesSelectedInEditMode
+//                }
+//            }
             
             let inspectAction = UIAction(title: NSLocalizedString("kDETAILS", comment: ""),
                                          image: UIImage(systemName: "info.circle")) { action in
@@ -348,35 +337,35 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
             }
         }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? AlbumImageCell {
+            if isEditing {
+                cell.showSelectedView()
+            } else {
+                self.router.showPhotoDetail(images: self.viewModel.images, index: indexPath)
+            }
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? AlbumImageCell {
+            cell.hideSelectedView()
+        }
+    }
 }
 
 extension AlbumScreenViewController: UIPopoverPresentationControllerDelegate {}
 
 extension AlbumScreenViewController: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        for url in urls {
-            do {
-                try FileManager.default.moveItem(at: url, to: self.viewModel.galleryManager.selectedGalleryPath.appendingPathComponent(url.lastPathComponent))
-                let newImage = GalleryImage(fileName: url.lastPathComponent, date: Date(), title: nil)
-                self.viewModel.addPhotos(images: [newImage])
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
+        self.viewModel.handleFilesImport(urls: urls)
     }
 }
 
-// TODO: Refactor - move this fction to viewModel
-extension AlbumScreenViewController: PHPickerViewControllerDelegate {
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true)
-        let photos = results
-        self.viewModel.importPhotos(results: photos)
-    }
-}
 
 extension AlbumScreenViewController: AlbumListViewControllerDelegate {
     func didFinishMovingImages() {
-        self.viewModel.isEditing.accept(false)
+        self.isEditing = false
     }
 }

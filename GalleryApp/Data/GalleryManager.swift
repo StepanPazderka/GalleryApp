@@ -329,6 +329,14 @@ class GalleryManager {
         }
     }
     
+    func delete(gallery: String) {
+        do {
+            try FileManager.default.removeItem(at: self.libraryPath.appendingPathComponent(gallery))
+        } catch {
+            
+        }
+    }
+    
     // MARK: - Update Album Image
     func updateAlbumImage(image: GalleryImage) {
         if var index = loadGalleryIndex() {

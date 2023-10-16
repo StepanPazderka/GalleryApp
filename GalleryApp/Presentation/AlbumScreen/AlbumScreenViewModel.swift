@@ -161,6 +161,22 @@ class AlbumScreenViewModel {
         self.galleryManager.resolveThumbPathFor(imageName: image)
     }
     
+    func handleFilesImport(urls: [URL]) {
+        for url in urls {
+            do {
+                let filenameExtension = url.pathExtension.lowercased()
+                let targetPath = self.galleryManager.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
+                
+                try FileManager.default.moveItem(at: url, to: targetPath)
+                let newImage = GalleryImage(fileName: targetPath.lastPathComponent, date: Date(), title: nil)
+                self.galleryManager.buildThumbnail(forImage: newImage)
+                self.addPhotos(images: [newImage])
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
     func importPhotos(results: [PHPickerResult]) {
         guard !results.isEmpty else { return }
         
@@ -179,7 +195,7 @@ class AlbumScreenViewModel {
                     return
                 }
                 
-                let filenameExtension = filePath.pathExtension
+                let filenameExtension = filePath.pathExtension.lowercased()
                 
                 if (error != nil) {
                     print("Error while copying files \(String(describing: error))")
@@ -217,5 +233,13 @@ class AlbumScreenViewModel {
                 stopTimer()
             }
         }
+    }
+}
+
+extension AlbumScreenViewModel: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true)
+        let photos = results
+        self.importPhotos(results: photos)
     }
 }

@@ -174,7 +174,7 @@ class SidebarViewController: UIViewController {
         dataSource = RxCollectionViewSectionedReloadDataSource<SidebarSection>(
             configureCell: { dataSource, collectionView, indexPath, item in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarViewCell.identifier, for: indexPath) as! SidebarViewCell
-                cell.textView.text = item.title
+                cell.label.text = item.title
                 cell.imageView.image = item.image
                 if item.image == nil {
                     cell.imageView.image = UIImage(named: "rectangle")

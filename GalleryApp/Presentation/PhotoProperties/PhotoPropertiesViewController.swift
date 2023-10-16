@@ -38,11 +38,11 @@ class PhotoPropertiesViewController: UIViewController {
     func setupViews() {
         self.view = screenView
         
-        let imagesViews = [screenView.imageView1, screenView.imageView2, screenView.imageView3].reversed()
+        let imagesViews = [screenView.imageView1, screenView.imageView2, screenView.imageView3]
         
         for (index, imageView) in imagesViews.enumerated() {
             if index < viewModel.images.count {
-                var resolvedImagePath = viewModel.resolveImagePaths()[index]
+                var resolvedImagePath = viewModel.resolveImagePaths().reversed()[index]
                 imageView.image = UIImage(contentsOfFile: resolvedImagePath)
             }
         }

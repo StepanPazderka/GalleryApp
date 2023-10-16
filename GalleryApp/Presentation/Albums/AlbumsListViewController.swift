@@ -17,23 +17,19 @@ import DirectoryWatcher
 class AlbumsListViewController: UIViewController {
     
     // MARK: - Properties
-    var container: Container!
-    var galleryManager: GalleryManager
+//    var container: Container!
     private var dataSource: RxCollectionViewSectionedReloadDataSource<SidebarSection>?
-    var albums = [SidebarItem]()
     var selectedAlbum: UUID?
     var selectedImages: [GalleryImage]
-    let router: AlbumListRouter
+    private let router: AlbumListRouter
     public let viewModel: AlbumsListViewModel
     let screenView = AlbumsListView()
     let disposeBag = DisposeBag()
     
     // MARK: - Init
-    init(galleryInteractor: GalleryManager, container: Container, selectedImages: [GalleryImage], router: AlbumListRouter) {
-        self.galleryManager = galleryInteractor
+    init(selectedImages: [GalleryImage], router: AlbumListRouter, viewModel: AlbumsListViewModel) {
         self.selectedImages = selectedImages
-        self.container = container
-        self.viewModel = AlbumsListViewModel(galleryManager: galleryManager)
+        self.viewModel = viewModel
         self.router = router
         super.init(nibName: nil, bundle: nil)
     }
@@ -119,18 +115,10 @@ class AlbumsListViewController: UIViewController {
     
     // MARK: - Data Source Configuration
     func configureDataSource() {
-        let headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { (headerView, elementKind, indexPath) in
-            if let category = self.dataSource?[indexPath.section].name {
-                var content = headerView.defaultContentConfiguration()
-                content.text = category
-                headerView.contentConfiguration = content
-            }
-        }
-        
         dataSource = RxCollectionViewSectionedReloadDataSource<SidebarSection>(
             configureCell: { dataSource, collectionView, indexPath, item in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarViewCell.identifier, for: indexPath) as! SidebarViewCell
-                cell.textView.text = item.title
+                cell.label.text = item.title
                 cell.imageView.image = item.image
                 if item.type == .allPhotos {
                     cell.imageView.contentMode = .scaleAspectFit

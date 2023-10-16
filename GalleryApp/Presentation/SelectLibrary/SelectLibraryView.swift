@@ -16,6 +16,14 @@ class SelectLibraryView: UIView {
     var collectionLayout: UICollectionViewLayout {
         var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         config.showsSeparators = false
+        config.trailingSwipeActionsConfigurationProvider = { [weak self] indexPath in
+            let deleteLibraryAction = UIContextualAction(style: .destructive, title: "Delete") {
+                [weak self] action, view, completion in
+                self?.swipeToDeleteAction?(indexPath)
+                completion(true)
+            }
+            return UISwipeActionsConfiguration(actions: [deleteLibraryAction])
+        }
         return UICollectionViewCompositionalLayout.list(using: config)
     }
     
@@ -34,10 +42,11 @@ class SelectLibraryView: UIView {
         view.sizeToFit()
         return view
     }()
-        
+    
+    var swipeToDeleteAction: ((IndexPath) -> (Void))?
+    
     init() {
         super.init(frame: .zero)
-        
         self.setupViews()
         self.layoutViews()
     }

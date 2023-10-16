@@ -25,20 +25,28 @@ class SelectLibraryViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         
         self.configureDataSource()
-        self.screenView.galleriesCollectionView.register(SelectLibraryCell.self, forCellWithReuseIdentifier: SelectLibraryCell.identifier)
-        self.viewModel.libraries.bind(to: screenView.galleriesCollectionView.rx.items(dataSource: dataSource!)).disposed(by: disposeBag)
+        self.screenView.galleriesCollectionView.register(SidebarViewCell.self, forCellWithReuseIdentifier: SidebarViewCell.identifier)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        NSLog("Bad View Controller SelectLibraryVC was DEINITED! Hooray!")
+    }
+    
     override func viewDidLoad() {
         self.setupViews()
         self.layoutViews()
         self.bindInteractions()
+        self.bindData()
         
         self.highlightSelectedLibraryInList()
+    }
+    
+    func bindData() {
+        self.viewModel.SectionModelsGalleriesAsObservable().bind(to: screenView.galleriesCollectionView.rx.items(dataSource: dataSource!)).disposed(by: disposeBag)
     }
     
     func bindInteractions() {
@@ -50,25 +58,33 @@ class SelectLibraryViewController: UIViewController {
             }
         }).disposed(by: disposeBag)
         
-        self.screenView.rightBarButton.rx.tap.subscribe(onNext: {
-            self.showCreateLibraryDialog(callback: { name in
+        // MARK: - Right NavBar button Tap
+        self.screenView.rightBarButton.rx.tap.subscribe(onNext: { [weak self] in
+            self?.showCreateLibraryDialog(callback: { name in
                 do {
-                    try self.viewModel.createNewLibrary(withName: name, callback: {
-                        self.viewModel.updateLibraries()
-                    })
+                    try self?.viewModel.createNewLibrary(withName: name) {
+                        self?.viewModel.updateLibraries()
+                    }
                 } catch {
                     
                 }
             })
         }).disposed(by: disposeBag)
         
-        self.screenView.closeButton.rx.tap.subscribe(onNext: {
-            self.dismiss(animated: true)
+        // MARK: - Close Button tap
+        self.screenView.closeButton.rx.tap.subscribe(onNext: { [weak self] in
+            self?.dismiss(animated: true)
         }).disposed(by: disposeBag)
+        
+        // MARK: - Swipe to Delete Action
+        self.screenView.swipeToDeleteAction = { [weak self] index in
+            if let galleryName = self?.dataSource?.sectionModels.first!.items[index.row] {
+                self?.viewModel.delete(gallery: galleryName)
+            }
+        }
     }
     
     func highlightSelectedLibraryInList() {
-        
         let loadedGalleryName = self.viewModel.getSelectedLibraryString()
         var index: Int?
         let selectedItem = self.dataSource?.sectionModels.first(where: { section in
@@ -85,12 +101,13 @@ class SelectLibraryViewController: UIViewController {
     
     func configureDataSource() {
         self.dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, String>>(configureCell: { dataSource, collectionView, indexPath, item in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectLibraryCell.identifier, for: indexPath) as! SelectLibraryCell
-            cell.text.text = item
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarViewCell.identifier, for: indexPath) as! SidebarViewCell
+            cell.label.text = item
+            cell.imageView.frame.size = .zero
             return cell})
     }
     
-    // MARK: - Create Album Popover
+    // MARK: - Create Album Popover Dialog Box
     @objc func showCreateLibraryDialog(withPrepulatedName: String? = nil, callback: ((String) -> Void)? = nil) {
         var returnString: String?
         let createAlbumAlert = UIAlertController(title: NSLocalizedString("kEnterLibraryName", comment: ""), message: nil, preferredStyle: .alert)

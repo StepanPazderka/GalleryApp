@@ -18,7 +18,7 @@ class ContainerBuilder {
         registerPresentationLayer()
         
         container.register(AlbumsListViewController.self) { (r, selectedImages: [GalleryImage]) in
-            return AlbumsListViewController(galleryInteractor: r.resolve(GalleryManager.self)!, container: container, selectedImages: selectedImages, router: r.resolve(AlbumListRouter.self)!)
+            return AlbumsListViewController(selectedImages: selectedImages, router: r.resolve(AlbumListRouter.self)!, viewModel: r.resolve(AlbumsListViewModel.self)!)
         }
         
         container = registerTransient()
@@ -27,38 +27,46 @@ class ContainerBuilder {
     }
     
     static func registerTransient() -> Container {
-        let container = Container(parent: container, defaultObjectScope: .transient)
+        let transientContainer = Container(parent: container, defaultObjectScope: .transient)
         
-        container.register(PhotoDetailViewModel.self) { (r, settings: PhotoDetailModel) in
+        transientContainer.register(PhotoDetailViewModel.self) { (r, settings: PhotoDetailModel) in
             return PhotoDetailViewModel(galleryManager: r.resolve(GalleryManager.self)!, settings: settings)
         }
         
-        container.register(PhotoDetailViewController.self) { (r, photoDetailSettings: PhotoDetailModel) in
+        transientContainer.register(PhotoDetailViewController.self) { (r, photoDetailSettings: PhotoDetailModel) in
             return PhotoDetailViewController(viewModel: r.resolve(PhotoDetailViewModel.self,
                                                                   argument: photoDetailSettings)!)
         }
         
-        container.register(AlbumScreenViewModel.self) { (r, albumID: UUID) in
+        transientContainer.register(AlbumScreenViewModel.self) { (r, albumID: UUID) in
             return AlbumScreenViewModel(albumID: albumID,
                                         galleryManager: r.resolve(GalleryManager.self)!)
         }
         
-        container.register(AlbumScreenViewController.self) { (r, albumID: UUID) in
+        transientContainer.register(AlbumScreenViewController.self) { (r, albumID: UUID) in
             return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!,
                                              viewModel: r.resolve(AlbumScreenViewModel.self,
                                                                   argument: albumID)!)
         }
         
-        container.register(PhotoPropertiesViewModel.self) { (r, images: [GalleryImage]) in
+        transientContainer.register(AlbumsListViewModel.self) { r in
+            return AlbumsListViewModel(galleryManager: r.resolve(GalleryManager.self)!)
+        }
+        
+        transientContainer.register(PhotoPropertiesViewModel.self) { (r, images: [GalleryImage]) in
             return PhotoPropertiesViewModel(images: images, galleryManager: r.resolve(GalleryManager.self)!)
         }
         
-        container.register(PhotoPropertiesViewController.self) { (r, images: [GalleryImage]) in
-            return PhotoPropertiesViewController(viewModel: container.resolve(PhotoPropertiesViewModel.self, argument: images)!)
+        transientContainer.register(PhotoPropertiesViewController.self) { (r, images: [GalleryImage]) in
+            return PhotoPropertiesViewController(viewModel: transientContainer.resolve(PhotoPropertiesViewModel.self, argument: images)!)
         }
         
-        self.container = container
-        return container
+        container.register(SelectLibraryViewModel.self) { r in
+            return SelectLibraryViewModel(settingsManager: r.resolve(SettingsManager.self)!, galleryManagery: r.resolve(GalleryManager.self)!)
+        }
+        
+        self.container = transientContainer
+        return transientContainer
     }
     
     static func registerDataLayer() {
@@ -83,10 +91,6 @@ class ContainerBuilder {
     static func registerPresentationLayer() {
         container.register(AlbumListRouter.self) { r in
             return AlbumListRouter()
-        }
-        
-        container.register(SelectLibraryViewModel.self) { r in
-            return SelectLibraryViewModel(settingsManager: r.resolve(SettingsManager.self)!)
         }
         
         container.register(SelectLibraryViewController.self) { r in
