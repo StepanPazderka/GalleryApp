@@ -20,11 +20,11 @@ class SelectLibraryViewModel {
     init(settingsManager: SettingsManager, galleryManagery: GalleryManager) {
         self.settingsManager = settingsManager
         self.galleryManager = galleryManagery
-        self.updateLibraries()
+        updateLibraries()
     }
     
     /// Scans app directory for subdirectories and updates libraries
-    func updateLibraries() {
+    @discardableResult func updateLibraries() -> [String] {
         var foundDirectoriesInDocumentsFolder: [String] = [String]()
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         do {
@@ -43,33 +43,23 @@ class SelectLibraryViewModel {
             libraryLHS < libraryRHS
         }
         
-        self.libraries.onNext([AnimatableSectionModel(model: "Nothing", items: librariesSortedByName)])
+        return librariesSortedByName
     }
     
     func SectionModelsGalleriesAsObservable() -> Observable<[AnimatableSectionModel<String, String>]> {
         return Observable<Int>.interval(.milliseconds(1500), scheduler: MainScheduler.instance)
+            .do(onNext: { [weak self] section in
+                self?.updateLibraries()
+            })
             .flatMap { _ in self.listGalleryDirectoriesAsObservable() }
-            .distinctUntilChanged()
             .map { [AnimatableSectionModel(model: "nothing", items: $0)] }
     }
     
     
     func listGalleryDirectoriesAsObservable() -> Observable<[String]> {
-        return Observable.create { observer in
-            var directories: [String] = [String]()
-            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-            do {
-                let directoryContents = try FileManager.default.contentsOfDirectory(atPath: documentsDirectory.path)
-                directories = directoryContents.filter { (path: String) -> Bool in
-                    var isDirectory: ObjCBool = false
-                    let fullPath = documentsDirectory.appendingPathComponent(path).path
-                    FileManager.default.fileExists(atPath: fullPath, isDirectory: &isDirectory)
-                    return isDirectory.boolValue
-                }
-                NSLog("Directories in Documents directory: \(directories) Date: \(Date())")
-                observer.onNext(directories)
-            } catch {
-                print("Error getting directory contents: \(error)")
+        return Observable.create { [weak self] observer in
+            if let libraries = self?.updateLibraries() {
+                observer.onNext(libraries)
             }
             
             return Disposables.create()

@@ -79,7 +79,7 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.collectionView.delegate = self
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.screenView.rightStackView)
-
+        
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
         
         if self.viewModel.albumID != nil {
@@ -277,29 +277,41 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil,
                                           previewProvider: nil) { [weak self] suggestedActions in
-            guard var selectedIndexes = self?.screenView.collectionView.indexPathsForSelectedItems else { return UIMenu() }
             
-            var selectedImages: [GalleryImage] = selectedIndexes.compactMap { indexPath in
-                return self?.dataSource.sectionModels[indexPath.section].items[indexPath.item]
-            }
-            
-            //            var selectedImages = [GalleryImage]()
-            
-//            if let self = self {
-//                if self.viewModel.filesSelectedInEditMode.isEmpty {
-//                    selectedImages = [self.dataSource.sectionModels[indexPath.section].items[indexPath.row]]
-//                } else {
-//                    selectedImages = viewModel.filesSelectedInEditMode
-//                }
-//            }
             
             let inspectAction = UIAction(title: NSLocalizedString("kDETAILS", comment: ""),
                                          image: UIImage(systemName: "info.circle")) { action in
+                var selectedImages = Array<GalleryImage>()
+                
+                if var selectedIndexes = self?.screenView.collectionView.indexPathsForSelectedItems {
+                    if selectedIndexes.isEmpty {
+                        let galleryImage = [self!.dataSource.sectionModels.first!.items[indexPath.item]]
+                        selectedImages = galleryImage
+                    } else {
+                        selectedImages = selectedIndexes.compactMap { indexPath in
+                            return self?.dataSource.sectionModels.first!.items[indexPath.item]
+                        }
+                    }
+                }
+                
                 self?.router.showPropertiesScreen(of: selectedImages)
             }
             
             let moveToAlbum = UIAction(title: NSLocalizedString("MoveToAlbum", comment: ""),
                                        image: UIImage(systemName: "square.and.arrow.down")) { [weak self] action in
+                var selectedImages = Array<GalleryImage>()
+                
+                if var selectedIndexes = self?.screenView.collectionView.indexPathsForSelectedItems {
+                    if selectedIndexes.isEmpty {
+                        let galleryImage = [self!.dataSource.sectionModels.first!.items[indexPath.item]]
+                        selectedImages = galleryImage
+                    } else {
+                        selectedImages = selectedIndexes.compactMap { indexPath in
+                            return self?.dataSource.sectionModels[indexPath.section].items[indexPath.item]
+                        }
+                    }
+                }
+                
                 self?.router.showMoveToAlbumScreen(with: selectedImages)
             }
             let duplicateAction =
@@ -320,6 +332,19 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
             UIAction(title: NSLocalizedString("kREMOVEFROMALBUM", comment: ""),
                      image: UIImage(systemName: "rectangle.stack.badge.minus"),
                      attributes: .destructive) { action in
+                var selectedImages = Array<GalleryImage>()
+                
+                if var selectedIndexes = self?.screenView.collectionView.indexPathsForSelectedItems {
+                    if selectedIndexes.isEmpty {
+                        let galleryImage = [self!.dataSource.sectionModels.first!.items[indexPath.item]]
+                        selectedImages = galleryImage
+                    } else {
+                        selectedImages = selectedIndexes.compactMap { indexPath in
+                            return self?.dataSource.sectionModels[indexPath.section].items[indexPath.item]
+                        }
+                    }
+                }
+                
                 self?.viewModel.removeFromAlbum(images: selectedImages)
             }
             let deleteAction =

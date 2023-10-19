@@ -19,7 +19,7 @@ class SelectLibraryView: UIView {
         config.trailingSwipeActionsConfigurationProvider = { [weak self] indexPath in
             let deleteLibraryAction = UIContextualAction(style: .destructive, title: "Delete") {
                 [weak self] action, view, completion in
-                self?.swipeToDeleteAction?(indexPath)
+                self?.swipeToDeleteHandler?(indexPath)
                 completion(true)
             }
             return UISwipeActionsConfiguration(actions: [deleteLibraryAction])
@@ -43,7 +43,8 @@ class SelectLibraryView: UIView {
         return view
     }()
     
-    var swipeToDeleteAction: ((IndexPath) -> (Void))?
+    // MARK: - Callbacks
+    var swipeToDeleteHandler: ((IndexPath) -> Void)?
     
     init() {
         super.init(frame: .zero)

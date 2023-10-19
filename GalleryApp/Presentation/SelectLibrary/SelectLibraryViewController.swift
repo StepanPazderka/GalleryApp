@@ -46,7 +46,15 @@ class SelectLibraryViewController: UIViewController {
     }
     
     func bindData() {
-        self.viewModel.SectionModelsGalleriesAsObservable().bind(to: screenView.galleriesCollectionView.rx.items(dataSource: dataSource!)).disposed(by: disposeBag)
+        self.viewModel.SectionModelsGalleriesAsObservable().subscribe(onNext: { section in
+            
+        }).disposed(by: disposeBag)
+        
+        self.viewModel.libraries
+            .do(onNext: {
+                [weak self] parameter in self?.highlightSelectedLibraryInList()
+            })
+            .bind(to: screenView.galleriesCollectionView.rx.items(dataSource: dataSource!)).disposed(by: disposeBag)
     }
     
     func bindInteractions() {
@@ -63,7 +71,6 @@ class SelectLibraryViewController: UIViewController {
             self?.showCreateLibraryDialog(callback: { name in
                 do {
                     try self?.viewModel.createNewLibrary(withName: name) {
-                        self?.viewModel.updateLibraries()
                     }
                 } catch {
                     
@@ -76,9 +83,9 @@ class SelectLibraryViewController: UIViewController {
             self?.dismiss(animated: true)
         }).disposed(by: disposeBag)
         
-        // MARK: - Swipe to Delete Action
-        self.screenView.swipeToDeleteAction = { [weak self] index in
-            if let galleryName = self?.dataSource?.sectionModels.first!.items[index.row] {
+        // MARK: - Swipe to Delete Action Closure
+        self.screenView.swipeToDeleteHandler = { [weak self] index in
+            if let galleryName = self?.dataSource?.sectionModels.first?.items[index.row] {
                 self?.viewModel.delete(gallery: galleryName)
             }
         }
