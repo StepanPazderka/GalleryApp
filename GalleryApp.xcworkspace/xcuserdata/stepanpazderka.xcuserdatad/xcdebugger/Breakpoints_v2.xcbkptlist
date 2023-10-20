@@ -7,144 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "9D5490C8-827C-4FC7-9145-51162D2920C2"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "177"
-            endingLineNumber = "177"
-            landmarkName = "bindInteractions()"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "9D5490C8-827C-4FC7-9145-51162D2920C2 - 8f9236ca858c2121"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "GalleryApp.AlbumScreenViewController.bindInteractions() -&gt; ()"
-                  moduleName = "GalleryApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "180"
-                  endingLineNumber = "180"
-                  offsetFromSymbolStart = "1488">
-               </Location>
-               <Location
-                  uuid = "9D5490C8-827C-4FC7-9145-51162D2920C2 - 3f009a3984f52600"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #3 (Swift.Bool) -&gt; () in GalleryApp.AlbumScreenViewController.bindInteractions() -&gt; ()"
-                  moduleName = "GalleryApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "180"
-                  endingLineNumber = "180"
-                  offsetFromSymbolStart = "556">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "190B9588-99D4-4597-AEB4-A4B2BC3D7655"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "190"
-            endingLineNumber = "190"
-            landmarkName = "bindInteractions()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "B73A0B9C-6C88-4FF7-A788-D2AD84B9CD2B"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "183"
-            endingLineNumber = "183"
-            landmarkName = "bindInteractions()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "CE831FCD-33E3-4BB9-85DC-0EEAE6165BD4"
+            uuid = "7B903E76-586B-4185-9192-A64BD781DEC6"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
+            filePath = "GalleryApp/FileObserver.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "292"
-            endingLineNumber = "292"
-            landmarkName = "collectionView(_:contextMenuConfigurationForItemAt:point:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "CE831FCD-33E3-4BB9-85DC-0EEAE6165BD4 - 21602f906a68c8e1"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (__C.UIAction) -&gt; () in closure #1 (Swift.Array&lt;__C.UIMenuElement&gt;) -&gt; Swift.Optional&lt;__C.UIMenu&gt; in GalleryApp.AlbumScreenViewController.collectionView(_: __C.UICollectionView, contextMenuConfigurationForItemAt: Foundation.IndexPath, point: __C.CGPoint) -&gt; Swift.Optional&lt;__C.UIContextMenuConfiguration&gt;"
-                  moduleName = "GalleryApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "293"
-                  endingLineNumber = "293"
-                  offsetFromSymbolStart = "2228">
-               </Location>
-               <Location
-                  uuid = "CE831FCD-33E3-4BB9-85DC-0EEAE6165BD4 - 3355081b2f696857"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Foundation.IndexPath) -&gt; Swift.Optional&lt;GalleryApp.GalleryImage&gt; in closure #1 (__C.UIAction) -&gt; () in closure #1 (Swift.Array&lt;__C.UIMenuElement&gt;) -&gt; Swift.Optional&lt;__C.UIMenu&gt; in GalleryApp.AlbumScreenViewController.collectionView(_: __C.UICollectionView, contextMenuConfigurationForItemAt: Foundation.IndexPath, point: __C.CGPoint) -&gt; Swift.Optional&lt;__C.UIContextMenuConfiguration&gt;"
-                  moduleName = "GalleryApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "292"
-                  endingLineNumber = "292"
-                  offsetFromSymbolStart = "188">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "C71E72AA-694E-48CC-843A-DEAE594083CC"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "288"
-            endingLineNumber = "288"
-            landmarkName = "collectionView(_:contextMenuConfigurationForItemAt:point:)"
+            startingLineNumber = "20"
+            endingLineNumber = "20"
+            landmarkName = "init(filePath:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

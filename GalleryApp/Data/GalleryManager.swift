@@ -223,7 +223,7 @@ class GalleryManager {
         if !FileManager.default.fileExists(atPath: selectedGalleryPath.appendingPathComponent(kThumbs).relativePath) {
             try? FileManager.default.createDirectory(at: selectedGalleryPath.appendingPathComponent(kThumbs), withIntermediateDirectories: false)
         }
-
+        
         try? jpegImage?.write(to: thumbPath)
     }
     
@@ -248,7 +248,7 @@ class GalleryManager {
     }
     
     /**
-    Rewrites Album Index in file system
+     Rewrites Album Index in file system
      */
     func updateAlbumIndex(index: AlbumIndex) {
         let json = try! JSONEncoder().encode(index)
@@ -262,7 +262,7 @@ class GalleryManager {
     
     func loadAlbumIndex(folder: URL) throws -> AlbumIndex? {
         let indexPath = folder.lastPathComponent == kAlbumIndex ? folder.relativePath : folder.appendingPathComponent(kAlbumIndex).relativePath
-
+        
         let jsonDATA = try? String(contentsOfFile: indexPath).data(using: .unicode)
         if let jsonData = jsonDATA {
             let decodedData = try? JSONDecoder().decode(AlbumIndex.self, from: jsonData)
@@ -278,9 +278,19 @@ class GalleryManager {
         return nil
     }
     
-    func loadAlbumIndex(id: UUID) -> Observable<AlbumIndex> {
+    /// Loads Album Image as observable
+    /// - Parameter id: ID of album that should be observed
+    /// - Returns: Observable holding AlbumIndex of specified album
+    func loadAlbumIndexAsObservable(id: UUID) -> Observable<AlbumIndex> {
         return Observable.create { observer in
-            if let albumIndex = self.loadAlbumIndex(id: id) {
+            if var albumIndex = self.loadAlbumIndex(id: id) {
+                if let galleryIndex = self.loadGalleryIndex() {
+                    for (index, albumImage) in albumIndex.images.enumerated() {
+                        if let galleryImage = galleryIndex.images.first(where: { $0.fileName == albumImage.fileName }) {
+                            albumIndex.images[index] = galleryImage
+                        }
+                    }
+                }
                 observer.onNext(albumIndex)
             }
             return Disposables.create {
@@ -363,7 +373,7 @@ class GalleryManager {
     
     // MARK: - Rebuilding Gallery Index
     /**
-        Will rebuild gallery index based on files in Gallery folder
+     Will rebuild gallery index based on files in Gallery folder
      */
     @discardableResult func rebuildGalleryIndex() -> GalleryIndex {
         var oldAlbums: [UUID] = [UUID]()
@@ -376,7 +386,7 @@ class GalleryManager {
         
         var newIndex = GalleryIndex(mainGalleryName: settingsManager.selectedGallery, images: self.fileScannerManager.scanAlbumFolderForImages(), albums: scanFolderForAlbums().map { $0.id })
         var newAlbums = scanFolderForAlbums().map { $0.id }
-
+        
         oldAlbums.append(contentsOf: newAlbums.removingDuplicates())
         
         let combinedAlbums: [UUID] = oldAlbums.removingDuplicates()

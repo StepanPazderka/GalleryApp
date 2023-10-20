@@ -30,6 +30,7 @@ class AlbumScreenViewModel {
         self.albumID = albumID
         self.galleryManager = galleryManager
         
+        
         if let albumID {
             if var albumIndex: AlbumIndex = galleryManager.loadAlbumIndex(id: albumID) {
                 let filteredImages = albumIndex.images.compactMap { albumImage in
@@ -47,7 +48,7 @@ class AlbumScreenViewModel {
                 self.images = [GalleryImage]()
             }
             
-            galleryManager.loadAlbumIndex(id: albumID).subscribe(onNext: { [weak self] albumIndex in
+            galleryManager.loadAlbumIndexAsObservable(id: albumID).subscribe(onNext: { [weak self] albumIndex in
                 self?.images = albumIndex.images
             }).disposed(by: disposeBag)
         } else {
@@ -71,7 +72,7 @@ class AlbumScreenViewModel {
     
     func loadAlbumImagesObservable() -> Observable<[GalleryImage]> {
         if let albumID {
-            return galleryManager.loadAlbumIndex(id: albumID).flatMap {
+            return galleryManager.loadAlbumIndexAsObservable(id: albumID).flatMap {
                 Observable.just($0.images)
             }
         } else {
@@ -94,7 +95,7 @@ class AlbumScreenViewModel {
     }
     
     func loadAlbumIndexAsObservable() -> Observable<AlbumIndex> {
-        galleryManager.loadAlbumIndex(id: albumID!)
+        galleryManager.loadAlbumIndexAsObservable(id: albumID!)
     }
     
     func delete(_ images: [String]) {
@@ -105,7 +106,6 @@ class AlbumScreenViewModel {
         guard let albumID else { return }
         if var albumIndex: AlbumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
             for image in images {
-                
                 albumIndex.images.removeAll { $0.fileName == image.fileName}
             }
             
