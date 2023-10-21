@@ -15,7 +15,7 @@ class AlbumImageCell: UICollectionViewCell {
     // MARK: - Properties
     var isEditing = false
     var isCellSelected: Bool = false
-    var viewModel: AlbumScreenViewModel?
+    weak var viewModel: AlbumScreenViewModel?
     
     var containerViewForCheck: UIView = {
         let view = UIView()

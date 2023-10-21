@@ -84,15 +84,16 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
         
         if self.viewModel.albumID != nil {
-            self.viewModel.loadAlbumIndexAsObservable().subscribe(onNext: { loadedIndex in
-                self.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(loadedIndex.thumbnailsSize), height: CGFloat(loadedIndex.thumbnailsSize))
-                self.screenView.slider.value = loadedIndex.thumbnailsSize
+            self.viewModel.loadAlbumIndexAsObservable().subscribe(onNext: { [weak self] loadedIndex in
+                self?.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(loadedIndex.thumbnailsSize), height: CGFloat(loadedIndex.thumbnailsSize))
+                self?.screenView.slider.value = loadedIndex.thumbnailsSize
             }).disposed(by: disposeBag)
         } else {
-            self.viewModel.galleryManager.galleryObservable().subscribe(onNext: { index in
+            self.viewModel.galleryManager.galleryObservable().subscribe(onNext: { [weak self] index in
                 if let thumbnailSize = index.thumbnailSize {
-                    self.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(thumbnailSize), height: CGFloat(thumbnailSize))
-                    self.screenView.slider.value = thumbnailSize
+                    let newItemSize = CGSize(width: CGFloat(thumbnailSize), height: CGFloat(thumbnailSize))
+                    self?.screenView.collectionLayout.itemSize = newItemSize
+                    self?.screenView.slider.value = thumbnailSize
                 }
             }).disposed(by: disposeBag)
         }
@@ -121,18 +122,18 @@ class AlbumScreenViewController: UIViewController {
             .bind(to: self.screenView.loadingView.rx.isHidden)
             .disposed(by: disposeBag)
         
-        self.viewModel.showImportError.subscribe(onNext: { filesThatCouldntBeImported in
+        self.viewModel.showImportError.subscribe(onNext: { [weak self] filesThatCouldntBeImported in
             if !filesThatCouldntBeImported.isEmpty {
                 let alert = UIAlertController(title: "Alert", message: "Could not import files \(filesThatCouldntBeImported.joined(separator: ", "))", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default))
-                self.present(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
             }
         }).disposed(by: disposeBag)
         
         self.viewModel.showingTitles
             .distinctUntilChanged()
-            .subscribe(onNext: { value in
-                self.screenView.checkBoxTitles.checker = value
+            .subscribe(onNext: { [weak self] value in
+                self?.screenView.checkBoxTitles.checker = value
             }).disposed(by: disposeBag)
         
         // MARK: - Loading Images to Collection View
@@ -227,12 +228,11 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.slider.rx.value.changed
             .map { CGFloat($0) }
             .observe(on: MainScheduler.instance)
-            .do(onNext: { value in
-                self.screenView.collectionLayout.itemSize = CGSize(width: value, height: value)
+            .do(onNext: { [weak self] value in
+                self?.screenView.collectionLayout.itemSize = CGSize(width: value, height: value)
             })
-            .debounce(.milliseconds(500), scheduler: MainScheduler.instance).subscribe(onNext: { value in
-                self.viewModel.newThumbnailSize(size: Float(value))
-                
+            .debounce(.milliseconds(500), scheduler: MainScheduler.instance).subscribe(onNext: { [weak self] value in
+                self?.viewModel.newThumbnailSize(size: Float(value))
             }).disposed(by: disposeBag)
     }
     

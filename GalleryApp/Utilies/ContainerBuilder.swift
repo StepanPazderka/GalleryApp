@@ -38,17 +38,6 @@ class ContainerBuilder {
                                                                   argument: photoDetailSettings)!)
         }
         
-        transientContainer.register(AlbumScreenViewModel.self) { (r, albumID: UUID) in
-            return AlbumScreenViewModel(albumID: albumID,
-                                        galleryManager: r.resolve(GalleryManager.self)!)
-        }
-        
-        transientContainer.register(AlbumScreenViewController.self) { (r, albumID: UUID) in
-            return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!,
-                                             viewModel: r.resolve(AlbumScreenViewModel.self,
-                                                                  argument: albumID)!)
-        }
-        
         transientContainer.register(AlbumsListViewModel.self) { r in
             return AlbumsListViewModel(galleryManager: r.resolve(GalleryManager.self)!)
         }
@@ -120,11 +109,22 @@ class ContainerBuilder {
         container.register(AlbumScreenViewController.self) { r in
             return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!,
                                              viewModel: r.resolve(AlbumScreenViewModel.self)!)
-        }
+        }.inObjectScope(.container)
         
         container.register(AlbumScreenViewModel.self) { r in
             return AlbumScreenViewModel(albumID: nil,
                                         galleryManager: r.resolve(GalleryManager.self)!)
-        }
+        }.inObjectScope(.container)
+        
+        container.register(AlbumScreenViewModel.self) { (r, albumID: UUID) in
+            return AlbumScreenViewModel(albumID: albumID,
+                                        galleryManager: r.resolve(GalleryManager.self)!)
+        }.inObjectScope(.transient)
+        
+        container.register(AlbumScreenViewController.self) { (r, albumID: UUID) in
+            return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!,
+                                             viewModel: r.resolve(AlbumScreenViewModel.self,
+                                                                  argument: albumID)!)
+        }.inObjectScope(.transient)
     }
 }
