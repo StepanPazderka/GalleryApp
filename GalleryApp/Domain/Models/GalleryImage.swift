@@ -19,6 +19,8 @@ struct GalleryImage: Codable {
         self.fileName = fileName
         self.date = date
         self.title = title
+        let fileNameAsURL = URL(string: fileName)!.deletingPathExtension()
+        self.id = UUID(uuidString: fileNameAsURL.relativePath)!
     }
 }
 
@@ -31,3 +33,5 @@ extension GalleryImage: IdentifiableType {
 }
 
 extension GalleryImage: Equatable { }
+
+extension GalleryImage: Hashable { }

@@ -9,6 +9,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 import PhotosUI
+import Algorithms
 
 class AlbumScreenViewModel {
     
@@ -20,50 +21,67 @@ class AlbumScreenViewModel {
     
     var albumID: UUID?
     let galleryManager: GalleryManager
-    var images = [GalleryImage]()
     
     var importProgress = MutableProgress()
     var filesSelectedInEditMode = [GalleryImage]()
+    
+    var modelRelay = BehaviorSubject(value: AlbumScreenModel.empty)
+    var model: AlbumScreenModel {
+        didSet {
+            updateModel(model: model)
+            modelRelay.onNext(model)
+        }
+    }
+    
     let disposeBag = DisposeBag()
     
     internal init(albumID: UUID? = nil, galleryManager: GalleryManager) {
         self.albumID = albumID
         self.galleryManager = galleryManager
         
-        
-        if let albumID {
-            if var albumIndex: AlbumIndex = galleryManager.loadAlbumIndex(id: albumID) {
-                let filteredImages = albumIndex.images.compactMap { albumImage in
-                    if FileManager.default.fileExists(atPath: self.galleryManager.selectedGalleryPath.appendingPathComponent(albumImage.fileName).relativePath) {
-                        return albumImage
-                    } else {
-                        return nil
-                    }
-                }
-                self.images = filteredImages
-                self.showingTitles.accept(albumIndex.showingAnnotations ?? false)
-                albumIndex.images = filteredImages
-                self.galleryManager.updateAlbumIndex(index: albumIndex)
-            } else {
-                self.images = [GalleryImage]()
-            }
-            
-            galleryManager.loadAlbumIndexAsObservable(id: albumID).subscribe(onNext: { [weak self] albumIndex in
-                self?.images = albumIndex.images
-            }).disposed(by: disposeBag)
+        if let albumID, let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
+            self.model = AlbumScreenModel(from: albumIndex)
+        } else if let galleryIndex = self.galleryManager.loadGalleryIndex()  {
+            self.model = AlbumScreenModel(from: galleryIndex)
         } else {
-            if let newImages = galleryManager.loadGalleryIndex()?.images {
-                self.images = newImages
-            }
-            galleryManager.selectedGalleryIndexRelay.subscribe(onNext: { [weak self] galleryIndex in
-                self?.images = galleryIndex.images
-                self?.showingTitles.accept(galleryIndex.showingAnnotations ?? false)
-            }).disposed(by: disposeBag)
+            self.model = .empty
         }
         
-        self.showingTitles.distinctUntilChanged().subscribe(onNext: { isShowingTitles in
-            self.switchTitles(value: isShowingTitles)
+        loadModel()
+        
+        
+        self.showingTitles.distinctUntilChanged().subscribe(onNext: { [weak self] isShowingTitles in
+            self?.switchTitles(value: isShowingTitles)
         }).disposed(by: disposeBag)
+        
+        self.modelRelay.distinctUntilChanged().subscribe(onNext: { [weak self] changedAlbumScreenModel in
+            self?.updateModel(model: changedAlbumScreenModel)
+        }).disposed(by: disposeBag)
+    }
+    
+    func updateModel(model: AlbumScreenModel) {
+        if albumID != nil, var galleryIndex = self.galleryManager.loadGalleryIndex() {
+            let newAlbumIndex = AlbumIndex(from: model)
+            self.galleryManager.updateAlbumIndex(index: newAlbumIndex)
+            galleryIndex.images.append(contentsOf: model.images)
+            let newGalleryImages = galleryIndex.images.uniqued().compactMap { $0 }
+            galleryIndex.images = newGalleryImages
+            self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
+        } else if var galleryIndex = self.galleryManager.loadGalleryIndex() {
+            galleryIndex.images = model.images.uniqued().compactMap { $0 }
+            galleryIndex.thumbnailSize = model.thumbnailsSize
+            galleryIndex.showingAnnotations = model.showingAnnotations
+            galleryIndex.id = model.id
+            self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
+        }
+    }
+    
+    func loadModel() {
+        if let albumID, let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
+            self.modelRelay.onNext(AlbumScreenModel(from: albumIndex))
+        } else if let galleryIndex = self.galleryManager.loadGalleryIndex()  {
+            self.modelRelay.onNext(AlbumScreenModel(from: galleryIndex))
+        }
     }
     
     func loadGalleryIndex() -> Observable<GalleryIndex> {
@@ -98,42 +116,27 @@ class AlbumScreenViewModel {
         galleryManager.loadAlbumIndexAsObservable(id: albumID!)
     }
     
-    func delete(_ images: [String]) {
+    func delete(_ images: [GalleryImage]) {
+        for image in images {
+            self.model.images.removeAll(where: { $0 == image })
+        }
         self.galleryManager.delete(images: images)
     }
     
     func removeFromAlbum(images: [GalleryImage]) {
-        guard let albumID else { return }
-        if var albumIndex: AlbumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
-            for image in images {
-                albumIndex.images.removeAll { $0.fileName == image.fileName}
-            }
-            
-            self.galleryManager.updateAlbumIndex(index: albumIndex)
+        guard albumID != nil else { return }
+        
+        for image in images {
+            model.images.removeAll { $0.fileName == image.fileName}
         }
     }
     
     func addPhotos(images: [GalleryImage]) {
-        self.galleryManager.addImages(photos: images.map { $0.fileName }, toAlbum: albumID)
-        if albumID != nil {
-            self.images.append(contentsOf: images)
-        } else {
-            self.images = self.galleryManager.loadGalleryIndex()?.images ?? []
-        }
+        self.model.images.append(contentsOf: images)
     }
     
     func newThumbnailSize(size: Float) {
-        if let albumID = albumID, var newIndex = loadAlbum(by: albumID) {
-            newIndex.thumbnailsSize = size
-            self.galleryManager.updateAlbumIndex(index: newIndex)
-            print("Album Index thumb updated with size \(size)")
-        }
-        
-        if var galleryIndex = self.galleryManager.loadGalleryIndex() {
-            galleryIndex.thumbnailSize = size
-            self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
-            print("Gallery Manager thumb updated with size \(size)")
-        }
+        self.model.thumbnailsSize = size
     }
     
     func setAlbumThumbnailImage(image: GalleryImage) {

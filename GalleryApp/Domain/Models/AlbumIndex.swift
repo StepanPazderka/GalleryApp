@@ -43,6 +43,15 @@ struct AlbumIndex: Codable {
         self.showingAnnotations = decodedData.showingAnnotations
     }
     
+    init(from entity: AlbumScreenModel) {
+        self.id = entity.id
+        self.name = entity.name
+        self.images = entity.images
+        self.thumbnail = entity.thumbnail
+        self.thumbnailsSize = entity.thumbnailsSize
+        self.showingAnnotations = entity.showingAnnotations
+    }
+    
     static var empty: Self {
         Self(name: "", images: [], thumbnail: "", showingAnnotations: false)
     }

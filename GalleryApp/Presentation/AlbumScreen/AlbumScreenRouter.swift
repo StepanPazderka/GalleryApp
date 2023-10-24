@@ -30,17 +30,17 @@ class AlbumScreenRouter {
     func showPhotoDetail(images: [GalleryImage], index: IndexPath) {
         let settings = PhotoDetailModel(selectedImages: images, selectedIndex: index)
         let PhotoDetailVC = container.resolve(PhotoDetailViewController.self, argument: settings)!
-        let navigationController = UINavigationController(rootViewController: PhotoDetailVC)
-        navigationController.modalPresentationStyle = .fullScreen
-        topMostController()?.present(navigationController, animated: true)
+        let photoDetailNavigationViewController = UINavigationController(rootViewController: PhotoDetailVC)
+        photoDetailNavigationViewController.modalPresentationStyle = .fullScreen
+        topMostController()?.present(photoDetailNavigationViewController, animated: true)
     }
     
     func showMoveToAlbumScreen(with images: [GalleryImage]) {
         let AlbumListViewController = container.resolve(AlbumsListViewController.self, argument: images)!
-        let newController = UINavigationController(rootViewController: AlbumListViewController)
+        let albumsListNavigationViewController = UINavigationController(rootViewController: AlbumListViewController)
         AlbumListViewController.viewModel.delegate = navigationController?.children.first as? any AlbumListViewControllerDelegate
-        newController.view.backgroundColor = .systemBackground
-        topMostController()?.present(newController, animated: true, completion: nil)
+        albumsListNavigationViewController.view.backgroundColor = .systemBackground
+        topMostController()?.present(albumsListNavigationViewController, animated: true, completion: nil)
     }
     
     func showDocumentPicker() {

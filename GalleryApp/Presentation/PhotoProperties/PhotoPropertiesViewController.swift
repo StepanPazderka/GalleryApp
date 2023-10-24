@@ -56,6 +56,7 @@ class PhotoPropertiesViewController: UIViewController {
         if let date = viewModel.getFileCreationDate() {
             let dateFormatter = DateFormatter()
             dateFormatter.timeStyle = .long
+            dateFormatter.dateStyle = .long
             let localizedCreationDateText = NSLocalizedString("kFileCreationDate", comment: "")
             self.screenView.itemCreationDateLabel.text = "\(localizedCreationDateText) \(dateFormatter.string(from: date))"
         }
@@ -63,6 +64,7 @@ class PhotoPropertiesViewController: UIViewController {
         if let date = viewModel.getFileModifiedDate() {
             let dateFormatter = DateFormatter()
             dateFormatter.timeStyle = .long
+            dateFormatter.dateStyle = .long
             let localizedModifiedDateText = NSLocalizedString("kFileModifiedDate", comment: "")
             self.screenView.photoDateLabel.text = "\(localizedModifiedDateText) \(dateFormatter.string(from: date))"
         }

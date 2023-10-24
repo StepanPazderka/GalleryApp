@@ -17,10 +17,6 @@ class ContainerBuilder {
         registerDataLayer()
         registerPresentationLayer()
         
-        container.register(AlbumsListViewController.self) { (r, selectedImages: [GalleryImage]) in
-            return AlbumsListViewController(selectedImages: selectedImages, router: r.resolve(AlbumListRouter.self)!, viewModel: r.resolve(AlbumsListViewModel.self)!)
-        }
-        
         container = registerTransient()
         
         return container
@@ -40,7 +36,7 @@ class ContainerBuilder {
         
         transientContainer.register(AlbumsListViewModel.self) { r in
             return AlbumsListViewModel(galleryManager: r.resolve(GalleryManager.self)!)
-        }
+        }.inObjectScope(.transient)
         
         transientContainer.register(PhotoPropertiesViewModel.self) { (r, images: [GalleryImage]) in
             return PhotoPropertiesViewModel(images: images, galleryManager: r.resolve(GalleryManager.self)!)
@@ -125,6 +121,10 @@ class ContainerBuilder {
             return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!,
                                              viewModel: r.resolve(AlbumScreenViewModel.self,
                                                                   argument: albumID)!)
+        }.inObjectScope(.transient)
+        
+        container.register(AlbumsListViewController.self) { (r, selectedImages: [GalleryImage]) in
+            return AlbumsListViewController(selectedImages: selectedImages, router: r.resolve(AlbumListRouter.self)!, viewModel: r.resolve(AlbumsListViewModel.self)!)
         }.inObjectScope(.transient)
     }
 }

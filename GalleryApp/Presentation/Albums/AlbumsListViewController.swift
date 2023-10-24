@@ -17,7 +17,6 @@ import DirectoryWatcher
 class AlbumsListViewController: UIViewController {
     
     // MARK: - Properties
-//    var container: Container!
     private var dataSource: RxCollectionViewSectionedReloadDataSource<SidebarSection>?
     var selectedAlbum: UUID?
     var selectedImages: [GalleryImage]

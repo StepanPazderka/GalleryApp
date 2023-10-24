@@ -208,7 +208,7 @@ class GalleryManager {
     func buildThumbnail(forImage albumImage: GalleryImage) {
         let images = self.loadGalleryIndex()?.images
         
-        let thumbPath = selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(albumImage.fileName).deletingPathExtension().appendingPathExtension("jpg")
+        let thumbPath = selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(albumImage.fileName).deletingPathExtension().appendingPathExtension(for: .jpeg)
         
         guard !FileManager.default.fileExists(atPath: thumbPath.relativePath) else { return }
         
@@ -320,18 +320,24 @@ class GalleryManager {
         return nil
     }
     
-    func delete(images: [String]) {
+    func delete(images: [GalleryImage]) {
         if var galleryIndex = self.loadGalleryIndex() {
-            for name in images {
+            for image in images {
                 galleryIndex.images.removeAll { image in
-                    image.fileName == name
+                    image.fileName == image.fileName
                 }
             }
             
             updateGalleryIndex(newGalleryIndex: galleryIndex)
             for image in images {
                 do {
-                    try FileManager.default.removeItem(atPath: self.selectedGalleryPath.appendingPathComponent(image).relativePath)
+                    if let urlName = URL(string: image.fileName) {
+                        let originalImagePath = self.selectedGalleryPath.appendingPathComponent(image.fileName).relativePath
+                        try FileManager.default.removeItem(atPath: originalImagePath)
+                        let newFileName = urlName.deletingPathExtension()
+                        let thumbPath = self.selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(newFileName.relativePath).appendingPathExtension(for: .jpeg).relativePath
+                        try FileManager.default.removeItem(atPath: thumbPath)
+                    }
                 } catch {
                     
                 }
@@ -417,6 +423,6 @@ class GalleryManager {
     }
     
     func resolveThumbPathFor(imageName: String) -> String {
-        return self.selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(imageName).deletingPathExtension().appendingPathExtension("jpg").relativePath
+        return self.selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(imageName).deletingPathExtension().appendingPathExtension(for: .jpeg).relativePath
     }
 }

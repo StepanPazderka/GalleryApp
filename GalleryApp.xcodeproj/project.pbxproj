@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		291AA710F07C47ED12CA87BA /* Pods_GalleryApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C4EC8CDC8DE278CEE5E096B /* Pods_GalleryApp.framework */; };
+		7F05BF622AE5496A00E078BB /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7F05BF612AE5496A00E078BB /* Algorithms */; };
 		7F5E1ED82AE29FE6006A9E88 /* FileObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5E1ED72AE29FE6006A9E88 /* FileObserver.swift */; };
 		7F62EA7929056C3600FCD97F /* GalleryAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */; };
 		7F795F572AB749360090F6D1 /* UIColor+randomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F795F562AB749360090F6D1 /* UIColor+randomColor.swift */; };
@@ -174,6 +175,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7F05BF622AE5496A00E078BB /* Algorithms in Frameworks */,
 				7FEDEA93284CD8AD001F40C0 /* SnapKit in Frameworks */,
 				291AA710F07C47ED12CA87BA /* Pods_GalleryApp.framework in Frameworks */,
 			);
@@ -492,6 +494,7 @@
 			name = GalleryApp;
 			packageProductDependencies = (
 				7FEDEA92284CD8AD001F40C0 /* SnapKit */,
+				7F05BF612AE5496A00E078BB /* Algorithms */,
 			);
 			productName = GalleryApp;
 			productReference = 7F235DFA2585B73C007BD075 /* GalleryApp.app */;
@@ -544,6 +547,7 @@
 			mainGroup = 7F235DF12585B73C007BD075;
 			packageReferences = (
 				7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				7F05BF602AE5496A00E078BB /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			productRefGroup = 7F235DFB2585B73C007BD075 /* Products */;
 			projectDirPath = "";
@@ -1009,6 +1013,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		7F05BF602AE5496A00E078BB /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
 		7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -1020,6 +1032,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7F05BF612AE5496A00E078BB /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7F05BF602AE5496A00E078BB /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
+		};
 		7FEDEA92284CD8AD001F40C0 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit" */;

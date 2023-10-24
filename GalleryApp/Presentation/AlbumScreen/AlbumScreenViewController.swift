@@ -51,6 +51,11 @@ class AlbumScreenViewController: UIViewController {
         self.bindInteractions()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.loadModel()
+    }
+    
     func configureDataSource() {
         dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, GalleryImage>>(
             configureCell: { [unowned self] (dataSource, collectionView, indexPath, item) in
@@ -137,8 +142,10 @@ class AlbumScreenViewController: UIViewController {
             }).disposed(by: disposeBag)
         
         // MARK: - Loading Images to Collection View
-        self.viewModel.loadAlbumImagesObservable()
-            .flatMap { Observable.just([AnimatableSectionModel(model: "Section", items: $0)]) }
+        self.viewModel.modelRelay
+            .asObservable()
+            .do(onNext: { print("Images: \($0.images)") })
+            .flatMap { Observable.just([AnimatableSectionModel(model: "Section", items: $0.images )]) }
             .bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource))
             .disposed(by: disposeBag)
     }
@@ -212,7 +219,7 @@ class AlbumScreenViewController: UIViewController {
         
         self.screenView.deleteImageButton.rx.tap.subscribe(onNext: { [weak self] in
             guard let self else { return }
-            self.viewModel.delete(self.viewModel.filesSelectedInEditMode.map { $0.fileName })
+            self.viewModel.delete(self.viewModel.filesSelectedInEditMode.map { $0 })
             self.viewModel.isEditing.accept(false)
         }).disposed(by: disposeBag)
         
@@ -242,11 +249,11 @@ class AlbumScreenViewController: UIViewController {
     }
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let temp = self.viewModel.images.remove(at: sourceIndexPath.item)
-        self.viewModel.images.insert(temp, at: destinationIndexPath.item)
+//        let temp = self.viewModel.images.remove(at: sourceIndexPath.item)
+//        self.viewModel.images.insert(temp, at: destinationIndexPath.item)
         
-        let newGalleryIndex = AlbumIndex(name: self.viewModel.galleryManager.selectedGalleryPath.lastPathComponent, images: self.viewModel.images, thumbnail: self.viewModel.images.first?.fileName ?? "")
-        self.viewModel.galleryManager.updateAlbumIndex(index: newGalleryIndex)
+//        let newGalleryIndex = AlbumIndex(name: self.viewModel.galleryManager.selectedGalleryPath.lastPathComponent, images: self.viewModel.images, thumbnail: self.viewModel.images.first?.fileName ?? "")
+//        self.viewModel.galleryManager.updateAlbumIndex(index: newGalleryIndex)
         return
     }
     
@@ -276,6 +283,7 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
             
             let moveToAlbum = UIAction(title: NSLocalizedString("MoveToAlbum", comment: ""),
                                        image: UIImage(systemName: "square.and.arrow.down")) { [weak self] action in
+                
                 self?.router.showMoveToAlbumScreen(with: selectedImages)
             }
             let duplicateAction =
@@ -302,9 +310,8 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
             UIAction(title: NSLocalizedString("kDELETEIMAGE", comment: ""),
                      image: UIImage(systemName: "trash"),
                      attributes: .destructive) { action in
-                if let imageName = self?.viewModel.images[indexPath.row].fileName {
-                    self?.viewModel.delete([imageName])
-                }
+                self?.viewModel.delete(selectedImages.map { $0 })
+                self?.viewModel.isEditing.accept(false)
             }
             if self?.viewModel.albumID != nil {
                 return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, setThumbnailAction, removeFromAlbum, deleteAction])
@@ -319,7 +326,7 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
             if isEditing {
                 cell.showSelectedView()
             } else {
-                self.router.showPhotoDetail(images: self.viewModel.images, index: indexPath)
+                self.router.showPhotoDetail(images: self.viewModel.model.images, index: indexPath)
             }
         }
     }
