@@ -297,7 +297,7 @@
 				7FF5C0662A9D2C65001CA982 /* SceneDelegate.swift */,
 				7F7E24EE2AC0BBC8002041ED /* Custom Views */,
 				7FF5C0102A9D2C65001CA982 /* GalleryApp Localizations */,
-				7FF5C0132A9D2C65001CA982 /* Utilies */,
+				7FF5C0132A9D2C65001CA982 /* Utilites */,
 				7FF5C0272A9D2C65001CA982 /* LaunchScreen.storyboard */,
 				7FF5C02D2A9D2C65001CA982 /* Data */,
 				7FF5C0352A9D2C65001CA982 /* Domain */,
@@ -317,7 +317,7 @@
 			path = "GalleryApp Localizations";
 			sourceTree = "<group>";
 		};
-		7FF5C0132A9D2C65001CA982 /* Utilies */ = {
+		7FF5C0132A9D2C65001CA982 /* Utilites */ = {
 			isa = PBXGroup;
 			children = (
 				7FF5C0142A9D2C65001CA982 /* Constants.swift */,
@@ -339,7 +339,7 @@
 				7FF5C03A2A9D2C65001CA982 /* ImageResizer.swift */,
 				7FF2D86B2AD8A5BB0027313F /* UIImageView+contentClippingRect.swift */,
 			);
-			path = Utilies;
+			path = Utilites;
 			sourceTree = "<group>";
 		};
 		7FF5C02D2A9D2C65001CA982 /* Data */ = {

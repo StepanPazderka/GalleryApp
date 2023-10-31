@@ -84,7 +84,6 @@ class AlbumScreenViewModel {
                     galleryImage.fileName == albumImage.fileName
                 }) { return imageFromGalleryIndex } else { return albumImage }
             }
-            
             self.modelRelay.onNext(thisScreenModel)
         } else if self.galleryManager.loadGalleryIndex() != nil  {
             self.galleryManager.selectedGalleryIndexRelay.distinctUntilChanged().subscribe(onNext: { galleryIndex in
@@ -95,14 +94,6 @@ class AlbumScreenViewModel {
     
     func loadAlbum(by: UUID) -> AlbumIndex? {
         return self.galleryManager.loadAlbumIndex(id: by)
-    }
-    
-    func loadAlbumIndex() -> AlbumIndex {
-        if let albumID = albumID, let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
-            return albumIndex
-        } else {
-            return AlbumIndex.empty
-        }
     }
     
     func loadAlbumIndexAsObservable() -> Observable<AlbumIndex> {
