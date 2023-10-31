@@ -7,192 +7,49 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "7B903E76-586B-4185-9192-A64BD781DEC6"
+            uuid = "11C06529-7478-4754-9E9F-3A3259B651BF"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GalleryApp/FileObserver.swift"
+            filePath = "GalleryApp/Presentation/AlbumScreen/AlbumScreenViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "20"
-            endingLineNumber = "20"
-            landmarkName = "init(filePath:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "8B66F8C4-2FD4-4794-9E0E-C8C22FF38942"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Data/GalleryManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "330"
-            endingLineNumber = "330"
-            landmarkName = "delete(images:)"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
+            landmarkName = "updateModel(model:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "8B66F8C4-2FD4-4794-9E0E-C8C22FF38942 - 998777163ddc9e35"
-                  shouldBeEnabled = "No"
+                  uuid = "11C06529-7478-4754-9E9F-3A3259B651BF - 7ec287a1a0f8f133"
+                  shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "GalleryApp.GalleryManager.delete(images: Swift.Array&lt;Swift.String&gt;) -&gt; ()"
+                  symbolName = "GalleryApp.AlbumScreenViewModel.updateModel(model: GalleryApp.AlbumScreenModel) -&gt; ()"
                   moduleName = "GalleryApp"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/GalleryApp/Data/GalleryManager.swift"
+                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/GalleryApp/Presentation/AlbumScreen/AlbumScreenViewModel.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "331"
-                  endingLineNumber = "331"
-                  offsetFromSymbolStart = "1152">
+                  startingLineNumber = "70"
+                  endingLineNumber = "70"
+                  offsetFromSymbolStart = "1384">
                </Location>
                <Location
-                  uuid = "8B66F8C4-2FD4-4794-9E0E-C8C22FF38942 - 5ffecb68dbc98a60"
-                  shouldBeEnabled = "No"
+                  uuid = "11C06529-7478-4754-9E9F-3A3259B651BF - 7ec287a1a0f8f133"
+                  shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "GalleryApp.GalleryManager.delete(images: Swift.Array&lt;GalleryApp.GalleryImage&gt;) -&gt; ()"
+                  symbolName = "GalleryApp.AlbumScreenViewModel.updateModel(model: GalleryApp.AlbumScreenModel) -&gt; ()"
                   moduleName = "GalleryApp"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/GalleryApp/Data/GalleryManager.swift"
+                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/GalleryApp/Presentation/AlbumScreen/AlbumScreenViewModel.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "331"
-                  endingLineNumber = "331"
-                  offsetFromSymbolStart = "1120">
-               </Location>
-               <Location
-                  uuid = "8B66F8C4-2FD4-4794-9E0E-C8C22FF38942 - 5ffecb68dbc98a60"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "GalleryApp.GalleryManager.delete(images: Swift.Array&lt;GalleryApp.GalleryImage&gt;) -&gt; ()"
-                  moduleName = "GalleryApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/GalleryApp/Data/GalleryManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "331"
-                  endingLineNumber = "331"
+                  startingLineNumber = "70"
+                  endingLineNumber = "70"
                   offsetFromSymbolStart = "1332">
                </Location>
             </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "AD820BA6-7CBB-4971-8A9D-31166A36E303"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Data/GalleryManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "338"
-            endingLineNumber = "338"
-            landmarkName = "delete(images:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "AD820BA6-7CBB-4971-8A9D-31166A36E303 - 5ffecb68dbc98b79"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "GalleryApp.GalleryManager.delete(images: Swift.Array&lt;GalleryApp.GalleryImage&gt;) -&gt; ()"
-                  moduleName = "GalleryApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/GalleryApp/Data/GalleryManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "338"
-                  endingLineNumber = "338"
-                  offsetFromSymbolStart = "2776">
-               </Location>
-               <Location
-                  uuid = "AD820BA6-7CBB-4971-8A9D-31166A36E303 - 5ffecb68dbc98b79"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "GalleryApp.GalleryManager.delete(images: Swift.Array&lt;GalleryApp.GalleryImage&gt;) -&gt; ()"
-                  moduleName = "GalleryApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/GalleryApp/Data/GalleryManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "338"
-                  endingLineNumber = "338"
-                  offsetFromSymbolStart = "2336">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "BE84CAE4-056C-4A47-A221-10845AD82A30"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Presentation/Albums/AlbumsListViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
-            landmarkName = "bindInteractions()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "FF99F82D-92EA-4BF2-94CB-C87A7A46CB1A"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "286"
-            endingLineNumber = "286"
-            landmarkName = "collectionView(_:contextMenuConfigurationForItemAt:point:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "3510607C-AC40-4CC8-84DD-8A419F38D485"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Data/GalleryManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "135"
-            endingLineNumber = "135"
-            landmarkName = "move(Image:toAlbum:callback:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "ADAFB0C6-6C14-4BA4-B90F-226FA2A39BD8"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Presentation/AlbumScreen/AlbumScreenRouter.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
-            landmarkName = "showMoveToAlbumScreen(with:)"
-            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

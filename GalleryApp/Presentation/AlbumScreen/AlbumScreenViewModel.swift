@@ -49,11 +49,6 @@ class AlbumScreenViewModel {
         
         loadModel()
         
-        
-        self.showingTitles.distinctUntilChanged().subscribe(onNext: { [weak self] isShowingTitles in
-            self?.switchTitles(value: isShowingTitles)
-        }).disposed(by: disposeBag)
-        
         self.modelRelay.distinctUntilChanged().subscribe(onNext: { [weak self] changedAlbumScreenModel in
             self?.updateModel(model: changedAlbumScreenModel)
         }).disposed(by: disposeBag)
@@ -64,11 +59,15 @@ class AlbumScreenViewModel {
             let newAlbumIndex = AlbumIndex(from: model)
             self.galleryManager.updateAlbumIndex(index: newAlbumIndex)
             galleryIndex.images.append(contentsOf: model.images)
-            let newGalleryImages = galleryIndex.images.uniqued().compactMap { $0 }
+            let newGalleryImages = galleryIndex.images.uniqued(on: { GalleryImage in
+                GalleryImage.fileName
+            }).compactMap { $0 }
             galleryIndex.images = newGalleryImages
             self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
         } else if var galleryIndex = self.galleryManager.loadGalleryIndex() {
-            galleryIndex.images = model.images.uniqued().compactMap { $0 }
+            galleryIndex.images = model.images.uniqued(on: { GalleryImage in
+                GalleryImage.fileName
+            }).compactMap { $0 }
             galleryIndex.thumbnailSize = model.thumbnailsSize
             galleryIndex.showingAnnotations = model.showingAnnotations
             galleryIndex.id = model.id
@@ -79,24 +78,10 @@ class AlbumScreenViewModel {
     func loadModel() {
         if let albumID, let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
             self.modelRelay.onNext(AlbumScreenModel(from: albumIndex))
-        } else if let galleryIndex = self.galleryManager.loadGalleryIndex()  {
-            self.modelRelay.onNext(AlbumScreenModel(from: galleryIndex))
-        }
-    }
-    
-    func loadGalleryIndex() -> Observable<GalleryIndex> {
-        self.galleryManager.selectedGalleryIndexRelay.asObservable()
-    }
-    
-    func loadAlbumImagesObservable() -> Observable<[GalleryImage]> {
-        if let albumID {
-            return galleryManager.loadAlbumIndexAsObservable(id: albumID).flatMap {
-                Observable.just($0.images)
-            }
-        } else {
-            return galleryManager.selectedGalleryIndexRelay.flatMap {
-                Observable.just($0.images)
-            }
+        } else if self.galleryManager.loadGalleryIndex() != nil  {
+            self.galleryManager.selectedGalleryIndexRelay.distinctUntilChanged().subscribe(onNext: { galleryIndex in
+                self.modelRelay.onNext(AlbumScreenModel(from: galleryIndex))
+            }).disposed(by: disposeBag)
         }
     }
     
@@ -148,16 +133,6 @@ class AlbumScreenViewModel {
     
     func duplicateItem(image: GalleryImage) {
         
-    }
-    
-    func switchTitles(value: Bool) {
-        if let albumID = albumID, var newIndex = loadAlbum(by: albumID) {
-            newIndex.showingAnnotations = value
-            self.galleryManager.updateAlbumIndex(index: newIndex)
-        } else if var galleryIndex = self.galleryManager.loadGalleryIndex() {
-            galleryIndex.showingAnnotations = value
-            self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
-        }
     }
     
     func resolveThumbPathFor(image: String) -> String {

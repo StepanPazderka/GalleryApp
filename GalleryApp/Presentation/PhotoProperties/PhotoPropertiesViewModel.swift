@@ -80,7 +80,7 @@ class PhotoPropertiesViewModel {
         selectedImages.map { self.galleryManager.resolvePathFor(imageName: $0.fileName) }
     }
     
-    func updateAlbumImage(albumImage: GalleryImage) {
-        self.galleryManager.updateAlbumImage(image: albumImage)
+    func update(image: GalleryImage) {
+        self.galleryManager.update(image: image)
     }
 }

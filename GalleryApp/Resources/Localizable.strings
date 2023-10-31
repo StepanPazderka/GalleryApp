@@ -7,7 +7,7 @@
 */
 
 "kCANCEL" = "Cancel";
-"SELECTFROMFILES" = "Select from Files";
+"kSELECTFROMFILES" = "Select from Files";
 "CreateSubAlbum" = "Create SubAlbum";
 "MoveToAlbum" = "Move to Album";
 "kALLPHOTOS" = "All Photos";
@@ -17,7 +17,7 @@
 "kDELETEIMAGE" = "Delete Image";
 "DeleteTitle" = "Delete";
 "kDETAILS" = "Details";
-"IMPORTFROM" = "Import photo from";
+"kIMPORTFROM" = "Import photo from";
 "kMOVETOALBUM" = "Move to Album";
 "kEDIT" = "Edit";
 "kDONE" = "Done";

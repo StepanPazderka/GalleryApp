@@ -135,11 +135,14 @@ class AlbumScreenViewController: UIViewController {
             }
         }).disposed(by: disposeBag)
         
-        self.viewModel.showingTitles
-            .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] value in
-                self?.screenView.checkBoxTitles.checker = value
-            }).disposed(by: disposeBag)
+        self.viewModel.modelRelay
+            .asObservable()
+            .map { $0.showingAnnotations }
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: { showingAnnotations in
+                self.screenView.checkBoxTitles.checker = showingAnnotations
+            })
+            .disposed(by: disposeBag)
         
         // MARK: - Loading Images to Collection View
         self.viewModel.modelRelay
@@ -200,8 +203,8 @@ class AlbumScreenViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         self.screenView.addImageButton.rx.tap.subscribe(onNext: { [weak self] in
-            let alert = UIAlertController(title: NSLocalizedString("IMPORTFROM", comment: "Select import location"), message: nil, preferredStyle: .actionSheet)
-            alert.addAction(UIAlertAction(title: NSLocalizedString("SELECTFROMFILES", comment: "Default action"), style: .default) { [weak self] _ in
+            let alert = UIAlertController(title: NSLocalizedString("kIMPORTFROM", comment: "Select import location"), message: nil, preferredStyle: .actionSheet)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("kSELECTFROMFILES", comment: "Default action"), style: .default) { [weak self] _ in
                 self?.showDocumentPicker()
             })
             alert.addAction(UIAlertAction(title: NSLocalizedString("kSELECTFROMPHOTOLIBRARY", comment: "Default action"), style: .default) { [weak self] _ in

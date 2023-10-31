@@ -21,6 +21,11 @@ class PhotoDetailViewModel {
     }
     var indexAsObservable: BehaviorRelay<IndexPath>
     
+    enum NavigationDirection {
+        case previous
+        case next
+    }
+    
     // MARK: - Init
     internal init(galleryManager: GalleryManager, settings: PhotoDetailModel) {
         self.images = settings.selectedImages
@@ -39,5 +44,18 @@ class PhotoDetailViewModel {
     
     func resolveThumbPathFor(image: String) -> String {
         galleryManager.resolvePathFor(imageName: image)
+    }
+    
+    func showImage(_ navigationDirection: NavigationDirection) {
+        switch navigationDirection {
+        case .previous:
+            if self.index.item > 0 {
+                self.index.row -= 1
+            }
+        case .next:
+            if index.item < images.count-1 {
+                self.index.row += 1
+            }
+        }
     }
 }

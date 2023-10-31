@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		291AA710F07C47ED12CA87BA /* Pods_GalleryApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C4EC8CDC8DE278CEE5E096B /* Pods_GalleryApp.framework */; };
 		7F05BF622AE5496A00E078BB /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7F05BF612AE5496A00E078BB /* Algorithms */; };
-		7F5E1ED82AE29FE6006A9E88 /* FileObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5E1ED72AE29FE6006A9E88 /* FileObserver.swift */; };
 		7F62EA7929056C3600FCD97F /* GalleryAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */; };
 		7F795F572AB749360090F6D1 /* UIColor+randomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F795F562AB749360090F6D1 /* UIColor+randomColor.swift */; };
 		7F795F592AB909CE0090F6D1 /* PanZoomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F795F582AB909CE0090F6D1 /* PanZoomImageView.swift */; };
@@ -95,7 +94,6 @@
 		3357635DC6D5A8FC6E5C7155 /* Pods-GalleryApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.debug.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.debug.xcconfig"; sourceTree = "<group>"; };
 		7C4EC8CDC8DE278CEE5E096B /* Pods_GalleryApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GalleryApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F235DFA2585B73C007BD075 /* GalleryApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GalleryApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		7F5E1ED72AE29FE6006A9E88 /* FileObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileObserver.swift; sourceTree = "<group>"; };
 		7F62EA7629056C3600FCD97F /* GalleryAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GalleryAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryAppTests.swift; sourceTree = "<group>"; };
 		7F795F562AB749360090F6D1 /* UIColor+randomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+randomColor.swift"; sourceTree = "<group>"; };
@@ -307,7 +305,6 @@
 				7F85C04C2AC466E3002448D4 /* Resources */,
 				7F85C04D2AC4671C002448D4 /* Entitlements */,
 				7F85C04A2AC4655E002448D4 /* Plists */,
-				7F5E1ED72AE29FE6006A9E88 /* FileObserver.swift */,
 			);
 			path = GalleryApp;
 			sourceTree = "<group>";
@@ -680,7 +677,6 @@
 				7FF5C0AB2A9D2C65001CA982 /* SceneDelegate.swift in Sources */,
 				7FF5C06E2A9D2C65001CA982 /* UIImage+imageWidth.swift in Sources */,
 				7FF5C0712A9D2C65001CA982 /* ContainerBuilder.swift in Sources */,
-				7F5E1ED82AE29FE6006A9E88 /* FileObserver.swift in Sources */,
 				7FF5C07F2A9D2C65001CA982 /* PathResolver.swift in Sources */,
 				7FF5C0912A9D2C65001CA982 /* PhotoDetailViewController.swift in Sources */,
 				7FF5C09A2A9D2C65001CA982 /* SidebarSections.swift in Sources */,

@@ -138,15 +138,9 @@ class PhotoDetailViewController: UIViewController {
             }
             
             if key.charactersIgnoringModifiers == UIKeyCommand.inputLeftArrow {
-                if viewModel.index.item > 0 {
-                    self.viewModel.index.row -= 1
-                }
+                self.viewModel.showImage(.previous)
             } else if key.charactersIgnoringModifiers == UIKeyCommand.inputRightArrow {
-                if let count = dataSource.sectionModels.first?.items.count {
-                    if viewModel.index.item < count-1 {
-                        self.viewModel.index.row += 1
-                    }
-                }
+                self.viewModel.showImage(.next)
             }
         }
     }

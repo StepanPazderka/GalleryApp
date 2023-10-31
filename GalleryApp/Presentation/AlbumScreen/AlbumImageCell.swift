@@ -73,7 +73,6 @@ class AlbumImageCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(galleryImageLongPress(_:)))
         self.imageView.isUserInteractionEnabled = true
         
         self.imageView.contentMode = .scaleAspectFit
@@ -119,9 +118,6 @@ class AlbumImageCell: UICollectionViewCell {
         self.imageView.image = UIImage(contentsOfFile: imageData.fileName)
         self.viewModel = viewModel
         self.isSelected = false
-        self.viewModel?.isEditing.subscribe(onNext: { [weak self] value in
-//            self?.containerViewForCheck.isHidden = !value
-        }).disposed(by: disposeBag)
         
         bindData()
     }
