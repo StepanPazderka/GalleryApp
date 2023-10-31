@@ -227,11 +227,7 @@ class AlbumScreenViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         self.screenView.checkBoxTitles.rx.tap.subscribe(onNext: { [weak self] in
-            if self?.viewModel.showingTitles.value != false {
-                self?.viewModel.showingTitles.accept(false)
-            } else {
-                self?.viewModel.showingTitles.accept(true)
-            }
+            self?.viewModel.model.showingAnnotations.toggle()
         }).disposed(by: disposeBag)
         
         // MARK: - Slider binding

@@ -18,6 +18,13 @@ struct GalleryIndex: Codable {
     static var empty: Self {
         Self(mainGalleryName: "", images: [GalleryImage](), albums: [UUID](), thumbnailSize: 200, showingAnnotations: false)
     }
+    
+    enum CodingKeys: String, CodingKey {
+        case mainGalleryName = "mainGalleryName"
+        case id
+        case images
+        case albums
+    }
 }
 
 extension GalleryIndex: Equatable { }

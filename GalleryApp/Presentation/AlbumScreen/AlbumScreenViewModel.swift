@@ -77,7 +77,15 @@ class AlbumScreenViewModel {
     
     func loadModel() {
         if let albumID, let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
-            self.modelRelay.onNext(AlbumScreenModel(from: albumIndex))
+            var thisScreenModel = AlbumScreenModel(from: albumIndex)
+            let galleryIndex = self.galleryManager.loadGalleryIndex()
+            thisScreenModel.images = thisScreenModel.images.map { albumImage in
+                if let imageFromGalleryIndex = galleryIndex?.images.first(where: { galleryImage in
+                    galleryImage.fileName == albumImage.fileName
+                }) { return imageFromGalleryIndex } else { return albumImage }
+            }
+            
+            self.modelRelay.onNext(thisScreenModel)
         } else if self.galleryManager.loadGalleryIndex() != nil  {
             self.galleryManager.selectedGalleryIndexRelay.distinctUntilChanged().subscribe(onNext: { galleryIndex in
                 self.modelRelay.onNext(AlbumScreenModel(from: galleryIndex))
