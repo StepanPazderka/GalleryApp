@@ -68,8 +68,8 @@ class ContainerBuilder {
         }
         
         container.register(GalleryManager.self) { r in
-            return GalleryManager(settingsManager: r.resolve(SettingsManager.self)!,
-                                  fileScannerManger: r.resolve(FileScannerManager.self)!)
+            return GalleryManagerLocal(settingsManager: r.resolve(SettingsManager.self)!,
+                                       fileScannerManger: r.resolve(FileScannerManager.self)!)
         }
     }
     

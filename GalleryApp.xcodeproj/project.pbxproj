@@ -7,17 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		291AA710F07C47ED12CA87BA /* Pods_GalleryApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C4EC8CDC8DE278CEE5E096B /* Pods_GalleryApp.framework */; };
-		7F05BF622AE5496A00E078BB /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7F05BF612AE5496A00E078BB /* Algorithms */; };
 		7F62EA7929056C3600FCD97F /* GalleryAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */; };
 		7F795F572AB749360090F6D1 /* UIColor+randomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F795F562AB749360090F6D1 /* UIColor+randomColor.swift */; };
 		7F795F592AB909CE0090F6D1 /* PanZoomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F795F582AB909CE0090F6D1 /* PanZoomImageView.swift */; };
 		7F8056AF2ABF0D3A00DB6D29 /* UIStackView+addArrangedSubviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8056AE2ABF0D3A00DB6D29 /* UIStackView+addArrangedSubviews.swift */; };
 		7F8056B12AC069BE00DB6D29 /* AlbumListRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8056B02AC069BE00DB6D29 /* AlbumListRouter.swift */; };
 		7F8800DE2AC0B36F008C4648 /* AlbumListViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8800DD2AC0B36F008C4648 /* AlbumListViewControllerDelegate.swift */; };
+		7F8B7D712AF57BBF0013950B /* ModelsForRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8B7D702AF57BBF0013950B /* ModelsForRealm.swift */; };
+		7F8B7D752AF7F80D0013950B /* GalleryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8B7D742AF7F80D0013950B /* GalleryManager.swift */; };
+		7F8B7D7E2AF82A9C0013950B /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7F8B7D7D2AF82A9C0013950B /* Algorithms */; };
 		7FC922622ABB65B700402C76 /* PhotoDetailCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC922612ABB65B700402C76 /* PhotoDetailCollectionViewCell.swift */; };
 		7FDCEE732905741C00395F10 /* GalleryManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FDCEE722905741C00395F10 /* GalleryManagerTest.swift */; };
 		7FEDEA93284CD8AD001F40C0 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7FEDEA92284CD8AD001F40C0 /* SnapKit */; };
+		7FF158E82B02D24E00149B82 /* GalleryManagerRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8B7D722AF7F0EE0013950B /* GalleryManagerRealm.swift */; };
 		7FF2D86C2AD8A5BB0027313F /* UIImageView+contentClippingRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF2D86B2AD8A5BB0027313F /* UIImageView+contentClippingRect.swift */; };
 		7FF5C0672A9D2C65001CA982 /* en.xcloc in Resources */ = {isa = PBXBuildFile; fileRef = 7FF5C0112A9D2C65001CA982 /* en.xcloc */; };
 		7FF5C0682A9D2C65001CA982 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0142A9D2C65001CA982 /* Constants.swift */; };
@@ -40,7 +42,7 @@
 		7FF5C07E2A9D2C65001CA982 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C02C2A9D2C65001CA982 /* AppDelegate.swift */; };
 		7FF5C07F2A9D2C65001CA982 /* PathResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C02E2A9D2C65001CA982 /* PathResolver.swift */; };
 		7FF5C0802A9D2C65001CA982 /* UnsecureStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C02F2A9D2C65001CA982 /* UnsecureStorage.swift */; };
-		7FF5C0812A9D2C65001CA982 /* GalleryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0302A9D2C65001CA982 /* GalleryManager.swift */; };
+		7FF5C0812A9D2C65001CA982 /* GalleryManagerLocal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0302A9D2C65001CA982 /* GalleryManagerLocal.swift */; };
 		7FF5C0822A9D2C65001CA982 /* SettingsKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0322A9D2C65001CA982 /* SettingsKey.swift */; };
 		7FF5C0832A9D2C65001CA982 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0332A9D2C65001CA982 /* SettingsManager.swift */; };
 		7FF5C0842A9D2C65001CA982 /* FileScannerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0342A9D2C65001CA982 /* FileScannerManager.swift */; };
@@ -78,6 +80,7 @@
 		7FF5C0A92A9D2C65001CA982 /* AlbumsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0642A9D2C65001CA982 /* AlbumsListViewController.swift */; };
 		7FF5C0AB2A9D2C65001CA982 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0662A9D2C65001CA982 /* SceneDelegate.swift */; };
 		7FF9A0F02ABC59D8000DEF06 /* SidebarViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF9A0EF2ABC59D8000DEF06 /* SidebarViewCell.swift */; };
+		A9BF8F25957A06B7855030E6 /* Pods_GalleryApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F949D9F22F22216AFCE855CC /* Pods_GalleryApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,8 +94,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3357635DC6D5A8FC6E5C7155 /* Pods-GalleryApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.debug.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.debug.xcconfig"; sourceTree = "<group>"; };
-		7C4EC8CDC8DE278CEE5E096B /* Pods_GalleryApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GalleryApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		749A13B72CE7FC410644F17D /* Pods-GalleryApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.debug.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.debug.xcconfig"; sourceTree = "<group>"; };
 		7F235DFA2585B73C007BD075 /* GalleryApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GalleryApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F62EA7629056C3600FCD97F /* GalleryAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GalleryAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryAppTests.swift; sourceTree = "<group>"; };
@@ -102,6 +104,9 @@
 		7F8056B02AC069BE00DB6D29 /* AlbumListRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumListRouter.swift; sourceTree = "<group>"; };
 		7F85C04E2AC4684E002448D4 /* GalleryApp.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = GalleryApp.entitlements; sourceTree = "<group>"; };
 		7F8800DD2AC0B36F008C4648 /* AlbumListViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumListViewControllerDelegate.swift; sourceTree = "<group>"; };
+		7F8B7D702AF57BBF0013950B /* ModelsForRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelsForRealm.swift; sourceTree = "<group>"; };
+		7F8B7D722AF7F0EE0013950B /* GalleryManagerRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryManagerRealm.swift; sourceTree = "<group>"; };
+		7F8B7D742AF7F80D0013950B /* GalleryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryManager.swift; sourceTree = "<group>"; };
 		7FC922612ABB65B700402C76 /* PhotoDetailCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailCollectionViewCell.swift; sourceTree = "<group>"; };
 		7FDCEE722905741C00395F10 /* GalleryManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryManagerTest.swift; sourceTree = "<group>"; };
 		7FF2D86B2AD8A5BB0027313F /* UIImageView+contentClippingRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+contentClippingRect.swift"; sourceTree = "<group>"; };
@@ -126,7 +131,7 @@
 		7FF5C02C2A9D2C65001CA982 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7FF5C02E2A9D2C65001CA982 /* PathResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PathResolver.swift; sourceTree = "<group>"; };
 		7FF5C02F2A9D2C65001CA982 /* UnsecureStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnsecureStorage.swift; sourceTree = "<group>"; };
-		7FF5C0302A9D2C65001CA982 /* GalleryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryManager.swift; sourceTree = "<group>"; };
+		7FF5C0302A9D2C65001CA982 /* GalleryManagerLocal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryManagerLocal.swift; sourceTree = "<group>"; };
 		7FF5C0322A9D2C65001CA982 /* SettingsKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsKey.swift; sourceTree = "<group>"; };
 		7FF5C0332A9D2C65001CA982 /* SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		7FF5C0342A9D2C65001CA982 /* FileScannerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileScannerManager.swift; sourceTree = "<group>"; };
@@ -165,7 +170,8 @@
 		7FF5C0652A9D2C65001CA982 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = GalleryApp/Plists/Info.plist; sourceTree = SOURCE_ROOT; };
 		7FF5C0662A9D2C65001CA982 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		7FF9A0EF2ABC59D8000DEF06 /* SidebarViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewCell.swift; sourceTree = "<group>"; };
-		9E63EE18BBFDF980A5A19A9C /* Pods-GalleryApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.release.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.release.xcconfig"; sourceTree = "<group>"; };
+		D281FF7885853AA754098193 /* Pods-GalleryApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GalleryApp.release.xcconfig"; path = "Target Support Files/Pods-GalleryApp/Pods-GalleryApp.release.xcconfig"; sourceTree = "<group>"; };
+		F949D9F22F22216AFCE855CC /* Pods_GalleryApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GalleryApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,9 +179,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7F05BF622AE5496A00E078BB /* Algorithms in Frameworks */,
+				7F8B7D7E2AF82A9C0013950B /* Algorithms in Frameworks */,
 				7FEDEA93284CD8AD001F40C0 /* SnapKit in Frameworks */,
-				291AA710F07C47ED12CA87BA /* Pods_GalleryApp.framework in Frameworks */,
+				A9BF8F25957A06B7855030E6 /* Pods_GalleryApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,10 +195,10 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		58BDD945DE5DDA737A4485F5 /* Frameworks */ = {
+		3D2141A62FFA5B2FB38A7DCB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				7C4EC8CDC8DE278CEE5E096B /* Pods_GalleryApp.framework */,
+				F949D9F22F22216AFCE855CC /* Pods_GalleryApp.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -200,8 +206,8 @@
 		58EE590C8CD4A31706325B59 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				3357635DC6D5A8FC6E5C7155 /* Pods-GalleryApp.debug.xcconfig */,
-				9E63EE18BBFDF980A5A19A9C /* Pods-GalleryApp.release.xcconfig */,
+				749A13B72CE7FC410644F17D /* Pods-GalleryApp.debug.xcconfig */,
+				D281FF7885853AA754098193 /* Pods-GalleryApp.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -213,7 +219,7 @@
 				7F62EA7729056C3600FCD97F /* GalleryAppTests */,
 				7F235DFB2585B73C007BD075 /* Products */,
 				58EE590C8CD4A31706325B59 /* Pods */,
-				58BDD945DE5DDA737A4485F5 /* Frameworks */,
+				3D2141A62FFA5B2FB38A7DCB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -290,6 +296,14 @@
 			path = Presentation;
 			sourceTree = "<group>";
 		};
+		7FF158E72B027FB400149B82 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				7F8B7D742AF7F80D0013950B /* GalleryManager.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
 		7FF5C00F2A9D2C65001CA982 /* GalleryApp */ = {
 			isa = PBXGroup;
 			children = (
@@ -345,12 +359,14 @@
 		7FF5C02D2A9D2C65001CA982 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				7FF158E72B027FB400149B82 /* Protocols */,
 				7FF5C0312A9D2C65001CA982 /* Enums */,
 				7FF5C02E2A9D2C65001CA982 /* PathResolver.swift */,
 				7FF5C02F2A9D2C65001CA982 /* UnsecureStorage.swift */,
-				7FF5C0302A9D2C65001CA982 /* GalleryManager.swift */,
+				7FF5C0302A9D2C65001CA982 /* GalleryManagerLocal.swift */,
 				7FF5C0332A9D2C65001CA982 /* SettingsManager.swift */,
 				7FF5C0342A9D2C65001CA982 /* FileScannerManager.swift */,
+				7F8B7D722AF7F0EE0013950B /* GalleryManagerRealm.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -377,6 +393,7 @@
 				7FF5C0382A9D2C65001CA982 /* GalleryImage.swift */,
 				7FF5C03B2A9D2C65001CA982 /* GalleryIndex.swift */,
 				7FF5C0372A9D2C65001CA982 /* AlbumIndex.swift */,
+				7F8B7D702AF57BBF0013950B /* ModelsForRealm.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -477,12 +494,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7F235E0E2585B73F007BD075 /* Build configuration list for PBXNativeTarget "GalleryApp" */;
 			buildPhases = (
-				C03EA67C2533FB5D931ED8A2 /* [CP] Check Pods Manifest.lock */,
+				C8EFB7D6AFB8FC91125141D0 /* [CP] Check Pods Manifest.lock */,
 				7F6F67282818B01A000AA747 /* [CP] Swiftlint */,
 				7F235DF62585B73C007BD075 /* Sources */,
 				7F235DF72585B73C007BD075 /* Frameworks */,
 				7F235DF82585B73C007BD075 /* Resources */,
-				0F8916A015218B0C449BFBB8 /* [CP] Embed Pods Frameworks */,
+				2F7774368A839A25D9D098F3 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -491,7 +508,7 @@
 			name = GalleryApp;
 			packageProductDependencies = (
 				7FEDEA92284CD8AD001F40C0 /* SnapKit */,
-				7F05BF612AE5496A00E078BB /* Algorithms */,
+				7F8B7D7D2AF82A9C0013950B /* Algorithms */,
 			);
 			productName = GalleryApp;
 			productReference = 7F235DFA2585B73C007BD075 /* GalleryApp.app */;
@@ -544,7 +561,7 @@
 			mainGroup = 7F235DF12585B73C007BD075;
 			packageReferences = (
 				7FEDEA91284CD8AD001F40C0 /* XCRemoteSwiftPackageReference "SnapKit" */,
-				7F05BF602AE5496A00E078BB /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+				7F8B7D7C2AF82A9C0013950B /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			productRefGroup = 7F235DFB2585B73C007BD075 /* Products */;
 			projectDirPath = "";
@@ -578,7 +595,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0F8916A015218B0C449BFBB8 /* [CP] Embed Pods Frameworks */ = {
+		2F7774368A839A25D9D098F3 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -613,7 +630,7 @@
 			shellPath = /bin/sh;
 			shellScript = "# ${PODS_ROOT}/SwiftLint/swiftlint\n";
 		};
-		C03EA67C2533FB5D931ED8A2 /* [CP] Check Pods Manifest.lock */ = {
+		C8EFB7D6AFB8FC91125141D0 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -656,9 +673,10 @@
 				7FF5C0742A9D2C65001CA982 /* ImageView+BlurEffect.swift in Sources */,
 				7FF5C0682A9D2C65001CA982 /* Constants.swift in Sources */,
 				7FF5C06D2A9D2C65001CA982 /* EdgeInsets.swift in Sources */,
+				7F8B7D752AF7F80D0013950B /* GalleryManager.swift in Sources */,
 				7F8800DE2AC0B36F008C4648 /* AlbumListViewControllerDelegate.swift in Sources */,
 				7F795F592AB909CE0090F6D1 /* PanZoomImageView.swift in Sources */,
-				7FF5C0812A9D2C65001CA982 /* GalleryManager.swift in Sources */,
+				7FF5C0812A9D2C65001CA982 /* GalleryManagerLocal.swift in Sources */,
 				7FF5C08E2A9D2C65001CA982 /* AlbumsListView.swift in Sources */,
 				7FF5C0972A9D2C65001CA982 /* SidebarSection.swift in Sources */,
 				7FF5C09E2A9D2C65001CA982 /* PhotoPropertiesViewController.swift in Sources */,
@@ -678,6 +696,7 @@
 				7FF5C06E2A9D2C65001CA982 /* UIImage+imageWidth.swift in Sources */,
 				7FF5C0712A9D2C65001CA982 /* ContainerBuilder.swift in Sources */,
 				7FF5C07F2A9D2C65001CA982 /* PathResolver.swift in Sources */,
+				7F8B7D712AF57BBF0013950B /* ModelsForRealm.swift in Sources */,
 				7FF5C0912A9D2C65001CA982 /* PhotoDetailViewController.swift in Sources */,
 				7FF5C09A2A9D2C65001CA982 /* SidebarSections.swift in Sources */,
 				7FF5C09F2A9D2C65001CA982 /* PhotoPropertiesViewModel.swift in Sources */,
@@ -688,6 +707,7 @@
 				7FF5C0A82A9D2C65001CA982 /* AlbumsListViewModel.swift in Sources */,
 				7FF5C0A62A9D2C65001CA982 /* AlbumScreenModel.swift in Sources */,
 				7FF5C07D2A9D2C65001CA982 /* UICheckBoxButton.swift in Sources */,
+				7FF158E82B02D24E00149B82 /* GalleryManagerRealm.swift in Sources */,
 				7FF5C0A92A9D2C65001CA982 /* AlbumsListViewController.swift in Sources */,
 				7FF5C0882A9D2C65001CA982 /* ImageResizer.swift in Sources */,
 				7FF2D86C2AD8A5BB0027313F /* UIImageView+contentClippingRect.swift in Sources */,
@@ -858,7 +878,7 @@
 		};
 		7F235E0F2585B73F007BD075 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3357635DC6D5A8FC6E5C7155 /* Pods-GalleryApp.debug.xcconfig */;
+			baseConfigurationReference = 749A13B72CE7FC410644F17D /* Pods-GalleryApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -890,7 +910,7 @@
 		};
 		7F235E102585B73F007BD075 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9E63EE18BBFDF980A5A19A9C /* Pods-GalleryApp.release.xcconfig */;
+			baseConfigurationReference = D281FF7885853AA754098193 /* Pods-GalleryApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1009,7 +1029,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7F05BF602AE5496A00E078BB /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+		7F8B7D7C2AF82A9C0013950B /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-algorithms.git";
 			requirement = {
@@ -1028,9 +1048,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		7F05BF612AE5496A00E078BB /* Algorithms */ = {
+		7F8B7D7D2AF82A9C0013950B /* Algorithms */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7F05BF602AE5496A00E078BB /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			package = 7F8B7D7C2AF82A9C0013950B /* XCRemoteSwiftPackageReference "swift-algorithms" */;
 			productName = Algorithms;
 		};
 		7FEDEA92284CD8AD001F40C0 /* SnapKit */ = {

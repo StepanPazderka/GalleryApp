@@ -52,6 +52,14 @@ struct AlbumIndex: Codable {
         self.showingAnnotations = entity.showingAnnotations
     }
     
+    init(from entity: AlbumIndexRealm) {
+        self.images = entity.images.map { GalleryImage(from: $0) }
+        self.name = entity.name
+        self.thumbnail = entity.thumbnail
+        self.showingAnnotations = entity.showingAnnotations
+        self.thumbnailsSize = entity.thumbnailSize
+    }
+    
     static var empty: Self {
         Self(name: "", images: [], thumbnail: "", showingAnnotations: false)
     }

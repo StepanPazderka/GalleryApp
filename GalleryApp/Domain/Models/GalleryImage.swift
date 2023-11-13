@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 import RxDataSources
+import Realm
+import RealmSwift
 
 struct GalleryImage: Codable {
     var fileName: String
@@ -29,6 +31,16 @@ extension GalleryImage: IdentifiableType {
     
     var identity: UUID {
         return id
+    }
+}
+
+// MARK: - Realm compatibility
+extension GalleryImage {
+    init(from: GalleryImageRealm) {
+        self.fileName = from.fileName
+        self.date = from.date
+        self.title = from.title
+        self.id = UUID(uuidString: from.id) ?? UUID()
     }
 }
 

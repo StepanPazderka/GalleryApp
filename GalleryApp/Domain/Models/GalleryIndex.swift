@@ -27,4 +27,14 @@ struct GalleryIndex: Codable {
     }
 }
 
+extension GalleryIndex {
+    init(from: GalleryIndexRealm) {
+        self.images = from.images.map { GalleryImage(from: $0) }
+        self.albums = from.albums.map { AlbumIndex(from: $0).id }
+        self.mainGalleryName = from.name
+        self.showingAnnotations = from.showingAnnotations
+        self.thumbnailSize = from.thumbnailSize
+    }
+}
+
 extension GalleryIndex: Equatable { }

@@ -40,7 +40,7 @@ class SidebarViewModel {
     
     func duplicateAlbum(id: UUID) {
         if let album: AlbumIndex = self.galleryManager.loadAlbumIndex(id: id) {
-            self.galleryManager.dubplicateAlbum(index: album)
+            self.galleryManager.duplicateAlbum(index: album)
         }
     }
     
