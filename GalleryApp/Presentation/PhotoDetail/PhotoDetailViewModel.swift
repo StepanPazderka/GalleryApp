@@ -12,6 +12,7 @@ import RxRelay
 class PhotoDetailViewModel {
     // MARK: - Properties
     let galleryManager: GalleryManager
+    let pathResolver: PathResolver
     
     var images: [GalleryImage]
     var index: IndexPath {
@@ -27,23 +28,24 @@ class PhotoDetailViewModel {
     }
     
     // MARK: - Init
-    internal init(galleryManager: GalleryManager, settings: PhotoDetailModel) {
+    internal init(galleryManager: GalleryManager, settings: PhotoDetailModel, pathResolver: PathResolver) {
         self.images = settings.selectedImages
         self.index = settings.selectedIndex
         self.indexAsObservable = BehaviorRelay<IndexPath>(value: index)
         self.galleryManager = galleryManager
+        self.pathResolver = pathResolver
     }
     
     func getImages() -> [GalleryImage] {
         self.images.map { image in
             var mutatedImage = image
-            mutatedImage.fileName = galleryManager.resolvePathFor(imageName: image.fileName)
+            mutatedImage.fileName = pathResolver.resolvePathFor(imageName: image.fileName)
             return mutatedImage
         }
     }
     
     func resolveThumbPathFor(image: String) -> String {
-        galleryManager.resolvePathFor(imageName: image)
+        pathResolver.resolvePathFor(imageName: image)
     }
     
     func showImage(_ navigationDirection: NavigationDirection) {

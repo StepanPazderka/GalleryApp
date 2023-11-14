@@ -26,7 +26,7 @@ class ContainerBuilder {
         let transientContainer = Container(parent: container, defaultObjectScope: .transient)
         
         transientContainer.register(PhotoDetailViewModel.self) { (r, settings: PhotoDetailModel) in
-            return PhotoDetailViewModel(galleryManager: r.resolve(GalleryManager.self)!, settings: settings)
+            return PhotoDetailViewModel(galleryManager: r.resolve(GalleryManager.self)!, settings: settings, pathResolver: r.resolve(PathResolver.self)!)
         }
         
         transientContainer.register(PhotoDetailViewController.self) { (r, photoDetailSettings: PhotoDetailModel) in
@@ -35,11 +35,11 @@ class ContainerBuilder {
         }
         
         transientContainer.register(AlbumsListViewModel.self) { r in
-            return AlbumsListViewModel(galleryManager: r.resolve(GalleryManager.self)!)
+            return AlbumsListViewModel(galleryManager: r.resolve(GalleryManager.self)!, pathResolver: r.resolve(PathResolver.self)!)
         }.inObjectScope(.transient)
         
         transientContainer.register(PhotoPropertiesViewModel.self) { (r, images: [GalleryImage]) in
-            return PhotoPropertiesViewModel(images: images, galleryManager: r.resolve(GalleryManager.self)!)
+            return PhotoPropertiesViewModel(images: images, galleryManager: r.resolve(GalleryManager.self)!, pathResolver: r.resolve(PathResolver.self)!)
         }
         
         transientContainer.register(PhotoPropertiesViewController.self) { (r, images: [GalleryImage]) in
@@ -61,6 +61,10 @@ class ContainerBuilder {
         
         container.register(SettingsManager.self) { r in
             return SettingsManager(unsecureStorage: r.resolve(UnsecureStorage.self)!)
+        }
+        
+        container.register(PathResolver.self) { r in
+            return PathResolver(settingsManager: r.resolve(SettingsManager.self)!)
         }
         
         container.register(FileScannerManager.self) { r in
@@ -88,7 +92,8 @@ class ContainerBuilder {
         
         container.register(SidebarViewModel.self) { r in
             return SidebarViewModel(galleryInteractor: r.resolve(GalleryManager.self)!,
-                                    settingsManager: r.resolve(SettingsManager.self)!)
+                                    settingsManager: r.resolve(SettingsManager.self)!,
+                                    pathResolver: r.resolve(PathResolver.self)!)
         }
         
         container.register(SidebarViewController.self) { r in
@@ -109,12 +114,14 @@ class ContainerBuilder {
         
         container.register(AlbumScreenViewModel.self) { r in
             return AlbumScreenViewModel(albumID: nil,
-                                        galleryManager: r.resolve(GalleryManager.self)!)
+                                        galleryManager: r.resolve(GalleryManager.self)!,
+                                        pathResolver: r.resolve(PathResolver.self)!)
         }.inObjectScope(.container)
         
         container.register(AlbumScreenViewModel.self) { (r, albumID: UUID) in
             return AlbumScreenViewModel(albumID: albumID,
-                                        galleryManager: r.resolve(GalleryManager.self)!)
+                                        galleryManager: r.resolve(GalleryManager.self)!,
+                                        pathResolver: r.resolve(PathResolver.self)!)
         }.inObjectScope(.transient)
         
         container.register(AlbumScreenViewController.self) { (r, albumID: UUID) in

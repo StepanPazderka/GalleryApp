@@ -11,14 +11,16 @@ import RxSwift
 class SidebarViewModel {
     
     // MARK: -- Properties
-    private var galleryManager: GalleryManager
-    private var settingsManager: SettingsManager
+    private let galleryManager: GalleryManager
+    private let settingsManager: SettingsManager
+    private let pathResolver: PathResolver
     
     let disposeBag = DisposeBag()
     
-    init(galleryInteractor: GalleryManager, settingsManager: SettingsManager) {
+    init(galleryInteractor: GalleryManager, settingsManager: SettingsManager, pathResolver: PathResolver) {
         self.galleryManager = galleryInteractor
         self.settingsManager = settingsManager
+        self.pathResolver = pathResolver
     }
     
     func loadGalleryIndex() -> Observable<GalleryIndex> {
@@ -54,7 +56,7 @@ class SidebarViewModel {
                     var thumbnailImage: UIImage?
 
                     if let FirstAlbumImage = album.images.first {
-                        let path = self.galleryManager.resolveThumbPathFor(imageName: FirstAlbumImage.fileName)
+                        let path = self.pathResolver.resolveThumbPathFor(imageName: FirstAlbumImage.fileName)
                         
                         let thumbnailImageURL = self.galleryManager.selectedGalleryPath.appendingPathComponent(FirstAlbumImage.fileName)
                         thumbnailImage = UIImage(contentsOfFile: path)

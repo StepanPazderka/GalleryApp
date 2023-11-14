@@ -21,6 +21,7 @@ class AlbumScreenViewModel {
     
     var albumID: UUID?
     let galleryManager: GalleryManager
+    let pathResolver: PathResolver
     
     var importProgress = MutableProgress()
     var filesSelectedInEditMode = [GalleryImage]()
@@ -35,9 +36,11 @@ class AlbumScreenViewModel {
     
     let disposeBag = DisposeBag()
     
-    internal init(albumID: UUID? = nil, galleryManager: GalleryManager) {
+    // MARK: - Init
+    init(albumID: UUID? = nil, galleryManager: GalleryManager, pathResolver: PathResolver) {
         self.albumID = albumID
         self.galleryManager = galleryManager
+        self.pathResolver = pathResolver
         
         if let albumID, let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
             self.model = AlbumScreenModel(from: albumIndex)
@@ -135,7 +138,7 @@ class AlbumScreenViewModel {
     }
     
     func resolveThumbPathFor(image: String) -> String {
-        self.galleryManager.resolveThumbPathFor(imageName: image)
+        self.pathResolver.resolveThumbPathFor(imageName: image)
     }
     
     func handleFilesImport(urls: [URL]) {

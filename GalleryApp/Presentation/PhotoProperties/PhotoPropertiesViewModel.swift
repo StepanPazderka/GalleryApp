@@ -12,11 +12,13 @@ class PhotoPropertiesViewModel {
     // MARK: - Properties
     let selectedImages: [GalleryImage]
     let galleryManager: GalleryManager
+    let pathResolver: PathResolver
     
     //MARK: - Init
-    init(images: [GalleryImage], galleryManager: GalleryManager) {
+    init(images: [GalleryImage], galleryManager: GalleryManager, pathResolver: PathResolver) {
         self.selectedImages = images
         self.galleryManager = galleryManager
+        self.pathResolver = pathResolver
     }
     
     func getFileType() -> String? {
@@ -77,7 +79,7 @@ class PhotoPropertiesViewModel {
     }
     
     func resolveImagePaths() -> [String] {
-        selectedImages.map { self.galleryManager.resolvePathFor(imageName: $0.fileName) }
+        selectedImages.map { self.pathResolver.resolvePathFor(imageName: $0.fileName) }
     }
     
     func update(image: GalleryImage) {

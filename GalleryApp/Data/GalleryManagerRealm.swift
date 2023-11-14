@@ -12,6 +12,20 @@ import RxCocoa
 import RxSwift
 
 class GalleryManagerRealm: GalleryManager {
+    
+    // MARK: - Properties
+    var libraryPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+    var selectedGalleryPath: URL {
+        get {
+            return libraryPath.appendingPathComponent(settingsManager.selectedGallery)
+        }
+    }
+    
+    let realm = try! Realm()
+    
+    let settingsManager: SettingsManager
+    let fileScannerManager: FileScannerManager
+    
     func rebuildGalleryIndex() -> GalleryIndex {
         self.loadGalleryIndex()!
     }
@@ -131,20 +145,6 @@ class GalleryManagerRealm: GalleryManager {
     func resolvePathFor(imageName: String) -> String {
         return self.selectedGalleryPath.appendingPathComponent(imageName, conformingTo: .image).relativePath
     }
-    
-    
-    // MARK: - Properties
-    var libraryPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-    var selectedGalleryPath: URL {
-        get {
-            return libraryPath.appendingPathComponent(settingsManager.selectedGallery)
-        }
-    }
-    
-    let realm = try! Realm()
-    
-    let settingsManager: SettingsManager
-    let fileScannerManager: FileScannerManager
     
     public let selectedGalleryIndexRelay = BehaviorRelay<GalleryIndex>(value: .empty)
     private var model: GalleryIndex {

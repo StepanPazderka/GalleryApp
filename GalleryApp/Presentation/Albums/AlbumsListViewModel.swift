@@ -11,14 +11,18 @@ import RxSwift
 
 class AlbumsListViewModel {
     
+    // MARK: - Properties
     let galleryManager: GalleryManager
+    let pathResolver: PathResolver
     let showErrorCantAddImageToAlbum = BehaviorRelay(value: false)
     let shouldDismiss = BehaviorRelay(value: false)
     
     var delegate: AlbumListViewControllerDelegate?
     
-    init(galleryManager: GalleryManager) {
+    // MARK: - Init
+    init(galleryManager: GalleryManager, pathResolver: PathResolver) {
         self.galleryManager = galleryManager
+        self.pathResolver = pathResolver
     }
 
     func moveToAlbum(images: [GalleryImage], album: UUID) {
@@ -42,7 +46,7 @@ class AlbumsListViewModel {
                     var thumbnailImage: UIImage?
 
                     if let FirstAlbumImage = album.images.first {
-                        let path = self.galleryManager.resolveThumbPathFor(imageName: FirstAlbumImage.fileName)
+                        let path = self.pathResolver.resolveThumbPathFor(imageName: FirstAlbumImage.fileName)
                         
                         let thumbnailImageURL = self.galleryManager.selectedGalleryPath.appendingPathComponent(FirstAlbumImage.fileName)
                         thumbnailImage = UIImage(contentsOfFile: path)

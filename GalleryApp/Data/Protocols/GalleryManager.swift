@@ -31,8 +31,8 @@ protocol GalleryManager {
     func loadAlbumImage(id: String) -> GalleryImage?
     func update(image: GalleryImage)
     
-    func resolveThumbPathFor(imageName: String) -> String
-    func resolvePathFor(imageName: String) -> String
+//    func resolveThumbPathFor(imageName: String) -> String
+//    func resolvePathFor(imageName: String) -> String
     
     func loadAlbumIndexAsObservable(id: UUID) -> Observable<AlbumIndex>
     func createAlbum(name: String, parentAlbum: UUID?) throws
