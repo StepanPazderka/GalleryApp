@@ -7,6 +7,8 @@
 
 import Foundation
 import UIKit
+import RxSwift
+import RxCocoa
 
 class PhotoPropertiesViewController: UIViewController {
     
@@ -16,6 +18,7 @@ class PhotoPropertiesViewController: UIViewController {
     // MARK: - Properties
     let viewModel: PhotoPropertiesViewModel
     lazy var screenView = ScreenView()
+    let disposeBag = DisposeBag()
     
     // MARK: - Init
     init(viewModel: PhotoPropertiesViewModel)
@@ -33,6 +36,7 @@ class PhotoPropertiesViewController: UIViewController {
         super.viewDidLoad()
 
         self.setupViews()
+        self.bindData()
     }
     
     func setupViews() {
@@ -69,8 +73,15 @@ class PhotoPropertiesViewController: UIViewController {
             self.screenView.photoDateLabel.text = "\(localizedModifiedDateText) \(dateFormatter.string(from: date))"
         }
         
-        self.screenView.textView.text = viewModel.getPhotoTitle()
         self.screenView.textView.delegate = self
+    }
+    
+    func bindData() {
+        self.viewModel
+            .getPhotoTitleAsObservable()
+            .asDriver(onErrorJustReturn: "")
+            .drive(self.screenView.textView.rx.text)
+            .disposed(by: disposeBag)
     }
 }
 

@@ -19,6 +19,11 @@ PODS:
     - Differentiator (~> 5.0)
     - RxCocoa (~> 6.0)
     - RxSwift (~> 6.0)
+  - RxRealm (5.0.6):
+    - Realm (~> 10.44)
+    - RealmSwift (~> 10.44)
+    - RxCocoa (~> 6.1)
+    - RxSwift (~> 6.1)
   - RxRelay (6.6.0):
     - RxSwift (= 6.6.0)
   - RxSwift (6.6.0)
@@ -29,9 +34,9 @@ DEPENDENCIES:
   - DirectoryWatcher
   - IQKeyboardManagerSwift
   - Lightbox
-  - Realm
   - RealmSwift
   - RxDataSources
+  - RxRealm (from `https://github.com/jopache/RxRealm.git`)
   - RxSwift
   - SwiftLint
   - Swinject
@@ -53,6 +58,15 @@ SPEC REPOS:
     - SwiftLint
     - Swinject
 
+EXTERNAL SOURCES:
+  RxRealm:
+    :git: https://github.com/jopache/RxRealm.git
+
+CHECKOUT OPTIONS:
+  RxRealm:
+    :commit: bb3a34cb707eb8d572f673b7a378ae82ed60f293
+    :git: https://github.com/jopache/RxRealm.git
+
 SPEC CHECKSUMS:
   Cache: 4ca7e00363fca5455f26534e5607634c820ffc2d
   Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
@@ -64,11 +78,12 @@ SPEC CHECKSUMS:
   RealmSwift: 352f85c018b4d0efe961974bfa95bf7a30e079f6
   RxCocoa: 44a80de90e25b739b5aeaae3c8c371a32e3343cc
   RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
+  RxRealm: 86c0dcffe83a78d533ea8325e85686fe7eaae6ed
   RxRelay: 45eaa5db8ee4fb50e5ebd57deec0159e97fa51e6
   RxSwift: a4b44f7d24599f674deebd1818eab82e58410632
   SwiftLint: 5ce4d6a8ff83f1b5fd5ad5dbf30965d35af65e44
   Swinject: 893c9a543000ac2f10ee4cbaf0933c6992c935d5
 
-PODFILE CHECKSUM: 517434e28457bd342ec4d74568bc2268adc91f0f
+PODFILE CHECKSUM: 41b22ca84dfa6749aa577706aeb9a44a17fb1cd9
 
 COCOAPODS: 1.11.3

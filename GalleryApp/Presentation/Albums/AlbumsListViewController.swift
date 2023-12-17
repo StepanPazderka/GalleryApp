@@ -17,7 +17,7 @@ import DirectoryWatcher
 class AlbumsListViewController: UIViewController {
     
     // MARK: - Properties
-    private var dataSource: RxCollectionViewSectionedReloadDataSource<SidebarSection>?
+    private var dataSource: RxCollectionViewSectionedReloadDataSource<SidebarSectionModel>?
     var selectedAlbum: UUID?
     var selectedImages: [GalleryImage]
     private let router: AlbumListRouter
@@ -114,7 +114,7 @@ class AlbumsListViewController: UIViewController {
     
     // MARK: - Data Source Configuration
     func configureDataSource() {
-        dataSource = RxCollectionViewSectionedReloadDataSource<SidebarSection>(
+        dataSource = RxCollectionViewSectionedReloadDataSource<SidebarSectionModel>(
             configureCell: { dataSource, collectionView, indexPath, item in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarViewCell.identifier, for: indexPath) as! SidebarViewCell
                 cell.label.text = item.title

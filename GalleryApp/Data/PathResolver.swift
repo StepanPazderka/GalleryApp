@@ -15,7 +15,7 @@ class PathResolver {
     var libraryPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     var selectedGalleryPath: URL {
         get {
-            return libraryPath.appendingPathComponent(settingsManager.selectedGallery)
+            return libraryPath.appendingPathComponent(settingsManager.selectedGalleryName)
         }
     }
     

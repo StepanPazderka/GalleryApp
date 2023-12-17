@@ -12,10 +12,10 @@ import RxSwift
 class SettingsManager {
     
     let unsecureStorage: UnsecureStorage
-    var selectedGallery: String
+    var selectedGalleryName: String
     var selectedGalleryAsObservable = BehaviorSubject(value: "Default Library")
     var selectedGalleryPath: URL {
-        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent(selectedGallery)
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent(selectedGalleryName)
     }
     let allowedTypes = [UTType.jpeg, UTType.tiff, UTType.png]
     var allowedExtensions: [String] {
@@ -27,16 +27,16 @@ class SettingsManager {
         self.unsecureStorage = unsecureStorage
         
         if let loadedSelectedGallery: String = unsecureStorage.load(key: .selectedGallery) {
-            selectedGallery = loadedSelectedGallery
+            selectedGalleryName = loadedSelectedGallery
             selectedGalleryAsObservable.onNext(loadedSelectedGallery)
         } else {
             unsecureStorage.save(key: .selectedGallery, value: "Default Gallery")
-            selectedGallery = "Default Gallery"
+            selectedGalleryName = "Default Gallery"
             selectedGalleryAsObservable.onNext("Default Gallery")
         }
         
         self.selectedGalleryAsObservable.subscribe(onNext: { [weak self] value in
-            self?.selectedGallery = value
+            self?.selectedGalleryName = value
         }).disposed(by: disposeBag)
     }
     

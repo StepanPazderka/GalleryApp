@@ -19,7 +19,7 @@ class SidebarViewController: UIViewController {
     let screenView = SidebarView()
     
     // MARK: - Properties
-    private var dataSource: RxCollectionViewSectionedReloadDataSource<SidebarSection>?
+    private var dataSource: RxCollectionViewSectionedAnimatedDataSource<SidebarSectionModel>?
     private let router: SidebarRouter
     private let viewModel: SidebarViewModel
     private let disposeBag = DisposeBag()
@@ -46,7 +46,7 @@ class SidebarViewController: UIViewController {
         self.bindData()
         self.bindInteractions()
         
-        self.screenView.sidebarCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: .centeredVertically)
+//        self.screenView.sidebarCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: .centeredVertically)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -111,7 +111,7 @@ class SidebarViewController: UIViewController {
         viewModel.getSelectedLibraryNameAsObservable()
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] libraryName in
-                self?.screenView.sidebarCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: true, scrollPosition: .top)
+//                self?.screenView.sidebarCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: true, scrollPosition: .top)
                 self?.router.showAllPhotos()
             })
             .disposed(by: disposeBag)
@@ -171,7 +171,7 @@ class SidebarViewController: UIViewController {
             }
         }
         
-        dataSource = RxCollectionViewSectionedReloadDataSource<SidebarSection>(
+        dataSource = RxCollectionViewSectionedAnimatedDataSource<SidebarSectionModel>(
             configureCell: { dataSource, collectionView, indexPath, item in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarViewCell.identifier, for: indexPath) as! SidebarViewCell
                 cell.label.text = item.title
@@ -237,7 +237,11 @@ extension SidebarViewController: UICollectionViewDelegate {
                 
                 if let albumName = self.dataSource?[indexPath].title, let albumID = self.dataSource?[indexPath].identifier {
                     self.showRenameAlbumDialog(withPrepopulatedName: albumName) { [indexPath] newAlbumName in
-                        self.viewModel.renameAlbum(id: albumID, withNewAlbumName: newAlbumName)
+                        do {
+                            try self.viewModel.renameAlbum(id: albumID, withNewAlbumName: newAlbumName)
+                        } catch {
+                            print(error)
+                        }
                         self.screenView.sidebarCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: .top)
                     }
                 }

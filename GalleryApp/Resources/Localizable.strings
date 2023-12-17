@@ -41,3 +41,6 @@
 "kSELECTFROMPHOTOLIBRARY" = "Select from Photo Gallery";
 "kCOPY" = "Copy";
 "DuplicateTitle" = "Duplicate item";
+"kERRORIMPORTINGFILES" = "Can't import certain files: ";
+"kMAIN" = "Main";
+"kALBUMS" = "Albums";

@@ -5,8 +5,8 @@ target 'GalleryApp' do
 
   # Pods for GalleryApp
   pod 'RxSwift'
-  pod 'Realm'
   pod 'RealmSwift'
+  pod 'RxRealm', :git => 'https://github.com/jopache/RxRealm.git'
   pod 'RxDataSources'
   pod 'Swinject'
   pod 'DirectoryWatcher'

@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import UIKit
+import RxDataSources
 
-struct SidebarItem: Hashable {
+struct SidebarItem: Hashable, IdentifiableType {
     let title: String?
     private let originalImage: UIImage?
     var image: UIImage? {
@@ -26,6 +26,9 @@ struct SidebarItem: Hashable {
         }
     }
     let identifier: UUID?
+    var identity: String {
+        self.identifier?.uuidString ?? "Nothing"
+    }
     let type: buttonType
     
     enum buttonType {

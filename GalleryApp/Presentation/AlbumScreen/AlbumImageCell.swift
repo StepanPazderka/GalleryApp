@@ -85,7 +85,7 @@ class AlbumImageCell: UICollectionViewCell {
     }
     
     func bindData() {
-        self.viewModel?.modelRelay.map { $0.showingAnnotations }.subscribe(onNext: { value in
+        self.viewModel?.showingAnnotationsAsObservable().subscribe(onNext: { value in
             UIView.animate(withDuration: 0.25,
                            animations: {
                 if value == false {

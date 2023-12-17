@@ -53,6 +53,7 @@ struct AlbumIndex: Codable {
     }
     
     init(from entity: AlbumIndexRealm) {
+        self.id = UUID(uuidString: entity.id) ?? UUID()
         self.images = entity.images.map { GalleryImage(from: $0) }
         self.name = entity.name
         self.thumbnail = entity.thumbnail

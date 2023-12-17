@@ -11,28 +11,24 @@ import RxCocoa
 import PhotosUI
 import Algorithms
 
+enum AlbumScreenError {
+    case errorDuplicatingImage
+    case errorDuplicatingAlbum
+}
+
 class AlbumScreenViewModel {
     
     // MARK: -- Properties
     var isEditing = BehaviorRelay(value: false)
-    var showingTitles = BehaviorRelay(value: false)
     var showingLoading = BehaviorRelay(value: false)
-    var showImportError = BehaviorRelay(value: [String]())
-    
+    var errorMessage = BehaviorRelay(value: "")
+        
     var albumID: UUID?
     let galleryManager: GalleryManager
     let pathResolver: PathResolver
     
     var importProgress = MutableProgress()
     var filesSelectedInEditMode = [GalleryImage]()
-    
-    var modelRelay = BehaviorSubject(value: AlbumScreenModel.empty)
-    var model: AlbumScreenModel {
-        didSet {
-            updateModel(model: model)
-            modelRelay.onNext(model)
-        }
-    }
     
     let disposeBag = DisposeBag()
     
@@ -41,62 +37,42 @@ class AlbumScreenViewModel {
         self.albumID = albumID
         self.galleryManager = galleryManager
         self.pathResolver = pathResolver
-        
-        if let albumID, let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
-            self.model = AlbumScreenModel(from: albumIndex)
-        } else if let galleryIndex = self.galleryManager.loadGalleryIndex()  {
-            self.model = AlbumScreenModel(from: galleryIndex)
-        } else {
-            self.model = .empty
-        }
-        
-        loadModel()
-        
-        self.modelRelay.distinctUntilChanged().subscribe(onNext: { [weak self] changedAlbumScreenModel in
-            self?.updateModel(model: changedAlbumScreenModel)
-        }).disposed(by: disposeBag)
     }
     
-    func updateModel(model: AlbumScreenModel) {
-        if albumID != nil, var galleryIndex = self.galleryManager.loadGalleryIndex() {
-            let newAlbumIndex = AlbumIndex(from: model)
-            self.galleryManager.updateAlbumIndex(index: newAlbumIndex)
-            galleryIndex.images.append(contentsOf: model.images)
-            let newGalleryImages = galleryIndex.images.uniqued(on: { GalleryImage in
-                GalleryImage.fileName
-            }).compactMap { $0 }
-            galleryIndex.images = newGalleryImages
-            self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
-        } else if var galleryIndex = self.galleryManager.loadGalleryIndex() {
-            galleryIndex.images = model.images.uniqued(on: { GalleryImage in
-                GalleryImage.fileName
-            }).compactMap { $0 }
-            galleryIndex.thumbnailSize = model.thumbnailsSize
-            galleryIndex.showingAnnotations = model.showingAnnotations
-            galleryIndex.id = model.id
-            self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
-        }
-    }
-    
-    func loadModel() {
-        if let albumID, let albumIndex = self.galleryManager.loadAlbumIndex(id: albumID) {
-            var thisScreenModel = AlbumScreenModel(from: albumIndex)
-            let galleryIndex = self.galleryManager.loadGalleryIndex()
-            thisScreenModel.images = thisScreenModel.images.map { albumImage in
-                if let imageFromGalleryIndex = galleryIndex?.images.first(where: { galleryImage in
-                    galleryImage.fileName == albumImage.fileName
-                }) { return imageFromGalleryIndex } else { return albumImage }
+    func imagesAsObservable() -> Observable<[GalleryImage]> {
+        self.galleryManager.selectedGalleryIndexRelay.map { [weak self] in
+            if let albumID = self?.albumID {
+                return self?.galleryManager.loadAlbumIndex(with: albumID)?.images ?? [GalleryImage]()
+            } else {
+                return $0.images
             }
-            self.modelRelay.onNext(thisScreenModel)
-        } else if self.galleryManager.loadGalleryIndex() != nil  {
-            self.galleryManager.selectedGalleryIndexRelay.distinctUntilChanged().subscribe(onNext: { galleryIndex in
-                self.modelRelay.onNext(AlbumScreenModel(from: galleryIndex))
-            }).disposed(by: disposeBag)
+         }
+    }
+    
+    func showingAnnotationsAsObservable() -> Observable<Bool> {
+        if let albumID {
+            self.galleryManager.loadAlbumIndexAsObservable(id: albumID).map { $0.showingAnnotations ?? false }
+        } else {
+            self.galleryManager.loadGalleryIndexAsObservable().map { $0.showingAnnotations ?? false }
+        }
+    }
+    
+    func updateShowingAnnotations(value: Bool) {
+        if let albumID {
+            if var albumIndex = self.galleryManager.loadAlbumIndex(with: albumID) {
+                albumIndex.showingAnnotations = value
+                try! self.galleryManager.updateAlbumIndex(index: albumIndex)
+            }
+        } else {
+            if var galleryIndex = self.galleryManager.load(galleryIndex: nil) {
+                galleryIndex.showingAnnotations = value
+                self.galleryManager.updateGalleryIndex(newGalleryIndex: galleryIndex)
+            }
         }
     }
     
     func loadAlbum(by: UUID) -> AlbumIndex? {
-        return self.galleryManager.loadAlbumIndex(id: by)
+        return self.galleryManager.loadAlbumIndex(with: by)
     }
     
     func loadAlbumIndexAsObservable() -> Observable<AlbumIndex> {
@@ -104,48 +80,57 @@ class AlbumScreenViewModel {
     }
     
     func delete(_ images: [GalleryImage]) {
-        for image in images {
-            self.model.images.removeAll(where: { $0 == image })
-        }
         self.galleryManager.delete(images: images)
     }
     
     func removeFromAlbum(images: [GalleryImage]) {
         guard albumID != nil else { return }
         
-        for image in images {
-            model.images.removeAll { $0.fileName == image.fileName}
+        if let albumID {
+            if var albumIndex = self.galleryManager.loadAlbumIndex(with: albumID) {
+                albumIndex.images.removeAll(where: { images.contains($0) })
+                try! self.galleryManager.updateAlbumIndex(index: albumIndex)
+            }
         }
     }
     
     func addPhotos(images: [GalleryImage]) {
-        self.model.images.append(contentsOf: images)
+        self.galleryManager.write(images: images)
     }
     
     func newThumbnailSize(size: Float) {
-        self.model.thumbnailsSize = size
+//        self.model.thumbnailsSize = size
     }
     
     func setAlbumThumbnailImage(image: GalleryImage) {
-        if let albumID, var albumIndex = galleryManager.loadAlbumIndex(id: albumID) {
+        if let albumID, var albumIndex = galleryManager.loadAlbumIndex(with: albumID) {
             albumIndex.thumbnail = image.fileName
-            self.galleryManager.updateAlbumIndex(index: albumIndex)
+            try! self.galleryManager.updateAlbumIndex(index: albumIndex)
         }
     }
     
-    func duplicateItem(image: GalleryImage) {
-        
+    func duplicateItem(images: [GalleryImage]) {
+        do {
+            if let albumID, let albumIndex = loadAlbum(by: albumID) {
+                try self.galleryManager.duplicate(images: images, inAlbum: albumIndex)
+            } else {
+                try self.galleryManager.duplicate(images: images, inAlbum: nil)
+            }
+        } catch {
+            
+        }
     }
     
     func resolveThumbPathFor(image: String) -> String {
         self.pathResolver.resolveThumbPathFor(imageName: image)
     }
     
-    func handleFilesImport(urls: [URL]) {
+    func handleImportFromFilesApp(urls: [URL]) {
         for url in urls {
             do {
                 let filenameExtension = url.pathExtension.lowercased()
-                let targetPath = self.galleryManager.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
+                let newFileName = URL(string: UUID().uuidString)!.appendingPathExtension(filenameExtension)
+                let targetPath = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(newFileName.relativeString)
                 
                 try FileManager.default.moveItem(at: url, to: targetPath)
                 let newImage = GalleryImage(fileName: targetPath.lastPathComponent, date: Date(), title: nil)
@@ -157,7 +142,7 @@ class AlbumScreenViewModel {
         }
     }
     
-    func importPhotos(results: [PHPickerResult]) {
+    func handleImportFromPhotosApp(results: [PHPickerResult]) {
         guard !results.isEmpty else { return }
         
         var filesSelectedForImport = [GalleryImage]()
@@ -181,11 +166,13 @@ class AlbumScreenViewModel {
                     print("Error while copying files \(String(describing: error))")
                 }
                 
-                let targetPath = self.galleryManager.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
+                let targetPath = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
                 do {
                     try FileManager.default.moveItem(at: filePath, to: targetPath)
                     newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
-                    self.galleryManager.buildThumbnail(forImage: GalleryImage(fileName: targetPath.lastPathComponent, date: Date()))
+                    DispatchQueue.main.async {
+                        self.galleryManager.buildThumbnail(forImage: GalleryImage(fileName: targetPath.lastPathComponent, date: Date()))
+                    }
                     filesSelectedForImport.append(GalleryImage(fileName: targetPath.lastPathComponent, date: Date()))
                 } catch {
                     print(error)
@@ -193,7 +180,6 @@ class AlbumScreenViewModel {
             }
             self.importProgress.addChild(newTaskProgress)
         }
-        
         
         self.showingLoading.accept(true)
         var timer: Timer?
@@ -209,17 +195,10 @@ class AlbumScreenViewModel {
                 usleep(UInt32(0.25))
                 self.showingLoading.accept(false)
                 filesSelectedForImport.removeAll()
-                self.showImportError.accept(filenamesThatCouldntBeImported)
+                self.errorMessage.accept("\(NSLocalizedString("kERRORIMPORTINGFILES", comment: "")) \(filenamesThatCouldntBeImported.joined(separator: ", "))")
                 stopTimer()
             }
         }
     }
 }
 
-extension AlbumScreenViewModel: PHPickerViewControllerDelegate {
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true)
-        let photos = results
-        self.importPhotos(results: photos)
-    }
-}

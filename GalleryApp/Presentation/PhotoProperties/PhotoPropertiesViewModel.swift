@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import RxSwift
+import RxCocoa
 
 class PhotoPropertiesViewModel {
     
@@ -22,7 +24,7 @@ class PhotoPropertiesViewModel {
     }
     
     func getFileType() -> String? {
-        let fileURL = self.galleryManager.selectedGalleryPath.appendingPathComponent(selectedImages.first!.fileName)
+        let fileURL = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(selectedImages.first!.fileName)
         
         return fileURL.pathExtension.uppercased()
     }
@@ -32,7 +34,7 @@ class PhotoPropertiesViewModel {
         
         do {
             for image in selectedImages {
-                let fileAttributes: NSDictionary? = try FileManager.default.attributesOfItem(atPath: self.galleryManager.selectedGalleryPath.appendingPathComponent(image.fileName).relativePath) as NSDictionary
+                let fileAttributes: NSDictionary? = try FileManager.default.attributesOfItem(atPath: self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(image.fileName).relativePath) as NSDictionary
                 if let fileAttributes {
                     fileSize += fileAttributes.fileSize();
                 }
@@ -49,7 +51,7 @@ class PhotoPropertiesViewModel {
         guard selectedImages.count == 1 else { return nil }
         
         do {
-            let fileAttributes = try FileManager.default.attributesOfItem(atPath: self.galleryManager.selectedGalleryPath.appendingPathComponent(selectedImages.first!.fileName).relativePath)
+            let fileAttributes = try FileManager.default.attributesOfItem(atPath: self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(selectedImages.first!.fileName).relativePath)
             date = fileAttributes[FileAttributeKey.creationDate] as? Date
         } catch {
             return nil
@@ -63,19 +65,16 @@ class PhotoPropertiesViewModel {
         guard selectedImages.count == 1 else { return nil }
         
         do {
-            let attr = try FileManager.default.attributesOfItem(atPath: self.galleryManager.selectedGalleryPath.appendingPathComponent(selectedImages.first!.fileName).relativePath)
+            let attr = try FileManager.default.attributesOfItem(atPath: self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(selectedImages.first!.fileName).relativePath)
             date = attr[FileAttributeKey.modificationDate] as? Date
         } catch {
             return nil
         }
         return date
     }
-    
-    func getPhotoTitle() -> String {
-        guard let photoID = selectedImages.first else { return "" }
-        var albumImage: GalleryImage?
-        albumImage = self.galleryManager.loadAlbumImage(id: photoID.fileName)
-        return albumImage?.title ?? ""
+
+    func getPhotoTitleAsObservable() -> Observable<String> {
+        return galleryManager.loadImageAsObservable(with: selectedImages.first!.id).map { $0.title ?? "" }
     }
     
     func resolveImagePaths() -> [String] {

@@ -31,7 +31,7 @@ class AlbumsListViewModel {
                 try self.galleryManager.move(Image: image, toAlbum: album)
                 self.shouldDismiss.accept(true)
                 self.delegate?.didFinishMovingImages()
-            } catch MoveImageError.imageAlreadyInAlbum {
+            } catch GalleryManagerError.imageAlreadyInAlbum {
                 showErrorCantAddImageToAlbum.accept(true)
             } catch {
                 shouldDismiss.accept(true)
@@ -39,22 +39,22 @@ class AlbumsListViewModel {
         }
     }
     
-    func fetchAlbums() -> Observable<[SidebarSection]> {
+    func fetchAlbums() -> Observable<[SidebarSectionModel]> {
         self.galleryManager.selectedGalleryIndexRelay.map { index in
             return index.albums.compactMap { albumID in
-                if let album = self.galleryManager.loadAlbumIndex(id: albumID) {
+                if let album = self.galleryManager.loadAlbumIndex(with: albumID) {
                     var thumbnailImage: UIImage?
 
                     if let FirstAlbumImage = album.images.first {
                         let path = self.pathResolver.resolveThumbPathFor(imageName: FirstAlbumImage.fileName)
                         
-                        let thumbnailImageURL = self.galleryManager.selectedGalleryPath.appendingPathComponent(FirstAlbumImage.fileName)
+                        let thumbnailImageURL = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(FirstAlbumImage.fileName)
                         thumbnailImage = UIImage(contentsOfFile: path)
                     }
                     
                     if let thumbnail = album.thumbnail {
                         if !thumbnail.isEmpty && !album.images.isEmpty {
-                            let thumbnailImageURL = self.galleryManager.selectedGalleryPath.appendingPathComponent(thumbnail)
+                            let thumbnailImageURL = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(thumbnail)
                             thumbnailImage = UIImage(contentsOfFile: thumbnailImageURL.relativePath)
                         }
                     }
@@ -64,7 +64,7 @@ class AlbumsListViewModel {
                 }
             }
         }.map { items in
-            return [SidebarSection(category: "Albums", items: items)]
+            return [SidebarSectionModel(name: "Albums", items: items)]
         }.asObservable()
     }
 }

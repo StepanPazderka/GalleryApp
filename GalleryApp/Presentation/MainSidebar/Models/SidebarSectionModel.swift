@@ -9,9 +9,9 @@ import Foundation
 import RxDataSources
 
 /// Struct representing Sidebar Section
-struct SidebarSection {
-    internal init(category: String, items: [SidebarItem]) {
-        self.name = category
+struct SidebarSectionModel {
+    internal init(name: String, items: [SidebarItem]) {
+        self.name = name
         self.items = items
     }
     
@@ -19,12 +19,12 @@ struct SidebarSection {
     var items: [SidebarItem]
     
     static var empty: Self {
-        Self(category: "None", items: [SidebarItem]())
+        Self(name: "None", items: [SidebarItem]())
     }
 }
 
-extension SidebarSection: SectionModelType {
-    init(original: SidebarSection, items: [SidebarItem]) {
+extension SidebarSectionModel: AnimatableSectionModelType {
+    init(original: SidebarSectionModel, items: [SidebarItem]) {
         self.name = original.name
         self.items = items
     }
@@ -32,4 +32,8 @@ extension SidebarSection: SectionModelType {
     var identity: String {
         return name
     }
+}
+
+extension SidebarSectionModel: Equatable {
+    
 }

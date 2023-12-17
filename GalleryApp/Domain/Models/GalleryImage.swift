@@ -17,6 +17,8 @@ struct GalleryImage: Codable {
     var title: String?
     var id = UUID()
     
+    static let empty = Self(fileName: "", date: Date(), title: "")
+    
     internal init(fileName: String, date: Date, title: String? = nil) {
         self.fileName = fileName
         self.date = date

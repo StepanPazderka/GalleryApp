@@ -16,7 +16,7 @@ struct GalleryIndex: Codable {
     var showingAnnotations: Bool? = false
     
     static var empty: Self {
-        Self(mainGalleryName: "", images: [GalleryImage](), albums: [UUID](), thumbnailSize: 200, showingAnnotations: false)
+        Self(id: .empty, mainGalleryName: "", images: [GalleryImage](), albums: [UUID](), thumbnailSize: 200, showingAnnotations: false)
     }
     
     enum CodingKeys: String, CodingKey {
@@ -29,6 +29,7 @@ struct GalleryIndex: Codable {
 
 extension GalleryIndex {
     init(from: GalleryIndexRealm) {
+        self.id = UUID(uuidString: from.id)!
         self.images = from.images.map { GalleryImage(from: $0) }
         self.albums = from.albums.map { AlbumIndex(from: $0).id }
         self.mainGalleryName = from.name

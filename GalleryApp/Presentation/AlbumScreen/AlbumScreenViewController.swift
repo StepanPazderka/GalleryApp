@@ -21,7 +21,7 @@ class AlbumScreenViewController: UIViewController {
     var viewModel: AlbumScreenViewModel
     let router: AlbumScreenRouter
     var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, GalleryImage>>!
-    
+
     let disposeBag = DisposeBag()
     
     // MARK: - Progress
@@ -53,7 +53,6 @@ class AlbumScreenViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.loadModel()
     }
     
     func configureDataSource() {
@@ -94,7 +93,7 @@ class AlbumScreenViewController: UIViewController {
                 self?.screenView.slider.value = loadedIndex.thumbnailsSize
             }).disposed(by: disposeBag)
         } else {
-            self.viewModel.galleryManager.galleryObservable().subscribe(onNext: { [weak self] index in
+            self.viewModel.galleryManager.loadGalleryIndexAsObservable().subscribe(onNext: { [weak self] index in
                 if let thumbnailSize = index.thumbnailSize {
                     let newItemSize = CGSize(width: CGFloat(thumbnailSize), height: CGFloat(thumbnailSize))
                     self?.screenView.collectionLayout.itemSize = newItemSize
@@ -102,6 +101,8 @@ class AlbumScreenViewController: UIViewController {
                 }
             }).disposed(by: disposeBag)
         }
+        
+        self.screenView.collectionView.allowsMultipleSelection = true
     }
     
     func showDocumentPicker() {
@@ -112,7 +113,7 @@ class AlbumScreenViewController: UIViewController {
     
     func showImagePicker() {
         let imagePicker = self.screenView.imagePicker()
-        imagePicker.delegate = self.viewModel
+        imagePicker.delegate = self
         self.present(imagePicker, animated: true)
     }
     
@@ -127,28 +128,17 @@ class AlbumScreenViewController: UIViewController {
             .bind(to: self.screenView.loadingView.rx.isHidden)
             .disposed(by: disposeBag)
         
-        self.viewModel.showImportError.subscribe(onNext: { [weak self] filesThatCouldntBeImported in
-            if !filesThatCouldntBeImported.isEmpty {
-                let alert = UIAlertController(title: "Alert", message: "Could not import files \(filesThatCouldntBeImported.joined(separator: ", "))", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default))
+        self.viewModel.errorMessage.subscribe(onNext: { [weak self] errorMessage in
+            if !errorMessage.isEmpty {
+                let alert = UIAlertController(title: "Alert", message: errorMessage, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "kOK", style: .default))
                 self?.present(alert, animated: true, completion: nil)
             }
         }).disposed(by: disposeBag)
         
-        self.viewModel.modelRelay
-            .asObservable()
-            .map { $0.showingAnnotations }
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: { showingAnnotations in
-                self.screenView.checkBoxTitles.checker = showingAnnotations
-            })
-            .disposed(by: disposeBag)
-        
         // MARK: - Loading Images to Collection View
-        self.viewModel.modelRelay
-            .asObservable()
-            .do(onNext: { print("Images: \($0.images)") })
-            .flatMap { Observable.just([AnimatableSectionModel(model: "Section", items: $0.images )]) }
+        self.viewModel.imagesAsObservable()
+            .flatMap { Observable.just([AnimatableSectionModel(model: "Section", items: $0 )]) }
             .bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource))
             .disposed(by: disposeBag)
     }
@@ -226,8 +216,11 @@ class AlbumScreenViewController: UIViewController {
             self.viewModel.isEditing.accept(false)
         }).disposed(by: disposeBag)
         
+        self.viewModel.showingAnnotationsAsObservable().asDriver(onErrorJustReturn: false).drive(screenView.checkBoxTitles.rx.checker).disposed(by: disposeBag)
+        
+        // MARK: - Showing notes binding
         self.screenView.checkBoxTitles.rx.tap.subscribe(onNext: { [weak self] in
-            self?.viewModel.model.showingAnnotations.toggle()
+            self?.viewModel.updateShowingAnnotations(value: self?.screenView.checkBoxTitles.checker ?? false)
         }).disposed(by: disposeBag)
         
         // MARK: - Slider binding
@@ -244,7 +237,6 @@ class AlbumScreenViewController: UIViewController {
     
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
-        self.screenView.collectionView.allowsMultipleSelection = editing
     }
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
@@ -289,7 +281,7 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
             UIAction(title: NSLocalizedString("DuplicateTitle", comment: ""),
                      image: UIImage(systemName: "plus.square.on.square")) { action in
                 if let item = self?.dataSource.sectionModels[indexPath.section].items[indexPath.row] {
-                    self?.viewModel.duplicateItem(image: item)
+                    self?.viewModel.duplicateItem(images: [item])
                 }
             }
             let setThumbnailAction =
@@ -325,7 +317,9 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
             if isEditing {
                 cell.showSelectedView()
             } else {
-                self.router.showPhotoDetail(images: self.viewModel.model.images, index: indexPath)
+                if let images = self.dataSource.sectionModels.first?.items.map { $0 } {
+                    self.router.showPhotoDetail(images: images, index: indexPath)
+                }
             }
         }
     }
@@ -341,7 +335,14 @@ extension AlbumScreenViewController: UIPopoverPresentationControllerDelegate {}
 
 extension AlbumScreenViewController: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        self.viewModel.handleFilesImport(urls: urls)
+        self.viewModel.handleImportFromFilesApp(urls: urls)
+    }
+}
+
+extension AlbumScreenViewController: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true)
+        self.viewModel.handleImportFromPhotosApp(results: results)
     }
 }
 
@@ -349,5 +350,6 @@ extension AlbumScreenViewController: UIDocumentPickerDelegate {
 extension AlbumScreenViewController: AlbumListViewControllerDelegate {
     func didFinishMovingImages() {
         self.isEditing = false
+        self.viewModel.isEditing.accept(false)
     }
 }

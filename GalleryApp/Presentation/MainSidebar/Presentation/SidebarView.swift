@@ -15,11 +15,12 @@ class SidebarView: UIView {
     public var sidebarCollectionView: UICollectionView!
     
     let sidebarLayout: UICollectionViewCompositionalLayout = {
-        return UICollectionViewCompositionalLayout { section, layoutEnvironment in
+        let layout = UICollectionViewCompositionalLayout { section, layoutEnvironment in
             var config = UICollectionLayoutListConfiguration(appearance: .sidebar)
             config.headerMode = .supplementary
             return NSCollectionLayoutSection.list(using: config, layoutEnvironment: layoutEnvironment)
         }
+        return layout
     }()
     
     var addAlbumButton: UIButton = {
