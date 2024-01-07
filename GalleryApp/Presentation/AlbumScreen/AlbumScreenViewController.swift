@@ -244,11 +244,6 @@ class AlbumScreenViewController: UIViewController {
     }
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-//        let temp = self.viewModel.images.remove(at: sourceIndexPath.item)
-//        self.viewModel.images.insert(temp, at: destinationIndexPath.item)
-        
-//        let newGalleryIndex = AlbumIndex(name: self.viewModel.galleryManager.selectedGalleryPath.lastPathComponent, images: self.viewModel.images, thumbnail: self.viewModel.images.first?.fileName ?? "")
-//        self.viewModel.galleryManager.updateAlbumIndex(index: newGalleryIndex)
         return
     }
     

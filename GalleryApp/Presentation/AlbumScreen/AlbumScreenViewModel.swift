@@ -195,7 +195,9 @@ class AlbumScreenViewModel {
                 usleep(UInt32(0.25))
                 self.showingLoading.accept(false)
                 filesSelectedForImport.removeAll()
-                self.errorMessage.accept("\(NSLocalizedString("kERRORIMPORTINGFILES", comment: "")) \(filenamesThatCouldntBeImported.joined(separator: ", "))")
+                if !filenamesThatCouldntBeImported.isEmpty {
+                    self.errorMessage.accept("\(NSLocalizedString("kERRORIMPORTINGFILES", comment: "")) \(filenamesThatCouldntBeImported.joined(separator: ", "))")
+                }
                 stopTimer()
             }
         }
