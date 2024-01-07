@@ -132,6 +132,13 @@ class GalleryManagerImpl: GalleryManager {
             try realm.write {
                 let imagesToDelete = realm.objects(GalleryImageRealm.self).filter("id IN %@", imageIDs)
                 realm.delete(imagesToDelete)
+                for image in images {
+                    let fullImagePath = self.pathResolver.resolvePathFor(imageName: image.fileName)
+                    let thumbImagePath = self.pathResolver.resolveThumbPathFor(imageName: image.fileName)
+                    
+                    try! FileManager.default.removeItem(atPath: fullImagePath)
+                    try! FileManager.default.removeItem(atPath: thumbImagePath)
+                }
             }
         } catch {
             print("Error deleting images: \(error)")
