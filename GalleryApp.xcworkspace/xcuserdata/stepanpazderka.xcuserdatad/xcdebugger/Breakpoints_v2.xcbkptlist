@@ -100,5 +100,83 @@
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D912DFA0-D9A4-4859-A659-DFE9800D6B3B"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "217"
+            endingLineNumber = "217"
+            landmarkName = "bindInteractions()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "D912DFA0-D9A4-4859-A659-DFE9800D6B3B - 8f9236ca858c1afe"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GalleryApp.AlbumScreenViewController.bindInteractions() -&gt; ()"
+                  moduleName = "GalleryApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "217"
+                  endingLineNumber = "217"
+                  offsetFromSymbolStart = "2636">
+               </Location>
+               <Location
+                  uuid = "D912DFA0-D9A4-4859-A659-DFE9800D6B3B - 53a2067f0d06a801"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #6 () -&gt; () in GalleryApp.AlbumScreenViewController.bindInteractions() -&gt; ()"
+                  moduleName = "GalleryApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "217"
+                  endingLineNumber = "217"
+                  offsetFromSymbolStart = "484">
+               </Location>
+               <Location
+                  uuid = "D912DFA0-D9A4-4859-A659-DFE9800D6B3B - 53a2067f0d06a8e0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #6 () -&gt; () in GalleryApp.AlbumScreenViewController.bindInteractions() -&gt; ()"
+                  moduleName = "GalleryApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "218"
+                  endingLineNumber = "218"
+                  offsetFromSymbolStart = "564">
+               </Location>
+               <Location
+                  uuid = "D912DFA0-D9A4-4859-A659-DFE9800D6B3B - e7b1169a1a52469e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (GalleryApp.GalleryImage) -&gt; GalleryApp.GalleryImage in closure #6 () -&gt; () in GalleryApp.AlbumScreenViewController.bindInteractions() -&gt; ()"
+                  moduleName = "GalleryApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/stepanpazderka/Developer/GalleryApp/GalleryApp/Presentation/AlbumScreen/AlbumScreenViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "218"
+                  endingLineNumber = "218"
+                  offsetFromSymbolStart = "32">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

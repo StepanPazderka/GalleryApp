@@ -212,7 +212,11 @@ class AlbumScreenViewController: UIViewController {
         
         self.screenView.deleteImageButton.rx.tap.subscribe(onNext: { [weak self] in
             guard let self else { return }
-            self.viewModel.delete(self.viewModel.filesSelectedInEditMode.map { $0 })
+            guard let indexes = self.screenView.collectionView.indexPathsForSelectedItems else { return }
+            print(indexes)
+            var selectedImages = indexes.compactMap { self.dataSource.sectionModels.first?.items[$0.item] ?? nil }
+            print(selectedImages)
+            self.viewModel.delete(selectedImages)
             self.viewModel.isEditing.accept(false)
         }).disposed(by: disposeBag)
         
