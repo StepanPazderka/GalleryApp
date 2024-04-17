@@ -8,18 +8,26 @@
 import Foundation
 import RxDataSources
 
+enum SidebarSectionModelType {
+	case mainButtons
+	case albumButtons
+	case unknown
+}
+
 /// Struct representing Sidebar Section
 struct SidebarSectionModel {
-    internal init(name: String, items: [SidebarItem]) {
+	var name: String
+	var items: [SidebarItem]
+	let type: SidebarSectionModelType
+	
+	internal init(type: SidebarSectionModelType, name: String, items: [SidebarItem]) {
+		self.type = type
         self.name = name
         self.items = items
     }
     
-    var name: String
-    var items: [SidebarItem]
-    
     static var empty: Self {
-        Self(name: "None", items: [SidebarItem]())
+		Self(type: .unknown, name: "None", items: [SidebarItem]())
     }
 }
 
@@ -27,6 +35,7 @@ extension SidebarSectionModel: AnimatableSectionModelType {
     init(original: SidebarSectionModel, items: [SidebarItem]) {
         self.name = original.name
         self.items = items
+		self.type = .unknown
     }
     
     var identity: String {

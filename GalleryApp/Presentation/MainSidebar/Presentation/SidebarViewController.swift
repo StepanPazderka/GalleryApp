@@ -105,6 +105,9 @@ class SidebarViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.loadSidebarContent()
+			.distinctUntilChanged {
+				$0.first(where: { $0.type == .albumButtons })?.items.count
+			}
             .bind(to: screenView.sidebarCollectionView.rx.items(dataSource: dataSource!))
             .disposed(by: disposeBag)
         

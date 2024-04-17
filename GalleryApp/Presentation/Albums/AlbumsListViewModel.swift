@@ -64,7 +64,7 @@ class AlbumsListViewModel {
                 }
             }
         }.map { items in
-            return [SidebarSectionModel(name: "Albums", items: items)]
+			return [SidebarSectionModel(type: .albumButtons, name: "Albums", items: items)]
         }.asObservable()
     }
 }

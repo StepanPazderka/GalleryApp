@@ -40,10 +40,10 @@ class SidebarViewModel {
         galleryManager
             .loadGalleryIndexAsObservable()
             .map { galleryIndex in
-                let mainButonsSection = SidebarSectionModel(name: NSLocalizedString("kMAIN", comment: "Main buttons"), items: [
+				let mainButonsSection = SidebarSectionModel(type: .mainButtons, name: NSLocalizedString("kMAIN", comment: "Main buttons"), items: [
                     SidebarItem(title: NSLocalizedString("kALLPHOTOS", comment: "Title for sidebar cell to show All Photos in library"), image: nil, buttonType: .allPhotos)
                 ])
-                let albumButtons = SidebarSectionModel(name: "Albums", items: galleryIndex.albums.compactMap { albumID in
+				let albumButtons = SidebarSectionModel(type: .albumButtons, name: "Albums", items: galleryIndex.albums.compactMap { albumID in
                     if let album = self.galleryManager.loadAlbumIndex(with: albumID) {
                         var thumbnailImage: UIImage?
                         
