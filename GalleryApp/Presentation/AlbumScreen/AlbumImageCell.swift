@@ -14,7 +14,8 @@ class AlbumImageCell: UICollectionViewCell {
     
     // MARK: - Properties
     var isEditing = false
-    var isCellSelected: Bool = false
+	var isCellSelected: Bool = false
+	
     weak var viewModel: AlbumScreenViewModel?
     
     var containerViewForCheck: UIView = {
@@ -90,10 +91,10 @@ class AlbumImageCell: UICollectionViewCell {
                            animations: {
                 if value == false {
                     self.textLabel.alpha = 0
-                    self.textLabel.isHidden = true
+					self.textLabel.isHidden = true
                 } else {
                     self.textLabel.alpha = 1
-                    self.textLabel.isHidden = false
+					self.textLabel.isHidden = false
                 }
             })
         }).disposed(by: disposeBag)
@@ -159,10 +160,12 @@ class AlbumImageCell: UICollectionViewCell {
     func showSelectedView() {
         self.containerViewForCheck.isHidden = false
         self.isSelectedOverlay.isHidden = false
+		self.isSelected = true
     }
     
     func hideSelectedView() {
         self.containerViewForCheck.isHidden = true
         self.isSelectedOverlay.isHidden = true
+		self.isSelected = false
     }
 }

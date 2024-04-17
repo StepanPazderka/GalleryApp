@@ -49,6 +49,7 @@ class AlbumScreenViewController: UIViewController {
         self.setupViews()
         self.bindData()
         self.bindInteractions()
+		self.screenView.collectionView.allowsSelectionDuringEditing = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -101,9 +102,7 @@ class AlbumScreenViewController: UIViewController {
                 }
             }).disposed(by: disposeBag)
         }
-        
-        self.screenView.collectionView.allowsMultipleSelection = true
-    }
+	}
     
     func showDocumentPicker() {
         self.screenView.documentPicker.delegate = self
@@ -174,7 +173,6 @@ class AlbumScreenViewController: UIViewController {
                     self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
                         let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumImageCell
                         self?.viewModel.filesSelectedInEditMode.removeAll()
-                        cell.isSelected = false
                         cell.hideSelectedView()
                     }
                 }
@@ -184,6 +182,8 @@ class AlbumScreenViewController: UIViewController {
         /// Hide/shows left Menu Bar based on if in editing mode
         self.viewModel.isEditing.subscribe(onNext: { [weak self] value in
             guard let self else { return }
+			
+			self.screenView.collectionView.allowsMultipleSelection = value
             
             if value {
                 self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: self.screenView.leftStackView)
@@ -314,20 +314,21 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? AlbumImageCell {
             if isEditing {
-                cell.showSelectedView()
+				cell.showSelectedView()
+				print(self.screenView.collectionView.indexPathsForSelectedItems)
             } else {
-                if let images = self.dataSource.sectionModels.first?.items.map { $0 } {
+				if let images = self.dataSource.sectionModels.first?.items.map({ $0 }) {
                     self.router.showPhotoDetail(images: images, index: indexPath)
                 }
             }
         }
     }
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        if let cell = collectionView.cellForItem(at: indexPath) as? AlbumImageCell {
-            cell.hideSelectedView()
-        }
-    }
+	
+	func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+		if isEditing, let cell = collectionView.cellForItem(at: indexPath) as? AlbumImageCell {
+			cell.hideSelectedView()
+		}
+	}
 }
 
 extension AlbumScreenViewController: UIPopoverPresentationControllerDelegate {}
