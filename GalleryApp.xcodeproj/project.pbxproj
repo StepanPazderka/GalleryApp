@@ -101,6 +101,8 @@
 		7F62EA7629056C3600FCD97F /* GalleryAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GalleryAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryAppTests.swift; sourceTree = "<group>"; };
 		7F7167EC2BCFF12600BF8D65 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
+		7F7167EE2BCFF94600BF8D65 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		7F7167F02BCFF9B900BF8D65 /* DatabaseManagerWithRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManagerWithRealm.swift; sourceTree = "<group>"; };
 		7F795F562AB749360090F6D1 /* UIColor+randomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+randomColor.swift"; sourceTree = "<group>"; };
 		7F795F582AB909CE0090F6D1 /* PanZoomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanZoomImageView.swift; sourceTree = "<group>"; };
 		7F8056AE2ABF0D3A00DB6D29 /* UIStackView+addArrangedSubviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+addArrangedSubviews.swift"; sourceTree = "<group>"; };
@@ -215,6 +217,7 @@
 		7F235DF12585B73C007BD075 = {
 			isa = PBXGroup;
 			children = (
+				7FF5C0272A9D2C65001CA982 /* LaunchScreen.storyboard */,
 				7FF5C00F2A9D2C65001CA982 /* GalleryApp */,
 				7F62EA7729056C3600FCD97F /* GalleryAppTests */,
 				7F235DFB2585B73C007BD075 /* Products */,
@@ -298,6 +301,8 @@
 		7FF158E72B027FB400149B82 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				7F7167EE2BCFF94600BF8D65 /* DatabaseManager.swift */,
+				7F7167EC2BCFF12600BF8D65 /* SettingsManager.swift */,
 				7F8B7D742AF7F80D0013950B /* GalleryManager.swift */,
 			);
 			path = Protocols;
@@ -311,7 +316,6 @@
 				7F7E24EE2AC0BBC8002041ED /* Custom Views */,
 				7FF5C0102A9D2C65001CA982 /* GalleryApp Localizations */,
 				7FF5C0132A9D2C65001CA982 /* Utilites */,
-				7FF5C0272A9D2C65001CA982 /* LaunchScreen.storyboard */,
 				7FF5C02D2A9D2C65001CA982 /* Data */,
 				7FF5C0352A9D2C65001CA982 /* Domain */,
 				7FF5C03C2A9D2C65001CA982 /* Presentation */,
@@ -361,13 +365,13 @@
 			children = (
 				7FF158E72B027FB400149B82 /* Protocols */,
 				7FF5C0312A9D2C65001CA982 /* Enums */,
+				7FF5C0332A9D2C65001CA982 /* SettingsManagerImpl.swift */,
 				7F89CE952B1798E600C78947 /* GalleryManagerError.swift */,
 				7FF5C02E2A9D2C65001CA982 /* PathResolver.swift */,
 				7F8B7D722AF7F0EE0013950B /* GalleryManagerImpl.swift */,
 				7FF5C02F2A9D2C65001CA982 /* UnsecureStorage.swift */,
-				7FF5C0332A9D2C65001CA982 /* SettingsManagerImpl.swift */,
 				7FF5C0342A9D2C65001CA982 /* FileScannerManager.swift */,
-				7F7167EC2BCFF12600BF8D65 /* SettingsManager.swift */,
+				7F7167F02BCFF9B900BF8D65 /* DatabaseManagerWithRealm.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";

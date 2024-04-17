@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 import RxRealm
 
-class GalleryManagerImpl: GalleryManager {
+class GalleryManagerImpl: GalleryManager {	
 	
 	// MARK: - Protocol Properties
 	final let settingsManager: SettingsManagerImpl
@@ -83,7 +83,7 @@ class GalleryManagerImpl: GalleryManager {
 		return fetchedIndex
 	}
 	
-	func loadOrCreateCurrentGalleryIndex() -> GalleryIndex {
+	@discardableResult func loadOrCreateCurrentGalleryIndex() -> GalleryIndex {
 		var fetchedIndex: GalleryIndexRealm?
 		
 		fetchedIndex = self.realm?.objects(GalleryIndexRealm.self).first(where: { [weak self] in
@@ -91,15 +91,7 @@ class GalleryManagerImpl: GalleryManager {
 		})
 		
 		guard let fetchedIndex else {
-			let newGalleryIndex = GalleryIndexRealm(name: self.settingsManager.selectedGalleryName, thumbnailSize: 200, showingAnnotations: false)
-			do {
-				try realm?.write {
-					realm?.add(newGalleryIndex)
-				}
-			} catch {
-				print("Error: \(error)")
-			}
-			return GalleryIndex(from: newGalleryIndex)
+			return persistNewGalleryIndex(withName: self.settingsManager.selectedGalleryName)
 		}
 		
 		return GalleryIndex(from: fetchedIndex)
@@ -117,9 +109,9 @@ class GalleryManagerImpl: GalleryManager {
 		}
 	}
 	
-	func persistNewGalleryIndex(withName name: String) {
+	@discardableResult func persistNewGalleryIndex(withName name: String) -> GalleryIndex {
 		let newGalleryIndexForRealm = GalleryIndexRealm(name: name, thumbnailSize: 200, showingAnnotations: false)
-		guard let realm else { return }
+		guard let realm else { return .empty }
 		do {
 			try realm.write {
 				realm.add(newGalleryIndexForRealm)
@@ -131,6 +123,8 @@ class GalleryManagerImpl: GalleryManager {
 		if !FileManager.default.fileExists(atPath: pathResolver.selectedGalleryPath.relativePath) {
 			try? FileManager.default.createDirectory(at: pathResolver.selectedGalleryPath, withIntermediateDirectories: true, attributes: nil)
 		}
+		
+		return GalleryIndex(from: newGalleryIndexForRealm)
 	}
 	
 	@discardableResult func createAlbum(name: String, parentAlbum: UUID?) throws -> AlbumIndex {
@@ -174,7 +168,7 @@ class GalleryManagerImpl: GalleryManager {
 		}
 	}
 	
-	func write(images: [GalleryImage]) {
+	func add(images: [GalleryImage], toAlbum album: AlbumIndex? = nil) {
 		let galleryImagesForRealm = images.map { GalleryImageRealm(from: $0) }
 		
 		do {
@@ -183,6 +177,14 @@ class GalleryManagerImpl: GalleryManager {
 					let indexForRealm = GalleryIndexRealm(from: index)
 					indexForRealm.images.append(objectsIn: galleryImagesForRealm)
 					realm?.add(indexForRealm, update: .modified)
+					
+					if let album {
+						if var albumIndex = loadAlbumIndex(with: album.id) {
+							var albumIndexRealm = AlbumIndexRealm(from: albumIndex)
+							albumIndexRealm.images.append(objectsIn: galleryImagesForRealm)
+							realm?.add(albumIndexRealm, update: .modified)
+						}
+					}
 				}
 				
 				realm?.add(galleryImagesForRealm)
@@ -372,10 +374,10 @@ extension GalleryManagerImpl {
 	func loadGalleryIndexAsObservable() -> Observable<GalleryIndex> {
 		let selectedGalleryName = self.settingsManager.selectedGalleryName
 		
-		var galleryIndexesFromDatabase = loadOrCreateCurrentGalleryIndex()
+		self.loadOrCreateCurrentGalleryIndex()
 		
 		if let index = self.realm?.objects(GalleryIndexRealm.self).first(where: { galleryIndex in
-			galleryIndex.name == self.settingsManager.selectedGalleryName
+			galleryIndex.name == selectedGalleryName
 		}) {
 			return Observable.from(object: index).map { GalleryIndex(from: $0) }
 		} else {

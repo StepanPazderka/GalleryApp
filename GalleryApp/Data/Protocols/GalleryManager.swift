@@ -25,7 +25,7 @@ protocol GalleryManager {
     func loadGalleryIndexAsObservable() -> Observable<GalleryIndex>
     
     // MARK: - Writing
-    func write(images: [GalleryImage])
+	func add(images: [GalleryImage], toAlbum: AlbumIndex?)
     @discardableResult func createAlbum(name: String, parentAlbum: UUID?) throws -> AlbumIndex
     
     // MARK: - Updating

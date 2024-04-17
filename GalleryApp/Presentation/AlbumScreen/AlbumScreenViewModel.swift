@@ -94,8 +94,8 @@ class AlbumScreenViewModel {
         }
     }
     
-    func addPhotos(images: [GalleryImage]) {
-        self.galleryManager.write(images: images)
+	func addPhotos(images: [GalleryImage], toAlbum: AlbumIndex? = nil) {
+        self.galleryManager.add(images: images, toAlbum: toAlbum)
     }
     
     func newThumbnailSize(size: Float) {
@@ -191,7 +191,11 @@ class AlbumScreenViewModel {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (t) in
             
             if self.importProgress.fractionCompleted == 1.0 {
-                self.addPhotos(images: filesSelectedForImport)
+				if let albumID = self.albumID {
+					self.addPhotos(images: filesSelectedForImport, toAlbum: self.loadAlbum(by: albumID))
+				} else {
+					self.addPhotos(images: filesSelectedForImport)
+				}
                 usleep(UInt32(0.25))
                 self.showingLoading.accept(false)
                 filesSelectedForImport.removeAll()
