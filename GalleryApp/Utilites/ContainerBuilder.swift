@@ -47,7 +47,7 @@ class ContainerBuilder {
         }
         
         container.register(SelectLibraryViewModel.self) { r in
-            return SelectLibraryViewModel(settingsManager: r.resolve(SettingsManager.self)!, galleryManagery: r.resolve(GalleryManager.self)!)
+            return SelectLibraryViewModel(settingsManager: r.resolve(SettingsManagerImpl.self)!, galleryManagery: r.resolve(GalleryManager.self)!)
         }
         
         self.container = transientContainer
@@ -59,20 +59,20 @@ class ContainerBuilder {
             return UnsecureStorage()
         }
         
-        container.register(SettingsManager.self) { r in
-            return SettingsManager(unsecureStorage: r.resolve(UnsecureStorage.self)!)
+        container.register(SettingsManagerImpl.self) { r in
+            return SettingsManagerImpl(unsecureStorage: r.resolve(UnsecureStorage.self)!)
         }
         
         container.register(PathResolver.self) { r in
-            return PathResolver(settingsManager: r.resolve(SettingsManager.self)!)
+            return PathResolver(settingsManager: r.resolve(SettingsManagerImpl.self)!)
         }
         
         container.register(FileScannerManager.self) { r in
-            return FileScannerManager(settings: r.resolve(SettingsManager.self)!)
+            return FileScannerManager(settings: r.resolve(SettingsManagerImpl.self)!)
         }
         
         container.register(GalleryManager.self) { r in
-            return GalleryManagerImpl(settingsManager: r.resolve(SettingsManager.self)!,
+            return GalleryManagerImpl(settingsManager: r.resolve(SettingsManagerImpl.self)!,
                                        fileScannerManger: r.resolve(FileScannerManager.self)!,
                                        pathResolver: r.resolve(PathResolver.self)!,
                                        isTesting: false)
@@ -94,7 +94,7 @@ class ContainerBuilder {
         
         container.register(SidebarViewModel.self) { r in
             return SidebarViewModel(galleryInteractor: r.resolve(GalleryManager.self)!,
-                                    settingsManager: r.resolve(SettingsManager.self)!,
+                                    settingsManager: r.resolve(SettingsManagerImpl.self)!,
                                     pathResolver: r.resolve(PathResolver.self)!)
         }
         

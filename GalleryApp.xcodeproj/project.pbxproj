@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7F6243EF2B0A605800A70E31 /* UUID+empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F6243EE2B0A605800A70E31 /* UUID+empty.swift */; };
 		7F62EA7929056C3600FCD97F /* GalleryAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */; };
+		7F7167ED2BCFF12600BF8D65 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F7167EC2BCFF12600BF8D65 /* SettingsManager.swift */; };
 		7F795F572AB749360090F6D1 /* UIColor+randomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F795F562AB749360090F6D1 /* UIColor+randomColor.swift */; };
 		7F795F592AB909CE0090F6D1 /* PanZoomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F795F582AB909CE0090F6D1 /* PanZoomImageView.swift */; };
 		7F8056AF2ABF0D3A00DB6D29 /* UIStackView+addArrangedSubviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8056AE2ABF0D3A00DB6D29 /* UIStackView+addArrangedSubviews.swift */; };
@@ -44,7 +45,7 @@
 		7FF5C07F2A9D2C65001CA982 /* PathResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C02E2A9D2C65001CA982 /* PathResolver.swift */; };
 		7FF5C0802A9D2C65001CA982 /* UnsecureStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C02F2A9D2C65001CA982 /* UnsecureStorage.swift */; };
 		7FF5C0822A9D2C65001CA982 /* SettingsKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0322A9D2C65001CA982 /* SettingsKey.swift */; };
-		7FF5C0832A9D2C65001CA982 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0332A9D2C65001CA982 /* SettingsManager.swift */; };
+		7FF5C0832A9D2C65001CA982 /* SettingsManagerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0332A9D2C65001CA982 /* SettingsManagerImpl.swift */; };
 		7FF5C0842A9D2C65001CA982 /* FileScannerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0342A9D2C65001CA982 /* FileScannerManager.swift */; };
 		7FF5C0852A9D2C65001CA982 /* AlbumIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0372A9D2C65001CA982 /* AlbumIndex.swift */; };
 		7FF5C0862A9D2C65001CA982 /* GalleryImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF5C0382A9D2C65001CA982 /* GalleryImage.swift */; };
@@ -99,6 +100,7 @@
 		7F6243EE2B0A605800A70E31 /* UUID+empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UUID+empty.swift"; sourceTree = "<group>"; };
 		7F62EA7629056C3600FCD97F /* GalleryAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GalleryAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F62EA7829056C3600FCD97F /* GalleryAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryAppTests.swift; sourceTree = "<group>"; };
+		7F7167EC2BCFF12600BF8D65 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		7F795F562AB749360090F6D1 /* UIColor+randomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+randomColor.swift"; sourceTree = "<group>"; };
 		7F795F582AB909CE0090F6D1 /* PanZoomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanZoomImageView.swift; sourceTree = "<group>"; };
 		7F8056AE2ABF0D3A00DB6D29 /* UIStackView+addArrangedSubviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+addArrangedSubviews.swift"; sourceTree = "<group>"; };
@@ -133,7 +135,7 @@
 		7FF5C02E2A9D2C65001CA982 /* PathResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PathResolver.swift; sourceTree = "<group>"; };
 		7FF5C02F2A9D2C65001CA982 /* UnsecureStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnsecureStorage.swift; sourceTree = "<group>"; };
 		7FF5C0322A9D2C65001CA982 /* SettingsKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsKey.swift; sourceTree = "<group>"; };
-		7FF5C0332A9D2C65001CA982 /* SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
+		7FF5C0332A9D2C65001CA982 /* SettingsManagerImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsManagerImpl.swift; sourceTree = "<group>"; };
 		7FF5C0342A9D2C65001CA982 /* FileScannerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileScannerManager.swift; sourceTree = "<group>"; };
 		7FF5C0372A9D2C65001CA982 /* AlbumIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumIndex.swift; sourceTree = "<group>"; };
 		7FF5C0382A9D2C65001CA982 /* GalleryImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryImage.swift; sourceTree = "<group>"; };
@@ -363,8 +365,9 @@
 				7FF5C02E2A9D2C65001CA982 /* PathResolver.swift */,
 				7F8B7D722AF7F0EE0013950B /* GalleryManagerImpl.swift */,
 				7FF5C02F2A9D2C65001CA982 /* UnsecureStorage.swift */,
-				7FF5C0332A9D2C65001CA982 /* SettingsManager.swift */,
+				7FF5C0332A9D2C65001CA982 /* SettingsManagerImpl.swift */,
 				7FF5C0342A9D2C65001CA982 /* FileScannerManager.swift */,
+				7F7167EC2BCFF12600BF8D65 /* SettingsManager.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -668,6 +671,7 @@
 				7FF5C08E2A9D2C65001CA982 /* AlbumsListView.swift in Sources */,
 				7FF5C0972A9D2C65001CA982 /* SidebarSectionModel.swift in Sources */,
 				7FF5C09E2A9D2C65001CA982 /* PhotoPropertiesViewController.swift in Sources */,
+				7F7167ED2BCFF12600BF8D65 /* SettingsManager.swift in Sources */,
 				7FF5C0A02A9D2C65001CA982 /* PhotoPropertiesView.swift in Sources */,
 				7FF5C09B2A9D2C65001CA982 /* SidebarView.swift in Sources */,
 				7FF5C06B2A9D2C65001CA982 /* UIImage+roundedImage.swift in Sources */,
@@ -709,7 +713,7 @@
 				7FF5C0962A9D2C65001CA982 /* PhotoDetailView.swift in Sources */,
 				7FF5C0A72A9D2C65001CA982 /* AlbumScreenView.swift in Sources */,
 				7FF5C0A32A9D2C65001CA982 /* AlbumScreenViewController.swift in Sources */,
-				7FF5C0832A9D2C65001CA982 /* SettingsManager.swift in Sources */,
+				7FF5C0832A9D2C65001CA982 /* SettingsManagerImpl.swift in Sources */,
 				7FF5C08D2A9D2C65001CA982 /* SelectLibraryCell.swift in Sources */,
 				7FF5C0732A9D2C65001CA982 /* MutableProgress.swift in Sources */,
 				7FF5C0822A9D2C65001CA982 /* SettingsKey.swift in Sources */,

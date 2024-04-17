@@ -14,10 +14,10 @@ class SelectLibraryViewModel {
     var libraries = BehaviorSubject(value: [AnimatableSectionModel(model: "Nothing", items: [String]())])
     
     var userDefaults: UserDefaults = UserDefaults.standard
-    let settingsManager: SettingsManager
+    let settingsManager: SettingsManagerImpl
     let galleryManager: GalleryManager
     
-    init(settingsManager: SettingsManager, galleryManagery: GalleryManager) {
+    init(settingsManager: SettingsManagerImpl, galleryManagery: GalleryManager) {
         self.settingsManager = settingsManager
         self.galleryManager = galleryManagery
         updateLibraries()

@@ -8,9 +8,9 @@
 import Foundation
 
 class FileScannerManager {
-    let settings: SettingsManager
+    let settings: SettingsManagerImpl
     
-    init(settings: SettingsManager) {
+    init(settings: SettingsManagerImpl) {
         self.settings = settings
     }
     

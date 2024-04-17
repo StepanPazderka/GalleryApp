@@ -11,7 +11,7 @@ import XCTest
 final class GalleryAppTests: XCTestCase {
     func testAlbumCreation() {
         let uS = UnsecureStorage()
-        let sM = SettingsManager(unsecureStorage: uS)
+        let sM = SettingsManagerImpl(unsecureStorage: uS)
         let fSM = FileScannerManager(settings: sM)
         let pathResolver = PathResolver(settingsManager: sM)
         
@@ -30,7 +30,7 @@ final class GalleryAppTests: XCTestCase {
     
     func testGalleryManager() throws {
         let uS = UnsecureStorage()
-        let sM = SettingsManager(unsecureStorage: uS)
+        let sM = SettingsManagerImpl(unsecureStorage: uS)
         let fSM = FileScannerManager(settings: sM)
         let pathResolver = PathResolver(settingsManager: sM)
         

@@ -11,7 +11,7 @@ class PathResolver {
     
     // MARK: - Properties
 //    public static let shared = PathResolver()
-    private let settingsManager: SettingsManager
+    private let settingsManager: SettingsManagerImpl
     var libraryPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     var selectedGalleryPath: URL {
         get {
@@ -20,7 +20,7 @@ class PathResolver {
     }
     
     // MARK: - Init
-    init(settingsManager: SettingsManager) {
+    init(settingsManager: SettingsManagerImpl) {
         self.settingsManager = settingsManager
     }
     

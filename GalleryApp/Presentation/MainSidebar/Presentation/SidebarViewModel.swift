@@ -12,12 +12,12 @@ class SidebarViewModel {
     
     // MARK: -- Properties
     private let galleryManager: GalleryManager
-    private let settingsManager: SettingsManager
+    private let settingsManager: SettingsManagerImpl
     private let pathResolver: PathResolver
     
     let disposeBag = DisposeBag()
     
-    init(galleryInteractor: GalleryManager, settingsManager: SettingsManager, pathResolver: PathResolver) {
+    init(galleryInteractor: GalleryManager, settingsManager: SettingsManagerImpl, pathResolver: PathResolver) {
         self.galleryManager = galleryInteractor
         self.settingsManager = settingsManager
         self.pathResolver = pathResolver
@@ -39,9 +39,6 @@ class SidebarViewModel {
     func loadSidebarContent() -> Observable<[SidebarSectionModel]> {
         galleryManager
             .loadGalleryIndexAsObservable()
-            .distinctUntilChanged({ gal1, gal2 in
-                gal1.albums != gal2.albums
-            })
             .map { galleryIndex in
                 let mainButonsSection = SidebarSectionModel(name: NSLocalizedString("kMAIN", comment: "Main buttons"), items: [
                     SidebarItem(title: NSLocalizedString("kALLPHOTOS", comment: "Title for sidebar cell to show All Photos in library"), image: nil, buttonType: .allPhotos)
@@ -74,7 +71,7 @@ class SidebarViewModel {
     
     func createAlbum(name: String, parentAlbumID: UUID? = nil,  ID: UUID? = nil) {
         do {
-            if let parentAlbumID = parentAlbumID {
+            if let parentAlbumID {
                 try galleryManager.createAlbum(name: name, parentAlbum: parentAlbumID)
             } else {
                 try galleryManager.createAlbum(name: name, parentAlbum: nil)
