@@ -32,10 +32,6 @@ class SelectLibraryViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    deinit {
-        NSLog("Bad View Controller SelectLibraryVC was DEINITED! Hooray!")
-    }
-    
     override func viewDidLoad() {
         self.setupViews()
         self.layoutViews()
@@ -46,11 +42,7 @@ class SelectLibraryViewController: UIViewController {
     }
     
     func bindData() {
-        self.viewModel.SectionModelsGalleriesAsObservable().subscribe(onNext: { section in
-            
-        }).disposed(by: disposeBag)
-        
-        self.viewModel.libraries
+        self.viewModel.loadGalleriesAsObservableForListView()
             .do(onNext: {
                 [weak self] parameter in self?.highlightSelectedLibraryInList()
             })

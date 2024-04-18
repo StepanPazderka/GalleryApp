@@ -214,7 +214,7 @@ class AlbumScreenViewController: UIViewController {
             guard let self else { return }
             guard let indexes = self.screenView.collectionView.indexPathsForSelectedItems else { return }
             print(indexes)
-            var selectedImages = indexes.compactMap { self.dataSource.sectionModels.first?.items[$0.item] ?? nil }
+            let selectedImages = indexes.compactMap { self.dataSource.sectionModels.first?.items[$0.item] ?? nil }
             print(selectedImages)
             self.viewModel.delete(selectedImages)
             self.viewModel.isEditing.accept(false)
@@ -315,7 +315,6 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
         if let cell = collectionView.cellForItem(at: indexPath) as? AlbumImageCell {
             if isEditing {
 				cell.showSelectedView()
-				print(self.screenView.collectionView.indexPathsForSelectedItems)
             } else {
 				if let images = self.dataSource.sectionModels.first?.items.map({ $0 }) {
                     self.router.showPhotoDetail(images: images, index: indexPath)

@@ -51,7 +51,6 @@ class SidebarViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         self.screenView.layoutViews()
     }
     
@@ -105,16 +104,12 @@ class SidebarViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.loadSidebarContent()
-			.distinctUntilChanged {
-				$0.first(where: { $0.type == .albumButtons })?.items.count
-			}
             .bind(to: screenView.sidebarCollectionView.rx.items(dataSource: dataSource!))
             .disposed(by: disposeBag)
         
         viewModel.getSelectedLibraryNameAsObservable()
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] libraryName in
-//                self?.screenView.sidebarCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: true, scrollPosition: .top)
                 self?.router.showAllPhotos()
             })
             .disposed(by: disposeBag)

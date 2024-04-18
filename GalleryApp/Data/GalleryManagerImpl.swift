@@ -29,9 +29,7 @@ class GalleryManagerImpl: GalleryManager {
 		self.settingsManager = settingsManager
 		self.fileScannerManager = fileScannerManger
 		self.pathResolver = pathResolver
-		
-		let realmURL = Realm.Configuration.defaultConfiguration.fileURL!
-		
+				
 		do {
 			if isTesting {
 				let inMemoryRealmConfig = Realm.Configuration(inMemoryIdentifier: "MyInMemoryRealm")
@@ -179,8 +177,8 @@ class GalleryManagerImpl: GalleryManager {
 					realm?.add(indexForRealm, update: .modified)
 					
 					if let album {
-						if var albumIndex = loadAlbumIndex(with: album.id) {
-							var albumIndexRealm = AlbumIndexRealm(from: albumIndex)
+						if let albumIndex = loadAlbumIndex(with: album.id) {
+							let albumIndexRealm = AlbumIndexRealm(from: albumIndex)
 							albumIndexRealm.images.append(objectsIn: galleryImagesForRealm)
 							realm?.add(albumIndexRealm, update: .modified)
 						}
@@ -191,6 +189,22 @@ class GalleryManagerImpl: GalleryManager {
 			}
 		} catch {
 			print(error)
+		}
+	}
+	
+	func load<DatabaseObject: Object>(_ type: DatabaseObject.Type) -> Observable<[DatabaseObject]> {
+		if let objects = realm?.objects(type) {
+			return Observable.collection(from: objects).map { Array($0) }
+		} else {
+			return Observable.empty()
+		}
+	}
+	
+	func loadGalleries() -> Observable<[GalleryIndex]> {
+		if let indeces = realm?.objects(GalleryIndexRealm.self) {
+			return Observable.collection(from: indeces).map { Array($0.map { GalleryIndex(from: $0) }) }
+		} else {
+			return .empty()
 		}
 	}
 	
@@ -243,11 +257,11 @@ class GalleryManagerImpl: GalleryManager {
 	@discardableResult func duplicate(album: AlbumIndex) -> AlbumIndex {
 		guard let fetchedAlbum = realm?.objects(AlbumIndexRealm.self).first(where: { $0.id == album.id.uuidString }) else { return album }
 		
-		var newAlbum = AlbumIndexRealm(id: UUID().uuidString, name: fetchedAlbum.name, thumbnail: fetchedAlbum.thumbnail, images: fetchedAlbum.images)
+		let newAlbum = AlbumIndexRealm(id: UUID().uuidString, name: fetchedAlbum.name, thumbnail: fetchedAlbum.thumbnail, images: fetchedAlbum.images)
 		
 		if let index = load() {
 			try! realm?.write {
-				var updatedIndex = GalleryIndexRealm(from: index)
+				let updatedIndex = GalleryIndexRealm(from: index)
 				updatedIndex.albums.append(newAlbum)
 				realm?.add(updatedIndex, update: .modified)
 				
@@ -310,21 +324,21 @@ class GalleryManagerImpl: GalleryManager {
 	}
 	
 	func duplicate(images: [GalleryImage], inAlbum album: AlbumIndex?) throws {
-		var imagesForRealm = images.map { galleryImage in
-			var imageForRealm = GalleryImageRealm(from: galleryImage)
+		let imagesForRealm = images.map { galleryImage in
+			let imageForRealm = GalleryImageRealm(from: galleryImage)
 			imageForRealm.id = UUID().uuidString
 			return imageForRealm
 		}
 		
 		if let index = load(galleryIndex: nil) {
-			var indexForRealm = GalleryIndexRealm(from: index)
+			let indexForRealm = GalleryIndexRealm(from: index)
 			indexForRealm.images.append(objectsIn: imagesForRealm)
 			
 			do {
 				try realm?.write {
 					
 					if let album {
-						var albumIndexForRealm = AlbumIndexRealm(from: album)
+						let albumIndexForRealm = AlbumIndexRealm(from: album)
 						albumIndexForRealm.images.append(objectsIn: imagesForRealm)
 						realm?.add(albumIndexForRealm)
 					}
@@ -339,7 +353,7 @@ class GalleryManagerImpl: GalleryManager {
 	}
 	
 	func move(Image: GalleryImage, toAlbum: UUID, callback: (() -> ())?) throws {
-		var album = self.loadAlbumIndex(with: toAlbum)
+		let album = self.loadAlbumIndex(with: toAlbum)
 		if var album {
 			if !album.images.contains(Image) {
 				album.images.append(Image)

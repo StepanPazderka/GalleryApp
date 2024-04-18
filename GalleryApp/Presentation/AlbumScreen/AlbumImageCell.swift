@@ -160,12 +160,10 @@ class AlbumImageCell: UICollectionViewCell {
     func showSelectedView() {
         self.containerViewForCheck.isHidden = false
         self.isSelectedOverlay.isHidden = false
-		self.isSelected = true
     }
     
     func hideSelectedView() {
         self.containerViewForCheck.isHidden = true
         self.isSelectedOverlay.isHidden = true
-		self.isSelected = false
     }
 }

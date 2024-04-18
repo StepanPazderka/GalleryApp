@@ -23,6 +23,8 @@ protocol GalleryManager {
     
     func load(galleryIndex: String?) -> GalleryIndex?
     func loadGalleryIndexAsObservable() -> Observable<GalleryIndex>
+	
+	func loadGalleries() -> Observable<[GalleryIndex]>
     
     // MARK: - Writing
 	func add(images: [GalleryImage], toAlbum: AlbumIndex?)
