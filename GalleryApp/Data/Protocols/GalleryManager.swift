@@ -29,6 +29,7 @@ protocol GalleryManager {
     // MARK: - Writing
 	func add(images: [GalleryImage], toAlbum: AlbumIndex?)
     @discardableResult func createAlbum(name: String, parentAlbum: UUID?) throws -> AlbumIndex
+	@discardableResult func createGalleryIndex(name: String) throws -> GalleryIndex
     
     // MARK: - Updating
     func update(image: GalleryImage)

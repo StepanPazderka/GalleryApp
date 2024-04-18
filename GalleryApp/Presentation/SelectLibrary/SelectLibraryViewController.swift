@@ -154,7 +154,6 @@ class SelectLibraryViewController: UIViewController {
     
     func layoutViews() {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: screenView.closeButton)
-        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: screenView.rightBarButton)
         self.navigationItem.title = NSLocalizedString("kSELECTLIBRARY", comment: "Select library to load")
     }

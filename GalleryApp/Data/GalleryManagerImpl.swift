@@ -11,8 +11,7 @@ import RxCocoa
 import RxSwift
 import RxRealm
 
-class GalleryManagerImpl: GalleryManager {	
-	
+class GalleryManagerImpl: GalleryManager {
 	// MARK: - Protocol Properties
 	final let settingsManager: SettingsManagerImpl
 	let fileScannerManager: FileScannerManager
@@ -123,6 +122,19 @@ class GalleryManagerImpl: GalleryManager {
 		}
 		
 		return GalleryIndex(from: newGalleryIndexForRealm)
+	}
+	
+	@discardableResult func createGalleryIndex(name: String) throws -> GalleryIndex {
+		do {
+			try realm?.write {
+				let newGalleryIndex = GalleryIndexRealm(name: name, thumbnailSize: 200, showingAnnotations: false)
+				realm?.add(newGalleryIndex)
+				return newGalleryIndex
+			}
+		} catch {
+			throw error
+		}
+		throw GalleryManagerError.unknown
 	}
 	
 	@discardableResult func createAlbum(name: String, parentAlbum: UUID?) throws -> AlbumIndex {

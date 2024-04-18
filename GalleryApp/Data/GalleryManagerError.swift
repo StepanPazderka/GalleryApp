@@ -13,6 +13,7 @@ enum GalleryManagerError: Error {
     case cantUpdateAlbum
     case cantReadAlbum
     case notFound
+	case unknown
 }
 
 extension GalleryManagerError: CustomStringConvertible {
@@ -28,6 +29,8 @@ extension GalleryManagerError: CustomStringConvertible {
             return "Cant read album from database"
         case .notFound:
             return "Element was not found"
+		case .unknown:
+			return "Unknown error"
         }
     }
 }
