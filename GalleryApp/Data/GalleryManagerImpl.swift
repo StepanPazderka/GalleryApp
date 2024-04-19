@@ -410,4 +410,15 @@ extension GalleryManagerImpl {
 			return .empty()
 		}
 	}
+	
+	func loadCurrentGalleryIndex() -> Observable<GalleryIndex> {
+		UserDefaults.standard.rx.observe(String.self, "selectedGallery").flatMap { currentlySelectedGalleryIndexName -> Observable<GalleryIndex> in
+			self.loadOrCreateCurrentGalleryIndex()
+			if let currentlySelectedGalleryIndexName, let result = self.realm?.objects(GalleryIndexRealm.self).filter("name == %@", currentlySelectedGalleryIndexName).first {
+				return Observable.from(object: result).map { GalleryIndex(from: $0) }
+			} else {
+				return .empty()
+			}
+		}
+	}
 }

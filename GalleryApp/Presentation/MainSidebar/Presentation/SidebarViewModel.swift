@@ -38,7 +38,7 @@ class SidebarViewModel {
     
     func loadSidebarContent() -> Observable<[SidebarSectionModel]> {
         galleryManager
-            .loadGalleryIndexAsObservable()
+            .loadCurrentGalleryIndex()
             .map { galleryIndex in
 				let mainButonsSection = SidebarSectionModel(type: .mainButtons, name: NSLocalizedString("kMAIN", comment: "Main buttons"), items: [
                     SidebarItem(title: NSLocalizedString("kALLPHOTOS", comment: "Title for sidebar cell to show All Photos in library"), image: nil, buttonType: .allPhotos)

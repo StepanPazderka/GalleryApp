@@ -19,7 +19,7 @@ final class SettingsManagerImpl: SettingsManager {
     }
     let allowedTypes = [UTType.jpeg, UTType.tiff, UTType.png]
     var allowedExtensions: [String] {
-        allowedTypes.compactMap { $0.tags[.filenameExtension]}.flatMap { $0 }
+        allowedTypes.compactMap { $0.tags[.filenameExtension] }.flatMap { $0 }
     }
     let disposeBag = DisposeBag()
 

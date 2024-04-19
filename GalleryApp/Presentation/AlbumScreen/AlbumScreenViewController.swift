@@ -14,10 +14,10 @@ import PhotosUI
 
 class AlbumScreenViewController: UIViewController {
     
-    // -- MARK: Views
+    // MARK: Views
     lazy var screenView = AlbumScreenView()
     
-    // -- MARK: Properties
+    // MARK: Properties
     var viewModel: AlbumScreenViewModel
     let router: AlbumScreenRouter
     var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, GalleryImage>>!
@@ -136,8 +136,9 @@ class AlbumScreenViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         // MARK: - Loading Images to Collection View
-        self.viewModel.imagesAsObservable()
-            .flatMap { Observable.just([AnimatableSectionModel(model: "Section", items: $0 )]) }
+        self.viewModel.albumScreenImagesAsObservable()
+			.debug("Images for collection view")
+			.map { [AnimatableSectionModel(model: "Images", items: $0)] }
             .bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource))
             .disposed(by: disposeBag)
     }
@@ -149,14 +150,6 @@ class AlbumScreenViewController: UIViewController {
                 self?.viewModel.isEditing.accept(true)
             } else {
                 self?.viewModel.isEditing.accept(false)
-            }
-        }).disposed(by: disposeBag)
-        
-        self.viewModel.isEditing.bind(onNext: { [weak self] value in
-            guard let visibleCells = self?.screenView.collectionView.visibleCells else { return }
-            for cell in visibleCells {
-                let cell = cell as! AlbumImageCell
-                cell.isEditing = value
             }
         }).disposed(by: disposeBag)
         

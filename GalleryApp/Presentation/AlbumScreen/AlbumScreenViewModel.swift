@@ -39,8 +39,8 @@ class AlbumScreenViewModel {
         self.pathResolver = pathResolver
     }
     
-    func imagesAsObservable() -> Observable<[GalleryImage]> {
-        self.galleryManager.selectedGalleryIndexRelay.map { [weak self] in
+    func albumScreenImagesAsObservable() -> Observable<[GalleryImage]> {
+        self.galleryManager.loadCurrentGalleryIndex().map { [weak self] in
             if let albumID = self?.albumID {
                 return self?.galleryManager.loadAlbumIndex(with: albumID)?.images ?? [GalleryImage]()
             } else {

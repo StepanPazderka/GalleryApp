@@ -48,6 +48,8 @@ protocol GalleryManager {
     // MARK: - Special
     func move(Image: GalleryImage, toAlbum: UUID, callback: (() -> Void)?) throws
     func buildThumbnail(forImage albumImage: GalleryImage)
+	
+	func loadCurrentGalleryIndex() -> Observable<GalleryIndex>
 }
 
 extension GalleryManager {
