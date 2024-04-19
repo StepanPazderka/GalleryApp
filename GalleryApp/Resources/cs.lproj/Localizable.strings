@@ -1,0 +1,46 @@
+/* 
+  Localizable.strings
+  GalleryApp
+
+  Created by Štěpán Pazderka on 20.12.2020.
+  
+*/
+
+"kCANCEL" = "Zrušit";
+"kSELECTFROMFILES" = "Vybrat ze souborů";
+"CreateSubAlbum" = "Vytvořit pod-album";
+"MoveToAlbum" = "Přesunout do alba";
+"kALLPHOTOS" = "Všechny položky";
+"kDUPLICATEALBUM" = "Duplicate Album";
+"kREMOVETHUMBNAIL" = "Remove Thumbnail";
+"kRenameAlbum" = "Přejmenovat album";
+"kDELETEIMAGE" = "Smazat obrázek";
+"DeleteTitle" = "Smazat";
+"kDETAILS" = "Vlastnosti";
+"kIMPORTFROM" = "Import photo from";
+"kMOVETOALBUM" = "Move to Album";
+"kEDIT" = "Edit";
+"kDONE" = "Done";
+"kOK" = "OK";
+"kDELETEALBUM" = "Delete Album";
+"kAlbumNameCantBeEmpty" = "Album name can't be empty";
+"kEnterAlbumName" = "Enter Album name";
+"kThumbs" = "thumbs";
+"kCantAddImageToTheAlbum" = "Can't add image to the album";
+"kImageAlreadyInAlbum" = "Image already in album";
+"kFileType" = "File type: ";
+"kFileSize" = "File size: ";
+"kFileCreationDate" = "Date creation: ";
+"kFileModifiedDate" = "Date modified: ";
+"SetThumbnail" = "Set as Album Thumbnail";
+"kREMOVEFROMALBUM" = "Remove image from Album";
+"kSelectDestination" = "Select destination";
+"kSELECTLIBRARY" = "Select library";
+"kEnterLibraryName" = "Enter Library Name";
+"kLibraryName" = "Library Name";
+"kSELECTFROMPHOTOLIBRARY" = "Select from Photo Gallery";
+"kCOPY" = "Copy";
+"DuplicateTitle" = "Duplicate item";
+"kERRORIMPORTINGFILES" = "Can't import certain files: ";
+"kMAIN" = "Main";
+"kALBUMS" = "Albums";
