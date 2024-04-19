@@ -88,21 +88,21 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.collectionView.delegate = self
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
 		
-		switch viewModel.albumID {
-		case .some:
-			self.viewModel.loadAlbumIndexAsObservable().subscribe(onNext: { [weak self] loadedIndex in
-				self?.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(loadedIndex.thumbnailsSize), height: CGFloat(loadedIndex.thumbnailsSize))
-				self?.screenView.slider.value = loadedIndex.thumbnailsSize
-			}).disposed(by: disposeBag)
-		case .none:
-			self.viewModel.galleryManager.loadCurrentGalleryIndex().subscribe(onNext: { [weak self] index in
-				if let thumbnailSize = index.thumbnailSize {
-					let newItemSize = CGSize(width: CGFloat(thumbnailSize), height: CGFloat(thumbnailSize))
-					self?.screenView.collectionLayout.itemSize = newItemSize
-					self?.screenView.slider.value = thumbnailSize
-				}
-			}).disposed(by: disposeBag)
-		}
+//		switch viewModel.albumID {
+//		case .some:
+//			self.viewModel.loadAlbumIndexAsObservable().subscribe(onNext: { [weak self] loadedIndex in
+//				self?.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(loadedIndex.thumbnailsSize), height: CGFloat(loadedIndex.thumbnailsSize))
+//				self?.screenView.slider.value = loadedIndex.thumbnailsSize
+//			}).disposed(by: disposeBag)
+//		case .none:
+//			self.viewModel.galleryManager.loadCurrentGalleryIndex().subscribe(onNext: { [weak self] index in
+//				if let thumbnailSize = index.thumbnailSize {
+//					let newItemSize = CGSize(width: CGFloat(thumbnailSize), height: CGFloat(thumbnailSize))
+//					self?.screenView.collectionLayout.itemSize = newItemSize
+//					self?.screenView.slider.value = thumbnailSize
+//				}
+//			}).disposed(by: disposeBag)
+//		}
 	}
     
     func showDocumentPicker() {
@@ -137,7 +137,7 @@ class AlbumScreenViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         // MARK: - Loading Images to Collection View
-        self.viewModel.albumScreenImagesAsObservable()
+        self.viewModel.imagesAsObservable()
 			.debug("Images for collection view")
 			.observe(on: MainScheduler.instance)
 			.compactMap { [AnimatableSectionModel(model: "Images", items: $0)] }
@@ -231,8 +231,13 @@ class AlbumScreenViewController: UIViewController {
                 self?.screenView.collectionLayout.itemSize = CGSize(width: value, height: value)
             })
             .debounce(.milliseconds(500), scheduler: MainScheduler.instance).subscribe(onNext: { [weak self] value in
-                self?.viewModel.newThumbnailSize(size: Float(value))
+                self?.viewModel.updateThumbnailSize(size: Float(value))
             }).disposed(by: disposeBag)
+		
+		self.viewModel.sliderSetting()
+			.asDriver(onErrorJustReturn: 0.0)
+			.drive(screenView.slider.rx.value)
+			.disposed(by: disposeBag)
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {

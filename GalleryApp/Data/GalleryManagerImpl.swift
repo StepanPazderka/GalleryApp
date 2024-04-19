@@ -402,7 +402,7 @@ extension GalleryManagerImpl {
 		}
 	}
 	
-	func loadCurrentGalleryIndex() -> Observable<GalleryIndex> {
+	func loadCurrentGalleryIndexAsObservable() -> Observable<GalleryIndex> {
 		UserDefaults.standard.rx.observe(String.self, "selectedGallery").flatMap { currentlySelectedGalleryIndexName -> Observable<GalleryIndex> in
 			self.loadOrCreateCurrentGalleryIndex()
 			if let currentlySelectedGalleryIndexName, let result = self.realm?.objects(GalleryIndexRealm.self).filter("name == %@", currentlySelectedGalleryIndexName).first {
@@ -411,5 +411,10 @@ extension GalleryManagerImpl {
 				return .empty()
 			}
 		}
+	}
+	
+	func loadCurrentGalleryIndex() -> GalleryIndex? {
+		guard let index = self.load(galleryIndex: self.settingsManager.selectedGalleryName) else { return nil }
+		return index
 	}
 }

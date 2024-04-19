@@ -23,7 +23,8 @@ protocol GalleryManager {
 	@discardableResult func createGalleryIndex(name: String) throws -> GalleryIndex
 	
 	// MARK: - Read
-	func loadCurrentGalleryIndex() -> Observable<GalleryIndex>
+	func loadCurrentGalleryIndex() -> GalleryIndex?
+	func loadCurrentGalleryIndexAsObservable() -> Observable<GalleryIndex>
 	func load(galleryIndex: String?) -> GalleryIndex?
 	func loadGalleryIndexAsObservable() -> Observable<GalleryIndex>
 	func loadGalleries() -> Observable<[GalleryIndex]>

@@ -38,9 +38,18 @@ class AlbumScreenViewModel {
         self.galleryManager = galleryManager
         self.pathResolver = pathResolver
     }
+	
+	func sliderSetting() -> Observable<Float> {
+		switch albumID {
+		case .some(let albumID):
+			return loadAlbumIndexAsObservable().map { $0.thumbnailsSize }
+		case .none:
+			return galleryManager.loadCurrentGalleryIndexAsObservable().map { $0.thumbnailSize ?? 0.0 }
+		}
+	}
     
-    func albumScreenImagesAsObservable() -> Observable<[GalleryImage]> {
-        self.galleryManager.loadCurrentGalleryIndex()
+    func imagesAsObservable() -> Observable<[GalleryImage]> {
+        self.galleryManager.loadCurrentGalleryIndexAsObservable()
 			.map { [weak self] in
             if let albumID = self?.albumID {
                 return self?.galleryManager.loadAlbumIndex(with: albumID)?.images ?? [GalleryImage]()
@@ -99,8 +108,19 @@ class AlbumScreenViewModel {
         self.galleryManager.add(images: images, toAlbum: toAlbum)
     }
     
-    func newThumbnailSize(size: Float) {
-//        self.model.thumbnailsSize = size
+    func updateThumbnailSize(size: Float) {
+		switch albumID {
+		case .none:
+			if var index = galleryManager.loadCurrentGalleryIndex() {
+				index.thumbnailSize = size
+				self.galleryManager.updateGalleryIndex(newGalleryIndex: index)
+			}
+		case .some(_):
+			if let albumID, var albumIndex = loadAlbum(by: albumID) {
+				albumIndex.thumbnailsSize = size
+				try? self.galleryManager.updateAlbumIndex(index: albumIndex)
+			}
+		}
     }
     
     func setAlbumThumbnailImage(image: GalleryImage) {

@@ -40,7 +40,7 @@ class AlbumsListViewModel {
     }
     
     func fetchAlbums() -> Observable<[SidebarSectionModel]> {
-        self.galleryManager.loadCurrentGalleryIndex().map { index in
+        self.galleryManager.loadCurrentGalleryIndexAsObservable().map { index in
             return index.albums.compactMap { albumID in
                 if let album = self.galleryManager.loadAlbumIndex(with: albumID) {
                     var thumbnailImage: UIImage?
