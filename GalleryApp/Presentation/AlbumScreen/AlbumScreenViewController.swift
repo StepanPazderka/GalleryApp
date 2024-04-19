@@ -82,27 +82,27 @@ class AlbumScreenViewController: UIViewController {
     // MARK: - Layout
     func setupViews() {
         self.view = screenView
-        
+		
+		self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.screenView.rightStackView)
+		
         self.screenView.collectionView.delegate = self
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.screenView.rightStackView)
-        
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
-        
-        if self.viewModel.albumID != nil {
-            self.viewModel.loadAlbumIndexAsObservable().subscribe(onNext: { [weak self] loadedIndex in
-                self?.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(loadedIndex.thumbnailsSize), height: CGFloat(loadedIndex.thumbnailsSize))
-                self?.screenView.slider.value = loadedIndex.thumbnailsSize
-            }).disposed(by: disposeBag)
-        } else {
-            self.viewModel.galleryManager.loadCurrentGalleryIndex().subscribe(onNext: { [weak self] index in
-                if let thumbnailSize = index.thumbnailSize {
-                    let newItemSize = CGSize(width: CGFloat(thumbnailSize), height: CGFloat(thumbnailSize))
-                    self?.screenView.collectionLayout.itemSize = newItemSize
-                    self?.screenView.slider.value = thumbnailSize
-                }
-            }).disposed(by: disposeBag)
-        }
+		
+		switch viewModel.albumID {
+		case .some:
+			self.viewModel.loadAlbumIndexAsObservable().subscribe(onNext: { [weak self] loadedIndex in
+				self?.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(loadedIndex.thumbnailsSize), height: CGFloat(loadedIndex.thumbnailsSize))
+				self?.screenView.slider.value = loadedIndex.thumbnailsSize
+			}).disposed(by: disposeBag)
+		case .none:
+			self.viewModel.galleryManager.loadCurrentGalleryIndex().subscribe(onNext: { [weak self] index in
+				if let thumbnailSize = index.thumbnailSize {
+					let newItemSize = CGSize(width: CGFloat(thumbnailSize), height: CGFloat(thumbnailSize))
+					self?.screenView.collectionLayout.itemSize = newItemSize
+					self?.screenView.slider.value = thumbnailSize
+				}
+			}).disposed(by: disposeBag)
+		}
 	}
     
     func showDocumentPicker() {
@@ -213,7 +213,10 @@ class AlbumScreenViewController: UIViewController {
             self.viewModel.isEditing.accept(false)
         }).disposed(by: disposeBag)
         
-        self.viewModel.showingAnnotationsAsObservable().asDriver(onErrorJustReturn: false).drive(screenView.checkBoxTitles.rx.checker).disposed(by: disposeBag)
+        self.viewModel.showingAnnotationsAsObservable()
+			.asDriver(onErrorJustReturn: false)
+			.drive(screenView.checkBoxTitles.rx.checker)
+			.disposed(by: disposeBag)
         
         // MARK: - Showing notes binding
         self.screenView.checkBoxTitles.rx.tap.subscribe(onNext: { [weak self] in
