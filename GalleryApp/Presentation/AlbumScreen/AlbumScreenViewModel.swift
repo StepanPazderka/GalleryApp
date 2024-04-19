@@ -40,7 +40,8 @@ class AlbumScreenViewModel {
     }
     
     func albumScreenImagesAsObservable() -> Observable<[GalleryImage]> {
-        self.galleryManager.loadCurrentGalleryIndex().map { [weak self] in
+        self.galleryManager.loadCurrentGalleryIndex()
+			.map { [weak self] in
             if let albumID = self?.albumID {
                 return self?.galleryManager.loadAlbumIndex(with: albumID)?.images ?? [GalleryImage]()
             } else {

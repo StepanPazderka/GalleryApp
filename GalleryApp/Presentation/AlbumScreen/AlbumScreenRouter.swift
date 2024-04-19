@@ -23,7 +23,7 @@ class AlbumScreenRouter {
         self.container = container
     }
     
-    func start(navigationController: UINavigationController?) {
+    func setup(navigationController: UINavigationController?) {
         self.navigationController = navigationController
     }
     

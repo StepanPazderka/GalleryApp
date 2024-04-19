@@ -42,13 +42,14 @@ class AlbumScreenViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.configureDataSource()
-        
-        self.router.start(navigationController: self.navigationController)
-        
+		
+        self.router.setup(navigationController: self.navigationController)
+		self.setupDataSource()
         self.setupViews()
+		
         self.bindData()
         self.bindInteractions()
+		
 		self.screenView.collectionView.allowsSelectionDuringEditing = true
     }
     
@@ -56,7 +57,7 @@ class AlbumScreenViewController: UIViewController {
         super.viewWillAppear(animated)
     }
     
-    func configureDataSource() {
+    func setupDataSource() {
         dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, GalleryImage>>(
             configureCell: { [unowned self] (dataSource, collectionView, indexPath, item) in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
@@ -138,7 +139,8 @@ class AlbumScreenViewController: UIViewController {
         // MARK: - Loading Images to Collection View
         self.viewModel.albumScreenImagesAsObservable()
 			.debug("Images for collection view")
-			.map { [AnimatableSectionModel(model: "Images", items: $0)] }
+			.observe(on: MainScheduler.instance)
+			.compactMap { [AnimatableSectionModel(model: "Images", items: $0)] }
             .bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource))
             .disposed(by: disposeBag)
     }
