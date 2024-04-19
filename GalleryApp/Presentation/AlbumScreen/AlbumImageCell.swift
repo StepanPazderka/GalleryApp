@@ -86,15 +86,15 @@ class AlbumImageCell: UICollectionViewCell {
     }
     
     func bindData() {
-        self.viewModel?.showingAnnotationsAsObservable().subscribe(onNext: { value in
+        self.viewModel?.showingAnnotationsAsObservable().subscribe(onNext: { [weak self] value in
             UIView.animate(withDuration: 0.25,
                            animations: {
                 if value == false {
-                    self.textLabel.alpha = 0
-					self.textLabel.isHidden = true
+                    self?.textLabel.alpha = 0
+					self?.textLabel.isHidden = true
                 } else {
-                    self.textLabel.alpha = 1
-					self.textLabel.isHidden = false
+                    self?.textLabel.alpha = 1
+					self?.textLabel.isHidden = false
                 }
             })
         }).disposed(by: disposeBag)

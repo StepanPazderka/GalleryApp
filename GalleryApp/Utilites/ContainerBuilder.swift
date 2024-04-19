@@ -74,8 +74,7 @@ class ContainerBuilder {
         container.register(GalleryManager.self) { r in
             return GalleryManagerImpl(settingsManager: r.resolve(SettingsManagerImpl.self)!,
                                        fileScannerManger: r.resolve(FileScannerManager.self)!,
-                                       pathResolver: r.resolve(PathResolver.self)!,
-                                       isTesting: false)
+                                       pathResolver: r.resolve(PathResolver.self)!)
         }
     }
     

@@ -95,7 +95,7 @@ class AlbumScreenViewController: UIViewController {
                 self?.screenView.slider.value = loadedIndex.thumbnailsSize
             }).disposed(by: disposeBag)
         } else {
-            self.viewModel.galleryManager.loadGalleryIndexAsObservable().subscribe(onNext: { [weak self] index in
+            self.viewModel.galleryManager.loadCurrentGalleryIndex().subscribe(onNext: { [weak self] index in
                 if let thumbnailSize = index.thumbnailSize {
                     let newItemSize = CGSize(width: CGFloat(thumbnailSize), height: CGFloat(thumbnailSize))
                     self?.screenView.collectionLayout.itemSize = newItemSize
@@ -131,7 +131,7 @@ class AlbumScreenViewController: UIViewController {
         self.viewModel.errorMessage.subscribe(onNext: { [weak self] errorMessage in
             if !errorMessage.isEmpty {
                 let alert = UIAlertController(title: "Alert", message: errorMessage, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "kOK", style: .default))
+                alert.addAction(UIAlertAction(title: "kOK", style: .cancel))
                 self?.present(alert, animated: true, completion: nil)
             }
         }).disposed(by: disposeBag)
@@ -208,9 +208,7 @@ class AlbumScreenViewController: UIViewController {
         self.screenView.deleteImageButton.rx.tap.subscribe(onNext: { [weak self] in
             guard let self else { return }
             guard let indexes = self.screenView.collectionView.indexPathsForSelectedItems else { return }
-            print(indexes)
             let selectedImages = indexes.compactMap { self.dataSource.sectionModels.first?.items[$0.item] ?? nil }
-            print(selectedImages)
             self.viewModel.delete(selectedImages)
             self.viewModel.isEditing.accept(false)
         }).disposed(by: disposeBag)
@@ -242,8 +240,8 @@ class AlbumScreenViewController: UIViewController {
         return
     }
     
-    func getSelectedImages(from collectionView: UICollectionView, for indexPath: IndexPath) -> [GalleryImage] {
-        guard let selectedIndexes = collectionView.indexPathsForSelectedItems, !selectedIndexes.isEmpty else {
+    func getSelectedImages(for indexPath: IndexPath) -> [GalleryImage] {
+		guard let selectedIndexes = screenView.collectionView.indexPathsForSelectedItems, !selectedIndexes.isEmpty else {
             return [self.dataSource.sectionModels.first!.items[indexPath.item]]
         }
         
@@ -259,7 +257,7 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
         return UIContextMenuConfiguration(identifier: nil,
                                           previewProvider: nil) { [weak self] suggestedActions in
             
-            guard let selectedImages = self?.getSelectedImages(from: self!.screenView.collectionView, for: indexPath) else { return UIMenu() }
+            guard let selectedImages = self?.getSelectedImages(for: indexPath) else { return UIMenu() }
             
             let inspectAction = UIAction(title: NSLocalizedString("kDETAILS", comment: ""),
                                          image: UIImage(systemName: "info.circle")) { action in

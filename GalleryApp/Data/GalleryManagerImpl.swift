@@ -21,31 +21,22 @@ class GalleryManagerImpl: GalleryManager {
 	// MARK: - Custom Properties
 	let realm: Realm?
 	
-	public let selectedGalleryIndexRelay = BehaviorRelay<GalleryIndex>(value: .empty)
+//	public let selectedGalleryIndexRelay = BehaviorRelay<GalleryIndex>(value: .empty)
 	
 	// MARK: - Init
-	init(settingsManager: SettingsManagerImpl, fileScannerManger: FileScannerManager, pathResolver: PathResolver, isTesting: Bool) {
+	init(settingsManager: SettingsManagerImpl, fileScannerManger: FileScannerManager, pathResolver: PathResolver) {
 		self.settingsManager = settingsManager
 		self.fileScannerManager = fileScannerManger
 		self.pathResolver = pathResolver
 				
 		do {
-			if isTesting {
-				let inMemoryRealmConfig = Realm.Configuration(inMemoryIdentifier: "MyInMemoryRealm")
-				self.realm = try Realm(configuration: inMemoryRealmConfig)
-			} else {
-				self.realm = try Realm()
-			}
+			self.realm = try Realm()
 		} catch {
 			print("Error: \(error)")
 			self.realm = nil
 		}
-		
-		self.loadGalleryIndexAsObservable().subscribe(onNext: { galleryIndex in
-			self.selectedGalleryIndexRelay.accept(galleryIndex)
-		}).disposed(by: disposeBag)
 	}
-	
+
 	func loadImageAsObservable(with id: UUID) -> Observable<GalleryImage> {
 		let results = realm?.objects(GalleryImageRealm.self).first {
 			$0.id == id.uuidString

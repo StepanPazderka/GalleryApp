@@ -109,8 +109,9 @@ class SidebarViewController: UIViewController {
         
         viewModel.getSelectedLibraryNameAsObservable()
             .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] libraryName in
-                self?.router.showAllPhotos()
+            .subscribe(onNext: { [unowned self] libraryName in
+				self.router.showAllPhotos()
+				self.screenView.sidebarCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: .bottom)
             })
             .disposed(by: disposeBag)
     }

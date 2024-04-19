@@ -13,24 +13,24 @@ protocol GalleryManager {
     
     // MARK: - Propertes
     var pathResolver: PathResolver { get }
-    var selectedGalleryIndexRelay: BehaviorRelay<GalleryIndex> { get }
     
     // MARK: - Loading
     func loadImageAsObservable(with: UUID) -> Observable<GalleryImage>
     
-    func loadAlbumIndex(with: UUID) -> AlbumIndex?
-    func loadAlbumIndexAsObservable(id: UUID) -> Observable<AlbumIndex>
-    
-    func load(galleryIndex: String?) -> GalleryIndex?
-    func loadGalleryIndexAsObservable() -> Observable<GalleryIndex>
-	
-	func loadGalleries() -> Observable<[GalleryIndex]>
-    
-    // MARK: - Writing
+    // MARK: - Create
 	func add(images: [GalleryImage], toAlbum: AlbumIndex?)
     @discardableResult func createAlbum(name: String, parentAlbum: UUID?) throws -> AlbumIndex
 	@discardableResult func createGalleryIndex(name: String) throws -> GalleryIndex
-    
+	
+	// MARK: - Read
+	func loadCurrentGalleryIndex() -> Observable<GalleryIndex>
+	func load(galleryIndex: String?) -> GalleryIndex?
+	func loadGalleryIndexAsObservable() -> Observable<GalleryIndex>
+	func loadGalleries() -> Observable<[GalleryIndex]>
+	
+	func loadAlbumIndex(with: UUID) -> AlbumIndex?
+	func loadAlbumIndexAsObservable(id: UUID) -> Observable<AlbumIndex>
+		
     // MARK: - Updating
     func update(image: GalleryImage)
     @discardableResult func updateAlbumIndex(index: AlbumIndex) throws -> AlbumIndex
@@ -48,8 +48,6 @@ protocol GalleryManager {
     // MARK: - Special
     func move(Image: GalleryImage, toAlbum: UUID, callback: (() -> Void)?) throws
     func buildThumbnail(forImage albumImage: GalleryImage)
-	
-	func loadCurrentGalleryIndex() -> Observable<GalleryIndex>
 }
 
 extension GalleryManager {
