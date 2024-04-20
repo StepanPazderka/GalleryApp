@@ -39,16 +39,20 @@ class SelectLibraryViewController: UIViewController {
         self.layoutViews()
         self.bindInteractions()
         self.bindData()
-        
-        self.highlightSelectedLibraryInList()
     }
     
     func bindData() {
-        self.viewModel.loadGalleriesAsObservable2()
-            .do(onNext: {
-                [weak self] parameter in self?.highlightSelectedLibraryInList()
-            })
-            .bind(to: screenView.galleriesCollectionView.rx.items(dataSource: dataSource!)).disposed(by: disposeBag)
+		self.viewModel.loadGalleriesAsObservable()
+			.bind(to: screenView.galleriesCollectionView.rx.items(dataSource: dataSource!))
+			.disposed(by: disposeBag)
+		
+		self.viewModel.loadCurrentGalleryAsObservable().subscribe(onNext: { index in
+			if let indexPath = self.dataSource?.sectionModels.first?.items.firstIndex(where: { galleryIndex in
+				galleryIndex.mainGalleryName == index.mainGalleryName
+			}) {
+				self.screenView.galleriesCollectionView.selectItem(at: IndexPath(row: indexPath, section: 0), animated: false, scrollPosition: .bottom)
+			}
+		}).disposed(by: disposeBag)
     }
     
     func bindInteractions() {
@@ -82,21 +86,6 @@ class SelectLibraryViewController: UIViewController {
             if let galleryName = self?.dataSource?.sectionModels.first?.items[index.row] {
 				self?.viewModel.delete(gallery: galleryName.mainGalleryName)
             }
-        }
-    }
-    
-    func highlightSelectedLibraryInList() {
-        let loadedGalleryName = self.viewModel.getSelectedLibraryString()
-        var index: Int?
-        let selectedItem = self.dataSource?.sectionModels.first(where: { section in
-            index = section.items.firstIndex(where: { item in
-				item.mainGalleryName == loadedGalleryName
-            })
-            return true
-        })
-        
-        if let index {
-            self.screenView.galleriesCollectionView.selectItem(at: IndexPath(item: index, section: 0), animated: false, scrollPosition: .centeredVertically)
         }
     }
     
@@ -154,11 +143,13 @@ class SelectLibraryViewController: UIViewController {
     
     func setupViews() {
         self.view = screenView
+		
+		self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: screenView.closeButton)
+		self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: screenView.rightBarButton)
+		self.navigationItem.title = NSLocalizedString("kSELECTLIBRARY", comment: "Select library to load")
     }
     
     func layoutViews() {
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: screenView.closeButton)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: screenView.rightBarButton)
-        self.navigationItem.title = NSLocalizedString("kSELECTLIBRARY", comment: "Select library to load")
+        
     }
 }

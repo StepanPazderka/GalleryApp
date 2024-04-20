@@ -150,7 +150,6 @@ class SidebarViewController: UIViewController {
         self.view = screenView
         
         self.screenView.sidebarCollectionView.register(SidebarViewCell.self, forCellWithReuseIdentifier: SidebarViewCell.identifier)
-        
         self.screenView.sidebarCollectionView.delegate = self
 
         self.navigationController?.navigationBar.prefersLargeTitles = false

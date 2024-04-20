@@ -12,19 +12,19 @@ import RxDataSources
 class SelectLibraryViewModel {
 	var userDefaults: UserDefaults = UserDefaults.standard
 	let settingsManager: SettingsManagerImpl
-	let galleryManager: GalleryManager
+	private let galleryManager: GalleryManager
 	
 	init(settingsManager: SettingsManagerImpl, galleryManagery: GalleryManager) {
 		self.settingsManager = settingsManager
 		self.galleryManager = galleryManagery
 	}
-	
-	func loadGalleriesAsObservable() -> Observable<[AnimatableSectionModel<String, String>]> {
-		return galleryManager.loadGalleries().map { [AnimatableSectionModel(model: "Galleries", items: $0.map { $0.mainGalleryName })] }
+
+	func loadGalleriesAsObservable() -> Observable<[SelectLibraryAnimatableSectionModel]> {
+		self.galleryManager.loadGalleries().map { [SelectLibraryAnimatableSectionModel(name: "Galleries", items: $0)] }
 	}
 	
-	func loadGalleriesAsObservable2() -> Observable<[SelectLibraryAnimatableSectionModel]> {
-		self.galleryManager.loadGalleries().map { [SelectLibraryAnimatableSectionModel(name: "Galleries", items: $0)] }
+	func loadCurrentGalleryAsObservable() -> Observable<GalleryIndex> {
+		self.galleryManager.loadCurrentGalleryIndexAsObservable()
 	}
     
     func createNewLibrary(withName: String, callback: (() -> (Void))? = nil) throws {
@@ -45,7 +45,7 @@ class SelectLibraryViewModel {
             return selectedGallery
         } else { return "" }
     }
-    
+
     func switchTo(library: String) {		
 		settingsManager.selectedGalleryName = library
         settingsManager.set(key: .selectedGallery, value: library)
