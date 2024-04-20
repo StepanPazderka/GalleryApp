@@ -24,7 +24,7 @@ class SidebarRouter {
         self.galleryManager = galleryManager
     }
     
-    public func start(splitViewController: UISplitViewController) {
+    public func setup(splitViewController: UISplitViewController) {
         self.splitViewController = splitViewController
 
         let sidebarViewController = container.resolve(SidebarViewController.self)!

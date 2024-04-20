@@ -30,8 +30,8 @@
             filePath = "GalleryApp/Presentation/MainSidebar/Presentation/SidebarViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "240"
-            endingLineNumber = "240"
+            startingLineNumber = "238"
+            endingLineNumber = "238"
             landmarkName = "collectionView(_:contextMenuConfigurationForItemAt:point:)"
             landmarkType = "7">
          </BreakpointContent>

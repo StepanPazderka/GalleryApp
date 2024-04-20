@@ -47,7 +47,7 @@ class ContainerBuilder {
         }
         
         container.register(SelectLibraryViewModel.self) { r in
-            return SelectLibraryViewModel(settingsManager: r.resolve(SettingsManagerImpl.self)!, galleryManagery: r.resolve(GalleryManager.self)!)
+			return SelectLibraryViewModel(settingsManager: r.resolve(SettingsManagerImpl.self)!, galleryManagery: r.resolve(GalleryManager.self)!)
         }
         
         self.container = transientContainer
@@ -84,7 +84,7 @@ class ContainerBuilder {
         }
         
         container.register(SelectLibraryViewController.self) { r in
-            return SelectLibraryViewController(viewModel: r.resolve(SelectLibraryViewModel.self)!)
+			return SelectLibraryViewController(viewModel: r.resolve(SelectLibraryViewModel.self)!, pathResolver: r.resolve(PathResolver.self)!)
         }
         
         container.register(SidebarRouter.self) { r in
@@ -110,7 +110,8 @@ class ContainerBuilder {
         
         container.register(AlbumScreenViewController.self) { r in
             return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!,
-                                             viewModel: r.resolve(AlbumScreenViewModel.self)!)
+                                             viewModel: r.resolve(AlbumScreenViewModel.self)!,
+											 pathResolver: r.resolve(PathResolver.self)!)
         }.inObjectScope(.container)
         
         container.register(AlbumScreenViewModel.self) { r in
@@ -128,7 +129,8 @@ class ContainerBuilder {
         container.register(AlbumScreenViewController.self) { (r, albumID: UUID) in
             return AlbumScreenViewController(router: r.resolve(AlbumScreenRouter.self)!,
                                              viewModel: r.resolve(AlbumScreenViewModel.self,
-                                                                  argument: albumID)!)
+                                                                  argument: albumID)!,
+											 pathResolver: r.resolve(PathResolver.self)!)
         }.inObjectScope(.transient)
         
         container.register(AlbumsListViewController.self) { (r, selectedImages: [GalleryImage]) in

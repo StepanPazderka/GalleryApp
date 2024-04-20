@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RxDataSources
 
 struct GalleryIndex: Codable {
     var id: UUID = UUID()
@@ -39,3 +40,14 @@ extension GalleryIndex {
 }
 
 extension GalleryIndex: Equatable { }
+
+/*
+ Conformance to IdentifiableType allows this type to be used as a model for RxDataSource objects
+ */
+extension GalleryIndex: IdentifiableType {
+	var identity: UUID {
+		get {
+			self.id
+		}
+	}
+}

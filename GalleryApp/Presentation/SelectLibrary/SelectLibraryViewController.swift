@@ -15,13 +15,15 @@ class SelectLibraryViewController: UIViewController {
     // MARK: - Views
     let screenView = SelectLibraryView()
     let viewModel: SelectLibraryViewModel
+	let pathResolver: PathResolver
     let disposeBag = DisposeBag()
     
     // MARK: - Properties
-    private var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, String>>?
+    private var dataSource: RxCollectionViewSectionedAnimatedDataSource<SelectLibraryAnimatableSectionModel>?
     
-    init(viewModel: SelectLibraryViewModel) {
+	init(viewModel: SelectLibraryViewModel, pathResolver: PathResolver) {
         self.viewModel = viewModel
+		self.pathResolver = pathResolver
         super.init(nibName: nil, bundle: nil)
         
         self.configureDataSource()
@@ -42,7 +44,7 @@ class SelectLibraryViewController: UIViewController {
     }
     
     func bindData() {
-        self.viewModel.loadGalleriesAsObservableForListView()
+        self.viewModel.loadGalleriesAsObservable2()
             .do(onNext: {
                 [weak self] parameter in self?.highlightSelectedLibraryInList()
             })
@@ -53,7 +55,7 @@ class SelectLibraryViewController: UIViewController {
         self.screenView.galleriesCollectionView.rx.itemSelected.subscribe(onNext: { [weak self] index in
             guard let self else { return }
             if let libraryName = self.dataSource?.sectionModels.first?.items[index.item] {
-                self.viewModel.switchTo(library: libraryName)
+				self.viewModel.switchTo(library: libraryName.mainGalleryName)
                 self.dismiss(animated: true)
             }
         }).disposed(by: disposeBag)
@@ -78,7 +80,7 @@ class SelectLibraryViewController: UIViewController {
         // MARK: - Swipe to Delete Action Closure
         self.screenView.swipeToDeleteHandler = { [weak self] index in
             if let galleryName = self?.dataSource?.sectionModels.first?.items[index.row] {
-                self?.viewModel.delete(gallery: galleryName)
+				self?.viewModel.delete(gallery: galleryName.mainGalleryName)
             }
         }
     }
@@ -88,7 +90,7 @@ class SelectLibraryViewController: UIViewController {
         var index: Int?
         let selectedItem = self.dataSource?.sectionModels.first(where: { section in
             index = section.items.firstIndex(where: { item in
-                item == loadedGalleryName
+				item.mainGalleryName == loadedGalleryName
             })
             return true
         })
@@ -99,11 +101,13 @@ class SelectLibraryViewController: UIViewController {
     }
     
     func configureDataSource() {
-        self.dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, String>>(configureCell: { dataSource, collectionView, indexPath, item in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarViewCell.identifier, for: indexPath) as! SidebarViewCell
-            cell.label.text = item
-            cell.imageView.frame.size = .zero
-            return cell})
+		self.dataSource = RxCollectionViewSectionedAnimatedDataSource<SelectLibraryAnimatableSectionModel>(configureCell: { [weak self] dataSource, collectionView, indexPath, item in
+			let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarViewCell.identifier, for: indexPath) as! SidebarViewCell
+			cell.label.text = item.mainGalleryName
+			if let lastGalleryImage = item.images.first, let thumbnailImagePath = self?.pathResolver.resolveThumbPathFor(imageName: lastGalleryImage.fileName) {
+				cell.imageView.image = UIImage(contentsOfFile: thumbnailImagePath)
+			}
+			return cell})
     }
     
     // MARK: - Create Album Popover Dialog Box

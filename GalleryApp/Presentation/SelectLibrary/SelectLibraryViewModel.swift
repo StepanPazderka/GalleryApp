@@ -19,8 +19,12 @@ class SelectLibraryViewModel {
 		self.galleryManager = galleryManagery
 	}
 	
-	func loadGalleriesAsObservableForListView() -> Observable<[AnimatableSectionModel<String, String>]> {
+	func loadGalleriesAsObservable() -> Observable<[AnimatableSectionModel<String, String>]> {
 		return galleryManager.loadGalleries().map { [AnimatableSectionModel(model: "Galleries", items: $0.map { $0.mainGalleryName })] }
+	}
+	
+	func loadGalleriesAsObservable2() -> Observable<[SelectLibraryAnimatableSectionModel]> {
+		self.galleryManager.loadGalleries().map { [SelectLibraryAnimatableSectionModel(name: "Galleries", items: $0)] }
 	}
     
     func createNewLibrary(withName: String, callback: (() -> (Void))? = nil) throws {
@@ -42,7 +46,8 @@ class SelectLibraryViewModel {
         } else { return "" }
     }
     
-    func switchTo(library: String) {
+    func switchTo(library: String) {		
+		settingsManager.selectedGalleryName = library
         settingsManager.set(key: .selectedGallery, value: library)
     }
     

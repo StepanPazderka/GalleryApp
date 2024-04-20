@@ -94,6 +94,6 @@ class SidebarViewModel {
     }
     
     func getSelectedLibraryNameAsObservable() -> Observable<String> {
-        self.settingsManager.selectedGalleryAsObservable
+		self.settingsManager.get(key: .selectedGallery)
     }
 }

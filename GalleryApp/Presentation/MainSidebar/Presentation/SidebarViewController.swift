@@ -45,9 +45,7 @@ class SidebarViewController: UIViewController {
         self.setupViews()
         self.bindData()
         self.bindInteractions()
-        
-//        self.screenView.sidebarCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: .centeredVertically)
-    }
+	}
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

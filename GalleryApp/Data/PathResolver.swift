@@ -10,7 +10,6 @@ import Foundation
 class PathResolver {
     
     // MARK: - Properties
-//    public static let shared = PathResolver()
     private let settingsManager: SettingsManagerImpl
     var libraryPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     var selectedGalleryPath: URL {
@@ -28,10 +27,11 @@ class PathResolver {
      Finds absolute path for image
      - parameter imageName: Image name in string with or without extension
      
-     - returns: Complete image path URL with extensions
+     - returns: Complete image path URL with file name extension
      */
     
     func resolveThumbPathFor(imageName: String) -> String {
+		print("resolving thumb")
         return self.selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(imageName).deletingPathExtension().appendingPathExtension(for: .jpeg).relativePath
     }
     

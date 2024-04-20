@@ -25,7 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let mainrouter = container.resolve(SidebarRouter.self)!
         let splitView = mainrouter.splitViewController
-        mainrouter.start(splitViewController: splitView)
+        mainrouter.setup(splitViewController: splitView)
         let window = UIWindow(windowScene: windowScene)
         window.rootViewController = splitView
         self.window = window

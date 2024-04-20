@@ -21,6 +21,7 @@ class AlbumScreenViewController: UIViewController {
     var viewModel: AlbumScreenViewModel
     let router: AlbumScreenRouter
     var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, GalleryImage>>!
+	let pathResolver: PathResolver
 
     let disposeBag = DisposeBag()
     
@@ -28,9 +29,10 @@ class AlbumScreenViewController: UIViewController {
     var importProgress = MutableProgress()
     
     // MARK: - Init
-    init(router: AlbumScreenRouter, viewModel: AlbumScreenViewModel) {
+	init(router: AlbumScreenRouter, viewModel: AlbumScreenViewModel, pathResolver: PathResolver) {
         self.router = router
         self.viewModel = viewModel
+		self.pathResolver = pathResolver
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -61,9 +63,7 @@ class AlbumScreenViewController: UIViewController {
         dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, GalleryImage>>(
             configureCell: { [unowned self] (dataSource, collectionView, indexPath, item) in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
-                var itemWithResolvedPath = item
-                itemWithResolvedPath.fileName = self.viewModel.resolveThumbPathFor(image: itemWithResolvedPath.fileName)
-                cell.configure(with: itemWithResolvedPath, viewModel: self.viewModel)
+                cell.setup(with: item, viewModel: self.viewModel, pathResolver: pathResolver)
                 return cell
             }
         )
@@ -87,22 +87,6 @@ class AlbumScreenViewController: UIViewController {
 		
         self.screenView.collectionView.delegate = self
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
-		
-//		switch viewModel.albumID {
-//		case .some:
-//			self.viewModel.loadAlbumIndexAsObservable().subscribe(onNext: { [weak self] loadedIndex in
-//				self?.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(loadedIndex.thumbnailsSize), height: CGFloat(loadedIndex.thumbnailsSize))
-//				self?.screenView.slider.value = loadedIndex.thumbnailsSize
-//			}).disposed(by: disposeBag)
-//		case .none:
-//			self.viewModel.galleryManager.loadCurrentGalleryIndex().subscribe(onNext: { [weak self] index in
-//				if let thumbnailSize = index.thumbnailSize {
-//					let newItemSize = CGSize(width: CGFloat(thumbnailSize), height: CGFloat(thumbnailSize))
-//					self?.screenView.collectionLayout.itemSize = newItemSize
-//					self?.screenView.slider.value = thumbnailSize
-//				}
-//			}).disposed(by: disposeBag)
-//		}
 	}
     
     func showDocumentPicker() {

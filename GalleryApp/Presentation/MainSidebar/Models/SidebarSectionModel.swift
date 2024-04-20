@@ -20,7 +20,7 @@ struct SidebarSectionModel {
 	var items: [SidebarItem]
 	let type: SidebarSectionModelType
 	
-	internal init(type: SidebarSectionModelType, name: String, items: [SidebarItem]) {
+	init(type: SidebarSectionModelType, name: String, items: [SidebarItem]) {
 		self.type = type
         self.name = name
         self.items = items

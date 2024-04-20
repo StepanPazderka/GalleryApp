@@ -71,7 +71,7 @@ class AlbumImageCell: UICollectionViewCell {
     static let identifier: String = String(describing: type(of: AlbumImageCell.self))
     
     // MARK: - Init
-    override init(frame: CGRect) {
+	override init(frame: CGRect) {
         super.init(frame: frame)
         
         self.imageView.isUserInteractionEnabled = true
@@ -114,9 +114,11 @@ class AlbumImageCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with imageData: GalleryImage, viewModel: AlbumScreenViewModel) {
+	func setup(with imageData: GalleryImage, viewModel: AlbumScreenViewModel, pathResolver: PathResolver) {
         self.textLabel.text = imageData.title
-        self.imageView.image = UIImage(contentsOfFile: imageData.fileName)
+		let resolvedThumbnailPath = pathResolver.resolveThumbPathFor(imageName: imageData.fileName)
+		NSLog("Path for thumbnail \(resolvedThumbnailPath)")
+		self.imageView.image = UIImage(contentsOfFile: resolvedThumbnailPath)
         self.viewModel = viewModel
         self.isSelected = false
         

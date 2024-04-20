@@ -10,10 +10,8 @@ import UniformTypeIdentifiers
 import RxSwift
 
 final class SettingsManagerImpl: SettingsManager {
-    
-    let unsecureStorage: UnsecureStorage
-    var selectedGalleryName: String
-    var selectedGalleryAsObservable = BehaviorSubject(value: "Default Library")
+	let unsecureStorage: UnsecureStorage
+	var selectedGalleryName: String
     var selectedGalleryPath: URL {
         return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent(selectedGalleryName)
     }
@@ -28,16 +26,10 @@ final class SettingsManagerImpl: SettingsManager {
         
         if let loadedSelectedGallery: String = unsecureStorage.load(key: .selectedGallery) {
             selectedGalleryName = loadedSelectedGallery
-            selectedGalleryAsObservable.onNext(loadedSelectedGallery)
         } else {
             unsecureStorage.save(key: .selectedGallery, value: "Default Gallery")
             selectedGalleryName = "Default Gallery"
-            selectedGalleryAsObservable.onNext("Default Gallery")
         }
-        
-        self.selectedGalleryAsObservable.subscribe(onNext: { [weak self] value in
-            self?.selectedGalleryName = value
-        }).disposed(by: disposeBag)
     }
     
     func getSelectedLibraryName() -> String {
@@ -51,6 +43,9 @@ final class SettingsManagerImpl: SettingsManager {
     
     func set(key: SettingsKey, value: String) {
         unsecureStorage.save(key: key, value: value)
-        selectedGalleryAsObservable.onNext(value)
     }
+	
+	func get(key: SettingsKey) -> Observable<String> {
+		UserDefaults.standard.rx.observe(String.self, key.rawValue).compactMap { $0 }
+	}
 }
