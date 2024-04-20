@@ -280,7 +280,7 @@ class GalleryManagerImpl: GalleryManager {
 		
 		do {
 			try realm?.write {
-				realm?.add(newGalleryImageRealm, update: .modified)
+				realm?.add(newGalleryImageRealm, update: .all)
 			}
 		} catch {
 			print("Some error while trying to persist data: \(error)")

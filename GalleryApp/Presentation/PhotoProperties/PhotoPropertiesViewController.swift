@@ -86,7 +86,6 @@ class PhotoPropertiesViewController: UIViewController {
 }
 
 extension PhotoPropertiesViewController: UITextViewDelegate {
-    
     func textViewDidEndEditing(_ textView: UITextView) {
         var updatedImage = viewModel.selectedImages.first!
         updatedImage.title = textView.text

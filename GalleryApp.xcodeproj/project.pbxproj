@@ -21,6 +21,7 @@
 		7F8B7D7E2AF82A9C0013950B /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7F8B7D7D2AF82A9C0013950B /* Algorithms */; };
 		7FAD8D912BD2D51500F86BE0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7FAD8D902BD2D51500F86BE0 /* Localizable.strings */; };
 		7FAD8D982BD4396200F86BE0 /* SelectLibraryAnimatableSectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD8D972BD4396200F86BE0 /* SelectLibraryAnimatableSectionModel.swift */; };
+		7FAD8D9A2BD464F800F86BE0 /* BehaviourSubject+toggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD8D992BD464F800F86BE0 /* BehaviourSubject+toggle.swift */; };
 		7FC922622ABB65B700402C76 /* PhotoDetailCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC922612ABB65B700402C76 /* PhotoDetailCollectionViewCell.swift */; };
 		7FEDEA93284CD8AD001F40C0 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7FEDEA92284CD8AD001F40C0 /* SnapKit */; };
 		7FF158E82B02D24E00149B82 /* GalleryManagerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8B7D722AF7F0EE0013950B /* GalleryManagerImpl.swift */; };
@@ -117,6 +118,7 @@
 		7FAD8D942BD2D9B200F86BE0 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		7FAD8D952BD2D9B200F86BE0 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7FAD8D972BD4396200F86BE0 /* SelectLibraryAnimatableSectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectLibraryAnimatableSectionModel.swift; sourceTree = "<group>"; };
+		7FAD8D992BD464F800F86BE0 /* BehaviourSubject+toggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BehaviourSubject+toggle.swift"; sourceTree = "<group>"; };
 		7FC922612ABB65B700402C76 /* PhotoDetailCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailCollectionViewCell.swift; sourceTree = "<group>"; };
 		7FF2D86B2AD8A5BB0027313F /* UIImageView+contentClippingRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+contentClippingRect.swift"; sourceTree = "<group>"; };
 		7FF5C0112A9D2C65001CA982 /* en.xcloc */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = en.xcloc; sourceTree = "<group>"; };
@@ -368,6 +370,7 @@
 				7FF5C03A2A9D2C65001CA982 /* ImageResizer.swift */,
 				7FF2D86B2AD8A5BB0027313F /* UIImageView+contentClippingRect.swift */,
 				7F6243EE2B0A605800A70E31 /* UUID+empty.swift */,
+				7FAD8D992BD464F800F86BE0 /* BehaviourSubject+toggle.swift */,
 			);
 			path = Utilites;
 			sourceTree = "<group>";
@@ -688,6 +691,7 @@
 				7F8800DE2AC0B36F008C4648 /* AlbumListViewControllerDelegate.swift in Sources */,
 				7F795F592AB909CE0090F6D1 /* PanZoomImageView.swift in Sources */,
 				7FF5C08E2A9D2C65001CA982 /* AlbumsListView.swift in Sources */,
+				7FAD8D9A2BD464F800F86BE0 /* BehaviourSubject+toggle.swift in Sources */,
 				7FAD8D982BD4396200F86BE0 /* SelectLibraryAnimatableSectionModel.swift in Sources */,
 				7FF5C0972A9D2C65001CA982 /* SidebarSectionModel.swift in Sources */,
 				7FF5C09E2A9D2C65001CA982 /* PhotoPropertiesViewController.swift in Sources */,

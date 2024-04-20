@@ -16,7 +16,8 @@ class AlbumScreenViewController: UIViewController {
     
     // MARK: Views
     lazy var screenView = AlbumScreenView()
-    
+	private let searchController = UISearchController(searchResultsController: nil)
+	
     // MARK: Properties
     var viewModel: AlbumScreenViewModel
     let router: AlbumScreenRouter
@@ -27,6 +28,8 @@ class AlbumScreenViewController: UIViewController {
     
     // MARK: - Progress
     var importProgress = MutableProgress()
+	
+	var showingSearchController = BehaviorRelay(value: false)
     
     // MARK: - Init
 	init(router: AlbumScreenRouter, viewModel: AlbumScreenViewModel, pathResolver: PathResolver) {
@@ -50,6 +53,8 @@ class AlbumScreenViewController: UIViewController {
         self.setupViews()
 		
         self.bindData()
+		self.bindUIState()
+		self.setupSearchController()
         self.bindInteractions()
 		
 		self.screenView.collectionView.allowsSelectionDuringEditing = true
@@ -121,13 +126,37 @@ class AlbumScreenViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         // MARK: - Loading Images to Collection View
-        self.viewModel.imagesAsObservable()
-			.debug("Images for collection view")
+		Observable.combineLatest(viewModel.imagesAsObservable(), searchController.searchBar.rx.text)
 			.observe(on: MainScheduler.instance)
-			.compactMap { [AnimatableSectionModel(model: "Images", items: $0)] }
-            .bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource))
-            .disposed(by: disposeBag)
+			.map { (images, searchTerm) in
+				images.filter { image in
+					guard let searchTerm = searchTerm, !searchTerm.isEmpty else { return true }
+					return image.title?.lowercased().contains(searchTerm.lowercased()) ?? false
+				}
+			}
+			.compactMap { images in
+				[AnimatableSectionModel(model: "Images", items: images)]
+			}
+			.bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource))
+			.disposed(by: disposeBag)
+		
+		self.screenView.searchButton.rx.tap.subscribe(onNext: {
+			UIView.animate(withDuration: 1.0) {
+				self.showingSearchController.toggle()
+			}
+		}).disposed(by: disposeBag)
     }
+	
+	func bindUIState() {
+		self.showingSearchController.subscribe(onNext: { [weak self] value in
+			switch value {
+			case true:
+				self?.navigationItem.searchController = self?.searchController
+			case false:
+				self?.navigationItem.searchController = nil
+			}
+		}).disposed(by: disposeBag)
+	}
     
     // MARK: - Interactions Binding
     func bindInteractions() {
@@ -158,7 +187,6 @@ class AlbumScreenViewController: UIViewController {
             }
         }).disposed(by: disposeBag)
         
-        /// Hide/shows left Menu Bar based on if in editing mode
         self.viewModel.isEditing.subscribe(onNext: { [weak self] value in
             guard let self else { return }
 			
@@ -223,7 +251,7 @@ class AlbumScreenViewController: UIViewController {
 			.drive(screenView.slider.rx.value)
 			.disposed(by: disposeBag)
     }
-    
+	    
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
     }
@@ -241,6 +269,10 @@ class AlbumScreenViewController: UIViewController {
             return self.dataSource.sectionModels.first?.items[indexPath.item]
         }
     }
+	
+	private func setupSearchController() {
+		self.searchController.searchResultsUpdater = self
+	}
 }
 
 // MARK: - Contextual Menu Setup
@@ -336,4 +368,16 @@ extension AlbumScreenViewController: AlbumListViewControllerDelegate {
         self.isEditing = false
         self.viewModel.isEditing.accept(false)
     }
+}
+
+extension AlbumScreenViewController: UISearchResultsUpdating {
+	func updateSearchResults(for searchController: UISearchController) {
+		print("Something happened")
+	}
+}
+
+extension AlbumScreenViewController: UISearchBarDelegate {
+	func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+		self.showingSearchController.toggle()
+	}
 }
