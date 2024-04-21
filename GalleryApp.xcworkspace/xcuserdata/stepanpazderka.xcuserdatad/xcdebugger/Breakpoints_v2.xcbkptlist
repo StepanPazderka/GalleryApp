@@ -23,32 +23,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "ACED5ECC-91CC-430C-95DD-5F5856F489CA"
+            uuid = "23AA6183-0C35-4915-9027-2248C6A1A5CF"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Presentation/MainSidebar/Presentation/SidebarViewController.swift"
+            filePath = "GalleryApp/Presentation/AlbumScreen/AlbumScreenRouter.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "237"
-            endingLineNumber = "237"
-            landmarkName = "collectionView(_:contextMenuConfigurationForItemAt:point:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "8C5DA01E-4BCC-40D7-B398-2AB3D26C69D0"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GalleryApp/Presentation/MainSidebar/Presentation/SidebarViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "41"
-            endingLineNumber = "41"
-            landmarkName = "loadSidebarContent()"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
+            landmarkName = "showPropertiesScreen(of:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

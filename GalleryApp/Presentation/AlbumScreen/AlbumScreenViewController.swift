@@ -260,15 +260,13 @@ class AlbumScreenViewController: UIViewController {
         return
     }
     
-    func getSelectedImages(for indexPath: IndexPath) -> [GalleryImage] {
+	func getSelectedImages(for indexPath: IndexPath) -> [GalleryImage] {
 		guard let selectedIndexes = screenView.collectionView.indexPathsForSelectedItems, !selectedIndexes.isEmpty else {
-            return [self.dataSource.sectionModels.first!.items[indexPath.item]]
-        }
-        
-        return selectedIndexes.compactMap { indexPath in
-            return self.dataSource.sectionModels.first?.items[indexPath.item]
-        }
-    }
+			return [dataSource.sectionModels.first!.items[indexPath.item]]
+		}
+		
+		return selectedIndexes.map { dataSource.sectionModels.first!.items[$0.row] }
+	}
 	
 	private func setupSearchController() {
 		self.searchController.searchResultsUpdater = self

@@ -71,7 +71,8 @@ class GalleryManagerImpl: GalleryManager {
 		return fetchedIndex
 	}
 	
-	@discardableResult func loadOrCreateCurrentGalleryIndex() -> GalleryIndex {
+	@discardableResult 
+	func loadOrCreateCurrentGalleryIndex() -> GalleryIndex {
 		var fetchedIndex: GalleryIndexRealm?
 		
 		fetchedIndex = self.realm?.objects(GalleryIndexRealm.self).first(where: { [weak self] in
@@ -97,7 +98,8 @@ class GalleryManagerImpl: GalleryManager {
 		}
 	}
 	
-	@discardableResult func persistNewGalleryIndex(withName name: String) -> GalleryIndex {
+	@discardableResult 
+	func persistNewGalleryIndex(withName name: String) -> GalleryIndex {
 		let newGalleryIndexForRealm = GalleryIndexRealm(name: name, thumbnailSize: 200, showingAnnotations: false)
 		guard let realm else { return .empty }
 		do {
@@ -115,7 +117,8 @@ class GalleryManagerImpl: GalleryManager {
 		return GalleryIndex(from: newGalleryIndexForRealm)
 	}
 	
-	@discardableResult func createGalleryIndex(name: String) throws -> GalleryIndex {
+	@discardableResult 
+	func createGalleryIndex(name: String) throws -> GalleryIndex {
 		do {
 			try realm?.write {
 				let newGalleryIndex = GalleryIndexRealm(name: name, thumbnailSize: 200, showingAnnotations: false)
@@ -128,7 +131,8 @@ class GalleryManagerImpl: GalleryManager {
 		throw GalleryManagerError.unknown
 	}
 	
-	@discardableResult func createAlbum(name: String, parentAlbum: UUID?) throws -> AlbumIndex {
+	@discardableResult 
+	func createAlbum(name: String, parentAlbum: UUID?) throws -> AlbumIndex {
 		let newAlbumIndex = AlbumIndexRealm(name: name)
 		
 		var galleryIndex = load()
@@ -257,7 +261,8 @@ class GalleryManagerImpl: GalleryManager {
 		}
 	}
 	
-	@discardableResult func duplicate(album: AlbumIndex) -> AlbumIndex {
+	@discardableResult 
+	func duplicate(album: AlbumIndex) -> AlbumIndex {
 		guard let fetchedAlbum = realm?.objects(AlbumIndexRealm.self).first(where: { $0.id == album.id.uuidString }) else { return album }
 		
 		let newAlbum = AlbumIndexRealm(id: UUID().uuidString, name: fetchedAlbum.name, thumbnail: fetchedAlbum.thumbnail, images: fetchedAlbum.images)
@@ -368,7 +373,8 @@ class GalleryManagerImpl: GalleryManager {
 		}
 	}
 	
-	@discardableResult func updateAlbumIndex(index: AlbumIndex) throws -> AlbumIndex {
+	@discardableResult 
+	func updateAlbumIndex(index: AlbumIndex) throws -> AlbumIndex {
 		do {
 			try realm?.write {
 				let updatedIndex = AlbumIndexRealm(from: index)

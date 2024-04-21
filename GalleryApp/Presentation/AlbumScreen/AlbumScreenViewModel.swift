@@ -126,7 +126,7 @@ class AlbumScreenViewModel {
     func setAlbumThumbnailImage(image: GalleryImage) {
         if let albumID, var albumIndex = galleryManager.loadAlbumIndex(with: albumID) {
             albumIndex.thumbnail = image.fileName
-            try! self.galleryManager.updateAlbumIndex(index: albumIndex)
+            try? self.galleryManager.updateAlbumIndex(index: albumIndex)
         }
     }
     
@@ -173,7 +173,7 @@ class AlbumScreenViewModel {
             
             let newTaskProgress = Progress(totalUnitCount: 1000)
             
-            itemProvider.loadFileRepresentation(forTypeIdentifier: "public.image") { filePath, error in
+            itemProvider.loadFileRepresentation(forTypeIdentifier: "public.image") { [weak self] filePath, error in
                 guard let filePath else {
                     guard let suggestedName = itemProvider.suggestedName else { return }
                     filenamesThatCouldntBeImported.append(suggestedName)
@@ -184,19 +184,22 @@ class AlbumScreenViewModel {
                 let filenameExtension = filePath.pathExtension.lowercased()
                 
                 if (error != nil) {
+					self?.errorMessage.accept(String(describing: error))
                     print("Error while copying files \(String(describing: error))")
                 }
                 
-                let targetPath = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
-                do {
-                    try FileManager.default.moveItem(at: filePath, to: targetPath)
-                    newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
-                    DispatchQueue.main.async {
-                        self.galleryManager.buildThumbnail(forImage: GalleryImage(fileName: targetPath.lastPathComponent, date: Date()))
-                    }
-                    filesSelectedForImport.append(GalleryImage(fileName: targetPath.lastPathComponent, date: Date()))
-                } catch {
-                    print(error)
+                if let targetPath = self?.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
+                {
+                	do {
+						try FileManager.default.moveItem(at: filePath, to: targetPath)
+						newTaskProgress.completedUnitCount = newTaskProgress.totalUnitCount
+						DispatchQueue.main.async {
+							self?.galleryManager.buildThumbnail(forImage: GalleryImage(fileName: targetPath.lastPathComponent, date: Date()))
+						}
+						filesSelectedForImport.append(GalleryImage(fileName: targetPath.lastPathComponent, date: Date()))
+					} catch {
+						print(error)
+					}
                 }
             }
             self.importProgress.addChild(newTaskProgress)
