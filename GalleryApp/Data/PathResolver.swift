@@ -31,7 +31,6 @@ class PathResolver {
      */
     
     func resolveThumbPathFor(imageName: String) -> String {
-		print("resolving thumb")
         return self.selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(imageName).deletingPathExtension().appendingPathExtension(for: .jpeg).relativePath
     }
     

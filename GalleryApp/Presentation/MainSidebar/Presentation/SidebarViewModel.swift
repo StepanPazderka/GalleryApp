@@ -16,6 +16,10 @@ class SidebarViewModel {
     private let pathResolver: PathResolver
     
     let disposeBag = DisposeBag()
+	
+	let mainButonsSection = SidebarSectionModel(type: .mainButtons, name: NSLocalizedString("kMAIN", comment: "Main buttons"), items: [
+		SidebarItem(title: NSLocalizedString("kALLPHOTOS", comment: "Title for sidebar cell to show All Photos in library"), image: nil, buttonType: .allPhotos)
+	])
     
     init(galleryInteractor: GalleryManager, settingsManager: SettingsManagerImpl, pathResolver: PathResolver) {
         self.galleryManager = galleryInteractor
@@ -35,39 +39,40 @@ class SidebarViewModel {
             self.galleryManager.duplicate(album: album)
         }
     }
-    
-    func loadSidebarContent() -> Observable<[SidebarSectionModel]> {
-        galleryManager
-            .loadCurrentGalleryIndexAsObservable()
-            .map { galleryIndex in
-				let mainButonsSection = SidebarSectionModel(type: .mainButtons, name: NSLocalizedString("kMAIN", comment: "Main buttons"), items: [
-                    SidebarItem(title: NSLocalizedString("kALLPHOTOS", comment: "Title for sidebar cell to show All Photos in library"), image: nil, buttonType: .allPhotos)
-                ])
-				let albumButtons = SidebarSectionModel(type: .albumButtons, name: "Albums", items: galleryIndex.albums.compactMap { albumID in
-                    if let album = self.galleryManager.loadAlbumIndex(with: albumID) {
-                        var thumbnailImage: UIImage?
-                        
-                        if let FirstAlbumImage = album.images.first {
-                            let path = self.pathResolver.resolveThumbPathFor(imageName: FirstAlbumImage.fileName)
-                            
-                            let thumbnailImageURL = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(FirstAlbumImage.fileName)
-                            thumbnailImage = UIImage(contentsOfFile: path)
-                        }
-                        
-                        if let thumbnail = album.thumbnail {
-                            if !thumbnail.isEmpty && !album.images.isEmpty {
-                                let thumbnailImageURL = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(thumbnail)
-                                thumbnailImage = UIImage(contentsOfFile: thumbnailImageURL.relativePath)
-                            }
-                        }
-                        return SidebarItem(id: UUID(uuidString: albumID.uuidString), title: album.name, image: thumbnailImage ?? nil, buttonType: .album)
-                    } else {
-                        return nil
-                    }
-                })
-                return [mainButonsSection, albumButtons]
-            }
-    }
+	
+	func loadSidebarContent() -> Observable<[SidebarSectionModel]> {
+		return galleryManager
+			.loadCurrentGalleryIndexAsObservable()
+			.flatMap { [unowned self] galleryIndex -> Observable<[SidebarSectionModel]> in
+				let albumObservables = galleryIndex.albums.compactMap { albumID -> Observable<SidebarItem?> in
+					self.galleryManager.loadAlbumIndexAsObservable(id: albumID)
+						.map { [unowned self] albumIndex -> SidebarItem? in
+							var thumbnailImage: UIImage?
+							let thumbnailFileName = albumIndex.thumbnail ?? albumIndex.images.first?.fileName
+							
+							if let fileName = thumbnailFileName {
+								let thumbnailPath = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(fileName)
+								thumbnailImage = UIImage(contentsOfFile: thumbnailPath.relativePath)
+							}
+							
+							return SidebarItem(
+								id: UUID(uuidString: albumIndex.id.uuidString),
+								title: albumIndex.name,
+								image: thumbnailImage,
+								buttonType: .album
+							)
+						}
+						.catchAndReturn(nil)
+				}
+				
+				return Observable.combineLatest(albumObservables)
+					.map { albumItems in
+						let albumButtons = SidebarSectionModel(type: .albumButtons, name: "Albums", items: albumItems.compactMap { $0 })
+						return [self.mainButonsSection, albumButtons]
+					}
+			}
+	}
+
     
     func createAlbum(name: String, parentAlbumID: UUID? = nil,  ID: UUID? = nil) {
         do {

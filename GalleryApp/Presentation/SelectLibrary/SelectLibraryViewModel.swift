@@ -19,8 +19,9 @@ class SelectLibraryViewModel {
 		self.galleryManager = galleryManagery
 	}
 
-	func loadGalleriesAsObservable() -> Observable<[SelectLibraryAnimatableSectionModel]> {
-		self.galleryManager.loadGalleries().map { [SelectLibraryAnimatableSectionModel(name: "Galleries", items: $0)] }
+	func loadAnimatedSectionsForCollectionView() -> Observable<[SelectLibraryAnimatableSectionModel]> {
+		self.galleryManager.loadGalleries()
+			.map { [SelectLibraryAnimatableSectionModel(name: "Galleries", items: $0)] }
 	}
 	
 	func loadCurrentGalleryAsObservable() -> Observable<GalleryIndex> {
@@ -52,6 +53,6 @@ class SelectLibraryViewModel {
     }
     
     func delete(gallery: String) {
-        self.galleryManager.delete(gallery: gallery)
+        self.galleryManager.deleteGallery(named: gallery)
     }
 }

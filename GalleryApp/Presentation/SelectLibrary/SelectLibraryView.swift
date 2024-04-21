@@ -17,12 +17,16 @@ class SelectLibraryView: UIView {
         var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         config.showsSeparators = false
         config.trailingSwipeActionsConfigurationProvider = { [weak self] indexPath in
-            let deleteLibraryAction = UIContextualAction(style: .destructive, title: "Delete") {
-                [weak self] action, view, completion in
+            let deleteLibraryAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] action, view, completion in
                 self?.swipeToDeleteHandler?(indexPath)
                 completion(true)
             }
-            return UISwipeActionsConfiguration(actions: [deleteLibraryAction])
+			let renameLibraryAction = UIContextualAction(style: .normal, title: "Rename") { [weak self] action, view, completion in
+				self?.swipeToRenameHandler?(indexPath)
+				completion(true)
+			}
+			renameLibraryAction.backgroundColor = .systemBlue
+            return UISwipeActionsConfiguration(actions: [deleteLibraryAction, renameLibraryAction])
         }
         return UICollectionViewCompositionalLayout.list(using: config)
     }
@@ -45,6 +49,7 @@ class SelectLibraryView: UIView {
     
     // MARK: - Callbacks
     var swipeToDeleteHandler: ((IndexPath) -> Void)?
+	var swipeToRenameHandler: ((IndexPath) -> Void)?
     
     init() {
         super.init(frame: .zero)

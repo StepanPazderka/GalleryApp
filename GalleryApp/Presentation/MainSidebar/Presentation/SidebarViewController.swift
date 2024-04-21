@@ -97,6 +97,7 @@ class SidebarViewController: UIViewController {
     // MARK: - Data Binding
     private func bindData() {
         viewModel.getSelectedLibraryNameAsObservable()
+			.distinctUntilChanged()
             .asDriver(onErrorJustReturn: "")
             .drive(self.screenView.selectGalleryButton.rx.title())
             .disposed(by: disposeBag)

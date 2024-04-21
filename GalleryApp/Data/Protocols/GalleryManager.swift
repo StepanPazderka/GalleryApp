@@ -39,7 +39,7 @@ protocol GalleryManager {
     
     // MARK: - Deletion
     func delete(album: UUID)
-    func delete(gallery: String)
+    func deleteGallery(named galleryName: String)
     func delete(images: [GalleryImage])
     
     // MARK: - Duplication

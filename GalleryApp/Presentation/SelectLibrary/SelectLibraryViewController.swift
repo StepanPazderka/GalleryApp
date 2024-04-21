@@ -42,7 +42,7 @@ class SelectLibraryViewController: UIViewController {
     }
     
     func bindData() {
-		self.viewModel.loadGalleriesAsObservable()
+		self.viewModel.loadAnimatedSectionsForCollectionView()
 			.bind(to: screenView.galleriesCollectionView.rx.items(dataSource: dataSource!))
 			.disposed(by: disposeBag)
 		

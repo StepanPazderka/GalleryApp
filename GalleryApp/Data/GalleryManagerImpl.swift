@@ -209,7 +209,11 @@ class GalleryManagerImpl: GalleryManager {
 	
 	func loadGalleries() -> Observable<[GalleryIndex]> {
 		if let indeces = realm?.objects(GalleryIndexRealm.self) {
-			return Observable.collection(from: indeces).map { Array($0.map { GalleryIndex(from: $0) }) }
+			return Observable.collection(from: indeces)
+				.map { results in
+					results.filter { !$0.isInvalidated }
+						.map { GalleryIndex(from: $0) }
+				}
 		} else {
 			return .empty()
 		}
@@ -247,17 +251,11 @@ class GalleryManagerImpl: GalleryManager {
 		try? jpegImage?.write(to: thumbPath)
 	}
 	
-	func delete(gallery: String) {
-		try! realm?.write {
-			let gallery = realm?.objects(GalleryIndexRealm.self).where {
-				$0.name == gallery
-			}
-			
-			if let gallery {
-				try! realm?.write {
-					realm?.delete(gallery)
-				}
-			}
+	func deleteGallery(named galleryName: String) {
+		guard let realm = realm, let galleryToDelete = realm.objects(GalleryIndexRealm.self).first(where: { $0.name == galleryName }) else { return }
+		
+		try? realm.write {
+			realm.delete(galleryToDelete)
 		}
 	}
 	
