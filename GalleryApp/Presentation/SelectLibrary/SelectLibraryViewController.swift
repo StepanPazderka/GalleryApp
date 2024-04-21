@@ -19,6 +19,7 @@ class SelectLibraryViewController: UIViewController {
 	private let pathResolver: PathResolver
 	
 	private var showingDeleteAlert = BehaviorRelay(value: false)
+	private var showingRenameDialog = BehaviorRelay(value: false)
 	private var selectedIndex: IndexPath?
 	
     let disposeBag = DisposeBag()
@@ -42,13 +43,12 @@ class SelectLibraryViewController: UIViewController {
     
     override func viewDidLoad() {
         self.setupViews()
-        self.layoutViews()
         self.bindInteractions()
         self.bindData()
 		self.bindUI()
     }
     
-    func bindData() {
+    private func bindData() {
 		self.viewModel.loadAnimatedSectionsForCollectionView()
 			.bind(to: screenView.galleriesCollectionView.rx.items(dataSource: dataSource!))
 			.disposed(by: disposeBag)
@@ -62,7 +62,8 @@ class SelectLibraryViewController: UIViewController {
 		}).disposed(by: disposeBag)
     }
     
-    func bindInteractions() {
+    private func bindInteractions() {
+		// MARK: - Switch to another library
         self.screenView.galleriesCollectionView.rx.itemSelected.subscribe(onNext: { [weak self] index in
             guard let self else { return }
             if let libraryName = self.dataSource?.sectionModels.first?.items[index.item] {
@@ -93,9 +94,17 @@ class SelectLibraryViewController: UIViewController {
 			self?.selectedIndex = index
 			self?.showingDeleteAlert.accept(true)
         }
+		
+		self.screenView.swipeToRenameHandler = { [weak self] index in
+			if let galleryIndex = self?.dataSource?[index] {
+				self?.showCreateLibraryDialog(withPrepulatedName: galleryIndex.mainGalleryName, callback: { newName in
+					self?.viewModel.rename(gallery: galleryIndex, withName: newName)
+				})
+			}
+		}
     }
     
-	func bindUI() {
+	private func bindUI() {
 		self.showingDeleteAlert.subscribe(onNext: { value in
 			
 			let alertController = UIAlertController(title: "Are you sure", message: "Are you sure you want to delete this library?", preferredStyle: .alert)
@@ -116,18 +125,20 @@ class SelectLibraryViewController: UIViewController {
 		}).disposed(by: disposeBag)
 	}
 	
-    func configureDataSource() {
+    private func configureDataSource() {
 		self.dataSource = RxCollectionViewSectionedAnimatedDataSource<SelectLibraryAnimatableSectionModel>(configureCell: { [weak self] dataSource, collectionView, indexPath, item in
 			let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarViewCell.identifier, for: indexPath) as! SidebarViewCell
 			cell.label.text = item.mainGalleryName
 			if let lastGalleryImage = item.images.first, let thumbnailImagePath = self?.pathResolver.resolveThumbPathFor(imageName: lastGalleryImage.fileName) {
 				cell.imageView.image = UIImage(contentsOfFile: thumbnailImagePath)
+			} else {
+				cell.imageView.image = UIImage(systemName: "square")
 			}
 			return cell})
     }
     
     // MARK: - Create Album Popover Dialog Box
-    @objc func showCreateLibraryDialog(withPrepulatedName: String? = nil, callback: ((String) -> Void)? = nil) {
+    @objc private func showCreateLibraryDialog(withPrepulatedName: String? = nil, callback: ((String) -> Void)? = nil) {
         var returnString: String?
         let createAlbumAlert = UIAlertController(title: NSLocalizedString("kEnterLibraryName", comment: ""), message: nil, preferredStyle: .alert)
 
@@ -145,7 +156,7 @@ class SelectLibraryViewController: UIViewController {
             if text.isEmpty {
                 let okAction = UIAlertAction(title: NSLocalizedString("kOK", comment: ""), style: .destructive)
                 
-                let noAlbumAlert = UIAlertController(title: NSLocalizedString("kAlbumNameCantBeEmpty", comment: ""), message: nil, preferredStyle: .alert)
+                let noAlbumAlert = UIAlertController(title: NSLocalizedString("kNameCantBeEmpty", comment: ""), message: nil, preferredStyle: .alert)
                 noAlbumAlert.addAction(okAction)
                 self.present(noAlbumAlert, animated: true)
                 returnString = nil
@@ -168,15 +179,11 @@ class SelectLibraryViewController: UIViewController {
         self.present(createAlbumAlert, animated: true, completion: nil)
     }
     
-    func setupViews() {
+    private func setupViews() {
         self.view = screenView
 		
 		self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: screenView.closeButton)
 		self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: screenView.rightBarButton)
 		self.navigationItem.title = NSLocalizedString("kSELECTLIBRARY", comment: "Select library to load")
-    }
-    
-    func layoutViews() {
-        
     }
 }

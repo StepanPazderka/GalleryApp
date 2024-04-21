@@ -8,8 +8,11 @@
 import Foundation
 import RxDataSources
 
-struct SidebarItem: Hashable, IdentifiableType {
+struct SidebarItem: Hashable {
     let title: String?
+	let identifier: UUID?
+	let type: buttonType
+
     private let originalImage: UIImage?
     var image: UIImage? {
         get {
@@ -25,11 +28,6 @@ struct SidebarItem: Hashable, IdentifiableType {
             }
         }
     }
-    let identifier: UUID?
-    var identity: String {
-        self.identifier?.uuidString ?? "Nothing"
-    }
-    let type: buttonType
     
     enum buttonType {
         case album
@@ -54,4 +52,10 @@ struct SidebarItem: Hashable, IdentifiableType {
     static var empty: Self {
         Self(id: UUID(), title: "", image: nil, buttonType: .album)
     }
+}
+
+extension SidebarItem: IdentifiableType {
+	var identity: String {
+		self.identifier?.uuidString ?? "Nothing"
+	}
 }

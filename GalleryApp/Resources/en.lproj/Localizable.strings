@@ -23,7 +23,7 @@
 "kDONE" = "Done";
 "kOK" = "OK";
 "kDELETEALBUM" = "Delete Album";
-"kAlbumNameCantBeEmpty" = "Album name can't be empty";
+"kNameCantBeEmpty" = "Name field can't be empty";
 "kEnterAlbumName" = "Enter Album name";
 "kThumbs" = "thumbs";
 "kCantAddImageToTheAlbum" = "Can't add image to the album";

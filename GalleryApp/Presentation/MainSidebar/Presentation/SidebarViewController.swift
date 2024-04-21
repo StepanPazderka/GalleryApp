@@ -71,7 +71,7 @@ class SidebarViewController: UIViewController {
             if text.isEmpty {
                 let okAction = UIAlertAction(title: NSLocalizedString("kOK", comment: ""), style: .destructive)
                 
-                let noAlbumAlert = UIAlertController(title: NSLocalizedString("kAlbumNameCantBeEmpty", comment: ""), message: nil, preferredStyle: .alert)
+                let noAlbumAlert = UIAlertController(title: NSLocalizedString("kNameCantBeEmpty", comment: ""), message: nil, preferredStyle: .alert)
                 noAlbumAlert.addAction(okAction)
                 self.present(noAlbumAlert, animated: true)
                 returnString = nil

@@ -55,4 +55,10 @@ class SelectLibraryViewModel {
     func delete(gallery: String) {
         self.galleryManager.deleteGallery(named: gallery)
     }
+	
+	func rename(gallery: GalleryIndex, withName: String) {
+		var updatedGalleryIndex = gallery
+		updatedGalleryIndex.mainGalleryName = withName
+		self.galleryManager.updateGalleryIndex(newGalleryIndex: updatedGalleryIndex)
+	}
 }
