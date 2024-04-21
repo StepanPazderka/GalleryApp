@@ -8,14 +8,19 @@
 import Foundation
 import UIKit
 import RxDataSources
+import RxCocoa
 import RxSwift
 
 class SelectLibraryViewController: UIViewController {
     
     // MARK: - Views
-    let screenView = SelectLibraryView()
-    let viewModel: SelectLibraryViewModel
-	let pathResolver: PathResolver
+    private let screenView = SelectLibraryView()
+    private let viewModel: SelectLibraryViewModel
+	private let pathResolver: PathResolver
+	
+	private var showingDeleteAlert = BehaviorRelay(value: false)
+	private var selectedIndex: IndexPath?
+	
     let disposeBag = DisposeBag()
     
     // MARK: - Properties
@@ -24,8 +29,9 @@ class SelectLibraryViewController: UIViewController {
 	init(viewModel: SelectLibraryViewModel, pathResolver: PathResolver) {
         self.viewModel = viewModel
 		self.pathResolver = pathResolver
+
         super.init(nibName: nil, bundle: nil)
-        
+
         self.configureDataSource()
         self.screenView.galleriesCollectionView.register(SidebarViewCell.self, forCellWithReuseIdentifier: SidebarViewCell.identifier)
     }
@@ -39,6 +45,7 @@ class SelectLibraryViewController: UIViewController {
         self.layoutViews()
         self.bindInteractions()
         self.bindData()
+		self.bindUI()
     }
     
     func bindData() {
@@ -83,12 +90,32 @@ class SelectLibraryViewController: UIViewController {
         
         // MARK: - Swipe to Delete Action Closure
         self.screenView.swipeToDeleteHandler = { [weak self] index in
-            if let galleryName = self?.dataSource?.sectionModels.first?.items[index.row] {
-				self?.viewModel.delete(gallery: galleryName.mainGalleryName)
-            }
+			self?.selectedIndex = index
+			self?.showingDeleteAlert.accept(true)
         }
     }
     
+	func bindUI() {
+		self.showingDeleteAlert.subscribe(onNext: { value in
+			
+			let alertController = UIAlertController(title: "Are you sure", message: "Are you sure you want to delete this library?", preferredStyle: .alert)
+			
+			let okButton = UIAlertAction(title: "OK", style: .destructive) { [weak self] _ in
+				if let indexPath = self?.selectedIndex, let galleryName = self?.dataSource?.sectionModels.first?.items[indexPath.row] {
+					self?.viewModel.delete(gallery: galleryName.mainGalleryName)
+				}
+			}
+			let cancelButton = UIAlertAction(title: "Cancel", style: .cancel)
+			
+			alertController.addAction(okButton)
+			alertController.addAction(cancelButton)
+			
+			if value == true {
+				self.present(alertController, animated: true, completion: nil)
+			}
+		}).disposed(by: disposeBag)
+	}
+	
     func configureDataSource() {
 		self.dataSource = RxCollectionViewSectionedAnimatedDataSource<SelectLibraryAnimatableSectionModel>(configureCell: { [weak self] dataSource, collectionView, indexPath, item in
 			let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarViewCell.identifier, for: indexPath) as! SidebarViewCell

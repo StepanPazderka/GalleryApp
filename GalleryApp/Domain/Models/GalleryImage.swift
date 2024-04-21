@@ -46,6 +46,10 @@ extension GalleryImage {
     }
 }
 
-extension GalleryImage: Equatable { }
+extension GalleryImage: Equatable { 
+	static func ==(lhs: GalleryImage, rhs: GalleryImage) -> Bool {
+		return lhs.fileName == rhs.fileName
+	}
+}
 
 extension GalleryImage: Hashable { }
