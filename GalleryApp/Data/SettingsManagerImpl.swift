@@ -48,4 +48,8 @@ final class SettingsManagerImpl: SettingsManager {
 	func get(key: SettingsKey) -> Observable<String> {
 		UserDefaults.standard.rx.observe(String.self, key.rawValue).compactMap { $0 }
 	}
+	
+	func getCurrentlySelectedGalleryIDAsObservable() -> Observable<UUID> {
+		unsecureStorage.getAsObservable(key: .selectedGallery)
+	}
 }

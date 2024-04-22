@@ -13,16 +13,14 @@ import RxRealm
 
 class GalleryManagerImpl: GalleryManager {
 	// MARK: - Protocol Properties
-	final let settingsManager: SettingsManagerImpl
-	let fileScannerManager: FileScannerManager
-	let pathResolver: PathResolver
-	let disposeBag: DisposeBag = DisposeBag()
+	internal let settingsManager: SettingsManager
+	private let fileScannerManager: FileScannerManager
+	internal let pathResolver: PathResolver
 	
 	// MARK: - Custom Properties
-	let realm: Realm?
-	
-//	public let selectedGalleryIndexRelay = BehaviorRelay<GalleryIndex>(value: .empty)
-	
+	private let realm: Realm?
+	private let disposeBag: DisposeBag = DisposeBag()
+		
 	// MARK: - Init
 	init(settingsManager: SettingsManagerImpl, fileScannerManger: FileScannerManager, pathResolver: PathResolver) {
 		self.settingsManager = settingsManager
@@ -36,7 +34,54 @@ class GalleryManagerImpl: GalleryManager {
 			self.realm = nil
 		}
 	}
-
+	
+	// MARK: - Create
+	func add(images: [GalleryImage], toAlbum album: AlbumIndex? = nil) {
+		let galleryImagesForRealm = images.map { GalleryImageRealm(from: $0) }
+		
+		do {
+			try realm?.write {
+				if let index = load() {
+					let indexForRealm = GalleryIndexRealm(from: index)
+					indexForRealm.images.append(objectsIn: galleryImagesForRealm)
+					realm?.add(indexForRealm, update: .modified)
+					
+					if let album {
+						if let albumIndex = loadAlbumIndex(with: album.id) {
+							let albumIndexRealm = AlbumIndexRealm(from: albumIndex)
+							albumIndexRealm.images.append(objectsIn: galleryImagesForRealm)
+							realm?.add(albumIndexRealm, update: .modified)
+						}
+					}
+				}
+				
+				realm?.add(galleryImagesForRealm)
+			}
+		} catch {
+			print(error)
+		}
+	}
+	
+	@discardableResult
+	func createAlbum(name: String, parentAlbum: UUID?) throws -> AlbumIndex {
+		let newAlbumIndex = AlbumIndexRealm(name: name)
+		
+		var galleryIndex = load()
+		galleryIndex?.albums.append(AlbumIndex(from: newAlbumIndex).id)
+		
+		try! realm?.write {
+			if let galleryIndex {
+				let galleryRealmInstance = GalleryIndexRealm(from: galleryIndex)
+				galleryRealmInstance.albums.append(newAlbumIndex)
+				
+				realm?.add(newAlbumIndex)
+				realm?.add(galleryRealmInstance, update: .modified)
+			}
+		}
+		
+		return AlbumIndex(from: newAlbumIndex)
+	}
+	
 	func loadImageAsObservable(with id: UUID) -> Observable<GalleryImage> {
 		let results = realm?.objects(GalleryImageRealm.self).first {
 			$0.id == id.uuidString
@@ -131,26 +176,6 @@ class GalleryManagerImpl: GalleryManager {
 		throw GalleryManagerError.unknown
 	}
 	
-	@discardableResult 
-	func createAlbum(name: String, parentAlbum: UUID?) throws -> AlbumIndex {
-		let newAlbumIndex = AlbumIndexRealm(name: name)
-		
-		var galleryIndex = load()
-		galleryIndex?.albums.append(AlbumIndex(from: newAlbumIndex).id)
-		
-		try! realm?.write {
-			if let galleryIndex {
-				let galleryRealmInstance = GalleryIndexRealm(from: galleryIndex)
-				galleryRealmInstance.albums.append(newAlbumIndex)
-				
-				realm?.add(newAlbumIndex)
-				realm?.add(galleryRealmInstance, update: .modified)
-			}
-		}
-		
-		return AlbumIndex(from: newAlbumIndex)
-	}
-	
 	func delete(images: [GalleryImage]) {
 		guard let realm = realm else { return }
 		
@@ -172,33 +197,7 @@ class GalleryManagerImpl: GalleryManager {
 			print("Error deleting images: \(error)")
 		}
 	}
-	
-	func add(images: [GalleryImage], toAlbum album: AlbumIndex? = nil) {
-		let galleryImagesForRealm = images.map { GalleryImageRealm(from: $0) }
-		
-		do {
-			try realm?.write {
-				if let index = load() {
-					let indexForRealm = GalleryIndexRealm(from: index)
-					indexForRealm.images.append(objectsIn: galleryImagesForRealm)
-					realm?.add(indexForRealm, update: .modified)
-					
-					if let album {
-						if let albumIndex = loadAlbumIndex(with: album.id) {
-							let albumIndexRealm = AlbumIndexRealm(from: albumIndex)
-							albumIndexRealm.images.append(objectsIn: galleryImagesForRealm)
-							realm?.add(albumIndexRealm, update: .modified)
-						}
-					}
-				}
-				
-				realm?.add(galleryImagesForRealm)
-			}
-		} catch {
-			print(error)
-		}
-	}
-	
+
 	func load<DatabaseObject: Object>(_ type: DatabaseObject.Type) -> Observable<[DatabaseObject]> {
 		if let objects = realm?.objects(type) {
 			return Observable.collection(from: objects).map { Array($0) }
@@ -407,7 +406,7 @@ extension GalleryManagerImpl {
 	}
 	
 	func loadCurrentGalleryIndexAsObservable() -> Observable<GalleryIndex> {
-		UserDefaults.standard.rx.observe(String.self, "selectedGallery").flatMap { currentlySelectedGalleryIndexName -> Observable<GalleryIndex> in
+		return UserDefaults.standard.rx.observe(String.self, "selectedGallery").flatMap { currentlySelectedGalleryIndexName -> Observable<GalleryIndex> in
 			self.loadOrCreateCurrentGalleryIndex()
 			if let currentlySelectedGalleryIndexName, let result = self.realm?.objects(GalleryIndexRealm.self).filter("name == %@", currentlySelectedGalleryIndexName).first {
 				return Observable.from(object: result).map { GalleryIndex(from: $0) }

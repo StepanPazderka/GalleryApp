@@ -9,36 +9,36 @@ import Foundation
 import RxSwift
 
 class SidebarViewModel {
-    
-    // MARK: -- Properties
-    private let galleryManager: GalleryManager
-    private let settingsManager: SettingsManagerImpl
-    private let pathResolver: PathResolver
-    
-    let disposeBag = DisposeBag()
+	
+	// MARK: -- Properties
+	private let galleryManager: GalleryManager
+	private let settingsManager: SettingsManagerImpl
+	private let pathResolver: PathResolver
+	
+	let disposeBag = DisposeBag()
 	
 	let mainButonsSection = SidebarSectionModel(type: .mainButtons, name: NSLocalizedString("kMAIN", comment: "Main buttons"), items: [
 		SidebarItem(title: NSLocalizedString("kALLPHOTOS", comment: "Title for sidebar cell to show All Photos in library"), image: nil, buttonType: .allPhotos)
 	])
-    
-    init(galleryInteractor: GalleryManager, settingsManager: SettingsManagerImpl, pathResolver: PathResolver) {
-        self.galleryManager = galleryInteractor
-        self.settingsManager = settingsManager
-        self.pathResolver = pathResolver
-    }
-    
-    func renameAlbum(id: UUID, withNewAlbumName: String) throws {
-        if var albumIndex = self.galleryManager.loadAlbumIndex(with: id) {
-            albumIndex.name = withNewAlbumName
-            try self.galleryManager.updateAlbumIndex(index: albumIndex)
-        }
-    }
-    
-    func duplicateAlbum(id: UUID) {
-        if let album: AlbumIndex = self.galleryManager.loadAlbumIndex(with: id) {
-            self.galleryManager.duplicate(album: album)
-        }
-    }
+	
+	init(galleryInteractor: GalleryManager, settingsManager: SettingsManagerImpl, pathResolver: PathResolver) {
+		self.galleryManager = galleryInteractor
+		self.settingsManager = settingsManager
+		self.pathResolver = pathResolver
+	}
+	
+	func renameAlbum(id: UUID, withNewAlbumName: String) throws {
+		if var albumIndex = self.galleryManager.loadAlbumIndex(with: id) {
+			albumIndex.name = withNewAlbumName
+			try self.galleryManager.updateAlbumIndex(index: albumIndex)
+		}
+	}
+	
+	func duplicateAlbum(id: UUID) {
+		if let album: AlbumIndex = self.galleryManager.loadAlbumIndex(with: id) {
+			self.galleryManager.duplicate(album: album)
+		}
+	}
 	
 	func loadSidebarContent() -> Observable<[SidebarSectionModel]> {
 		return galleryManager
@@ -72,32 +72,46 @@ class SidebarViewModel {
 					}
 			}
 	}
-
-    
-    func createAlbum(name: String, parentAlbumID: UUID? = nil,  ID: UUID? = nil) {
-        do {
-            if let parentAlbumID {
-                try galleryManager.createAlbum(name: name, parentAlbum: parentAlbumID)
-            } else {
-                try galleryManager.createAlbum(name: name, parentAlbum: nil)
-            }
-        } catch {
-            
-        }
-    }
-    
-    func removeThumbnail(albumID: UUID) {
-        if var albumIndex = self.galleryManager.loadAlbumIndex(with: albumID) {
-            albumIndex.thumbnail = nil
-            try? self.galleryManager.updateAlbumIndex(index: albumIndex)
-        }
-    }
-    
-    func deleteAlbum(id: UUID) {
-        self.galleryManager.delete(album: id)
-    }
-    
-    func getSelectedLibraryNameAsObservable() -> Observable<String> {
-		self.settingsManager.get(key: .selectedGallery)
-    }
+	
+	
+	func createAlbum(name: String, parentAlbumID: UUID? = nil,  ID: UUID? = nil) {
+		do {
+			if let parentAlbumID {
+				try galleryManager.createAlbum(name: name, parentAlbum: parentAlbumID)
+			} else {
+				try galleryManager.createAlbum(name: name, parentAlbum: nil)
+			}
+		} catch {
+			
+		}
+	}
+	
+	func removeThumbnail(albumID: UUID) {
+		if var albumIndex = self.galleryManager.loadAlbumIndex(with: albumID) {
+			albumIndex.thumbnail = nil
+			try? self.galleryManager.updateAlbumIndex(index: albumIndex)
+		}
+	}
+	
+	func deleteAlbum(id: UUID) {
+		self.galleryManager.delete(album: id)
+	}
+	
+	func getSelectedLibraryNameAsObservable() -> Observable<String> {
+		self.settingsManager.getCurrentlySelectedGalleryIDAsObservable()
+			.catch { [weak self] error -> Observable<UUID> in
+				if let returnID = self?.galleryManager.loadGalleries().compactMap { $0.first?.id ?? UUID() } {
+					return returnID
+				} else {
+					return .empty()
+				}
+			}
+			.flatMapLatest { [weak self] galleryID -> Observable<String> in
+				guard let self = self else { return .empty() }
+				return self.galleryManager.loadGalleries()
+					.compactMap { galleries -> String? in
+						galleries.first { $0.id.uuidString == galleryID.uuidString }?.mainGalleryName
+					}
+			}
+	}
 }

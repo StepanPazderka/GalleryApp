@@ -13,6 +13,7 @@ protocol GalleryManager {
     
     // MARK: - Propertes
     var pathResolver: PathResolver { get }
+	var settingsManager: SettingsManager { get }
     
     // MARK: - Loading
     func loadImageAsObservable(with: UUID) -> Observable<GalleryImage>

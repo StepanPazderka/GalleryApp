@@ -9,5 +9,6 @@ import Foundation
 
 protocol SettingsManager {
 	var unsecureStorage: UnsecureStorage { get }
+	var selectedGalleryName: String { get }
 	func getSelectedLibraryName() -> String
 }

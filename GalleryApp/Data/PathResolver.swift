@@ -19,7 +19,7 @@ class PathResolver {
     }
     
     // MARK: - Init
-    init(settingsManager: SettingsManagerImpl) {
+	init(settingsManager: SettingsManagerImpl) {
         self.settingsManager = settingsManager
     }
     
