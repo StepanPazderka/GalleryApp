@@ -189,8 +189,11 @@ class GalleryManagerImpl: GalleryManager {
 					let fullImagePath = self.pathResolver.resolvePathFor(imageName: image.fileName)
 					let thumbImagePath = self.pathResolver.resolveThumbPathFor(imageName: image.fileName)
 					
-					try! FileManager.default.removeItem(atPath: fullImagePath)
-					try! FileManager.default.removeItem(atPath: thumbImagePath)
+					let paths = [fullImagePath, thumbImagePath]
+					
+					for path in paths {
+						try? FileManager.default.removeItem(atPath: path)
+					}
 				}
 			}
 		} catch {

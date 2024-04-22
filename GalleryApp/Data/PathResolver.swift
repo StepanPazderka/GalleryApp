@@ -6,21 +6,27 @@
 //
 
 import Foundation
+import RxSwift
 
 class PathResolver {
     
     // MARK: - Properties
     private let settingsManager: SettingsManagerImpl
     var libraryPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+	private var currentlySelectedGalleryID = UUID()
     var selectedGalleryPath: URL {
         get {
-            return libraryPath.appendingPathComponent(settingsManager.selectedGalleryName)
+			return libraryPath.appendingPathComponent(currentlySelectedGalleryID.uuidString)
         }
     }
-    
+    let disposeBag = DisposeBag()
+	
     // MARK: - Init
 	init(settingsManager: SettingsManagerImpl) {
         self.settingsManager = settingsManager
+		self.settingsManager.getCurrentlySelectedGalleryIDAsObservable().subscribe(onNext: { [weak self] galleryID in
+			self?.currentlySelectedGalleryID = galleryID
+		}).disposed(by: disposeBag)
     }
     
     /**

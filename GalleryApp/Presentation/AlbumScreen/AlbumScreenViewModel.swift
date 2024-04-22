@@ -187,7 +187,13 @@ class AlbumScreenViewModel {
 					self?.errorMessage.accept(String(describing: error))
                     print("Error while copying files \(String(describing: error))")
                 }
-                
+				
+				if let galleryPath = self?.galleryManager.pathResolver.selectedGalleryPath {
+					if !FileManager.default.fileExists(atPath: galleryPath.relativePath) {
+						try? FileManager.default.createDirectory(at: galleryPath, withIntermediateDirectories: true, attributes: nil)
+					}
+				}
+				
                 if let targetPath = self?.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
                 {
                 	do {
