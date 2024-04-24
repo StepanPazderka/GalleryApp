@@ -48,12 +48,17 @@ class SidebarViewModel {
 					self.galleryManager.loadAlbumIndexAsObservable(id: albumID)
 						.map { [unowned self] albumIndex -> SidebarItem? in
 							var thumbnailImage: UIImage?
-							let thumbnailFileName = albumIndex.thumbnail ?? albumIndex.images.first?.fileName
-							
-							if let fileName = thumbnailFileName {
-								let thumbnailPath = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(fileName)
+							if let thumbnailFileName = albumIndex.thumbnail, !thumbnailFileName.isEmpty {
+								let thumbnailPath = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(thumbnailFileName)
 								thumbnailImage = UIImage(contentsOfFile: thumbnailPath.relativePath)
+								
+							} else {
+								if let thumbnailFileName = albumIndex.images.first?.fileName {
+									let thumbnailPath = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(thumbnailFileName)
+									thumbnailImage = UIImage(contentsOfFile: thumbnailPath.relativePath)
+								}
 							}
+							
 							
 							return SidebarItem(
 								id: UUID(uuidString: albumIndex.id.uuidString),
@@ -99,8 +104,8 @@ class SidebarViewModel {
 	
 	func getSelectedLibraryNameAsObservable() -> Observable<String> {
 		self.settingsManager.getCurrentlySelectedGalleryIDAsObservable()
-			.catch { [weak self] error -> Observable<UUID> in
-				if let returnID = self?.galleryManager.loadGalleries().compactMap { $0.first?.id ?? UUID() } {
+			.catch { [weak self] error -> Observable<String> in
+				if let returnID = self?.galleryManager.loadGalleries().compactMap({ $0.first?.id }).compactMap ({ $0.uuidString }) {
 					return returnID
 				} else {
 					return .empty()
@@ -109,8 +114,15 @@ class SidebarViewModel {
 			.flatMapLatest { [weak self] galleryID -> Observable<String> in
 				guard let self = self else { return .empty() }
 				return self.galleryManager.loadGalleries()
-					.compactMap { galleries -> String? in
-						galleries.first { $0.id.uuidString == galleryID.uuidString }?.mainGalleryName
+					.compactMap { [weak self] galleries -> String? in
+						if let returnValue = galleries.first { $0.id.uuidString == galleryID }?.mainGalleryName {
+							return returnValue
+						} else {
+							if let firstGallery = galleries.first {
+								self?.settingsManager.setSelectedGallery(id: firstGallery.id.uuidString)
+							}
+							return galleries.first?.mainGalleryName
+						}
 					}
 			}
 	}

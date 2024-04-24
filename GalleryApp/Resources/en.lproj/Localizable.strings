@@ -7,6 +7,7 @@
 */
 
 "kCANCEL" = "Cancel";
+"kDEFAULTLIBRARY" = "Default Gallery";
 "kSELECTFROMFILES" = "Select from Files";
 "CreateSubAlbum" = "Create SubAlbum";
 "MoveToAlbum" = "Move to Album";

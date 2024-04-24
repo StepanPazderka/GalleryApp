@@ -11,7 +11,7 @@ import RxSwift
 
 final class SettingsManagerImpl: SettingsManager {
 	let unsecureStorage: UnsecureStorage
-	var selectedGalleryName: String
+	var selectedGalleryName: String!
     var selectedGalleryPath: URL {
         return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent(selectedGalleryName)
     }
@@ -24,12 +24,6 @@ final class SettingsManagerImpl: SettingsManager {
     init(unsecureStorage: UnsecureStorage) {
         self.unsecureStorage = unsecureStorage
         
-        if let loadedSelectedGallery: String = unsecureStorage.load(key: .selectedGallery) {
-            selectedGalleryName = loadedSelectedGallery
-        } else {
-            unsecureStorage.save(key: .selectedGallery, value: "Default Gallery")
-            selectedGalleryName = "Default Gallery"
-        }
     }
     
     func getSelectedLibraryName() -> String {
@@ -45,11 +39,15 @@ final class SettingsManagerImpl: SettingsManager {
         unsecureStorage.save(key: key, value: value)
     }
 	
+	func setSelectedGallery(id: String) {
+		unsecureStorage.save(key: .selectedGallery, value: id)
+	}
+	
 	func get(key: SettingsKey) -> Observable<String> {
 		UserDefaults.standard.rx.observe(String.self, key.rawValue).compactMap { $0 }
 	}
 	
-	func getCurrentlySelectedGalleryIDAsObservable() -> Observable<UUID> {
+	func getCurrentlySelectedGalleryIDAsObservable() -> Observable<String> {
 		unsecureStorage.getAsObservable(key: .selectedGallery)
 	}
 }

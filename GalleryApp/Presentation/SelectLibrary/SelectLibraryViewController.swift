@@ -53,9 +53,9 @@ class SelectLibraryViewController: UIViewController {
 			.bind(to: screenView.galleriesCollectionView.rx.items(dataSource: dataSource!))
 			.disposed(by: disposeBag)
 		
-		self.viewModel.loadCurrentGalleryAsObservable().subscribe(onNext: { index in
+		self.viewModel.loadCurrentGalleryAsObservable().debug("GF").subscribe(onNext: { index in
 			if let indexPath = self.dataSource?.sectionModels.first?.items.firstIndex(where: { galleryIndex in
-				galleryIndex.mainGalleryName == index.mainGalleryName
+				galleryIndex.id == index.id
 			}) {
 				self.screenView.galleriesCollectionView.selectItem(at: IndexPath(row: indexPath, section: 0), animated: false, scrollPosition: .bottom)
 			}
@@ -67,7 +67,7 @@ class SelectLibraryViewController: UIViewController {
         self.screenView.galleriesCollectionView.rx.itemSelected.subscribe(onNext: { [weak self] index in
             guard let self else { return }
             if let libraryName = self.dataSource?.sectionModels.first?.items[index.item] {
-				self.viewModel.switchTo(library: libraryName.mainGalleryName)
+				self.viewModel.switchTo(library: libraryName.id)
                 self.dismiss(animated: true)
             }
         }).disposed(by: disposeBag)

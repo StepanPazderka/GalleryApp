@@ -7,6 +7,7 @@
 */
 
 "kCANCEL" = "Zrušit";
+"kDEFAULTLIBRARY" = "Výchozí galerie";
 "kSELECTFROMFILES" = "Vybrat ze souborů";
 "CreateSubAlbum" = "Vytvořit pod-album";
 "MoveToAlbum" = "Přesunout do alba";

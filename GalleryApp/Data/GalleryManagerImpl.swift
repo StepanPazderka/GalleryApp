@@ -10,6 +10,7 @@ import RealmSwift
 import RxCocoa
 import RxSwift
 import RxRealm
+import UniformTypeIdentifiers
 
 class GalleryManagerImpl: GalleryManager {
 	// MARK: - Protocol Properties
@@ -104,31 +105,16 @@ class GalleryManagerImpl: GalleryManager {
 		var fetchedIndex: GalleryIndex?
 		
 		if let fetchedGalleryIndeces = self.realm?.objects(GalleryIndexRealm.self).first(where: { galleryIndex in
-			galleryIndex.name == self.settingsManager.selectedGalleryName
+			galleryIndex.id == self.settingsManager.getSelectedLibraryName()
 		}) {
 			return GalleryIndex(from: fetchedGalleryIndeces)
 		}
 		
 		fetchedIndex = self.realm?.objects(GalleryIndexRealm.self).map { GalleryIndex(from: $0) }.first(where: { [weak self] in
-			$0.mainGalleryName == self?.settingsManager.selectedGalleryName
+			$0.id.uuidString == self?.settingsManager.getSelectedLibraryName()
 		})
 		
 		return fetchedIndex
-	}
-	
-	@discardableResult 
-	func loadOrCreateCurrentGalleryIndex() -> GalleryIndex {
-		var fetchedIndex: GalleryIndexRealm?
-		
-		fetchedIndex = self.realm?.objects(GalleryIndexRealm.self).first(where: { [weak self] in
-			$0.name == self?.settingsManager.selectedGalleryName
-		})
-		
-		guard let fetchedIndex else {
-			return persistNewGalleryIndex(withName: self.settingsManager.selectedGalleryName)
-		}
-		
-		return GalleryIndex(from: fetchedIndex)
 	}
 	
 	func loadAlbumIndexAsObservable(id: UUID) -> Observable<AlbumIndex> {
@@ -144,36 +130,17 @@ class GalleryManagerImpl: GalleryManager {
 	}
 	
 	@discardableResult 
-	func persistNewGalleryIndex(withName name: String) -> GalleryIndex {
-		let newGalleryIndexForRealm = GalleryIndexRealm(name: name, thumbnailSize: 200, showingAnnotations: false)
-		guard let realm else { return .empty }
-		do {
-			try realm.write {
-				realm.add(newGalleryIndexForRealm)
-			}
-		} catch {
-			print("An error occurred while writing to Realm: \(error)")
-		}
-		
-		if !FileManager.default.fileExists(atPath: pathResolver.selectedGalleryPath.relativePath) {
-			try? FileManager.default.createDirectory(at: pathResolver.selectedGalleryPath, withIntermediateDirectories: true, attributes: nil)
-		}
-		
-		return GalleryIndex(from: newGalleryIndexForRealm)
-	}
-	
-	@discardableResult 
 	func createGalleryIndex(name: String) throws -> GalleryIndex {
-		do {
-			try realm?.write {
-				let newGalleryIndex = GalleryIndexRealm(name: name, thumbnailSize: 200, showingAnnotations: false)
-				realm?.add(newGalleryIndex)
-				return newGalleryIndex
-			}
-		} catch {
-			throw error
+		guard let realm = realm else {
+			throw GalleryManagerError.unknown
 		}
-		throw GalleryManagerError.unknown
+		
+		return try realm.write {
+			let newGalleryIndex = GalleryIndexRealm(name: name, thumbnailSize: 200, showingAnnotations: false)
+			realm.add(newGalleryIndex)
+			
+			return GalleryIndex(from: newGalleryIndex)
+		}
 	}
 	
 	func delete(images: [GalleryImage]) {
@@ -396,9 +363,7 @@ class GalleryManagerImpl: GalleryManager {
 extension GalleryManagerImpl {
 	func loadGalleryIndexAsObservable() -> Observable<GalleryIndex> {
 		let selectedGalleryName = self.settingsManager.selectedGalleryName
-		
-		self.loadOrCreateCurrentGalleryIndex()
-		
+				
 		if let index = self.realm?.objects(GalleryIndexRealm.self).first(where: { galleryIndex in
 			galleryIndex.name == selectedGalleryName
 		}) {
@@ -409,18 +374,23 @@ extension GalleryManagerImpl {
 	}
 	
 	func loadCurrentGalleryIndexAsObservable() -> Observable<GalleryIndex> {
-		return UserDefaults.standard.rx.observe(String.self, "selectedGallery").flatMap { currentlySelectedGalleryIndexName -> Observable<GalleryIndex> in
-			self.loadOrCreateCurrentGalleryIndex()
-			if let currentlySelectedGalleryIndexName, let result = self.realm?.objects(GalleryIndexRealm.self).filter("name == %@", currentlySelectedGalleryIndexName).first {
-				return Observable.from(object: result).map { GalleryIndex(from: $0) }
-			} else {
-				return .empty()
+		Observable.combineLatest(settingsManager.getCurrentlySelectedGalleryIDAsObservable(), self.loadGalleries())
+			.map { [weak self] (currentlySelectedGalleryID, galleries) -> GalleryIndex in
+				if let selectedGallery = galleries.first(where: { $0.id.uuidString == currentlySelectedGalleryID }) {
+					return selectedGallery
+				} else if let firstGallery = galleries.first {
+					self?.settingsManager.set(key: .selectedGallery, value: firstGallery.id.uuidString)
+					return firstGallery
+				} else if let defaultGallery = try? self?.createGalleryIndex(name: NSLocalizedString("kDEFAULTLIBRARY", comment: "Default gallery name")) {
+					self?.settingsManager.set(key: .selectedGallery, value: defaultGallery.id.uuidString)
+					return defaultGallery
+				} else {
+					return .empty
+				}
 			}
-		}
 	}
 	
 	func loadCurrentGalleryIndex() -> GalleryIndex? {
-		guard let index = self.load(galleryIndex: self.settingsManager.selectedGalleryName) else { return nil }
-		return index
+		self.load(galleryIndex: self.settingsManager.selectedGalleryName)
 	}
 }

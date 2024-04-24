@@ -13,20 +13,23 @@ struct SidebarItem: Hashable {
 	let identifier: UUID?
 	let type: buttonType
 
-    private let originalImage: UIImage?
+    private var customImage: UIImage?
     var image: UIImage? {
         get {
             switch self.type {
             case .allPhotos:
                 return UIImage(systemName: "photo.on.rectangle.angled")?.withTintColor(.tintColor)
             case .album:
-                if originalImage != nil {
-                    return originalImage
+                if let customImage {
+                    return customImage
                 } else {
                     return UIImage(systemName: "square")?.withTintColor(.tintColor)
                 }
             }
         }
+		set {
+			customImage = newValue
+		}
     }
     
     enum buttonType {
@@ -37,7 +40,7 @@ struct SidebarItem: Hashable {
     internal init(id: UUID? = UUID(), title: String?, image: UIImage? = nil, buttonType: buttonType) {
         self.identifier = id
         self.title = title
-        self.originalImage = image
+        self.customImage = image
         self.type = buttonType
     }
 
@@ -45,7 +48,7 @@ struct SidebarItem: Hashable {
         self.identifier = album.id
         self.title = album.name
         let thumbnailImage: UIImage? = nil
-        self.originalImage = thumbnailImage
+        self.customImage = thumbnailImage
         self.type = .album
     }
     

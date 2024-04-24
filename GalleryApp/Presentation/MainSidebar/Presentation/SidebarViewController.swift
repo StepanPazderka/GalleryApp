@@ -98,7 +98,7 @@ class SidebarViewController: UIViewController {
     private func bindData() {
         viewModel.getSelectedLibraryNameAsObservable()
 			.distinctUntilChanged()
-			.asDriver(onErrorJustReturn: "")
+			.asDriver(onErrorJustReturn: "Couldnt load")
             .drive(self.screenView.selectGalleryButton.rx.title())
             .disposed(by: disposeBag)
         
@@ -135,7 +135,6 @@ class SidebarViewController: UIViewController {
                 } else if item.type == .allPhotos {
                     self.router.showAllPhotos()
                 }
-                // Deselect the previously selected cell, if any
                 if let selectedIndexPath = self.screenView.sidebarCollectionView.indexPathsForSelectedItems?.first {
                     self.screenView.sidebarCollectionView.deselectItem(at: selectedIndexPath, animated: true)
                 }

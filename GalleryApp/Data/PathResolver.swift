@@ -12,8 +12,8 @@ class PathResolver {
     
     // MARK: - Properties
     private let settingsManager: SettingsManagerImpl
-    var libraryPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-	private var currentlySelectedGalleryID = UUID()
+    private var libraryPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+	private var currentlySelectedGalleryID: UUID!
     var selectedGalleryPath: URL {
         get {
 			return libraryPath.appendingPathComponent(currentlySelectedGalleryID.uuidString)
@@ -24,8 +24,10 @@ class PathResolver {
     // MARK: - Init
 	init(settingsManager: SettingsManagerImpl) {
         self.settingsManager = settingsManager
-		self.settingsManager.getCurrentlySelectedGalleryIDAsObservable().subscribe(onNext: { [weak self] galleryID in
-			self?.currentlySelectedGalleryID = galleryID
+		self.settingsManager.getCurrentlySelectedGalleryIDAsObservable().catch { [weak self] error -> Observable<String> in
+			return self?.settingsManager.getCurrentlySelectedGalleryIDAsObservable() ?? .empty()
+		}.subscribe(onNext: { [weak self] galleryID in
+			self?.currentlySelectedGalleryID = UUID(uuidString: galleryID)!
 		}).disposed(by: disposeBag)
     }
     
@@ -35,12 +37,16 @@ class PathResolver {
      
      - returns: Complete image path URL with file name extension
      */
+	
+	internal func resolveDocumentsPath() -> URL {
+		return self.libraryPath
+	}
     
-    func resolveThumbPathFor(imageName: String) -> String {
+    internal func resolveThumbPathFor(imageName: String) -> String {
         return self.selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(imageName).deletingPathExtension().appendingPathExtension(for: .jpeg).relativePath
     }
     
-    func resolvePathFor(imageName: String) -> String {
+    internal func resolvePathFor(imageName: String) -> String {
         return self.selectedGalleryPath.appendingPathComponent(imageName, conformingTo: .image).relativePath
     }
 }

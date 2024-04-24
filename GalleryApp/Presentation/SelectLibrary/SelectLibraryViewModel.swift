@@ -10,8 +10,8 @@ import RxSwift
 import RxDataSources
 
 class SelectLibraryViewModel {
-	var userDefaults: UserDefaults = UserDefaults.standard
-	let settingsManager: SettingsManagerImpl
+	private var userDefaults: UserDefaults = UserDefaults.standard
+	private let settingsManager: SettingsManager
 	private let galleryManager: GalleryManager
 	
 	init(settingsManager: SettingsManagerImpl, galleryManagery: GalleryManager) {
@@ -31,7 +31,6 @@ class SelectLibraryViewModel {
     func createNewLibrary(withName: String, callback: (() -> (Void))? = nil) throws {
         do {
 			try galleryManager.createGalleryIndex(name: withName)
-            try FileManager.default.createDirectory(at: FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appending(component: withName), withIntermediateDirectories: false)
         } catch {
             throw error
         }
@@ -47,9 +46,8 @@ class SelectLibraryViewModel {
         } else { return "" }
     }
 
-    func switchTo(library: String) {		
-		settingsManager.selectedGalleryName = library
-        settingsManager.set(key: .selectedGallery, value: library)
+    func switchTo(library: UUID) {
+		settingsManager.set(key: .selectedGallery, value: library.uuidString)
     }
     
     func delete(gallery: String) {

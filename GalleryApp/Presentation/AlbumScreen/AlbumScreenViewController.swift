@@ -127,6 +127,7 @@ class AlbumScreenViewController: UIViewController {
         
         // MARK: - Loading Images to Collection View
 		Observable.combineLatest(viewModel.imagesAsObservable(), searchController.searchBar.rx.text)
+			.debug("Album screen images")
 			.observe(on: MainScheduler.instance)
 			.map { (images, searchTerm) in
 				images.filter { image in

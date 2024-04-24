@@ -6,9 +6,12 @@
 //
 
 import Foundation
+import RxSwift
 
 protocol SettingsManager {
 	var unsecureStorage: UnsecureStorage { get }
-	var selectedGalleryName: String { get }
+	var selectedGalleryName: String! { get }
 	func getSelectedLibraryName() -> String
+	func getCurrentlySelectedGalleryIDAsObservable() -> Observable<String>
+	func set(key: SettingsKey, value: String)
 }

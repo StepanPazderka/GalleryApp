@@ -63,7 +63,7 @@ class AlbumScreenViewModel {
         if let albumID {
             self.galleryManager.loadAlbumIndexAsObservable(id: albumID).map { $0.showingAnnotations ?? false }
         } else {
-            self.galleryManager.loadGalleryIndexAsObservable().map { $0.showingAnnotations ?? false }
+            self.galleryManager.loadCurrentGalleryIndexAsObservable().map { $0.showingAnnotations ?? false }
         }
     }
     
