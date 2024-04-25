@@ -30,6 +30,7 @@ class UnsecureStorage {
 	func getAsObservable<T>(key: SettingsKey) -> Observable<T> {
 		UserDefaults.standard.rx.observe(T.self, key.rawValue).flatMap { value -> Observable<T> in
 			guard let unwrappedValue = value else {
+				self.save(key: .selectedGallery, value: "00")
 				return Observable.error(UnsecureStorageError.noValueForKey(key.rawValue))
 			}
 			return Observable.just(unwrappedValue)

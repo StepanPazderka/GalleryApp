@@ -43,7 +43,6 @@ class PhotoDetailCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
         self.imageView.zoomScale = 1.0
     }
     

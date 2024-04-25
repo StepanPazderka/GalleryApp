@@ -28,7 +28,7 @@ class SidebarViewCell: UICollectionViewCell {
     
     var myBackgroundView: UIView = {
         var view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .tertiarySystemBackground
         return view
     }()
     
@@ -44,7 +44,7 @@ class SidebarViewCell: UICollectionViewCell {
     }
     
     func setupViews() {
-        self.addSubviews(imageView, 
+        self.addSubviews(imageView,
                          label)
         
         self.focusEffect = .none

@@ -10,11 +10,7 @@ import RxCocoa
 import RxSwift
 
 protocol GalleryManager {
-    
-    // MARK: - Propertes
-    var pathResolver: PathResolver { get }
-	var settingsManager: SettingsManager { get }
-    
+        
     // MARK: - Loading
     func loadImageAsObservable(with: UUID) -> Observable<GalleryImage>
     
@@ -29,6 +25,7 @@ protocol GalleryManager {
 	func load(galleryIndex: String?) -> GalleryIndex?
 	func loadGalleryIndexAsObservable() -> Observable<GalleryIndex>
 	func loadGalleries() -> Observable<[GalleryIndex]>
+	func getCurrentlySelectedGalleryIDAsObservable() -> Observable<String>
 	
 	func loadAlbumIndex(with: UUID) -> AlbumIndex?
 	func loadAlbumIndexAsObservable(id: UUID) -> Observable<AlbumIndex>

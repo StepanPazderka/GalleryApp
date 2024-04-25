@@ -51,15 +51,14 @@ class PhotoDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.screenView.collectionViewLayout.itemSize = screenView.bounds.size
+		self.screenView.collectionViewLayout.itemSize = screenView.frame.size
+		self.screenView.collectionViewLayout.invalidateLayout()
         
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
         self.scrollTo(index: self.viewModel.index, animated: false)
-        
     }
     
     // MARK: - Layout
@@ -86,7 +85,7 @@ class PhotoDetailViewController: UIViewController {
             
             switch self.screenView.swipeDownGestureRecognizer.state {
             case .changed:
-                if translation.y > 0 {  // Only allow dragging downwards
+                if translation.y > 0 {
                     view.transform = CGAffineTransform(translationX: 0, y: translation.y)
                 }
             case .ended:
@@ -150,32 +149,15 @@ class PhotoDetailViewController: UIViewController {
         
         self.screenView.collectionViewLayout.invalidateLayout()
         
-        coordinator.animate(alongsideTransition: { context in
-            self.screenView.collectionViewLayout.itemSize = self.screenView.collectionView.frame.size
-            let onePercentageOfX = self.screenView.collectionView.contentSize.width / 100
-            let offsetOfX = self.screenView.collectionView.contentOffset.x / onePercentageOfX
-            print(offsetOfX)
-            
-            let onePercentageOfY = self.screenView.collectionView.contentSize.height / 100
-            let offsetOfY = self.screenView.collectionView.contentOffset.y / onePercentageOfY
-            print(offsetOfY)
-            
-            self.zoomScale = ZoomScale(x: offsetOfX, y: offsetOfY)
-            
-            DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
-                self.screenView.collectionViewLayout.itemSize = self.screenView.collectionView.frame.size
-                
-                if let zoomScale = self.zoomScale {
-                    let onePercentageOfX = self.screenView.collectionView.contentSize.width / 100
-                    
-                    let onePercentageOfY = self.screenView.collectionView.contentSize.height / 100
-                    
-                    let cgPoint = CGPoint(x: onePercentageOfX * zoomScale.x, y: onePercentageOfY * zoomScale.y)
-                    self.screenView.collectionView.contentOffset = cgPoint
-                }
-                self.scrollTo(index: self.viewModel.index, animated: false)
-            }
-        })
+		coordinator.animate(alongsideTransition: { [weak self] context in
+			if let frame = self?.screenView.collectionView.frame.size {
+				self?.screenView.collectionViewLayout.itemSize = frame
+			}
+			self?.zoomScale = ZoomScale(x: 1.0, y: 1.0)
+			if let index = self?.viewModel.index {
+				self?.scrollTo(index: index, animated: false)
+			}
+		})
     }
     
     func scrollTo(index: IndexPath, animated: Bool) {
@@ -185,53 +167,18 @@ class PhotoDetailViewController: UIViewController {
     }
 }
 
-extension PhotoDetailViewController: UICollectionViewDelegate {
-    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        let visibleCells = screenView.collectionView.visibleCells as! [PhotoDetailCollectionViewCell]
-        //        for cell in visibleCells {
-        //            if let indexPath = screenView.collectionView.indexPath(for: cell) {
-        //                print(indexPath)
-        //            }
-        //        }
-        //        let cell = visibleCells.first!
-        //        print(screenView.collectionView.indexPath(for: cell))
-        
-        for cell in visibleCells {
-            if let indexPath = screenView.collectionView.indexPath(for: cell) {
-                if let cellFrame = screenView.collectionView.layoutAttributesForItem(at: indexPath)?.frame {
-                    let cellVisibleRect = screenView.collectionView.convert(cellFrame, to: screenView.collectionView)
-                    if !screenView.collectionView.bounds.intersects(cellVisibleRect) {
-                        cell.imageView.zoomScale = 1.0
-                    } else {
-                        let indexPath = screenView.collectionView.indexPath(for: cell)
-                        if viewModel.index != indexPath {
-                            self.viewModel.index = indexPath!
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
+extension PhotoDetailViewController: UICollectionViewDelegate, UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let visibleCells = screenView.collectionView.visibleCells as! [PhotoDetailCollectionViewCell]
-        
-        for cell in visibleCells {
-            if let indexPath = screenView.collectionView.indexPath(for: cell) {
-                if let cellFrame = screenView.collectionView.layoutAttributesForItem(at: indexPath)?.frame {
-                    let cellVisibleRect = screenView.collectionView.convert(cellFrame, to: screenView.collectionView)
-                    if screenView.collectionView.bounds.intersects(cellVisibleRect) {
-                        screenView.collectionView.bounds.intersects(cellVisibleRect)
-                        let indexPath = self.screenView.collectionView.indexPath(for: cell)
-                        
-                        if self.viewModel.index != indexPath {
-                            DispatchQueue.main.asyncAfter(deadline: .now()+0.5) {
-                                self.viewModel.index = indexPath!
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
+}
+
+extension PhotoDetailViewController: UICollectionViewDelegateFlowLayout {
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+		return CGSize(width: self.screenView.collectionView.frame.width, height: self.screenView.collectionView.frame.height)
+	}
+	
+	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+		screenView.collectionView.reloadData()
+	}
 }

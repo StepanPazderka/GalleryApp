@@ -9,16 +9,18 @@ import Foundation
 
 class FileScannerManager {
     let settings: SettingsManagerImpl
+	let pathResolver: PathResolver
     
-    init(settings: SettingsManagerImpl) {
+	init(settings: SettingsManagerImpl, pathResolver: PathResolver) {
         self.settings = settings
+		self.pathResolver = pathResolver
     }
     
     func scanAlbumFolderForImages(albumName: String? = nil) -> [GalleryImage] {
         var outputImageList: [GalleryImage] = []
         
         do {
-            let scannedFiles = try FileManager.default.contentsOfDirectory(at: settings.selectedGalleryPath.appendingPathComponent(albumName ?? ""), includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+            let scannedFiles = try FileManager.default.contentsOfDirectory(at: pathResolver.selectedGalleryPath.appendingPathComponent(albumName ?? ""), includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
                 .filter {
                     let fileExtension = $0.pathExtension.lowercased()
                     if self.settings.allowedExtensions.contains(fileExtension) {

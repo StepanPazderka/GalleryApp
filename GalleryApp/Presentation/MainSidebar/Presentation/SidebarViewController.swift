@@ -41,7 +41,7 @@ class SidebarViewController: UIViewController {
         super.viewDidLoad()
         
         self.configureDataSource()
-        
+		
         self.setupViews()
         self.bindData()
         self.bindInteractions()

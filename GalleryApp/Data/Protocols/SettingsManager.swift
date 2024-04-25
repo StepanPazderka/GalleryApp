@@ -8,7 +8,7 @@
 import Foundation
 import RxSwift
 
-protocol SettingsManager {
+protocol SettingsManager: AnyObject {
 	var unsecureStorage: UnsecureStorage { get }
 	var selectedGalleryName: String! { get }
 	func getSelectedLibraryName() -> String

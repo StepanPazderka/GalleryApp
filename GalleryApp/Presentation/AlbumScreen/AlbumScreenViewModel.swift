@@ -50,14 +50,18 @@ class AlbumScreenViewModel {
     
     func imagesAsObservable() -> Observable<[GalleryImage]> {
         self.galleryManager.loadCurrentGalleryIndexAsObservable()
-			.map { [weak self] in
+			.map { [weak self] galleryIndex in
             if let albumID = self?.albumID {
                 return self?.galleryManager.loadAlbumIndex(with: albumID)?.images ?? [GalleryImage]()
             } else {
-                return $0.images
+                return galleryIndex.images
             }
          }
     }
+	
+	func getCurrentSelectedGalleryIDAsObservable() -> Observable<String> {
+		self.galleryManager.getCurrentlySelectedGalleryIDAsObservable()
+	}
     
     func showingAnnotationsAsObservable() -> Observable<Bool> {
         if let albumID {
@@ -151,7 +155,7 @@ class AlbumScreenViewModel {
             do {
                 let filenameExtension = url.pathExtension.lowercased()
                 let newFileName = URL(string: UUID().uuidString)!.appendingPathExtension(filenameExtension)
-                let targetPath = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(newFileName.relativeString)
+                let targetPath = self.pathResolver.selectedGalleryPath.appendingPathComponent(newFileName.relativeString)
                 
                 try FileManager.default.moveItem(at: url, to: targetPath)
                 let newImage = GalleryImage(fileName: targetPath.lastPathComponent, date: Date(), title: nil)
@@ -188,13 +192,13 @@ class AlbumScreenViewModel {
                     print("Error while copying files \(String(describing: error))")
                 }
 				
-				if let galleryPath = self?.galleryManager.pathResolver.selectedGalleryPath {
+				if let galleryPath = self?.pathResolver.selectedGalleryPath {
 					if !FileManager.default.fileExists(atPath: galleryPath.relativePath) {
 						try? FileManager.default.createDirectory(at: galleryPath, withIntermediateDirectories: true, attributes: nil)
 					}
 				}
 				
-                if let targetPath = self?.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
+                if let targetPath = self?.pathResolver.selectedGalleryPath.appendingPathComponent(UUID().uuidString).appendingPathExtension(filenameExtension)
                 {
                 	do {
 						try FileManager.default.moveItem(at: filePath, to: targetPath)

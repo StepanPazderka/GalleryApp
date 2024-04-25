@@ -19,12 +19,12 @@ class AlbumScreenViewController: UIViewController {
 	private let searchController = UISearchController(searchResultsController: nil)
 	
     // MARK: Properties
-    var viewModel: AlbumScreenViewModel
-    let router: AlbumScreenRouter
-    var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, GalleryImage>>!
-	let pathResolver: PathResolver
+    private var viewModel: AlbumScreenViewModel
+    private let router: AlbumScreenRouter
+    private var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, GalleryImage>>!
+	private let pathResolver: PathResolver
 
-    let disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
     // MARK: - Progress
     var importProgress = MutableProgress()
@@ -64,11 +64,12 @@ class AlbumScreenViewController: UIViewController {
         super.viewWillAppear(animated)
     }
     
+	// MARK: - Data Source
     func setupDataSource() {
         dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, GalleryImage>>(
-            configureCell: { [unowned self] (dataSource, collectionView, indexPath, item) in
+            configureCell: { [unowned self] (dataSource, collectionView, indexPath, sectionModelItem) in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
-                cell.setup(with: item, viewModel: self.viewModel, pathResolver: pathResolver)
+				cell.setup(with: sectionModelItem, viewModel: self.viewModel, pathResolver: self.pathResolver)
                 return cell
             }
         )
@@ -127,8 +128,10 @@ class AlbumScreenViewController: UIViewController {
         
         // MARK: - Loading Images to Collection View
 		Observable.combineLatest(viewModel.imagesAsObservable(), searchController.searchBar.rx.text)
-			.debug("Album screen images")
 			.observe(on: MainScheduler.instance)
+			.do(onNext: { images in
+				NSLog("Selected Gallery Path: \(self.pathResolver.selectedGalleryPath)")
+			})
 			.map { (images, searchTerm) in
 				images.filter { image in
 					guard let searchTerm = searchTerm, !searchTerm.isEmpty else { return true }

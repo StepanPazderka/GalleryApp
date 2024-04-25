@@ -16,7 +16,7 @@ class GalleryManagerImpl: GalleryManager {
 	// MARK: - Protocol Properties
 	internal let settingsManager: SettingsManager
 	private let fileScannerManager: FileScannerManager
-	internal let pathResolver: PathResolver
+	private let pathResolver: PathResolver
 	
 	// MARK: - Custom Properties
 	private let realm: Realm?
@@ -381,16 +381,16 @@ extension GalleryManagerImpl {
 				} else if let firstGallery = galleries.first {
 					self?.settingsManager.set(key: .selectedGallery, value: firstGallery.id.uuidString)
 					return firstGallery
-				} else if let defaultGallery = try? self?.createGalleryIndex(name: NSLocalizedString("kDEFAULTLIBRARY", comment: "Default gallery name")) {
-					self?.settingsManager.set(key: .selectedGallery, value: defaultGallery.id.uuidString)
-					return defaultGallery
-				} else {
-					return .empty
 				}
+				return .empty
 			}
 	}
 	
 	func loadCurrentGalleryIndex() -> GalleryIndex? {
 		self.load(galleryIndex: self.settingsManager.selectedGalleryName)
+	}
+	
+	func getCurrentlySelectedGalleryIDAsObservable() -> Observable<String> {
+		self.settingsManager.getCurrentlySelectedGalleryIDAsObservable()
 	}
 }

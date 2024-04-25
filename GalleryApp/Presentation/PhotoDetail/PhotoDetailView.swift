@@ -23,6 +23,7 @@ class PhotoDetailView: UIView {
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 0.0
         layout.minimumLineSpacing = 0.0
+		layout.estimatedItemSize = .zero
         return layout
     }()
     
@@ -52,6 +53,7 @@ class PhotoDetailView: UIView {
     // MARK: - Setup Views
     func setupViews() {
         self.addSubviews(closeButton, collectionView)
+		self.collectionView.showsHorizontalScrollIndicator = false
     }
     
     func layoutViews() {

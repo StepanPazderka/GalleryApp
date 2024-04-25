@@ -17,6 +17,7 @@ class AlbumImageCell: UICollectionViewCell {
 	var isCellSelected: Bool = false
 	
     weak var viewModel: AlbumScreenViewModel?
+	weak var settingsManager: (any SettingsManager)?
     
     var containerViewForCheck: UIView = {
         let view = UIView()
@@ -66,6 +67,8 @@ class AlbumImageCell: UICollectionViewCell {
     
     var checkBoxTapped: UITapGestureRecognizer?
     
+	var filename: String?
+	var pathResolver: PathResolver?
     let disposeBag = DisposeBag()
     
     static let identifier: String = String(describing: type(of: AlbumImageCell.self))
@@ -98,8 +101,16 @@ class AlbumImageCell: UICollectionViewCell {
                 }
             })
         }).disposed(by: disposeBag)
+		
+		self.viewModel?.getCurrentSelectedGalleryIDAsObservable().subscribe(onNext: { [weak self] (id: String) in
+			if let fileName = self?.filename, let pathResolver = self?.pathResolver {
+				let resolvedPath = pathResolver.resolveThumbPathFor(imageName: fileName)
+				print("Resolved Path: \(resolvedPath)")
+				self?.imageView.image = UIImage(contentsOfFile: resolvedPath)
+			}
+		}).disposed(by: disposeBag)
     }
-    
+
     func setupViews() {
         containerViewForCheck.addSubviews(checkmarkViewFill, checkmarkView)
         
@@ -116,8 +127,9 @@ class AlbumImageCell: UICollectionViewCell {
     
 	func setup(with imageData: GalleryImage, viewModel: AlbumScreenViewModel, pathResolver: PathResolver) {
         self.textLabel.text = imageData.title
+		self.filename = imageData.fileName
+		self.pathResolver = pathResolver
 		let resolvedThumbnailPath = pathResolver.resolveThumbPathFor(imageName: imageData.fileName)
-		NSLog("Path for thumbnail \(resolvedThumbnailPath)")
 		self.imageView.image = UIImage(contentsOfFile: resolvedThumbnailPath)
         self.viewModel = viewModel
         self.isSelected = false

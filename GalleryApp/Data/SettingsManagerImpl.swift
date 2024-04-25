@@ -10,11 +10,8 @@ import UniformTypeIdentifiers
 import RxSwift
 
 final class SettingsManagerImpl: SettingsManager {
-	let unsecureStorage: UnsecureStorage
+	internal let unsecureStorage: UnsecureStorage
 	var selectedGalleryName: String!
-    var selectedGalleryPath: URL {
-        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent(selectedGalleryName)
-    }
     let allowedTypes = [UTType.jpeg, UTType.tiff, UTType.png]
     var allowedExtensions: [String] {
         allowedTypes.compactMap { $0.tags[.filenameExtension] }.flatMap { $0 }
@@ -23,7 +20,8 @@ final class SettingsManagerImpl: SettingsManager {
 
     init(unsecureStorage: UnsecureStorage) {
         self.unsecureStorage = unsecureStorage
-        
+		
+		guard let selectedGalleryID = load(key: .selectedGallery) else { set(key: .selectedGallery, value: "00"); return }
     }
     
     func getSelectedLibraryName() -> String {
@@ -34,8 +32,13 @@ final class SettingsManagerImpl: SettingsManager {
             return "Default Gallery"
         }
     }
+	
+	func load(key: SettingsKey) -> String? {
+		unsecureStorage.load(key: .selectedGallery, type: String.self)
+	}
     
     func set(key: SettingsKey, value: String) {
+		selectedGalleryName = value
         unsecureStorage.save(key: key, value: value)
     }
 	

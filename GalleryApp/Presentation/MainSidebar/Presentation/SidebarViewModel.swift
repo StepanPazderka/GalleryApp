@@ -49,16 +49,14 @@ class SidebarViewModel {
 						.map { [unowned self] albumIndex -> SidebarItem? in
 							var thumbnailImage: UIImage?
 							if let thumbnailFileName = albumIndex.thumbnail, !thumbnailFileName.isEmpty {
-								let thumbnailPath = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(thumbnailFileName)
+								let thumbnailPath = self.pathResolver.selectedGalleryPath.appendingPathComponent(thumbnailFileName)
 								thumbnailImage = UIImage(contentsOfFile: thumbnailPath.relativePath)
-								
 							} else {
 								if let thumbnailFileName = albumIndex.images.first?.fileName {
-									let thumbnailPath = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(thumbnailFileName)
+									let thumbnailPath = self.pathResolver.selectedGalleryPath.appendingPathComponent(thumbnailFileName)
 									thumbnailImage = UIImage(contentsOfFile: thumbnailPath.relativePath)
 								}
 							}
-							
 							
 							return SidebarItem(
 								id: UUID(uuidString: albumIndex.id.uuidString),

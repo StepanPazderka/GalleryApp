@@ -53,7 +53,7 @@ class SelectLibraryViewController: UIViewController {
 			.bind(to: screenView.galleriesCollectionView.rx.items(dataSource: dataSource!))
 			.disposed(by: disposeBag)
 		
-		self.viewModel.loadCurrentGalleryAsObservable().debug("GF").subscribe(onNext: { index in
+		self.viewModel.loadCurrentGalleryAsObservable().subscribe(onNext: { index in
 			if let indexPath = self.dataSource?.sectionModels.first?.items.firstIndex(where: { galleryIndex in
 				galleryIndex.id == index.id
 			}) {
@@ -182,8 +182,38 @@ class SelectLibraryViewController: UIViewController {
     private func setupViews() {
         self.view = screenView
 		
+		self.screenView.galleriesCollectionView.delegate = self
+		
 		self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: screenView.closeButton)
 		self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: screenView.rightBarButton)
 		self.navigationItem.title = NSLocalizedString("kSELECTLIBRARY", comment: "Select library to load")
     }
+}
+
+extension SelectLibraryViewController: UICollectionViewDelegate {
+	func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+		return UIContextMenuConfiguration(identifier: nil,
+										  previewProvider: nil,
+										  actionProvider: { [weak self]
+			suggestedActions in
+			let deleteAction =
+			UIAction(title: NSLocalizedString("kDELETEGALLERY", comment: ""),
+					 image: UIImage(systemName: "trash"), attributes: [.destructive]) { action in
+				if let galleryName = self?.dataSource?[indexPath].mainGalleryName {
+					self?.viewModel.delete(gallery: galleryName)
+				}
+			}
+			let renameAction =
+			UIAction(title: NSLocalizedString("kRenameAlbum", comment: ""),
+					 image: UIImage(systemName: "pencil")) { action in
+				
+				if let galleryIndex = self?.dataSource?[indexPath] {
+					self?.showCreateLibraryDialog(withPrepulatedName: galleryIndex.mainGalleryName, callback: { newName in
+						self?.viewModel.rename(gallery: galleryIndex, withName: newName)
+					})
+				}
+			}
+			return UIMenu(title: "", children: [renameAction, deleteAction])
+		})
+	}
 }

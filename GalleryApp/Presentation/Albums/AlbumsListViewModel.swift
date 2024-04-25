@@ -48,13 +48,13 @@ class AlbumsListViewModel {
                     if let FirstAlbumImage = album.images.first {
                         let path = self.pathResolver.resolveThumbPathFor(imageName: FirstAlbumImage.fileName)
                         
-                        let thumbnailImageURL = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(FirstAlbumImage.fileName)
+                        let thumbnailImageURL = self.pathResolver.selectedGalleryPath.appendingPathComponent(FirstAlbumImage.fileName)
                         thumbnailImage = UIImage(contentsOfFile: path)
                     }
                     
                     if let thumbnail = album.thumbnail {
                         if !thumbnail.isEmpty && !album.images.isEmpty {
-                            let thumbnailImageURL = self.galleryManager.pathResolver.selectedGalleryPath.appendingPathComponent(thumbnail)
+                            let thumbnailImageURL = self.pathResolver.selectedGalleryPath.appendingPathComponent(thumbnail)
                             thumbnailImage = UIImage(contentsOfFile: thumbnailImageURL.relativePath)
                         }
                     }
