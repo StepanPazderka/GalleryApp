@@ -195,6 +195,9 @@ class SidebarViewController: UIViewController {
 extension SidebarViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+		if indexPath.section == 0 {
+			return nil
+		}
         return UIContextMenuConfiguration(identifier: nil,
                                           previewProvider: nil,
                                           actionProvider: {
