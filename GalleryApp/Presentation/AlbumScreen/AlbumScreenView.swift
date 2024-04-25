@@ -166,7 +166,7 @@ class AlbumScreenView: UIView {
         }
         bottomToolbarStackView.snp.makeConstraints { make in
             make.bottom.equalToSuperview()
-            make.height.equalTo(100)
+            make.height.equalTo(75)
             make.width.equalToSuperview()
         }
         slider.snp.makeConstraints { make in
