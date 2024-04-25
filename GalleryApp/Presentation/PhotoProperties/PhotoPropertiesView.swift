@@ -78,7 +78,7 @@ class PhotoPropertiesView: UIView {
     
     public let textView = {
         let view = UITextView()
-        view.backgroundColor = .systemGray5
+        view.backgroundColor = .tertiarySystemBackground
         view.font = .systemFont(ofSize: 18)
         view.layer.cornerRadius = 10
         view.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
@@ -110,7 +110,7 @@ class PhotoPropertiesView: UIView {
     
     // MARK: - Setup
     func setupViews() {
-        self.backgroundColor = .white
+        self.backgroundColor = .systemBackground
         imagesContainer.addSubviews(imageView3,
                                     imageView2,
                                     imageView1)
