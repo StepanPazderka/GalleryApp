@@ -26,17 +26,15 @@ class AlbumsListViewModel {
     }
 
     func moveToAlbum(images: [GalleryImage], album: UUID) {
-        for image in images {
-            do {
-                try self.galleryManager.move(Image: image, toAlbum: album)
-                self.shouldDismiss.accept(true)
-                self.delegate?.didFinishMovingImages()
-            } catch GalleryManagerError.imageAlreadyInAlbum {
-                showErrorCantAddImageToAlbum.accept(true)
-            } catch {
-                shouldDismiss.accept(true)
-            }
-        }
+		do {
+			try self.galleryManager.move(images: images, toAlbum: album)
+			self.shouldDismiss.accept(true)
+			self.delegate?.didFinishMovingImages()
+		} catch GalleryManagerError.imageAlreadyInAlbum {
+			showErrorCantAddImageToAlbum.accept(true)
+		} catch {
+			shouldDismiss.accept(true)
+		}
     }
     
     func fetchAlbums() -> Observable<[SidebarSectionModel]> {

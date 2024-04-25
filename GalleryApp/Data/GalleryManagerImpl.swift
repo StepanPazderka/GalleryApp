@@ -357,12 +357,15 @@ class GalleryManagerImpl: GalleryManager {
 		}
 	}
 	
-	func move(Image: GalleryImage, toAlbum: UUID, callback: (() -> ())?) throws {
+	func move(images: [GalleryImage], toAlbum: UUID, callback: (() -> ())?) throws {
 		let album = self.loadAlbumIndex(with: toAlbum)
 		if var album {
-			if !album.images.contains(Image) {
-				album.images.append(Image)
+			for image in images {
+				if !album.images.contains(image) {
+					album.images.append(image)
+				}
 			}
+			
 			try? realm?.write {
 				let albumIndexRealm = AlbumIndexRealm(from: album)
 				realm?.add(albumIndexRealm, update: .modified)
@@ -407,8 +410,7 @@ extension GalleryManagerImpl {
 		Observable.combineLatest(settingsManager.getCurrentlySelectedGalleryIDAsObservable(), self.loadGalleriesAsObservable())
 			.map { [weak self] (currentlySelectedGalleryID, galleries) -> GalleryIndex in
 				guard let self else { return .empty }
-				var staticGalleries = loadGalleries()
-//				staticGalleries.append(contentsOf: galleries)
+				let staticGalleries = loadGalleries()
 				
 				if let selectedGallery = staticGalleries.first(where: { $0.id.uuidString == currentlySelectedGalleryID }) {
 					return selectedGallery

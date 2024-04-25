@@ -45,12 +45,12 @@ protocol GalleryManager {
     func duplicate(images: [GalleryImage], inAlbum album: AlbumIndex?) throws
     
     // MARK: - Special
-    func move(Image: GalleryImage, toAlbum: UUID, callback: (() -> Void)?) throws
+    func move(images: [GalleryImage], toAlbum: UUID, callback: (() -> Void)?) throws
     func buildThumbnail(forImage albumImage: GalleryImage)
 }
 
 extension GalleryManager {
-    func move(Image: GalleryImage, toAlbum: UUID, callback: (() -> Void)? = nil) throws {
-        try self.move(Image: Image, toAlbum: toAlbum, callback: {})
+    func move(images: [GalleryImage], toAlbum: UUID, callback: (() -> Void)? = nil) throws {
+        try self.move(images: images, toAlbum: toAlbum, callback: {})
     }
 }
