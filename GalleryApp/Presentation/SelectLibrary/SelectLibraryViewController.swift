@@ -200,7 +200,7 @@ extension SelectLibraryViewController: UICollectionViewDelegate {
 			UIAction(title: NSLocalizedString("kDELETEGALLERY", comment: ""),
 					 image: UIImage(systemName: "trash"), attributes: [.destructive]) { action in
 				if let galleryName = self?.dataSource?[indexPath].mainGalleryName {
-					self?.viewModel.delete(gallery: galleryName)
+					self?.screenView.swipeToDeleteHandler?(indexPath)
 				}
 			}
 			let renameAction =

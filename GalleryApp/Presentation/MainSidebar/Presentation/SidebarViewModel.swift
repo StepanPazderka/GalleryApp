@@ -103,7 +103,7 @@ class SidebarViewModel {
 	func getSelectedLibraryNameAsObservable() -> Observable<String> {
 		self.settingsManager.getCurrentlySelectedGalleryIDAsObservable()
 			.catch { [weak self] error -> Observable<String> in
-				if let returnID = self?.galleryManager.loadGalleries().compactMap({ $0.first?.id }).compactMap ({ $0.uuidString }) {
+				if let returnID = self?.galleryManager.loadGalleriesAsObservable().compactMap({ $0.first?.id }).compactMap ({ $0.uuidString }) {
 					return returnID
 				} else {
 					return .empty()
@@ -111,7 +111,7 @@ class SidebarViewModel {
 			}
 			.flatMapLatest { [weak self] galleryID -> Observable<String> in
 				guard let self = self else { return .empty() }
-				return self.galleryManager.loadGalleries()
+				return self.galleryManager.loadGalleriesAsObservable()
 					.compactMap { [weak self] galleries -> String? in
 						if let returnValue = galleries.first { $0.id.uuidString == galleryID }?.mainGalleryName {
 							return returnValue

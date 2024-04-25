@@ -34,6 +34,25 @@ class GalleryManagerImpl: GalleryManager {
 			print("Error: \(error)")
 			self.realm = nil
 		}
+		
+		Observable.combineLatest(getCurrentlySelectedGalleryIDAsObservable(), loadGalleriesAsObservable()).subscribe(onNext: { [weak self] (selectedID, galleries) in
+			guard let self else { return }
+			let staticGalleries = self.loadGalleries()
+			
+			var totalGalleries = [GalleryIndex]()
+			totalGalleries.append(contentsOf: staticGalleries)
+			totalGalleries.append(contentsOf: galleries)
+			
+			func createNewDefaultGallery() {
+				if let newGallery = try? self.createGalleryIndex(name: NSLocalizedString("kDEFAULTLIBRARY", comment: "Defaut library")) {
+					self.settingsManager.set(key: .selectedGallery, value: newGallery.id.uuidString)
+				}
+			}
+
+			if totalGalleries.isEmpty {
+				createNewDefaultGallery()
+			}
+		}).disposed(by: disposeBag)
 	}
 	
 	// MARK: - Create
@@ -176,7 +195,12 @@ class GalleryManagerImpl: GalleryManager {
 		}
 	}
 	
-	func loadGalleries() -> Observable<[GalleryIndex]> {
+	func loadGalleries() -> [GalleryIndex] {
+		guard let galleries = realm?.objects(GalleryIndexRealm.self) else { return [GalleryIndex]() }
+		return galleries.map { GalleryIndex(from: $0) }
+	}
+	
+	func loadGalleriesAsObservable() -> Observable<[GalleryIndex]> {
 		if let indeces = realm?.objects(GalleryIndexRealm.self) {
 			return Observable.collection(from: indeces)
 				.map { results in
@@ -223,8 +247,14 @@ class GalleryManagerImpl: GalleryManager {
 	func deleteGallery(named galleryName: String) {
 		guard let realm = realm, let galleryToDelete = realm.objects(GalleryIndexRealm.self).first(where: { $0.name == galleryName }) else { return }
 		
+		let galleryURL = pathResolver.resolveDocumentsPath().appendingPathComponent(galleryToDelete.id, conformingTo: UTType.folder)
+		if FileManager.default.fileExists(atPath: galleryURL.relativePath) {
+			try? FileManager.default.removeItem(at: galleryURL)
+		}
+		
 		try? realm.write {
 			realm.delete(galleryToDelete)
+			
 		}
 	}
 	
@@ -269,7 +299,7 @@ class GalleryManagerImpl: GalleryManager {
 	
 	func remove(image: GalleryImage, from album: AlbumIndex) {
 		let imageForRealm = GalleryImageRealm(from: image)
-		var albumIndexRealm = AlbumIndexRealm(from: album)
+		let albumIndexRealm = AlbumIndexRealm(from: album)
 		let index = albumIndexRealm.images.firstIndex(where: { $0 == imageForRealm })
 		if let index {
 			albumIndexRealm.images.remove(at: index)
@@ -374,12 +404,16 @@ extension GalleryManagerImpl {
 	}
 	
 	func loadCurrentGalleryIndexAsObservable() -> Observable<GalleryIndex> {
-		Observable.combineLatest(settingsManager.getCurrentlySelectedGalleryIDAsObservable(), self.loadGalleries())
+		Observable.combineLatest(settingsManager.getCurrentlySelectedGalleryIDAsObservable(), self.loadGalleriesAsObservable())
 			.map { [weak self] (currentlySelectedGalleryID, galleries) -> GalleryIndex in
-				if let selectedGallery = galleries.first(where: { $0.id.uuidString == currentlySelectedGalleryID }) {
+				guard let self else { return .empty }
+				var staticGalleries = loadGalleries()
+				staticGalleries.append(contentsOf: galleries)
+				
+				if let selectedGallery = staticGalleries.first(where: { $0.id.uuidString == currentlySelectedGalleryID }) {
 					return selectedGallery
 				} else if let firstGallery = galleries.first {
-					self?.settingsManager.set(key: .selectedGallery, value: firstGallery.id.uuidString)
+					self.settingsManager.set(key: .selectedGallery, value: firstGallery.id.uuidString)
 					return firstGallery
 				}
 				return .empty

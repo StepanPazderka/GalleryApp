@@ -24,7 +24,7 @@ protocol GalleryManager {
 	func loadCurrentGalleryIndexAsObservable() -> Observable<GalleryIndex>
 	func load(galleryIndex: String?) -> GalleryIndex?
 	func loadGalleryIndexAsObservable() -> Observable<GalleryIndex>
-	func loadGalleries() -> Observable<[GalleryIndex]>
+	func loadGalleriesAsObservable() -> Observable<[GalleryIndex]>
 	func getCurrentlySelectedGalleryIDAsObservable() -> Observable<String>
 	
 	func loadAlbumIndex(with: UUID) -> AlbumIndex?

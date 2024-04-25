@@ -20,7 +20,7 @@ class SelectLibraryViewModel {
 	}
 
 	func loadAnimatedSectionsForCollectionView() -> Observable<[SelectLibraryAnimatableSectionModel]> {
-		self.galleryManager.loadGalleries()
+		self.galleryManager.loadGalleriesAsObservable()
 			.map { [SelectLibraryAnimatableSectionModel(name: "Galleries", items: $0)] }
 	}
 	
