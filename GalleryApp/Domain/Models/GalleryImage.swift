@@ -29,10 +29,10 @@ struct GalleryImage: Codable {
 }
 
 extension GalleryImage: IdentifiableType {
-    typealias Identity = UUID
+    typealias Identity = String
     
-    var identity: UUID {
-        return id
+    var identity: String {
+		return id.uuidString
     }
 }
 
@@ -48,8 +48,6 @@ extension GalleryImage {
 
 extension GalleryImage: Equatable { 
 	static func ==(lhs: GalleryImage, rhs: GalleryImage) -> Bool {
-		return lhs.fileName == rhs.fileName
+		return lhs.fileName == rhs.fileName && lhs.title == rhs.title && lhs.date == rhs.date
 	}
 }
-
-extension GalleryImage: Hashable { }

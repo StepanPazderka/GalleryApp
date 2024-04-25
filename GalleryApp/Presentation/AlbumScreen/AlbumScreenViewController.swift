@@ -15,13 +15,13 @@ import PhotosUI
 class AlbumScreenViewController: UIViewController {
     
     // MARK: Views
-    lazy var screenView = AlbumScreenView()
+    private var screenView = AlbumScreenView()
 	private let searchController = UISearchController(searchResultsController: nil)
 	
     // MARK: Properties
     private var viewModel: AlbumScreenViewModel
     private let router: AlbumScreenRouter
-    private var dataSource: RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, GalleryImage>>!
+    private var dataSource: RxCollectionViewSectionedAnimatedDataSource<AlbumScreenSectionModel>!
 	private let pathResolver: PathResolver
 
     private let disposeBag = DisposeBag()
@@ -56,9 +56,7 @@ class AlbumScreenViewController: UIViewController {
 		self.bindUIState()
 		self.setupSearchController()
         self.bindInteractions()
-		
-		self.screenView.collectionView.allowsSelectionDuringEditing = true
-    }
+	}
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -66,7 +64,7 @@ class AlbumScreenViewController: UIViewController {
     
 	// MARK: - Data Source
     func setupDataSource() {
-        dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, GalleryImage>>(
+        dataSource = RxCollectionViewSectionedAnimatedDataSource<AlbumScreenSectionModel>(
             configureCell: { [unowned self] (dataSource, collectionView, indexPath, sectionModelItem) in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
 				cell.setup(with: sectionModelItem, viewModel: self.viewModel, pathResolver: self.pathResolver)
@@ -91,6 +89,7 @@ class AlbumScreenViewController: UIViewController {
 		
 		self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.screenView.rightStackView)
 		
+		self.screenView.collectionView.allowsSelectionDuringEditing = true
         self.screenView.collectionView.delegate = self
         self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
 	}
@@ -128,19 +127,16 @@ class AlbumScreenViewController: UIViewController {
         
         // MARK: - Loading Images to Collection View
 		Observable.combineLatest(viewModel.imagesAsObservable(), searchController.searchBar.rx.text)
-			.observe(on: MainScheduler.instance)
-			.do(onNext: { images in
-				NSLog("Selected Gallery Path: \(self.pathResolver.selectedGalleryPath)")
-			})
 			.map { (images, searchTerm) in
-				images.filter { image in
+				return images.filter { image in
 					guard let searchTerm = searchTerm, !searchTerm.isEmpty else { return true }
 					return image.title?.lowercased().contains(searchTerm.lowercased()) ?? false
 				}
 			}
 			.compactMap { images in
-				[AnimatableSectionModel(model: "Images", items: images)]
+				[AlbumScreenSectionModel(items: images)]
 			}
+			.debug("Album Screen Images")
 			.bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource))
 			.disposed(by: disposeBag)
 		
@@ -266,7 +262,8 @@ class AlbumScreenViewController: UIViewController {
     
 	func getSelectedImages(for indexPath: IndexPath) -> [GalleryImage] {
 		guard let selectedIndexes = screenView.collectionView.indexPathsForSelectedItems, !selectedIndexes.isEmpty else {
-			return [dataSource.sectionModels.first!.items[indexPath.item]]
+//			return [dataSource.sectionModels.first!.items[indexPath.item]]
+			return [dataSource[indexPath]]
 		}
 		
 		return selectedIndexes.map { dataSource.sectionModels.first!.items[$0.row] }

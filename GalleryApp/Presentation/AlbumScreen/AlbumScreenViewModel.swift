@@ -49,14 +49,13 @@ class AlbumScreenViewModel {
 	}
     
     func imagesAsObservable() -> Observable<[GalleryImage]> {
-        self.galleryManager.loadCurrentGalleryIndexAsObservable()
-			.map { [weak self] galleryIndex in
-            if let albumID = self?.albumID {
-                return self?.galleryManager.loadAlbumIndex(with: albumID)?.images ?? [GalleryImage]()
-            } else {
-                return galleryIndex.images
-            }
-         }
+		return self.galleryManager.loadCurrentGalleryIndexAsObservable().flatMap { [weak self] index -> Observable<[GalleryImage]> in
+			if let albumID = self?.albumID {
+				return self?.galleryManager.loadAlbumIndexAsObservable(id: albumID).map { $0.images } ?? .empty()
+			} else {
+				return self?.galleryManager.loadCurrentGalleryIndexAsObservable().map { $0.images } ?? .empty()
+			}
+		}
     }
 	
 	func getCurrentSelectedGalleryIDAsObservable() -> Observable<String> {

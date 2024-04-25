@@ -87,6 +87,10 @@ class AlbumImageCell: UICollectionViewCell {
         self.setupViews()
         self.layoutViews()
     }
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
     
     func bindData() {
         self.viewModel?.showingAnnotationsAsObservable().subscribe(onNext: { [weak self] value in
@@ -105,7 +109,6 @@ class AlbumImageCell: UICollectionViewCell {
 		self.viewModel?.getCurrentSelectedGalleryIDAsObservable().subscribe(onNext: { [weak self] (id: String) in
 			if let fileName = self?.filename, let pathResolver = self?.pathResolver {
 				let resolvedPath = pathResolver.resolveThumbPathFor(imageName: fileName)
-				print("Resolved Path: \(resolvedPath)")
 				self?.imageView.image = UIImage(contentsOfFile: resolvedPath)
 			}
 		}).disposed(by: disposeBag)
@@ -121,15 +124,11 @@ class AlbumImageCell: UICollectionViewCell {
         stackView.addArrangedSubviews(imageView, textLabel)
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-	func setup(with imageData: GalleryImage, viewModel: AlbumScreenViewModel, pathResolver: PathResolver) {
-        self.textLabel.text = imageData.title
-		self.filename = imageData.fileName
+	func setup(with galleryImage: GalleryImage, viewModel: AlbumScreenViewModel, pathResolver: PathResolver) {
+        self.textLabel.text = galleryImage.title
+		self.filename = galleryImage.fileName
 		self.pathResolver = pathResolver
-		let resolvedThumbnailPath = pathResolver.resolveThumbPathFor(imageName: imageData.fileName)
+		let resolvedThumbnailPath = pathResolver.resolveThumbPathFor(imageName: galleryImage.fileName)
 		self.imageView.image = UIImage(contentsOfFile: resolvedThumbnailPath)
         self.viewModel = viewModel
         self.isSelected = false

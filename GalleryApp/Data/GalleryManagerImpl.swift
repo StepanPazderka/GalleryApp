@@ -408,7 +408,7 @@ extension GalleryManagerImpl {
 			.map { [weak self] (currentlySelectedGalleryID, galleries) -> GalleryIndex in
 				guard let self else { return .empty }
 				var staticGalleries = loadGalleries()
-				staticGalleries.append(contentsOf: galleries)
+//				staticGalleries.append(contentsOf: galleries)
 				
 				if let selectedGallery = staticGalleries.first(where: { $0.id.uuidString == currentlySelectedGalleryID }) {
 					return selectedGallery
