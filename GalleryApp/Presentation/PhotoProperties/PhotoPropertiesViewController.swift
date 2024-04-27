@@ -46,7 +46,7 @@ class PhotoPropertiesViewController: UIViewController {
         
         for (index, imageView) in imagesViews.enumerated() {
             if index < viewModel.selectedImages.count {
-                var resolvedImagePath = viewModel.resolveImagePaths().reversed()[index]
+				let resolvedImagePath = viewModel.resolveImagePaths().reversed()[index]
                 imageView.image = UIImage(contentsOfFile: resolvedImagePath)
             }
         }

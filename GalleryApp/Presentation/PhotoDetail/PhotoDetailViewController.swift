@@ -167,12 +167,6 @@ class PhotoDetailViewController: UIViewController {
     }
 }
 
-extension PhotoDetailViewController: UICollectionViewDelegate, UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let visibleCells = screenView.collectionView.visibleCells as! [PhotoDetailCollectionViewCell]
-    }
-}
-
 extension PhotoDetailViewController: UICollectionViewDelegateFlowLayout {
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 		return CGSize(width: self.screenView.collectionView.frame.width, height: self.screenView.collectionView.frame.height)

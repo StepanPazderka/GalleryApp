@@ -46,7 +46,6 @@ class AlbumsListViewModel {
                     if let FirstAlbumImage = album.images.first {
                         let path = self.pathResolver.resolveThumbPathFor(imageName: FirstAlbumImage.fileName)
                         
-                        let thumbnailImageURL = self.pathResolver.selectedGalleryPath.appendingPathComponent(FirstAlbumImage.fileName)
                         thumbnailImage = UIImage(contentsOfFile: path)
                     }
                     

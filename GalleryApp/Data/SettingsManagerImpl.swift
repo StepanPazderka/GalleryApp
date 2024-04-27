@@ -21,7 +21,7 @@ final class SettingsManagerImpl: SettingsManager {
     init(unsecureStorage: UnsecureStorage) {
         self.unsecureStorage = unsecureStorage
 		
-		guard let selectedGalleryID = load(key: .selectedGallery) else { set(key: .selectedGallery, value: "00"); return }
+		guard load(key: .selectedGallery) != nil else { set(key: .selectedGallery, value: "00"); return }
     }
     
     func getSelectedLibraryName() -> String {

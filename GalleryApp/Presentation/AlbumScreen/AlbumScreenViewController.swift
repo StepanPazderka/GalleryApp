@@ -236,7 +236,7 @@ class AlbumScreenViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         // MARK: - Slider binding
-        self.screenView.slider.rx.value.changed
+		self.screenView.slider.rx.value.changed
             .map { CGFloat($0) }
             .observe(on: MainScheduler.instance)
             .do(onNext: { [weak self] value in
@@ -247,6 +247,9 @@ class AlbumScreenViewController: UIViewController {
             }).disposed(by: disposeBag)
 		
 		self.viewModel.sliderSetting()
+			.do(onNext: { [weak self] value in
+				self?.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(value), height: CGFloat(value))
+			})
 			.asDriver(onErrorJustReturn: 0.0)
 			.drive(screenView.slider.rx.value)
 			.disposed(by: disposeBag)
@@ -262,7 +265,6 @@ class AlbumScreenViewController: UIViewController {
     
 	func getSelectedImages(for indexPath: IndexPath) -> [GalleryImage] {
 		guard let selectedIndexes = screenView.collectionView.indexPathsForSelectedItems, !selectedIndexes.isEmpty else {
-//			return [dataSource.sectionModels.first!.items[indexPath.item]]
 			return [dataSource[indexPath]]
 		}
 		

@@ -23,6 +23,8 @@ class SidebarViewController: UIViewController {
     private let router: SidebarRouter
     private let viewModel: SidebarViewModel
     private let disposeBag = DisposeBag()
+	
+	private var userSelectedIndex: IndexPath?
     
     // MARK: - Init
     init(router: SidebarRouter, container: Container, viewModel: SidebarViewModel) {
@@ -105,6 +107,16 @@ class SidebarViewController: UIViewController {
         viewModel.loadSidebarContent()
             .bind(to: screenView.sidebarCollectionView.rx.items(dataSource: dataSource!))
             .disposed(by: disposeBag)
+				
+		viewModel.loadSidebarContent().delay(.milliseconds(100), scheduler: MainScheduler.instance).subscribe(onNext: { [weak self] models in
+			if let userSelectedIndex = self?.userSelectedIndex {
+				if let selectedModel = self?.dataSource?[userSelectedIndex] {
+					DispatchQueue.main.asyncAfter(deadline: .now()+0.4) {
+						self?.screenView.sidebarCollectionView.selectItem(at: userSelectedIndex, animated: false, scrollPosition: .bottom)
+					}
+				}
+			}
+		}).disposed(by: disposeBag)
         
         viewModel.getSelectedLibraryNameAsObservable()
             .distinctUntilChanged()
@@ -129,6 +141,7 @@ class SidebarViewController: UIViewController {
         
         self.screenView.sidebarCollectionView.rx.itemSelected
             .subscribe(onNext: { indexPath in
+				self.userSelectedIndex = indexPath
                 let item = self.dataSource![indexPath]
                 if item.type == .album {
                     self.router.show(album: item.identifier!)
@@ -139,7 +152,6 @@ class SidebarViewController: UIViewController {
                     self.screenView.sidebarCollectionView.deselectItem(at: selectedIndexPath, animated: true)
                 }
                 
-                // Select the newly selected cell
                 self.screenView.sidebarCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
                 
             }).disposed(by: disposeBag)
@@ -168,18 +180,9 @@ class SidebarViewController: UIViewController {
         }
         
         dataSource = RxCollectionViewSectionedAnimatedDataSource<SidebarSectionModel>(
-            configureCell: { dataSource, collectionView, indexPath, item in
+            configureCell: { dataSource, collectionView, indexPath, sidebarModel in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SidebarViewCell.identifier, for: indexPath) as! SidebarViewCell
-                cell.label.text = item.title
-                cell.imageView.image = item.image
-                if item.image == nil {
-                    cell.imageView.image = UIImage(named: "rectangle")
-                }
-                if item.type == .allPhotos {
-                    cell.imageView.contentMode = .scaleAspectFit
-                } else {
-                    cell.imageView.contentMode = .scaleAspectFill
-                }
+				cell.setupData(model: sidebarModel)
                 return cell
             },
             configureSupplementaryView: { dataSource, collectionView, kind, indexPath in
@@ -193,11 +196,11 @@ class SidebarViewController: UIViewController {
 }
 
 extension SidebarViewController: UICollectionViewDelegate {
-    
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-		if indexPath.section == 0 {
+		if self.dataSource?[indexPath].type == .allPhotos {
 			return nil
 		}
+
         return UIContextMenuConfiguration(identifier: nil,
                                           previewProvider: nil,
                                           actionProvider: {

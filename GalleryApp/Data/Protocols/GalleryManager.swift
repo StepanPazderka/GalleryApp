@@ -41,7 +41,7 @@ protocol GalleryManager {
     func delete(images: [GalleryImage])
     
     // MARK: - Duplication
-    func duplicate(album: AlbumIndex) -> AlbumIndex
+	@discardableResult func duplicate(album: AlbumIndex) -> AlbumIndex
     func duplicate(images: [GalleryImage], inAlbum album: AlbumIndex?) throws
     
     // MARK: - Special

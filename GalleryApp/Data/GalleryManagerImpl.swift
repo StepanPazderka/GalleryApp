@@ -258,8 +258,7 @@ class GalleryManagerImpl: GalleryManager {
 		}
 	}
 	
-	@discardableResult 
-	func duplicate(album: AlbumIndex) -> AlbumIndex {
+	@discardableResult func duplicate(album: AlbumIndex) -> AlbumIndex {
 		guard let fetchedAlbum = realm?.objects(AlbumIndexRealm.self).first(where: { $0.id == album.id.uuidString }) else { return album }
 		
 		let newAlbum = AlbumIndexRealm(id: UUID().uuidString, name: fetchedAlbum.name, thumbnail: fetchedAlbum.thumbnail, images: fetchedAlbum.images)

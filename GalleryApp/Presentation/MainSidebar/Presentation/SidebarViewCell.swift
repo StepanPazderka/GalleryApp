@@ -12,6 +12,7 @@ import SnapKit
 class SidebarViewCell: UICollectionViewCell {
     static let identifier: String = String(describing: SidebarViewCell.self)
     
+	// MARK: Views
     var label: UILabel = {
         let view = UILabel()
         view.font = UIFont.systemFont(ofSize: 18, weight: .regular)
@@ -32,6 +33,7 @@ class SidebarViewCell: UICollectionViewCell {
         return view
     }()
     
+	// MARK: Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.selectedBackgroundView = myBackgroundView
@@ -51,6 +53,19 @@ class SidebarViewCell: UICollectionViewCell {
         self.layer.cornerRadius = 10
         self.layer.masksToBounds = true
     }
+	
+	func setupData(model: SidebarItem) {
+		self.label.text = model.title
+		self.imageView.image = model.image
+		if model.image == nil {
+			self.imageView.image = UIImage(named: "rectangle")
+		}
+		if model.type == .allPhotos {
+			self.imageView.contentMode = .scaleAspectFit
+		} else {
+			self.imageView.contentMode = .scaleAspectFill
+		}
+	}
     
     func layoutViews() {
         self.imageView.snp.makeConstraints { make in

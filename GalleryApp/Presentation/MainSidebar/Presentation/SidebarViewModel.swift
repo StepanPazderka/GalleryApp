@@ -92,7 +92,7 @@ class SidebarViewModel {
 	func removeThumbnail(albumID: UUID) {
 		if var albumIndex = self.galleryManager.loadAlbumIndex(with: albumID) {
 			albumIndex.thumbnail = nil
-			try? self.galleryManager.updateAlbumIndex(index: albumIndex)
+			try! self.galleryManager.updateAlbumIndex(index: albumIndex)
 		}
 	}
 	
@@ -113,7 +113,7 @@ class SidebarViewModel {
 				guard let self = self else { return .empty() }
 				return self.galleryManager.loadGalleriesAsObservable()
 					.compactMap { [weak self] galleries -> String? in
-						if let returnValue = galleries.first { $0.id.uuidString == galleryID }?.mainGalleryName {
+						if let returnValue = galleries.first(where: { $0.id.uuidString == galleryID })?.mainGalleryName {
 							return returnValue
 						} else {
 							if let firstGallery = galleries.first {

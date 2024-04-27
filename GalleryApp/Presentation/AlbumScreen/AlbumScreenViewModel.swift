@@ -41,7 +41,7 @@ class AlbumScreenViewModel {
 	
 	func sliderSetting() -> Observable<Float> {
 		switch albumID {
-		case .some(let albumID):
+		case .some:
 			return loadAlbumIndexAsObservable().map { $0.thumbnailsSize }
 		case .none:
 			return galleryManager.loadCurrentGalleryIndexAsObservable().map { $0.thumbnailSize ?? 0.0 }
@@ -121,7 +121,7 @@ class AlbumScreenViewModel {
 		case .some(_):
 			if let albumID, var albumIndex = loadAlbum(by: albumID) {
 				albumIndex.thumbnailsSize = size
-				try? self.galleryManager.updateAlbumIndex(index: albumIndex)
+				try! self.galleryManager.updateAlbumIndex(index: albumIndex)
 			}
 		}
     }
@@ -129,7 +129,7 @@ class AlbumScreenViewModel {
     func setAlbumThumbnailImage(image: GalleryImage) {
         if let albumID, var albumIndex = galleryManager.loadAlbumIndex(with: albumID) {
             albumIndex.thumbnail = image.fileName
-            try? self.galleryManager.updateAlbumIndex(index: albumIndex)
+            try! self.galleryManager.updateAlbumIndex(index: albumIndex)
         }
     }
     
