@@ -16,12 +16,10 @@ class SidebarRouter {
         return view
     }()
     var container: Container
-    let galleryManager: GalleryManager
-    var navVC = UINavigationController()
+    var rightDetailNavigationController = UINavigationController()
     
-    init(container: Container, galleryManager: GalleryManager) {
+    init(container: Container) {
         self.container = container
-        self.galleryManager = galleryManager
     }
     
     public func setup(splitViewController: UISplitViewController) {
@@ -29,9 +27,9 @@ class SidebarRouter {
 
         let sidebarViewController = container.resolve(SidebarViewController.self)!
         
-        splitViewController.viewControllers = [sidebarViewController, navVC]
+        splitViewController.viewControllers = [sidebarViewController, rightDetailNavigationController]
 
-        splitViewController.setViewController(navVC, for: .secondary)
+        splitViewController.setViewController(rightDetailNavigationController, for: .secondary)
         splitViewController.setViewController(sidebarViewController, for: .primary)
         splitViewController.preferredDisplayMode = .automatic
         splitViewController.presentsWithGesture = true
@@ -39,14 +37,14 @@ class SidebarRouter {
     
     public func showAllPhotos() {
         let allPhotosVC = container.resolve(AlbumScreenViewController.self)!
-        navVC.setViewControllers([allPhotosVC], animated: false)
-        splitViewController.showDetailViewController(navVC, sender: nil)
+        rightDetailNavigationController.setViewControllers([allPhotosVC], animated: false)
+        splitViewController.showDetailViewController(rightDetailNavigationController, sender: nil)
     }
     
     public func show(album albumID: UUID) {
         let albumVC = container.resolve(AlbumScreenViewController.self, argument: albumID)!
-        navVC.setViewControllers([albumVC], animated: false)
-        splitViewController.showDetailViewController(navVC, sender: nil)
+        rightDetailNavigationController.setViewControllers([albumVC], animated: false)
+        splitViewController.showDetailViewController(rightDetailNavigationController, sender: nil)
     }
     
     public func showLibrarySelectionScreen() {

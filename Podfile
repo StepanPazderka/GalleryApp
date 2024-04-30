@@ -5,14 +5,12 @@ target 'GalleryApp' do
 
   # Pods for GalleryApp
   pod 'RxSwift'
-  pod 'RealmSwift'
   pod 'RxRealm', :git => 'https://github.com/jopache/RxRealm.git'
+  pod 'RealmSwift'
   pod 'RxDataSources'
   pod 'Swinject'
-  pod 'DirectoryWatcher'
   pod 'SwiftLint'
   pod 'IQKeyboardManagerSwift'
-  pod 'Lightbox'
 end
 
 # this settings sets up all pods deployment target

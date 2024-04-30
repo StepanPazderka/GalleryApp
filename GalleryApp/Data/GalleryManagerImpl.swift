@@ -342,9 +342,9 @@ class GalleryManagerImpl: GalleryManager {
 				try realm?.write {
 					
 					if let album {
-						let albumIndexForRealm = AlbumIndexRealm(from: album)
-						albumIndexForRealm.images.append(objectsIn: imagesForRealm)
-						realm?.add(albumIndexForRealm)
+						let AlbumIndexRealm = AlbumIndexRealm(from: album)
+						AlbumIndexRealm.images.append(objectsIn: imagesForRealm)
+						realm?.add(AlbumIndexRealm)
 					}
 					
 					realm?.add(imagesForRealm)

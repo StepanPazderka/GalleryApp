@@ -58,6 +58,10 @@ class ContainerBuilder {
         container.register(UnsecureStorage.self) { r in
             return UnsecureStorage()
         }
+		
+		container.register(PersistanceManagerWithRealm.self) { r in
+			return try! PersistanceManagerWithRealm()
+		}
         
         container.register(SettingsManagerImpl.self) { r in
             return SettingsManagerImpl(unsecureStorage: r.resolve(UnsecureStorage.self)!)
@@ -79,6 +83,10 @@ class ContainerBuilder {
     }
     
     static func registerPresentationLayer() {
+		container.register(SplitViewController.self) { r in
+			return SplitViewController()
+		}
+		
         container.register(AlbumListRouter.self) { r in
             return AlbumListRouter()
         }
@@ -88,7 +96,7 @@ class ContainerBuilder {
         }
         
         container.register(SidebarRouter.self) { r in
-            return SidebarRouter(container: container, galleryManager: r.resolve(GalleryManager.self)!)
+            return SidebarRouter(container: container)
         }
         
         container.register(SidebarViewModel.self) { r in

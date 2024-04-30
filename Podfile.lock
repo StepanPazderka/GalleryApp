@@ -1,12 +1,6 @@
 PODS:
-  - Cache (6.0.0)
   - Differentiator (5.0.0)
-  - DirectoryWatcher (2.7.3)
-  - Imaginary (5.0.0):
-    - Cache (~> 6.0.0)
   - IQKeyboardManagerSwift (6.5.16)
-  - Lightbox (2.5.0):
-    - Imaginary (~> 5.0.0)
   - Realm (10.44.0):
     - Realm/Headers (= 10.44.0)
   - Realm/Headers (10.44.0)
@@ -31,9 +25,7 @@ PODS:
   - Swinject (2.8.3)
 
 DEPENDENCIES:
-  - DirectoryWatcher
   - IQKeyboardManagerSwift
-  - Lightbox
   - RealmSwift
   - RxDataSources
   - RxRealm (from `https://github.com/jopache/RxRealm.git`)
@@ -43,12 +35,8 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - Cache
     - Differentiator
-    - DirectoryWatcher
-    - Imaginary
     - IQKeyboardManagerSwift
-    - Lightbox
     - Realm
     - RealmSwift
     - RxCocoa
@@ -68,12 +56,8 @@ CHECKOUT OPTIONS:
     :git: https://github.com/jopache/RxRealm.git
 
 SPEC CHECKSUMS:
-  Cache: 4ca7e00363fca5455f26534e5607634c820ffc2d
   Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
-  DirectoryWatcher: 43e1ae45c7539d3deeea9db4384ab158bae368e3
-  Imaginary: cf5e3a7dd6ab1dcbd47ba8ce5edf2307c4e99eb3
   IQKeyboardManagerSwift: 12d89768845bb77b55cc092ecc2b1f9370f06b76
-  Lightbox: cc3d5124f024fa8197fd23f913160db1c61a1852
   Realm: 0419a32457873acb720df25bf1d658df36967cf2
   RealmSwift: 352f85c018b4d0efe961974bfa95bf7a30e079f6
   RxCocoa: 44a80de90e25b739b5aeaae3c8c371a32e3343cc
@@ -84,6 +68,6 @@ SPEC CHECKSUMS:
   SwiftLint: 5ce4d6a8ff83f1b5fd5ad5dbf30965d35af65e44
   Swinject: 893c9a543000ac2f10ee4cbaf0933c6992c935d5
 
-PODFILE CHECKSUM: 41b22ca84dfa6749aa577706aeb9a44a17fb1cd9
+PODFILE CHECKSUM: af62944d1e181b9b5492f80fd4d5a93c9d1d3c53
 
 COCOAPODS: 1.15.2

@@ -27,7 +27,7 @@ class PhotoDetailViewController: UIViewController {
     var zoomScale: ZoomScale?
     let disposeBag = DisposeBag()
     var initialScrollDone = false
-    
+	    
     // MARK: - Init
     internal init(viewModel: PhotoDetailViewModel) {
         self.viewModel = viewModel
@@ -171,8 +171,12 @@ extension PhotoDetailViewController: UICollectionViewDelegateFlowLayout {
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 		return CGSize(width: self.screenView.collectionView.frame.width, height: self.screenView.collectionView.frame.height)
 	}
-	
-	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-		screenView.collectionView.reloadData()
+}
+
+extension PhotoDetailViewController: UICollectionViewDelegate {
+	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+		if let cell = cell as? PhotoDetailCollectionViewCell {
+			cell.imageView.zoomScale = 1.0
+		}
 	}
 }

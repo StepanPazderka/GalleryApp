@@ -8,19 +8,13 @@
 import Foundation
 import RxDataSources
 
-enum SidebarSectionModelType {
-	case mainButtons
-	case albumButtons
-	case unknown
-}
-
 /// Struct representing Sidebar Section
 struct SidebarSectionModel {
 	var name: String
 	var items: [SidebarItem]
-	let type: SidebarSectionModelType
+	let type: SidebarSectionCategory
 	
-	init(type: SidebarSectionModelType, name: String, items: [SidebarItem]) {
+	init(type: SidebarSectionCategory, name: String, items: [SidebarItem]) {
 		self.type = type
         self.name = name
         self.items = items

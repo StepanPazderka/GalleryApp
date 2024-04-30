@@ -12,7 +12,6 @@ import RxDataSources
 import SnapKit
 import RxDataSources
 import Swinject
-import DirectoryWatcher
 
 class AlbumsListViewController: UIViewController {
     
