@@ -15,7 +15,6 @@ import UniformTypeIdentifiers
 class GalleryManagerImpl: GalleryManager {
 	// MARK: - Protocol Properties
 	internal let settingsManager: SettingsManager
-	private let fileScannerManager: FileScannerManager
 	private let pathResolver: PathResolver
 	
 	// MARK: - Custom Properties
@@ -23,9 +22,8 @@ class GalleryManagerImpl: GalleryManager {
 	private let disposeBag: DisposeBag = DisposeBag()
 		
 	// MARK: - Init
-	init(settingsManager: SettingsManagerImpl, fileScannerManger: FileScannerManager, pathResolver: PathResolver) {
+	init(settingsManager: SettingsManagerImpl, pathResolver: PathResolver) {
 		self.settingsManager = settingsManager
-		self.fileScannerManager = fileScannerManger
 		self.pathResolver = pathResolver
 				
 		do {

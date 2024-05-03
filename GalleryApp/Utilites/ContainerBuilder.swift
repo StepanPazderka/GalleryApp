@@ -58,10 +58,6 @@ class ContainerBuilder {
         container.register(UnsecureStorage.self) { r in
             return UnsecureStorage()
         }
-		
-		container.register(PersistanceManagerWithRealm.self) { r in
-			return try! PersistanceManagerWithRealm()
-		}
         
         container.register(SettingsManagerImpl.self) { r in
             return SettingsManagerImpl(unsecureStorage: r.resolve(UnsecureStorage.self)!)
@@ -71,13 +67,8 @@ class ContainerBuilder {
 			return PathResolver(settingsManager: r.resolve(SettingsManagerImpl.self)!)
         }
         
-        container.register(FileScannerManager.self) { r in
-			return FileScannerManager(settings: r.resolve(SettingsManagerImpl.self)!, pathResolver: r.resolve(PathResolver.self)!)
-        }
-        
         container.register(GalleryManager.self) { r in
             return GalleryManagerImpl(settingsManager: r.resolve(SettingsManagerImpl.self)!,
-                                       fileScannerManger: r.resolve(FileScannerManager.self)!,
                                        pathResolver: r.resolve(PathResolver.self)!)
         }
     }
