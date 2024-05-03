@@ -20,12 +20,12 @@ class GalleryManagerImpl: GalleryManager {
 	// MARK: - Custom Properties
 	private let realm: Realm?
 	private let disposeBag: DisposeBag = DisposeBag()
-		
+	
 	// MARK: - Init
 	init(settingsManager: SettingsManagerImpl, pathResolver: PathResolver) {
 		self.settingsManager = settingsManager
 		self.pathResolver = pathResolver
-				
+		
 		do {
 			self.realm = try Realm()
 		} catch {
@@ -46,7 +46,7 @@ class GalleryManagerImpl: GalleryManager {
 					self.settingsManager.set(key: .selectedGallery, value: newGallery.id.uuidString)
 				}
 			}
-
+			
 			if totalGalleries.isEmpty {
 				createNewDefaultGallery()
 			}
@@ -146,7 +146,7 @@ class GalleryManagerImpl: GalleryManager {
 		}
 	}
 	
-	@discardableResult 
+	@discardableResult
 	func createGalleryIndex(name: String) throws -> GalleryIndex {
 		guard let realm = realm else {
 			throw GalleryManagerError.unknown
@@ -184,7 +184,7 @@ class GalleryManagerImpl: GalleryManager {
 			print("Error deleting images: \(error)")
 		}
 	}
-
+	
 	func load<DatabaseObject: Object>(_ type: DatabaseObject.Type) -> Observable<[DatabaseObject]> {
 		if let objects = realm?.objects(type) {
 			return Observable.collection(from: objects).map { Array($0) }
@@ -370,7 +370,7 @@ class GalleryManagerImpl: GalleryManager {
 		}
 	}
 	
-	@discardableResult 
+	@discardableResult
 	func updateAlbumIndex(index: AlbumIndex) throws -> AlbumIndex {
 		do {
 			try realm?.write {
@@ -393,7 +393,7 @@ class GalleryManagerImpl: GalleryManager {
 extension GalleryManagerImpl {
 	func loadGalleryIndexAsObservable() -> Observable<GalleryIndex> {
 		let selectedGalleryName = self.settingsManager.selectedGalleryName
-				
+		
 		if let index = self.realm?.objects(GalleryIndexRealm.self).first(where: { galleryIndex in
 			galleryIndex.name == selectedGalleryName
 		}) {

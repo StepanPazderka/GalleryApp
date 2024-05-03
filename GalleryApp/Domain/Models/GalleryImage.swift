@@ -23,8 +23,8 @@ struct GalleryImage: Codable {
         self.fileName = fileName
         self.date = date
         self.title = title
-        let fileNameAsURL = URL(string: fileName)!.deletingPathExtension()
-        self.id = UUID(uuidString: fileNameAsURL.relativePath)!
+//        let fileNameAsURL = URL(string: fileName)!.deletingPathExtension()
+        self.id = UUID()
     }
 }
 
