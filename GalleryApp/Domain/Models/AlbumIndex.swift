@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RealmSwift
 
 struct AlbumIndex: Codable {
     var id: UUID = UUID()
@@ -42,6 +43,15 @@ struct AlbumIndex: Codable {
         self.thumbnailsSize = decodedData.thumbnailsSize
         self.showingAnnotations = decodedData.showingAnnotations
     }
+	
+	init(from entity: AlbumIndexRealm) {
+		self.id = UUID(uuidString: entity.id) ?? UUID()
+		self.images = entity.images.map { GalleryImage(from: $0) }
+		self.name = entity.name
+		self.thumbnail = entity.thumbnail
+		self.showingAnnotations = entity.showingAnnotations
+		self.thumbnailsSize = entity.thumbnailSize
+	}
     
     init(from entity: AlbumScreenModel) {
         self.id = entity.id
@@ -51,17 +61,17 @@ struct AlbumIndex: Codable {
         self.thumbnailsSize = entity.thumbnailsSize
         self.showingAnnotations = entity.showingAnnotations
     }
-    
-    init(from entity: AlbumIndexRealm) {
-        self.id = UUID(uuidString: entity.id) ?? UUID()
-        self.images = entity.images.map { GalleryImage(from: $0) }
-        self.name = entity.name
-        self.thumbnail = entity.thumbnail
-        self.showingAnnotations = entity.showingAnnotations
-        self.thumbnailsSize = entity.thumbnailSize
-    }
+
     
     static var empty: Self {
         Self(name: "", images: [], thumbnail: "", showingAnnotations: false)
     }
 }
+
+// MARK: - Persistable Model Convertible conformity
+extension AlbumIndex: PersistableModelConvertible {
+	func toPersistableModel() -> AlbumIndexRealm {
+		AlbumIndexRealm(from: self)
+	}
+}
+

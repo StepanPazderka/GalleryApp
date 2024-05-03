@@ -23,8 +23,8 @@ struct GalleryImage: Codable {
         self.fileName = fileName
         self.date = date
         self.title = title
-        let fileNameAsURL = URL(string: fileName)!.deletingPathExtension()
-        self.id = UUID(uuidString: fileNameAsURL.relativePath)!
+//        let fileNameAsURL = URL(string: fileName)!.deletingPathExtension()
+        self.id = UUID()
     }
 }
 
@@ -49,5 +49,12 @@ extension GalleryImage {
 extension GalleryImage: Equatable { 
 	static func ==(lhs: GalleryImage, rhs: GalleryImage) -> Bool {
 		return lhs.fileName == rhs.fileName && lhs.title == rhs.title && lhs.date == rhs.date
+	}
+}
+
+// MARK: - Persistable Model Convertible conformity
+extension GalleryImage: PersistableModelConvertible {
+	func toPersistableModel() -> GalleryImageRealm {
+		GalleryImageRealm(from: self)
 	}
 }

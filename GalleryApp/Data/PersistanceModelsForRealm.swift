@@ -37,7 +37,6 @@ final class GalleryImageRealm: Object, ObjectKeyIdentifiable {
 		self.fileName = entity.fileName
 		self.date = entity.date
 		self.title = entity.title
-		self.id = entity.id.uuidString
 	}
 }
 
@@ -140,5 +139,11 @@ final class GalleryIndexRealm: Object, ObjectKeyIdentifiable {
 		for album in remmapedAlbums {
 			self.albums.append(album)
 		}
+	}
+}
+
+extension GalleryImageRealm: DomainModelConvertible {
+	func toDomainModel() -> GalleryImage {
+		return GalleryImage(from: self)
 	}
 }

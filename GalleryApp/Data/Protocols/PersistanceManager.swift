@@ -26,9 +26,12 @@ enum PersistanceError: LocalizedError {
 }
 
 protocol PersistanceManager {
-	associatedtype PersistanceModelType
+	associatedtype AssociatedPersistableModelType
 	
-	func save(_: PersistanceModelType) throws
-	func load() throws -> [PersistanceModelType]
-	func delete(_ objectsForDeletion: [PersistanceModelType])
+	func save(_ objectsToPersist: [any PersistableModelConvertible]) throws
+	func save(_ objectToPersist: any PersistableModelConvertible) throws
+	func load(_ object: any PersistableModelConvertible) throws -> AssociatedPersistableModelType
+	func update(_ objectsToPersist: [any PersistableModelConvertible]) throws
+	func update(_ objectToPersist: any PersistableModelConvertible) throws
+	func delete(_ objectsForDeletion: [any PersistableModelConvertible])
 }

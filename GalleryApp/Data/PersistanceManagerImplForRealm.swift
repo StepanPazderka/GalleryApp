@@ -9,7 +9,7 @@ import Foundation
 import Realm
 import RealmSwift
 
-class PersistanceManagerWithRealm<PersistanceModel: Object>: PersistanceManager {
+class PersistanceManagerWithRealm<AssociatedPersistableType: Object>: PersistanceManager {
 	
 	// MARK: - Properties
 	let realm: Realm
@@ -20,22 +20,70 @@ class PersistanceManagerWithRealm<PersistanceModel: Object>: PersistanceManager 
 	}
 	
 	// MARK: - CRUD
-	func save(_ objectsToPersist: PersistanceModel) throws {
+	func save(_ objectsToPersist: [any PersistableModelConvertible]) throws {
 		do {
-			try realm.write {
-				realm.add(objectsToPersist, update: .modified)
+			if let castedObjects = (objectsToPersist.map { $0.toPersistableModel() } as? [AssociatedPersistableType]) {
+				try realm.write { [weak self] in
+					self?.realm.add(castedObjects)
+				}
 			}
 		} catch let error {
 			throw error
 		}
 	}
 	
-	func load() throws -> [PersistanceModel] {
-		let fetchedObjects = realm.objects(PersistanceModel.self)
-		return Array(fetchedObjects)
+	func save(_ objectToPersist: any PersistableModelConvertible) throws {
+		do {
+			if let castedObjects = (objectToPersist.toPersistableModel() as? AssociatedPersistableType) {
+				try realm.write { [weak self] in
+					self?.realm.add(castedObjects)
+				}
+			}
+		} catch let error {
+			throw error
+		}
 	}
 	
-	func delete(_ objectsForDeletion: [PersistanceModel]) {
-		realm.delete(objectsForDeletion)
+	func load(_ object: any PersistableModelConvertible) throws -> AssociatedPersistableType {
+		var returnArray = [AssociatedPersistableType]()
+		var returnObject: AssociatedPersistableType!
+		
+		if let castedFirstObject = object.toPersistableModel() as? AssociatedPersistableType.Type {
+			if let loadedObject = realm.objects(castedFirstObject).first {
+				returnObject = loadedObject
+			}
+		}
+		
+		return returnObject
+	}
+	
+	func update(_ objectsToPersist: [any PersistableModelConvertible]) throws {
+		do {
+			if let castedObjects = (objectsToPersist.map { $0.toPersistableModel() } as? [AssociatedPersistableType]) {
+				try realm.write { [weak self] in
+					self?.realm.add(castedObjects, update: .all)
+				}
+			}
+		} catch let error {
+			throw error
+		}
+	}
+	
+	func update(_ objectToPersist: any PersistableModelConvertible) throws {
+		do {
+			if let castedObjects = (objectToPersist.toPersistableModel() as? AssociatedPersistableType) {
+				try realm.write { [weak self] in
+					self?.realm.add(castedObjects, update: .all)
+				}
+			}
+		} catch let error {
+			throw error
+		}
+	}
+	
+	func delete(_ objectsForDeletion: [any PersistableModelConvertible]) {
+		if let castedObjects = (objectsForDeletion.map { $0.toPersistableModel() } as? AssociatedPersistableType) {
+			realm.delete(castedObjects)
+		}
 	}
 }

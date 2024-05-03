@@ -51,3 +51,10 @@ extension GalleryIndex: IdentifiableType {
 		}
 	}
 }
+
+// MARK: - Persistable Model Convertible conformity
+extension GalleryIndex: PersistableModelConvertible {
+	func toPersistableModel() -> GalleryIndexRealm {
+		GalleryIndexRealm(from: self)
+	}
+}

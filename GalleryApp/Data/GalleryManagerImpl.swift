@@ -17,16 +17,18 @@ class GalleryManagerImpl: GalleryManager {
 	internal let settingsManager: SettingsManager
 	private let fileScannerManager: FileScannerManager
 	private let pathResolver: PathResolver
+	private let persistanceManager: any PersistanceManager
 	
 	// MARK: - Custom Properties
 	private let realm: Realm?
 	private let disposeBag: DisposeBag = DisposeBag()
 		
 	// MARK: - Init
-	init(settingsManager: SettingsManagerImpl, fileScannerManger: FileScannerManager, pathResolver: PathResolver) {
+	init(settingsManager: SettingsManagerImpl, fileScannerManger: FileScannerManager, pathResolver: PathResolver, persistanceManager: any PersistanceManager) {
 		self.settingsManager = settingsManager
 		self.fileScannerManager = fileScannerManger
 		self.pathResolver = pathResolver
+		self.persistanceManager = persistanceManager
 				
 		do {
 			self.realm = try Realm()
@@ -35,6 +37,10 @@ class GalleryManagerImpl: GalleryManager {
 			self.realm = nil
 		}
 		
+		bindInteractions()
+	}
+	
+	func bindInteractions() {
 		Observable.combineLatest(getCurrentlySelectedGalleryIDAsObservable(), loadGalleriesAsObservable()).subscribe(onNext: { [weak self] (selectedID, galleries) in
 			guard let self else { return }
 			let staticGalleries = self.loadGalleries()
@@ -48,7 +54,7 @@ class GalleryManagerImpl: GalleryManager {
 					self.settingsManager.set(key: .selectedGallery, value: newGallery.id.uuidString)
 				}
 			}
-
+			
 			if totalGalleries.isEmpty {
 				createNewDefaultGallery()
 			}
@@ -57,49 +63,23 @@ class GalleryManagerImpl: GalleryManager {
 	
 	// MARK: - Create
 	func add(images: [GalleryImage], toAlbum album: AlbumIndex? = nil) {
-		let galleryImagesForRealm = images.map { GalleryImageRealm(from: $0) }
+		try! persistanceManager.save(images)
 		
-		do {
-			try realm?.write {
-				if let index = load() {
-					let indexForRealm = GalleryIndexRealm(from: index)
-					indexForRealm.images.append(objectsIn: galleryImagesForRealm)
-					realm?.add(indexForRealm, update: .modified)
-					
-					if let album {
-						if let albumIndex = loadAlbumIndex(with: album.id) {
-							let albumIndexRealm = AlbumIndexRealm(from: albumIndex)
-							albumIndexRealm.images.append(objectsIn: galleryImagesForRealm)
-							realm?.add(albumIndexRealm, update: .modified)
-						}
-					}
-				}
-				
-				realm?.add(galleryImagesForRealm)
-			}
-		} catch {
-			print(error)
+		if var index = load() {
+			index.images.append(contentsOf: images)
+			try! persistanceManager.update(index)
 		}
 	}
 	
 	@discardableResult
 	func createAlbum(name: String, parentAlbum: UUID?) throws -> AlbumIndex {
-		let newAlbumIndex = AlbumIndexRealm(name: name)
-		
-		var galleryIndex = load()
-		galleryIndex?.albums.append(AlbumIndex(from: newAlbumIndex).id)
-		
-		try! realm?.write {
-			if let galleryIndex {
-				let galleryRealmInstance = GalleryIndexRealm(from: galleryIndex)
-				galleryRealmInstance.albums.append(newAlbumIndex)
-				
-				realm?.add(newAlbumIndex)
-				realm?.add(galleryRealmInstance, update: .modified)
-			}
+		let albumIndex = AlbumIndex(name: name, images: [GalleryImage](), thumbnail: "")
+		try! self.persistanceManager.save(albumIndex)
+		if var galleryIndex = loadCurrentGalleryIndex() {
+			galleryIndex.albums.append(albumIndex.id)
+			try! self.persistanceManager.update(galleryIndex)
 		}
-		
-		return AlbumIndex(from: newAlbumIndex)
+		return albumIndex
 	}
 	
 	func loadImageAsObservable(with id: UUID) -> Observable<GalleryImage> {
@@ -258,22 +238,15 @@ class GalleryManagerImpl: GalleryManager {
 		}
 	}
 	
-	@discardableResult func duplicate(album: AlbumIndex) -> AlbumIndex {
-		guard let fetchedAlbum = realm?.objects(AlbumIndexRealm.self).first(where: { $0.id == album.id.uuidString }) else { return album }
-		
-		let newAlbum = AlbumIndexRealm(id: UUID().uuidString, name: fetchedAlbum.name, thumbnail: fetchedAlbum.thumbnail, images: fetchedAlbum.images)
-		
-		if let index = load() {
-			try! realm?.write {
-				let updatedIndex = GalleryIndexRealm(from: index)
-				updatedIndex.albums.append(newAlbum)
-				realm?.add(updatedIndex, update: .modified)
-				
-				realm?.add(newAlbum)
-			}
+	@discardableResult func duplicate(album originalAlbum: AlbumIndex) -> AlbumIndex {
+		let newAlbumIndex = AlbumIndex(name: originalAlbum.name, images: originalAlbum.images, thumbnail: originalAlbum.thumbnail ?? "")
+		if var galleryIndex = load() {
+			galleryIndex.albums.append(newAlbumIndex.id)
+			try! persistanceManager.save(newAlbumIndex)
+			try! persistanceManager.update(galleryIndex)
 		}
 		
-		return AlbumIndex(from: newAlbum)
+		return newAlbumIndex
 	}
 	
 	func update(image: GalleryImage) {
