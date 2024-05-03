@@ -150,6 +150,8 @@ class AlbumScreenViewModel {
     }
     
     func handleImportFromFilesApp(urls: [URL]) {
+		var imagesToImport = [GalleryImage]()
+		
         for url in urls {
             do {
                 let filenameExtension = url.pathExtension.lowercased()
@@ -159,11 +161,13 @@ class AlbumScreenViewModel {
                 try FileManager.default.moveItem(at: url, to: targetPath)
                 let newImage = GalleryImage(fileName: targetPath.lastPathComponent, date: Date(), title: nil)
                 self.galleryManager.buildThumbnail(forImage: newImage)
-                self.addPhotos(images: [newImage])
+				imagesToImport.append(newImage)
             } catch {
                 print(error.localizedDescription)
             }
         }
+		
+		self.addPhotos(images: imagesToImport)
     }
     
     func handleImportFromPhotosApp(results: [PHPickerResult]) {
