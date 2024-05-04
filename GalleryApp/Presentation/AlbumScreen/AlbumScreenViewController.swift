@@ -168,7 +168,7 @@ class AlbumScreenViewController: UIViewController {
             }
         }).disposed(by: disposeBag)
         
-        /// Switches Edit/Done button if in editing mode
+		// MARK: - Editing Button binding
         self.viewModel.isEditing.bind(onNext: { [weak self] value in
             self?.setEditing(value, animated: true)
             if let editButton = self?.screenView.editButton {
@@ -257,6 +257,7 @@ class AlbumScreenViewController: UIViewController {
 	    
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
+		self.screenView.collectionView.isEditing = editing
     }
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
@@ -268,7 +269,7 @@ class AlbumScreenViewController: UIViewController {
 			return [dataSource[indexPath]]
 		}
 		
-		return selectedIndexes.map { dataSource.sectionModels.first!.items[$0.row] }
+		return selectedIndexes.compactMap { dataSource.sectionModels.first?.items[$0.row] }
 	}
 	
 	private func setupSearchController() {
@@ -318,8 +319,10 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
             UIAction(title: NSLocalizedString("kDELETEIMAGE", comment: ""),
                      image: UIImage(systemName: "trash"),
                      attributes: .destructive) { action in
-                self?.viewModel.delete(selectedImages.map { $0 })
-                self?.viewModel.isEditing.accept(false)
+				if collectionView.isEditing == true {
+					self?.viewModel.delete(selectedImages.map { $0 })
+					self?.viewModel.isEditing.accept(false)
+				}
             }
             if self?.viewModel.albumID != nil {
                 return UIMenu(title: "", children: [inspectAction, moveToAlbum, duplicateAction, setThumbnailAction, removeFromAlbum, deleteAction])
