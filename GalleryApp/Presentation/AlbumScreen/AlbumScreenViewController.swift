@@ -54,7 +54,6 @@ class AlbumScreenViewController: UIViewController {
 		
         self.bindData()
 		self.bindUIState()
-		self.setupSearchController()
         self.bindInteractions()
 	}
     
@@ -136,7 +135,6 @@ class AlbumScreenViewController: UIViewController {
 			.compactMap { images in
 				[AlbumScreenSectionModel(items: images)]
 			}
-			.debug("Album Screen Images")
 			.bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource))
 			.disposed(by: disposeBag)
 		
@@ -178,6 +176,7 @@ class AlbumScreenViewController: UIViewController {
                 } else {
                     editButton.setTitle(NSLocalizedString("kEDIT", comment: ""), for: .normal)
                     editButton.titleLabel?.font = .systemFont(ofSize: 18)
+					
                     self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
                         let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumImageCell
                         self?.viewModel.filesSelectedInEditMode.removeAll()
@@ -218,13 +217,16 @@ class AlbumScreenViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         self.screenView.deleteImageButton.rx.tap.subscribe(onNext: { [weak self] in
-            guard let self else { return }
-            guard let indexes = self.screenView.collectionView.indexPathsForSelectedItems else { return }
-            let selectedImages = indexes.compactMap { self.dataSource.sectionModels.first?.items[$0.item] ?? nil }
-            self.viewModel.delete(selectedImages)
-            self.viewModel.isEditing.accept(false)
+			if self?.isEditing == true {
+				guard let self else { return }
+				guard let indexes = self.screenView.collectionView.indexPathsForSelectedItems else { return }
+				let selectedImages = indexes.compactMap { self.dataSource.sectionModels.first?.items[$0.item] ?? nil }
+				self.viewModel.delete(selectedImages)
+				self.viewModel.isEditing.accept(false)
+			}
         }).disposed(by: disposeBag)
         
+		// MARK: - Showing annotations binding
         self.viewModel.showingAnnotationsAsObservable()
 			.asDriver(onErrorJustReturn: false)
 			.drive(screenView.checkBoxTitles.rx.checker)
@@ -267,17 +269,12 @@ class AlbumScreenViewController: UIViewController {
 	func getSelectedImages(for indexPath: IndexPath) -> [GalleryImage] {
 		guard let selectedIndexes = screenView.collectionView.indexPathsForSelectedItems, !selectedIndexes.isEmpty else {
 			return [dataSource[indexPath]]
-		}
-		
+		}		
 		return selectedIndexes.compactMap { dataSource.sectionModels.first?.items[$0.row] }
-	}
-	
-	private func setupSearchController() {
-		self.searchController.searchResultsUpdater = self
 	}
 }
 
-// MARK: - Contextual Menu Setup
+// MARK: - Collection View Delegate
 extension AlbumScreenViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil,
@@ -333,6 +330,8 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+		print("Selected: \(getSelectedImages(for: indexPath))")
+		
         if let cell = collectionView.cellForItem(at: indexPath) as? AlbumImageCell {
             if isEditing {
 				cell.showSelectedView()
@@ -346,6 +345,12 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
 	
 	func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
 		if isEditing, let cell = collectionView.cellForItem(at: indexPath) as? AlbumImageCell {
+			cell.hideSelectedView()
+		}
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+		if let cell = cell as? AlbumImageCell {
 			cell.hideSelectedView()
 		}
 	}
@@ -372,12 +377,6 @@ extension AlbumScreenViewController: AlbumListViewControllerDelegate {
         self.isEditing = false
         self.viewModel.isEditing.accept(false)
     }
-}
-
-extension AlbumScreenViewController: UISearchResultsUpdating {
-	func updateSearchResults(for searchController: UISearchController) {
-		print("Something happened")
-	}
 }
 
 extension AlbumScreenViewController: UISearchBarDelegate {
