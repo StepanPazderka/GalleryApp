@@ -22,7 +22,7 @@
 		7F88ED972BE56BA5000C0FE0 /* AlbumsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED332BE56BA5000C0FE0 /* AlbumsListView.swift */; };
 		7F88ED982BE56BA5000C0FE0 /* AlbumsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED342BE56BA5000C0FE0 /* AlbumsListViewController.swift */; };
 		7F88ED992BE56BA5000C0FE0 /* AlbumsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED352BE56BA5000C0FE0 /* AlbumsListViewModel.swift */; };
-		7F88ED9A2BE56BA5000C0FE0 /* AlbumImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED372BE56BA5000C0FE0 /* AlbumImageCell.swift */; };
+		7F88ED9A2BE56BA5000C0FE0 /* AlbumScreenCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED372BE56BA5000C0FE0 /* AlbumScreenCell.swift */; };
 		7F88ED9B2BE56BA5000C0FE0 /* AlbumScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED382BE56BA5000C0FE0 /* AlbumScreenModel.swift */; };
 		7F88ED9C2BE56BA5000C0FE0 /* AlbumScreenRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED392BE56BA5000C0FE0 /* AlbumScreenRouter.swift */; };
 		7F88ED9D2BE56BA5000C0FE0 /* AlbumScreenSectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED3A2BE56BA5000C0FE0 /* AlbumScreenSectionModel.swift */; };
@@ -123,7 +123,7 @@
 		7F88ED332BE56BA5000C0FE0 /* AlbumsListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumsListView.swift; sourceTree = "<group>"; };
 		7F88ED342BE56BA5000C0FE0 /* AlbumsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumsListViewController.swift; sourceTree = "<group>"; };
 		7F88ED352BE56BA5000C0FE0 /* AlbumsListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumsListViewModel.swift; sourceTree = "<group>"; };
-		7F88ED372BE56BA5000C0FE0 /* AlbumImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumImageCell.swift; sourceTree = "<group>"; };
+		7F88ED372BE56BA5000C0FE0 /* AlbumScreenCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumScreenCell.swift; sourceTree = "<group>"; };
 		7F88ED382BE56BA5000C0FE0 /* AlbumScreenModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumScreenModel.swift; sourceTree = "<group>"; };
 		7F88ED392BE56BA5000C0FE0 /* AlbumScreenRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumScreenRouter.swift; sourceTree = "<group>"; };
 		7F88ED3A2BE56BA5000C0FE0 /* AlbumScreenSectionModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumScreenSectionModel.swift; sourceTree = "<group>"; };
@@ -342,7 +342,7 @@
 		7F88ED3E2BE56BA5000C0FE0 /* AlbumScreen */ = {
 			isa = PBXGroup;
 			children = (
-				7F88ED372BE56BA5000C0FE0 /* AlbumImageCell.swift */,
+				7F88ED372BE56BA5000C0FE0 /* AlbumScreenCell.swift */,
 				7F88ED382BE56BA5000C0FE0 /* AlbumScreenModel.swift */,
 				7F88ED392BE56BA5000C0FE0 /* AlbumScreenRouter.swift */,
 				7F88ED3A2BE56BA5000C0FE0 /* AlbumScreenSectionModel.swift */,
@@ -787,7 +787,7 @@
 				7F88EDA82BE56BA5000C0FE0 /* PhotoPropertiesViewModel.swift in Sources */,
 				7F88EDC32BE56BA5000C0FE0 /* ArrayExtension.swift in Sources */,
 				7F88EDC62BE56BA5000C0FE0 /* Constants.swift in Sources */,
-				7F88ED9A2BE56BA5000C0FE0 /* AlbumImageCell.swift in Sources */,
+				7F88ED9A2BE56BA5000C0FE0 /* AlbumScreenCell.swift in Sources */,
 				7F88EDA62BE56BA5000C0FE0 /* PhotoPropertiesView.swift in Sources */,
 				7F88ED912BE56BA5000C0FE0 /* DomainModelConvertible.swift in Sources */,
 				7F88ED922BE56BA5000C0FE0 /* PersistableModelConvertible.swift in Sources */,

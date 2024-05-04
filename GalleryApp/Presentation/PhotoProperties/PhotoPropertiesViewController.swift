@@ -73,7 +73,8 @@ class PhotoPropertiesViewController: UIViewController {
             self.screenView.photoDateLabel.text = "\(localizedModifiedDateText) \(dateFormatter.string(from: date))"
         }
         
-        self.screenView.textView.delegate = self
+		
+		setupTextField()
     }
     
     func bindData() {
@@ -83,6 +84,15 @@ class PhotoPropertiesViewController: UIViewController {
             .drive(self.screenView.textView.rx.text)
             .disposed(by: disposeBag)
     }
+	
+	func setupTextField() {
+		self.screenView.textView.delegate = self
+		
+		if viewModel.selectedImages.count > 1 {
+			self.screenView.textView.isEditable = false
+			self.screenView.textView.backgroundColor = .tertiarySystemFill
+		}
+	}
 }
 
 extension PhotoPropertiesViewController: UITextViewDelegate {

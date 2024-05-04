@@ -10,11 +10,10 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class AlbumImageCell: UICollectionViewCell {
+class AlbumScreenCell: UICollectionViewCell {
     
     // MARK: - Properties
     var isEditing = false
-	var isCellSelected: Bool = false
 	
     weak var viewModel: AlbumScreenViewModel?
 	weak var settingsManager: (any SettingsManager)?
@@ -71,7 +70,7 @@ class AlbumImageCell: UICollectionViewCell {
 	var pathResolver: PathResolver?
     let disposeBag = DisposeBag()
     
-    static let identifier: String = String(describing: type(of: AlbumImageCell.self))
+    static let identifier: String = String(describing: type(of: AlbumScreenCell.self))
     
     // MARK: - Init
 	override init(frame: CGRect) {

@@ -23,7 +23,6 @@ class AlbumScreenViewController: UIViewController {
     private let router: AlbumScreenRouter
     private var dataSource: RxCollectionViewSectionedAnimatedDataSource<AlbumScreenSectionModel>!
 	private let pathResolver: PathResolver
-
     private let disposeBag = DisposeBag()
     
     // MARK: - Progress
@@ -31,7 +30,7 @@ class AlbumScreenViewController: UIViewController {
 	
 	var showingSearchController = BehaviorRelay(value: false)
     
-    // MARK: - Init
+    // MARK: - INIT
 	init(router: AlbumScreenRouter, viewModel: AlbumScreenViewModel, pathResolver: PathResolver) {
         self.router = router
         self.viewModel = viewModel
@@ -51,7 +50,6 @@ class AlbumScreenViewController: UIViewController {
         self.router.setup(navigationController: self.navigationController)
 		self.setupDataSource()
         self.setupViews()
-		
         self.bindData()
 		self.bindUIState()
         self.bindInteractions()
@@ -65,7 +63,7 @@ class AlbumScreenViewController: UIViewController {
     func setupDataSource() {
         dataSource = RxCollectionViewSectionedAnimatedDataSource<AlbumScreenSectionModel>(
             configureCell: { [unowned self] (dataSource, collectionView, indexPath, sectionModelItem) in
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumImageCell.identifier, for: indexPath) as! AlbumImageCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumScreenCell.identifier, for: indexPath) as! AlbumScreenCell
 				cell.setup(with: sectionModelItem, viewModel: self.viewModel, pathResolver: self.pathResolver)
                 return cell
             }
@@ -90,7 +88,7 @@ class AlbumScreenViewController: UIViewController {
 		
 		self.screenView.collectionView.allowsSelectionDuringEditing = true
         self.screenView.collectionView.delegate = self
-        self.screenView.collectionView.register(AlbumImageCell.self, forCellWithReuseIdentifier: AlbumImageCell.identifier)
+        self.screenView.collectionView.register(AlbumScreenCell.self, forCellWithReuseIdentifier: AlbumScreenCell.identifier)
 	}
     
     func showDocumentPicker() {
@@ -178,8 +176,7 @@ class AlbumScreenViewController: UIViewController {
                     editButton.titleLabel?.font = .systemFont(ofSize: 18)
 					
                     self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
-                        let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumImageCell
-                        self?.viewModel.filesSelectedInEditMode.removeAll()
+                        let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumScreenCell
                         cell.hideSelectedView()
                     }
                 }
@@ -256,11 +253,6 @@ class AlbumScreenViewController: UIViewController {
 			.drive(screenView.slider.rx.value)
 			.disposed(by: disposeBag)
     }
-	    
-    override func setEditing(_ editing: Bool, animated: Bool) {
-        super.setEditing(editing, animated: animated)
-		self.screenView.collectionView.isEditing = editing
-    }
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         return
@@ -296,7 +288,7 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
             UIAction(title: NSLocalizedString("DuplicateTitle", comment: ""),
                      image: UIImage(systemName: "plus.square.on.square")) { action in
                 if let item = self?.dataSource.sectionModels[indexPath.section].items[indexPath.row] {
-                    self?.viewModel.duplicateItem(images: [item])
+					self?.viewModel.duplicateItem(images: [item])
                 }
             }
             let setThumbnailAction =
@@ -330,9 +322,7 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-		print("Selected: \(getSelectedImages(for: indexPath))")
-		
-        if let cell = collectionView.cellForItem(at: indexPath) as? AlbumImageCell {
+        if let cell = collectionView.cellForItem(at: indexPath) as? AlbumScreenCell {
             if isEditing {
 				cell.showSelectedView()
             } else {
@@ -344,13 +334,13 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
     }
 	
 	func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-		if isEditing, let cell = collectionView.cellForItem(at: indexPath) as? AlbumImageCell {
+		if isEditing, let cell = collectionView.cellForItem(at: indexPath) as? AlbumScreenCell {
 			cell.hideSelectedView()
 		}
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-		if let cell = cell as? AlbumImageCell {
+		if let cell = cell as? AlbumScreenCell {
 			cell.hideSelectedView()
 		}
 	}

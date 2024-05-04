@@ -26,10 +26,7 @@ class AlbumScreenViewModel {
     var albumID: UUID?
     let galleryManager: GalleryManager
     let pathResolver: PathResolver
-    
     var importProgress = MutableProgress()
-    var filesSelectedInEditMode = [GalleryImage]()
-    
     let disposeBag = DisposeBag()
     
     // MARK: - Init
@@ -85,11 +82,11 @@ class AlbumScreenViewModel {
     }
     
     func loadAlbum(by: UUID) -> AlbumIndex? {
-        return self.galleryManager.loadAlbumIndex(with: by)
+        self.galleryManager.loadAlbumIndex(with: by)
     }
     
     func loadAlbumIndexAsObservable() -> Observable<AlbumIndex> {
-        galleryManager.loadAlbumIndexAsObservable(id: albumID!)
+		self.galleryManager.loadAlbumIndexAsObservable(id: albumID!)
     }
     
     func delete(_ images: [GalleryImage]) {
@@ -97,14 +94,12 @@ class AlbumScreenViewModel {
     }
     
     func removeFromAlbum(images: [GalleryImage]) {
-        guard albumID != nil else { return }
-        
         if let albumID {
             if var albumIndex = self.galleryManager.loadAlbumIndex(with: albumID) {
                 albumIndex.images.removeAll(where: { images.contains($0) })
                 try! self.galleryManager.updateAlbumIndex(index: albumIndex)
             }
-        }
+		}
     }
     
 	func addPhotos(images: [GalleryImage], toAlbum: AlbumIndex? = nil) {
@@ -141,7 +136,7 @@ class AlbumScreenViewModel {
                 try self.galleryManager.duplicate(images: images, inAlbum: nil)
             }
         } catch {
-            
+			self.errorMessage.accept(NSLocalizedString("kCANTDUPLICATEIMAGE", comment: "Error message when duplicatio of image failed"))
         }
     }
     

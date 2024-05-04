@@ -74,7 +74,11 @@ class PhotoPropertiesViewModel {
     }
 
     func getPhotoTitleAsObservable() -> Observable<String> {
-        return galleryManager.loadImageAsObservable(with: selectedImages.first!.id).map { $0.title ?? "" }
+		if selectedImages.count == 1, let selectedImage = selectedImages.first {
+			return galleryManager.loadImageAsObservable(with: selectedImage.id).map { $0.title ?? "" }
+		} else {
+			return .empty()
+		}
     }
     
     func resolveImagePaths() -> [String] {
