@@ -27,9 +27,7 @@ class AlbumScreenViewController: UIViewController {
     
     // MARK: - Progress
     var importProgress = MutableProgress()
-	
-	var showingSearchController = BehaviorRelay(value: false)
-    
+	    
     // MARK: - INIT
 	init(router: AlbumScreenRouter, viewModel: AlbumScreenViewModel, pathResolver: PathResolver) {
         self.router = router
@@ -87,6 +85,8 @@ class AlbumScreenViewController: UIViewController {
 		
 		self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.screenView.rightStackView)
 		
+		self.navigationItem.searchController = self.searchController
+		
 		self.screenView.collectionView.allowsSelectionDuringEditing = true
         self.screenView.collectionView.delegate = self
         self.screenView.collectionView.register(AlbumScreenCell.self, forCellWithReuseIdentifier: AlbumScreenCell.identifier)
@@ -136,24 +136,9 @@ class AlbumScreenViewController: UIViewController {
 			}
 			.bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource))
 			.disposed(by: disposeBag)
-		
-		self.screenView.searchButton.rx.tap.subscribe(onNext: {
-			UIView.animate(withDuration: 1.0) {
-				self.showingSearchController.toggle()
-			}
-		}).disposed(by: disposeBag)
     }
 	
 	func bindUIState() {
-		self.showingSearchController.subscribe(onNext: { [weak self] value in
-			switch value {
-			case true:
-				self?.navigationItem.searchController = self?.searchController
-			case false:
-				self?.navigationItem.searchController = nil
-			}
-		}).disposed(by: disposeBag)
-		
 		self.viewModel.showingAnnotationsAsObservable().subscribe(onNext: { [weak self] showing in
 			self?.screenView.viewButton.menu?.children.forEach { action in
 				if action.title == NSLocalizedString("kSHOWINGTITLESON", comment: "Showing titles on") {
@@ -392,10 +377,4 @@ extension AlbumScreenViewController: AlbumListViewControllerDelegate {
         self.isEditing = false
         self.viewModel.isEditing.accept(false)
     }
-}
-
-extension AlbumScreenViewController: UISearchBarDelegate {
-	func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-		self.showingSearchController.toggle()
-	}
 }

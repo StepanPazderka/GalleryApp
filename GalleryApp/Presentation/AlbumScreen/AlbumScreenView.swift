@@ -56,13 +56,6 @@ class AlbumScreenView: UIView {
         return button
     }()
     
-    let searchButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
-        button.sizeToFit()
-        return button
-    }()
-    
     let documentPicker: UIDocumentPickerViewController = {
         let allowedTypes: [UTType] = [UTType.image]
         let view = UIDocumentPickerViewController(forOpeningContentTypes: allowedTypes, asCopy: true)
@@ -136,7 +129,6 @@ class AlbumScreenView: UIView {
         self.collectionView.collectionViewLayout.invalidateLayout()
         self.collectionView.dragInteractionEnabled = true
         self.rightStackView.addArrangedSubviews(editButton,
-                                                searchButton,
                                                 addImageButton,
                                                 deleteImageButton)
         
