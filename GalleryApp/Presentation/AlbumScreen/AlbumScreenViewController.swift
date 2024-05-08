@@ -86,6 +86,7 @@ class AlbumScreenViewController: UIViewController {
 		self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.screenView.rightStackView)
 		
 		self.navigationItem.searchController = self.searchController
+		self.navigationItem.hidesSearchBarWhenScrolling = false
 		
 		self.screenView.collectionView.allowsSelectionDuringEditing = true
         self.screenView.collectionView.delegate = self

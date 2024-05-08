@@ -43,8 +43,12 @@ class PathResolver {
 		return self.appDocumentsDirectory
 	}
     
-    internal func resolveThumbPathFor(imageName: String) -> String {
-        return self.selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(imageName).deletingPathExtension().appendingPathExtension(for: .jpeg).relativePath
+	internal func resolveThumbPathFor(imageName: String, galleryID: String? = nil) -> String {
+		if let galleryID {
+			return self.appDocumentsDirectory.appendingPathComponent(galleryID).appendingPathComponent(kThumbs).appendingPathComponent(imageName).deletingPathExtension().appendingPathExtension(for: .jpeg).relativePath
+		} else {
+			return self.selectedGalleryPath.appendingPathComponent(kThumbs).appendingPathComponent(imageName).deletingPathExtension().appendingPathExtension(for: .jpeg).relativePath
+		}
     }
     
     internal func resolvePathFor(imageName: String) -> String {
