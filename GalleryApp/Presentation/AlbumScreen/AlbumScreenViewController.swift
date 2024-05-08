@@ -200,9 +200,14 @@ class AlbumScreenViewController: UIViewController {
                 if value {
                     editButton.setTitle(NSLocalizedString("kDONE", comment: ""), for: .normal)
                     editButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+					self?.screenView.deleteImageButton.isHidden = false
+					self?.screenView.addImageButton.isHidden = true
                 } else {
                     editButton.setTitle(NSLocalizedString("kEDIT", comment: ""), for: .normal)
                     editButton.titleLabel?.font = .systemFont(ofSize: 18)
+					self?.screenView.deleteImageButton.isHidden = true
+					self?.screenView.addImageButton.isHidden = false
+
 					
                     self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
                         let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumScreenCell
