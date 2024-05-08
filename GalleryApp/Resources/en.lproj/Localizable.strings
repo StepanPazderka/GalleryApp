@@ -46,3 +46,6 @@
 "kMAIN" = "Main";
 "kALBUMS" = "Albums";
 "kCANTDUPLICATEIMAGE" = "Application encountered error with image duplication";
+"kSHOWINGTITLESON" = "Showing titles on";
+"kSHOWINGTITLESOFF" = "Showing titles off";
+

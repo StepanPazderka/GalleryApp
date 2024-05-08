@@ -50,6 +50,7 @@ class AlbumScreenViewController: UIViewController {
         self.router.setup(navigationController: self.navigationController)
 		self.setupDataSource()
         self.setupViews()
+		self.setupViewOptionsMenu()
         self.bindData()
 		self.bindUIState()
         self.bindInteractions()
@@ -152,6 +153,34 @@ class AlbumScreenViewController: UIViewController {
 				self?.navigationItem.searchController = nil
 			}
 		}).disposed(by: disposeBag)
+		
+		self.viewModel.showingAnnotationsAsObservable().subscribe(onNext: { [weak self] showing in
+			self?.screenView.viewButton.menu?.children.forEach { action in
+				if action.title == NSLocalizedString("kSHOWINGTITLESON", comment: "Showing titles on") {
+					print("Selected")
+					guard let action = action as? UIAction else {return}
+					if showing {
+						action.state = .on
+					}
+				}
+				
+				if action.title == NSLocalizedString("kSHOWINGTITLESOFF", comment: "Showing titles off") {
+					print("Unselected")
+					guard let action = action as? UIAction else {return}
+					if !showing {
+						action.state = .off
+					}
+				}
+			}
+		}).disposed(by: disposeBag)
+		
+		self.viewModel.sliderValueAsObservable()
+			.do(onNext: { [weak self] value in
+				self?.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(value), height: CGFloat(value))
+			})
+			.asDriver(onErrorJustReturn: 0.0)
+			.drive(screenView.slider.rx.value)
+			.disposed(by: disposeBag)
 	}
     
     // MARK: - Interactions Binding
@@ -223,17 +252,6 @@ class AlbumScreenViewController: UIViewController {
 			}
         }).disposed(by: disposeBag)
         
-		// MARK: - Showing annotations binding
-        self.viewModel.showingAnnotationsAsObservable()
-			.asDriver(onErrorJustReturn: false)
-			.drive(screenView.checkBoxTitles.rx.checker)
-			.disposed(by: disposeBag)
-        
-        // MARK: - Showing notes binding
-        self.screenView.checkBoxTitles.rx.tap.subscribe(onNext: { [weak self] in
-            self?.viewModel.updateShowingAnnotations(value: self?.screenView.checkBoxTitles.checker ?? false)
-        }).disposed(by: disposeBag)
-        
         // MARK: - Slider binding
 		self.screenView.slider.rx.value.changed
             .map { CGFloat($0) }
@@ -244,15 +262,17 @@ class AlbumScreenViewController: UIViewController {
             .debounce(.milliseconds(500), scheduler: MainScheduler.instance).subscribe(onNext: { [weak self] value in
                 self?.viewModel.updateThumbnailSize(size: Float(value))
             }).disposed(by: disposeBag)
-		
-		self.viewModel.sliderSetting()
-			.do(onNext: { [weak self] value in
-				self?.screenView.collectionLayout.itemSize = CGSize(width: CGFloat(value), height: CGFloat(value))
-			})
-			.asDriver(onErrorJustReturn: 0.0)
-			.drive(screenView.slider.rx.value)
-			.disposed(by: disposeBag)
-    }
+	}
+	
+	func setupViewOptionsMenu() {
+		let offOption = UIAction(title: NSLocalizedString("kSHOWINGTITLESOFF", comment: "Showing titles off")) { [weak self] (action: UIAction) in
+			self?.viewModel.updateShowingAnnotations(value: false)
+		}
+		let showTitlesOption = UIAction(title: NSLocalizedString("kSHOWINGTITLESON", comment: "Showing titles on")) { [weak self] (action: UIAction) in
+			self?.viewModel.updateShowingAnnotations(value: true)
+		}
+		self.screenView.viewButton.menu = UIMenu(options: .singleSelection, children: [offOption, showTitlesOption])
+	}
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         return

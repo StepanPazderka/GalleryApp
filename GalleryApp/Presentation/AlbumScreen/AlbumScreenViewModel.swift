@@ -36,7 +36,7 @@ class AlbumScreenViewModel {
         self.pathResolver = pathResolver
     }
 	
-	func sliderSetting() -> Observable<Float> {
+	func sliderValueAsObservable() -> Observable<Float> {
 		switch albumID {
 		case .some:
 			return loadAlbumIndexAsObservable().map { $0.thumbnailsSize }

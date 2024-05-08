@@ -57,6 +57,7 @@ class PhotoPropertiesViewController: UIViewController {
         }
         self.screenView.itemFileSizeLabel.text = "\(NSLocalizedString("kFileSize", comment: "")) \(ByteCountFormatter().string(fromByteCount: Int64(viewModel.getFileSize())))"
         
+		// MARK: SETUP: Date Created Field
         if let date = viewModel.getFileCreationDate() {
             let dateFormatter = DateFormatter()
             dateFormatter.timeStyle = .long
@@ -65,6 +66,7 @@ class PhotoPropertiesViewController: UIViewController {
             self.screenView.itemCreationDateLabel.text = "\(localizedCreationDateText) \(dateFormatter.string(from: date))"
         }
         
+		// MARK: SETUP: Date Modified Field
         if let date = viewModel.getFileModifiedDate() {
             let dateFormatter = DateFormatter()
             dateFormatter.timeStyle = .long
@@ -74,7 +76,12 @@ class PhotoPropertiesViewController: UIViewController {
         }
         
 		
-		setupTextField()
+		// MARK: - SETUP: Text Field
+		self.screenView.textView.delegate = self
+		if viewModel.selectedImages.count > 1 {
+			self.screenView.textView.isEditable = false
+			self.screenView.textView.backgroundColor = .tertiarySystemFill
+		}
     }
     
     func bindData() {
@@ -86,12 +93,7 @@ class PhotoPropertiesViewController: UIViewController {
     }
 	
 	func setupTextField() {
-		self.screenView.textView.delegate = self
 		
-		if viewModel.selectedImages.count > 1 {
-			self.screenView.textView.isEditable = false
-			self.screenView.textView.backgroundColor = .tertiarySystemFill
-		}
 	}
 }
 

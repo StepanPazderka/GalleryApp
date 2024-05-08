@@ -47,3 +47,5 @@
 "kALBUMS" = "Albums";
 "kDELETEGALLERY" = "Smazat galerii";
 "kCANTDUPLICATEIMAGE" = "Nepodařilo se duplikovat obrázek";
+"kSHOWINGTITLESON" = "Titles on";
+"kSHOWINGTITLESOFF" = "Titles off";

@@ -13,7 +13,6 @@ import Photos
 import PhotosUI
 
 class AlbumScreenView: UIView {
-    
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionLayout)
     
     var collectionLayout: UICollectionViewFlowLayout = {
@@ -108,13 +107,16 @@ class AlbumScreenView: UIView {
         view.value = calculateAverage([view.minimumValue, view.maximumValue])
         return view
     }()
-
-    let checkBoxTitles = {
-        let view = UICheckBoxButton(frame: CGRect(x: 0, y: 0, width: 80, height: 35))
-        view.setTitle("Show titles", for: .normal)
-        view.setTitleColor(UIColor.systemBlue, for: .normal)
-        return view
-    }()
+	
+	var viewButton = {
+		let view = UIButton(primaryAction: nil)
+		view.setTitle("View options", for: .normal)
+		view.titleLabel?.font = UIFont.systemFont(ofSize: 20)
+		view.contentHorizontalAlignment = .center
+		view.showsMenuAsPrimaryAction = true
+		view.changesSelectionAsPrimaryAction = true
+		return view
+	}()
     
     // MARK: - Init
     init() {
@@ -137,12 +139,6 @@ class AlbumScreenView: UIView {
                                                 searchButton,
                                                 addImageButton,
                                                 deleteImageButton)
-        self.checkBoxTitles.tintColor = .white
-        
-        self.checkBoxTitles.checkBoxImageView.layer.shadowColor = UIColor.black.cgColor
-        self.checkBoxTitles.checkBoxImageView.layer.shadowOpacity = 1
-        self.checkBoxTitles.checkBoxImageView.layer.shadowOffset = .zero
-        self.checkBoxTitles.checkBoxImageView.layer.shadowRadius = 15
         
         collectionLayout.itemSize = CGSize(width: 200, height: 200)
     }
@@ -150,12 +146,13 @@ class AlbumScreenView: UIView {
     private func addSubviews() {
         self.addSubviews(collectionView,
                          bottomToolbarStackView,
-                         loadingView)
+                         loadingView,
+						 viewButton)
         
         loadingView.addSubview(progressView)
         
         bottomToolbarStackView.addSubviews(slider,
-                                           checkBoxTitles)
+										   viewButton)
     }
     
     private func layoutViews() {
@@ -171,15 +168,15 @@ class AlbumScreenView: UIView {
         }
         slider.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(20)
-            make.right.equalTo(checkBoxTitles.snp.left).offset(-10).priority(.low)
+            make.right.equalTo(viewButton.snp.left).offset(-10).priority(.low)
             make.width.lessThanOrEqualTo(400).priority(.required)
             make.centerY.equalToSuperview()
         }
-        checkBoxTitles.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-40)
-            make.centerY.equalToSuperview()
-            make.width.equalTo(130)
-        }
+		viewButton.snp.makeConstraints { make in
+			make.right.equalToSuperview().offset(-20)
+			make.centerY.equalToSuperview()
+			make.width.equalTo(120)
+		}
         loadingView.snp.makeConstraints { make in
             make.width.equalToSuperview().offset(-400)
             make.height.equalTo(200)

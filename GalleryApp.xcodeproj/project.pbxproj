@@ -536,6 +536,8 @@
 		7F88ED892BE56BA5000C0FE0 /* GalleryApp */ = {
 			isa = PBXGroup;
 			children = (
+				7F88ED872BE56BA5000C0FE0 /* AppDelegate.swift */,
+				7F88ED882BE56BA5000C0FE0 /* SceneDelegate.swift */,
 				7F88ED1D2BE56BA5000C0FE0 /* Custom Views */,
 				7F88ED212BE56BA5000C0FE0 /* Data */,
 				7F88ED2A2BE56BA5000C0FE0 /* Domain */,
@@ -546,8 +548,6 @@
 				7F88ED6B2BE56BA5000C0FE0 /* Repositories */,
 				7F88ED712BE56BA5000C0FE0 /* Resources */,
 				7F88ED862BE56BA5000C0FE0 /* Utilites */,
-				7F88ED872BE56BA5000C0FE0 /* AppDelegate.swift */,
-				7F88ED882BE56BA5000C0FE0 /* SceneDelegate.swift */,
 			);
 			path = GalleryApp;
 			sourceTree = "<group>";
@@ -997,7 +997,7 @@
 				);
 				INFOPLIST_FILE = GalleryApp/Plists/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iGallery;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1030,7 +1030,7 @@
 				);
 				INFOPLIST_FILE = GalleryApp/Plists/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iGallery;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
