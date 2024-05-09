@@ -20,14 +20,14 @@ class SidebarViewController: UIViewController {
     
     // MARK: - Properties
     private var dataSource: RxCollectionViewSectionedAnimatedDataSource<SidebarSectionModel>?
-    private let router: SidebarRouter
+    private let router: MainRouter
     private let viewModel: SidebarViewModel
     private let disposeBag = DisposeBag()
 	
 	private var userSelectedIndex: IndexPath?
     
     // MARK: - Init
-    init(router: SidebarRouter, container: Container, viewModel: SidebarViewModel) {
+    init(router: MainRouter, container: Container, viewModel: SidebarViewModel) {
         self.router = router
         self.viewModel = viewModel
         

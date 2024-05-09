@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import Swinject
 
-class SidebarRouter {
+class MainRouter {
     var splitViewController: UISplitViewController = {
         let view = UISplitViewController(style: .doubleColumn)
         view.preferredDisplayMode = .oneBesideSecondary

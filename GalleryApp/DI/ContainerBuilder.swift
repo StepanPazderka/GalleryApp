@@ -86,8 +86,8 @@ class ContainerBuilder {
 			return SelectLibraryViewController(viewModel: r.resolve(SelectLibraryViewModel.self)!, pathResolver: r.resolve(PathResolver.self)!)
         }
         
-        container.register(SidebarRouter.self) { r in
-            return SidebarRouter(container: container)
+        container.register(MainRouter.self) { r in
+            return MainRouter(container: container)
         }
         
         container.register(SidebarViewModel.self) { r in
@@ -97,13 +97,13 @@ class ContainerBuilder {
         }
         
         container.register(SidebarViewController.self) { r in
-            return SidebarViewController(router: r.resolve(SidebarRouter.self)!,
+            return SidebarViewController(router: r.resolve(MainRouter.self)!,
                                          container: container,
                                          viewModel: r.resolve(SidebarViewModel.self)!)
         }
         
         container.register(AlbumScreenRouter.self) { r in
-            return AlbumScreenRouter(sidebarRouter: r.resolve(SidebarRouter.self)!,
+            return AlbumScreenRouter(mainRouter: r.resolve(MainRouter.self)!,
                                      container: container)
         }
         

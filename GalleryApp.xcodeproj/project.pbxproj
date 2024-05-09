@@ -45,7 +45,7 @@
 		7F88EDAE2BE56BA5000C0FE0 /* SidebarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED512BE56BA5000C0FE0 /* SidebarItem.swift */; };
 		7F88EDAF2BE56BA5000C0FE0 /* SidebarSectionCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED522BE56BA5000C0FE0 /* SidebarSectionCategory.swift */; };
 		7F88EDB02BE56BA5000C0FE0 /* SidebarSectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED532BE56BA5000C0FE0 /* SidebarSectionModel.swift */; };
-		7F88EDB12BE56BA5000C0FE0 /* SidebarRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED552BE56BA5000C0FE0 /* SidebarRouter.swift */; };
+		7F88EDB12BE56BA5000C0FE0 /* MainRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED552BE56BA5000C0FE0 /* MainRouter.swift */; };
 		7F88EDB22BE56BA5000C0FE0 /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED562BE56BA5000C0FE0 /* SidebarView.swift */; };
 		7F88EDB32BE56BA5000C0FE0 /* SidebarViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED572BE56BA5000C0FE0 /* SidebarViewCell.swift */; };
 		7F88EDB42BE56BA5000C0FE0 /* SidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F88ED582BE56BA5000C0FE0 /* SidebarViewController.swift */; };
@@ -146,7 +146,7 @@
 		7F88ED512BE56BA5000C0FE0 /* SidebarItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarItem.swift; sourceTree = "<group>"; };
 		7F88ED522BE56BA5000C0FE0 /* SidebarSectionCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarSectionCategory.swift; sourceTree = "<group>"; };
 		7F88ED532BE56BA5000C0FE0 /* SidebarSectionModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarSectionModel.swift; sourceTree = "<group>"; };
-		7F88ED552BE56BA5000C0FE0 /* SidebarRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarRouter.swift; sourceTree = "<group>"; };
+		7F88ED552BE56BA5000C0FE0 /* MainRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainRouter.swift; sourceTree = "<group>"; };
 		7F88ED562BE56BA5000C0FE0 /* SidebarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
 		7F88ED572BE56BA5000C0FE0 /* SidebarViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarViewCell.swift; sourceTree = "<group>"; };
 		7F88ED582BE56BA5000C0FE0 /* SidebarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
@@ -240,6 +240,14 @@
 				7F62EA7629056C3600FCD97F /* GalleryAppTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		7F57BA7A2BEC61A7003B9FCC /* DI */ = {
+			isa = PBXGroup;
+			children = (
+				7F88ED762BE56BA5000C0FE0 /* ContainerBuilder.swift */,
+			);
+			path = DI;
 			sourceTree = "<group>";
 		};
 		7F62EA7729056C3600FCD97F /* GalleryAppTests */ = {
@@ -415,7 +423,7 @@
 		7F88ED5A2BE56BA5000C0FE0 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				7F88ED552BE56BA5000C0FE0 /* SidebarRouter.swift */,
+				7F88ED552BE56BA5000C0FE0 /* MainRouter.swift */,
 				7F88ED562BE56BA5000C0FE0 /* SidebarView.swift */,
 				7F88ED572BE56BA5000C0FE0 /* SidebarViewCell.swift */,
 				7F88ED582BE56BA5000C0FE0 /* SidebarViewController.swift */,
@@ -514,7 +522,6 @@
 				7F88ED732BE56BA5000C0FE0 /* Average.swift */,
 				7F88ED742BE56BA5000C0FE0 /* BehaviourSubject+toggle.swift */,
 				7F88ED752BE56BA5000C0FE0 /* Constants.swift */,
-				7F88ED762BE56BA5000C0FE0 /* ContainerBuilder.swift */,
 				7F88ED772BE56BA5000C0FE0 /* EdgeInsets.swift */,
 				7F88ED782BE56BA5000C0FE0 /* ImageResizer.swift */,
 				7F88ED792BE56BA5000C0FE0 /* ImageView+BlurEffect.swift */,
@@ -538,6 +545,7 @@
 			children = (
 				7F88ED872BE56BA5000C0FE0 /* AppDelegate.swift */,
 				7F88ED882BE56BA5000C0FE0 /* SceneDelegate.swift */,
+				7F57BA7A2BEC61A7003B9FCC /* DI */,
 				7F88ED1D2BE56BA5000C0FE0 /* Custom Views */,
 				7F88ED212BE56BA5000C0FE0 /* Data */,
 				7F88ED2A2BE56BA5000C0FE0 /* Domain */,
@@ -806,7 +814,7 @@
 				7F88EDD42BE56BA5000C0FE0 /* UIViewController+Child.swift in Sources */,
 				7F88EDCE2BE56BA5000C0FE0 /* UIColor+randomColor.swift in Sources */,
 				7F88ED9D2BE56BA5000C0FE0 /* AlbumScreenSectionModel.swift in Sources */,
-				7F88EDB12BE56BA5000C0FE0 /* SidebarRouter.swift in Sources */,
+				7F88EDB12BE56BA5000C0FE0 /* MainRouter.swift in Sources */,
 				7F88EDBF2BE56BA5000C0FE0 /* UnsecureStorage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -13,13 +13,13 @@ import RxCocoa
 class AlbumScreenRouter {
     
     // MARK: - Properties
-    private let sidebarRouter: SidebarRouter
+    private let mainRouter: MainRouter
     private var navigationController: UINavigationController?
     private let container: Container
     
     // MARK: - Init
-    internal init(sidebarRouter: SidebarRouter, container: Container) {
-        self.sidebarRouter = sidebarRouter
+    internal init(mainRouter: MainRouter, container: Container) {
+        self.mainRouter = mainRouter
         self.container = container
     }
     
@@ -49,6 +49,6 @@ class AlbumScreenRouter {
     
     func showPropertiesScreen(of images: [GalleryImage]) {
         let vc = container.resolve(PhotoPropertiesViewController.self, argument: images)!
-        sidebarRouter.splitViewController.present(vc, animated: true)
+        mainRouter.splitViewController.present(vc, animated: true)
     }
 }
