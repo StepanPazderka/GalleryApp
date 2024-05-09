@@ -179,4 +179,13 @@ extension PhotoDetailViewController: UICollectionViewDelegate {
 			cell.imageView.zoomScale = 1.0
 		}
 	}
+	
+	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+		let visibleRect = CGRect(origin: self.screenView.collectionView.contentOffset, size: self.screenView.collectionView.bounds.size)
+		let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+		
+		if let visibleIndexPath = self.screenView.collectionView.indexPathForItem(at: visiblePoint) {
+			viewModel.index = visibleIndexPath
+		}
+	}
 }

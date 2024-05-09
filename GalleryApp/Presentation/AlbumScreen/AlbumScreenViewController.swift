@@ -23,10 +23,9 @@ class AlbumScreenViewController: UIViewController {
     private let router: AlbumScreenRouter
     private var dataSource: RxCollectionViewSectionedAnimatedDataSource<AlbumScreenSectionModel>!
 	private let pathResolver: PathResolver
-    private let disposeBag = DisposeBag()
-    
-    // MARK: - Progress
-    var importProgress = MutableProgress()
+	private var importProgress = MutableProgress()
+	
+	private let disposeBag = DisposeBag()
 	    
     // MARK: - INIT
 	init(router: AlbumScreenRouter, viewModel: AlbumScreenViewModel, pathResolver: PathResolver) {
@@ -143,7 +142,6 @@ class AlbumScreenViewController: UIViewController {
 		self.viewModel.showingAnnotationsAsObservable().subscribe(onNext: { [weak self] showing in
 			self?.screenView.viewButton.menu?.children.forEach { action in
 				if action.title == NSLocalizedString("kSHOWINGTITLESON", comment: "Showing titles on") {
-					print("Selected")
 					guard let action = action as? UIAction else {return}
 					if showing {
 						action.state = .on
@@ -151,7 +149,6 @@ class AlbumScreenViewController: UIViewController {
 				}
 				
 				if action.title == NSLocalizedString("kSHOWINGTITLESOFF", comment: "Showing titles off") {
-					print("Unselected")
 					guard let action = action as? UIAction else {return}
 					if !showing {
 						action.state = .off
