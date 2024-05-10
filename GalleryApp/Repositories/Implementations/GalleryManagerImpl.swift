@@ -26,8 +26,11 @@ class GalleryManagerImpl: GalleryManager {
 		self.settingsManager = settingsManager
 		self.pathResolver = pathResolver
 		
+		let schemaVersion: UInt64 = 3
+		let configuration = Realm.Configuration(schemaVersion: schemaVersion)
+		
 		do {
-			self.realm = try Realm()
+			self.realm = try Realm(configuration: configuration)
 		} catch {
 			print("Error: \(error)")
 			self.realm = nil
@@ -259,7 +262,7 @@ class GalleryManagerImpl: GalleryManager {
 	@discardableResult func duplicate(album: AlbumIndex) -> AlbumIndex {
 		guard let fetchedAlbum = realm?.objects(AlbumIndexRealm.self).first(where: { $0.id == album.id.uuidString }) else { return album }
 		
-		let newAlbum = AlbumIndexRealm(id: UUID().uuidString, name: fetchedAlbum.name, thumbnail: fetchedAlbum.thumbnail, images: fetchedAlbum.images)
+		let newAlbum = AlbumIndexRealm(id: UUID().uuidString, locked: album.locked,	 name: fetchedAlbum.name, thumbnail: fetchedAlbum.thumbnail, images: fetchedAlbum.images)
 		
 		if let index = load() {
 			try! realm?.write {

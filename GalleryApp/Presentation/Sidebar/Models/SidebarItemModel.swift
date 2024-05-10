@@ -8,10 +8,11 @@
 import Foundation
 import RxDataSources
 
-struct SidebarItem: Hashable {
+struct SidebarItemModel: Hashable {
     let title: String?
 	let identifier: UUID?
 	let type: buttonType
+	let locked: Bool
 
     private var customImage: UIImage?
     var image: UIImage? {
@@ -37,11 +38,12 @@ struct SidebarItem: Hashable {
         case allPhotos
     }
 
-    internal init(id: UUID? = UUID(), title: String?, image: UIImage? = nil, buttonType: buttonType) {
+	internal init(id: UUID? = UUID(), locked: Bool = false, title: String?, image: UIImage? = nil, buttonType: buttonType) {
         self.identifier = id
         self.title = title
         self.customImage = image
         self.type = buttonType
+		self.locked = locked
     }
 
     init?(from album: AlbumIndex) {
@@ -50,14 +52,15 @@ struct SidebarItem: Hashable {
         let thumbnailImage: UIImage? = nil
         self.customImage = thumbnailImage
         self.type = .album
-    }
+		self.locked = album.locked
+	}
     
     static var empty: Self {
         Self(id: UUID(), title: "", image: nil, buttonType: .album)
     }
 }
 
-extension SidebarItem: IdentifiableType {
+extension SidebarItemModel: IdentifiableType {
 	var identity: String {
 		self.identifier?.uuidString ?? "Nothing"
 	}

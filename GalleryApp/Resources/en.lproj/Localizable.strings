@@ -9,7 +9,8 @@
 "kCANCEL" = "Cancel";
 "kDEFAULTLIBRARY" = "Default Gallery";
 "kSELECTFROMFILES" = "Select from Files";
-"CreateSubAlbum" = "Create SubAlbum";
+"lockAlbum" = "Lock album";
+"unlockAlbum" = "Unlock album";
 "MoveToAlbum" = "Move to Album";
 "kALLPHOTOS" = "All Photos";
 "kDUPLICATEALBUM" = "Duplicate Album";
@@ -48,4 +49,4 @@
 "kCANTDUPLICATEIMAGE" = "Application encountered error with image duplication";
 "kSHOWINGTITLESON" = "Showing titles on";
 "kSHOWINGTITLESOFF" = "Showing titles off";
-
+"kDELETEALBUM" = "Delete album";

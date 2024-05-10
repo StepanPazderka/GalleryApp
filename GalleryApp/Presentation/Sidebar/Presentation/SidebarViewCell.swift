@@ -54,7 +54,7 @@ class SidebarViewCell: UICollectionViewCell {
         self.layer.masksToBounds = true
     }
 	
-	func setupData(model: SidebarItem) {
+	func setupData(model: SidebarItemModel) {
 		self.label.text = model.title
 		self.imageView.image = model.image
 		if model.image == nil {

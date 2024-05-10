@@ -92,7 +92,7 @@ class AlbumsListViewController: UIViewController {
             self?.screenView.selectAlbumButton.isEnabled = true
         }).disposed(by: disposeBag)
         
-        self.screenView.albumsCollectionView.rx.modelSelected(SidebarItem.self).subscribe(onNext: { [weak self] item in
+        self.screenView.albumsCollectionView.rx.modelSelected(SidebarItemModel.self).subscribe(onNext: { [weak self] item in
             self?.selectedAlbum = item.identifier
         }).disposed(by: disposeBag)
     }

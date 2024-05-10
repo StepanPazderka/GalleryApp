@@ -18,7 +18,7 @@ class SidebarViewModel {
 	let disposeBag = DisposeBag()
 	
 	let mainButonsSection = SidebarSectionModel(type: .mainButtons, name: NSLocalizedString("kMAIN", comment: "Main buttons"), items: [
-		SidebarItem(title: NSLocalizedString("kALLPHOTOS", comment: "Title for sidebar cell to show All Photos in library"), image: nil, buttonType: .allPhotos)
+		SidebarItemModel(title: NSLocalizedString("kALLPHOTOS", comment: "Title for sidebar cell to show All Photos in library"), image: nil, buttonType: .allPhotos)
 	])
 	
 	init(galleryInteractor: GalleryManager, settingsManager: SettingsManagerImpl, pathResolver: PathResolver) {
@@ -44,11 +44,13 @@ class SidebarViewModel {
 		return galleryManager
 			.loadCurrentGalleryIndexAsObservable()
 			.flatMap { [unowned self] galleryIndex -> Observable<[SidebarSectionModel]> in
-				let albumObservables = galleryIndex.albums.compactMap { albumID -> Observable<SidebarItem?> in
+				let albumObservables = galleryIndex.albums.compactMap { albumID -> Observable<SidebarItemModel?> in
 					self.galleryManager.loadAlbumIndexAsObservable(id: albumID)
-						.map { [unowned self] albumIndex -> SidebarItem? in
+						.map { [unowned self] albumIndex -> SidebarItemModel? in
 							var thumbnailImage: UIImage?
-							if let thumbnailFileName = albumIndex.thumbnail, !thumbnailFileName.isEmpty {
+							if albumIndex.locked {
+								thumbnailImage = UIImage(systemName: "lock")
+							} else if let thumbnailFileName = albumIndex.thumbnail, !thumbnailFileName.isEmpty {
 								let thumbnailPath = self.pathResolver.selectedGalleryPath.appendingPathComponent(thumbnailFileName)
 								thumbnailImage = UIImage(contentsOfFile: thumbnailPath.relativePath)
 							} else {
@@ -58,8 +60,9 @@ class SidebarViewModel {
 								}
 							}
 							
-							return SidebarItem(
+							return SidebarItemModel(
 								id: UUID(uuidString: albumIndex.id.uuidString),
+								locked: albumIndex.locked,
 								title: albumIndex.name,
 								image: thumbnailImage,
 								buttonType: .album
@@ -76,6 +79,19 @@ class SidebarViewModel {
 			}
 	}
 	
+	func lockAlbum(albumID: UUID) {
+		if var albumIndex = self.galleryManager.loadAlbumIndex(with: albumID) {
+			albumIndex.locked = true
+			try! self.galleryManager.updateAlbumIndex(index: albumIndex)
+		}
+	}
+	
+	func unlockAlbum(albumID: UUID) {
+		if var albumIndex = self.galleryManager.loadAlbumIndex(with: albumID) {
+			albumIndex.locked = false
+			try! self.galleryManager.updateAlbumIndex(index: albumIndex)
+		}
+	}
 	
 	func createAlbum(name: String, parentAlbumID: UUID? = nil,  ID: UUID? = nil) {
 		do {

@@ -48,6 +48,7 @@ final class AlbumIndexRealm: Object, ObjectKeyIdentifiable {
 	@Persisted var thumbnailSize: Float = 200
 	@Persisted var images = RealmSwift.List<GalleryImageRealm>()
 	@Persisted var parentGalleryIndex = LinkingObjects(fromType: GalleryIndexRealm.self, property: "albums")
+	@Persisted var locked: Bool
 	
 	override static func primaryKey() -> String? {
 		return "id"
@@ -57,13 +58,14 @@ final class AlbumIndexRealm: Object, ObjectKeyIdentifiable {
 		super.init()
 	}
 	
-	init(id: String = UUID().uuidString, name: String, thumbnail: String, showingAnnotations: Bool = false, thumbnailSize: Float = 200, images: RealmSwift.List<GalleryImageRealm> = RealmSwift.List<GalleryImageRealm>()) {
+	init(id: String = UUID().uuidString, locked: Bool, name: String, thumbnail: String, showingAnnotations: Bool = false, thumbnailSize: Float = 200, images: RealmSwift.List<GalleryImageRealm> = RealmSwift.List<GalleryImageRealm>()) {
 		self.id = id
 		self.name = name
 		self.thumbnail = thumbnail
 		self.showingAnnotations = showingAnnotations
 		self.thumbnailSize = thumbnailSize
 		self.images = images
+		self.locked = locked
 	}
 	
 	init(from entity: AlbumIndex) {
@@ -73,6 +75,7 @@ final class AlbumIndexRealm: Object, ObjectKeyIdentifiable {
 		self.thumbnail = entity.thumbnail ?? String()
 		self.showingAnnotations = entity.showingAnnotations ?? false
 		self.thumbnailSize = entity.thumbnailsSize
+		self.locked = entity.locked
 		entity.images.forEach { [weak self] galleryImage in
 			self?.images.append(GalleryImageRealm(from: galleryImage))
 		}

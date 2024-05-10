@@ -55,7 +55,7 @@ class AlbumsListViewModel {
                             thumbnailImage = UIImage(contentsOfFile: thumbnailImageURL.relativePath)
                         }
                     }
-                    return SidebarItem(id: UUID(uuidString: albumID.uuidString), title: album.name, image: thumbnailImage ?? nil, buttonType: .album)
+                    return SidebarItemModel(id: UUID(uuidString: albumID.uuidString), title: album.name, image: thumbnailImage ?? nil, buttonType: .album)
                 } else {
                     return nil
                 }

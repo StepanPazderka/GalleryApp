@@ -42,9 +42,11 @@ class MainRouter {
     }
     
     public func show(album albumID: UUID) {
-        let albumVC = container.resolve(AlbumScreenViewController.self, argument: albumID)!
-        rightDetailNavigationController.setViewControllers([albumVC], animated: false)
-        splitViewController.showDetailViewController(rightDetailNavigationController, sender: nil)
+		DispatchQueue.main.async {
+			let albumVC = self.container.resolve(AlbumScreenViewController.self, argument: albumID)!
+			self.rightDetailNavigationController.setViewControllers([albumVC], animated: false)
+			self.splitViewController.showDetailViewController(self.rightDetailNavigationController, sender: nil)
+		}
     }
     
     public func showLibrarySelectionScreen() {

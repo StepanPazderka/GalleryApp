@@ -15,8 +15,9 @@ struct AlbumIndex: Codable {
     var thumbnail: String?
     var thumbnailsSize: Float = 200
     var showingAnnotations: Bool? = false
+	var locked: Bool = false
 
-    internal init(id: UUID = UUID() ,name: String, images: [GalleryImage], thumbnail: String, showingAnnotations: Bool? = false) {
+    internal init(id: UUID = UUID(), name: String, images: [GalleryImage], thumbnail: String, showingAnnotations: Bool? = false) {
         self.id = id
         self.name = name
         self.images = images
@@ -51,6 +52,7 @@ struct AlbumIndex: Codable {
 		self.thumbnail = entity.thumbnail
 		self.showingAnnotations = entity.showingAnnotations
 		self.thumbnailsSize = entity.thumbnailSize
+		self.locked = entity.locked ?? false
 	}
     
     init(from entity: AlbumScreenModel) {

@@ -11,22 +11,22 @@ import RxDataSources
 /// Struct representing Sidebar Section
 struct SidebarSectionModel {
 	var name: String
-	var items: [SidebarItem]
+	var items: [SidebarItemModel]
 	let type: SidebarSectionCategory
 	
-	init(type: SidebarSectionCategory, name: String, items: [SidebarItem]) {
+	init(type: SidebarSectionCategory, name: String, items: [SidebarItemModel]) {
 		self.type = type
         self.name = name
         self.items = items
     }
     
     static var empty: Self {
-		Self(type: .unknown, name: "None", items: [SidebarItem]())
+		Self(type: .unknown, name: "None", items: [SidebarItemModel]())
     }
 }
 
 extension SidebarSectionModel: AnimatableSectionModelType {
-    init(original: SidebarSectionModel, items: [SidebarItem]) {
+    init(original: SidebarSectionModel, items: [SidebarItemModel]) {
         self.name = original.name
         self.items = items
 		self.type = .unknown
