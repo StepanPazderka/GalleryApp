@@ -141,8 +141,8 @@ class SidebarViewController: UIViewController {
 		
 		viewModel.errorMessage.subscribe(onNext: { [weak self] (errorMessage: String) in
 			if !errorMessage.isEmpty {
-				let alert = UIAlertController(title: "Alert", message: errorMessage, preferredStyle: .alert)
-				alert.addAction(UIAlertAction(title: "kOK", style: .cancel))
+				let alert = UIAlertController(title: NSLocalizedString("kAlert", comment: ""), message: errorMessage, preferredStyle: .alert)
+				alert.addAction(UIAlertAction(title: NSLocalizedString("kOK", comment: ""), style: .cancel))
 				Task {
 					self?.present(alert, animated: true, completion: nil)
 				}
@@ -270,9 +270,13 @@ extension SidebarViewController: UICollectionViewDelegate {
 			let deleteAction =
 			UIAction(title: NSLocalizedString("kDELETEALBUM", comment: ""),
 					 image: UIImage(systemName: "trash"),
-					 attributes: .destructive) { action in
-				if let albumId = self.dataSource?[indexPath].identifier {
-					self.viewModel.deleteAlbum(id: albumId)
+					 attributes: .destructive) { [weak self] action in
+				if let albumId = self?.dataSource?[indexPath].identifier {
+					if self?.userSelectedIndexAsObservable.value == indexPath {
+						self?.userSelectedIndexAsObservable.accept(IndexPath(row: 0, section: 0))
+						self?.router.showAllPhotos()
+					}
+					self?.viewModel.deleteAlbum(id: albumId)
 				}
 			}
 			let removeThumbnail =

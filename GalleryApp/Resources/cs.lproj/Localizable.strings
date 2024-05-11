@@ -28,6 +28,7 @@
 "kBiometryNotAvailable" = "Biometrie není na tomto zařízení dostupná";
 "kBiometryNotSetup" = "Biometrie není na tomto zařízení nastavena";
 "kAuthenticationGeneralError" = "Neznámá chyba při autorizaci uživatele";
+"kAlert" = "Upozornění";
 "kDELETEALBUM" = "Delete Album";
 "kNameCantBeEmpty" = "Pole jméno nemůže být prázdné";
 "kEnterAlbumName" = "Enter Album name";

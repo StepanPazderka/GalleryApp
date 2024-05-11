@@ -117,8 +117,8 @@ class AlbumScreenViewController: UIViewController {
         
         self.viewModel.errorMessage.subscribe(onNext: { [weak self] errorMessage in
             if !errorMessage.isEmpty {
-                let alert = UIAlertController(title: "Alert", message: errorMessage, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "kOK", style: .cancel))
+				let alert = UIAlertController(title: NSLocalizedString("kAlert", comment: ""), message: errorMessage, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("kOK", comment: ""), style: .cancel))
                 self?.present(alert, animated: true, completion: nil)
             }
         }).disposed(by: disposeBag)
