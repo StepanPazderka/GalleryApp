@@ -21,6 +21,7 @@ class AlbumScreenViewModel {
     // MARK: -- Properties
     var isEditing = BehaviorRelay(value: false)
     var showingLoading = BehaviorRelay(value: false)
+
     var errorMessage = BehaviorRelay(value: "")
         
     var albumID: UUID?

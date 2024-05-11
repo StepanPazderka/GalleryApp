@@ -12,7 +12,6 @@ import RxCocoa
 import RxDataSources
 import SnapKit
 import Swinject
-import LocalAuthentication
 
 class SidebarViewController: UIViewController {
 	
@@ -23,10 +22,10 @@ class SidebarViewController: UIViewController {
 	private var dataSource: RxCollectionViewSectionedAnimatedDataSource<SidebarSectionModel>?
 	private let router: MainRouter
 	private let viewModel: SidebarViewModel
+
 	private let disposeBag = DisposeBag()
 	
 	private var userSelectedIndexAsObservable = BehaviorRelay(value: IndexPath(row: 0, section: 0))
-	private var localAuthnentication = LAContext()
 	
 	// MARK: - Init
 	init(router: MainRouter, container: Container, viewModel: SidebarViewModel) {
@@ -139,6 +138,16 @@ class SidebarViewController: UIViewController {
 				self.userSelectedIndexAsObservable.accept(indexPath)
 			})
 			.disposed(by: disposeBag)
+		
+		viewModel.errorMessage.subscribe(onNext: { [weak self] (errorMessage: String) in
+			if !errorMessage.isEmpty {
+				let alert = UIAlertController(title: "Alert", message: errorMessage, preferredStyle: .alert)
+				alert.addAction(UIAlertAction(title: "kOK", style: .cancel))
+				Task {
+					self?.present(alert, animated: true, completion: nil)
+				}
+			}
+		}).disposed(by: disposeBag)
 	}
 	
 	// MARK: - User Interaction Bindings
@@ -158,24 +167,11 @@ class SidebarViewController: UIViewController {
 			.subscribe(onNext: { [weak self] indexPath in
 				if let item = self?.dataSource![indexPath] {
 					if item.type == .album, let identifier = item.identifier  {
-						if item.locked {
-							self?.localAuthnentication.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Some reason", reply: { [weak self] succeeded, error in
-								if succeeded {
-									if let identifier = item.identifier {
-										self?.router.show(album: identifier)
-										self?.userSelectedIndexAsObservable.accept(indexPath)
-									}
-								}
-								
-								if let error {
-									switch error {
-									case LAError.userCancel:
-										print("User CANCELED")
-									default:
-										print("Undefined error")
-									}
-								}
-							})
+						if item.locked, let identifier = item.identifier {
+							self?.viewModel.authenticateUser {
+								self?.router.show(album: identifier)
+								self?.userSelectedIndexAsObservable.accept(indexPath)
+							}
 						} else {
 							self?.router.show(album: identifier)
 							self?.userSelectedIndexAsObservable.accept(indexPath)
@@ -244,16 +240,23 @@ extension SidebarViewController: UICollectionViewDelegate {
 			suggestedActions in
 			let lockAction =
 			UIAction(title: NSLocalizedString("lockAlbum", comment: ""),
-					 image: UIImage(systemName: "lock")) { action in
-				if let albumId = self.dataSource?[indexPath].identifier {
-					self.viewModel.lockAlbum(albumID: albumId)
+					 image: UIImage(systemName: "lock")) { [weak self] action in
+				
+				if let canAuthenticate = self?.viewModel.canAuthenticate() {
+					if canAuthenticate, let albumId = self?.dataSource?[indexPath].identifier {
+						self?.viewModel.lockAlbum(albumID: albumId)
+					}
 				}
 			}
 			let unlockAction =
 			UIAction(title: NSLocalizedString("unlockAlbum", comment: ""),
-					 image: UIImage(systemName: "lock.open")) { action in
-				if let albumId = self.dataSource?[indexPath].identifier {
-					self.viewModel.unlockAlbum(albumID: albumId)
+					 image: UIImage(systemName: "lock.open")) { [weak self] action in
+				if let albumId = self?.dataSource?[indexPath].identifier {
+					self?.viewModel.authenticateUser {
+						Task {
+							self?.viewModel.unlockAlbum(albumID: albumId)
+						}
+					}
 				}
 			}
 			let duplicateAction =

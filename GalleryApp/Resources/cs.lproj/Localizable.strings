@@ -24,6 +24,10 @@
 "kEDIT" = "Edit";
 "kDONE" = "Done";
 "kOK" = "OK";
+"kUnlockAlbum" = "Odemknout album";
+"kBiometryNotAvailable" = "Biometrie není na tomto zařízení dostupná";
+"kBiometryNotSetup" = "Biometrie není na tomto zařízení nastavena";
+"kAuthenticationGeneralError" = "Neznámá chyba při autorizaci uživatele";
 "kDELETEALBUM" = "Delete Album";
 "kNameCantBeEmpty" = "Pole jméno nemůže být prázdné";
 "kEnterAlbumName" = "Enter Album name";

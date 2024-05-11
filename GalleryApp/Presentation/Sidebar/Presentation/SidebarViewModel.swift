@@ -7,6 +7,8 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
+import LocalAuthentication
 
 class SidebarViewModel {
 	
@@ -14,6 +16,10 @@ class SidebarViewModel {
 	private let galleryManager: GalleryManager
 	private let settingsManager: SettingsManagerImpl
 	private let pathResolver: PathResolver
+	
+	private let localAuthnentication = LAContext()
+	
+	var errorMessage = BehaviorRelay(value: "")
 	
 	let disposeBag = DisposeBag()
 	
@@ -139,5 +145,29 @@ class SidebarViewModel {
 						}
 					}
 			}
+	}
+	
+	func authenticateUser(completion: @escaping (() -> Void)) {
+		self.localAuthnentication.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: NSLocalizedString("kUnlockAlbum", comment: ""), reply: { [weak self] succeeded, error in
+			if succeeded {
+				completion()
+			}
+			
+			if let error {
+				switch error {
+				case LAError.biometryNotAvailable:
+					self?.errorMessage.accept(NSLocalizedString("kBiometryNotAvailable", comment: ""))
+				case LAError.biometryNotEnrolled:
+					self?.errorMessage.accept(NSLocalizedString("kBiometryNotSetup", comment: ""))
+				default:
+					self?.errorMessage.accept(NSLocalizedString("kAuthenticationGeneralError", comment: ""))
+				}
+			}
+		})
+	}
+	
+	func canAuthenticate() -> Bool {
+		var nsError: NSError?
+		return localAuthnentication.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &nsError)
 	}
 }

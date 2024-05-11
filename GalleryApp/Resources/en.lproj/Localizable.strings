@@ -24,6 +24,10 @@
 "kEDIT" = "Edit";
 "kDONE" = "Done";
 "kOK" = "OK";
+"kUnlockAlbum" = "Unlock album";
+"kBiometryNotAvailable" = "Biometry is not available on this device";
+"kBiometryNotSetup" = "Biometry is not setup on this device";
+"kAuthenticationGeneralError" = "Unknown error while trying to use authentication";
 "kDELETEALBUM" = "Delete Album";
 "kNameCantBeEmpty" = "Name field can't be empty";
 "kEnterAlbumName" = "Enter Album name";
