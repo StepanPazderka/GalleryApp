@@ -29,6 +29,7 @@
 "kBiometryNotSetup" = "Biometry is not setup on this device";
 "kAuthenticationGeneralError" = "Unknown error while trying to use authentication";
 "kAlert" = "Alert";
+"kGalleryNameCouldntBeLoaded" = "Gallery name couldn't be loaded";
 "kDELETEALBUM" = "Delete Album";
 "kNameCantBeEmpty" = "Name field can't be empty";
 "kEnterAlbumName" = "Enter Album name";

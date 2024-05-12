@@ -51,7 +51,19 @@ class AlbumScreenViewModel {
 			if let albumID = self?.albumID {
 				return self?.galleryManager.loadAlbumIndexAsObservable(id: albumID).map { $0.images } ?? .empty()
 			} else {
-				return self?.galleryManager.loadCurrentGalleryIndexAsObservable().map { $0.images } ?? .empty()
+				return self?.galleryManager.loadCurrentGalleryIndexAsObservable().map { [weak self] index in
+					var imagesToShow = index.images
+					for album in index.albums {
+						if let albumIndex = self?.galleryManager.loadAlbumIndex(with: album) {
+							if albumIndex.locked {
+								imagesToShow.removeAll { GalleryImage in
+									albumIndex.images.contains(GalleryImage)
+								}
+							}
+						}
+						
+					}
+					return imagesToShow } ?? .empty()
 			}
 		}
     }

@@ -101,7 +101,7 @@ class SidebarViewController: UIViewController {
 	private func bindData() {
 		viewModel.getSelectedLibraryNameAsObservable()
 			.distinctUntilChanged()
-			.asDriver(onErrorJustReturn: "Couldnt load")
+			.asDriver(onErrorJustReturn: NSLocalizedString("kGalleryNameCouldntBeLoaded", comment: ""))
 			.drive(self.screenView.selectGalleryButton.rx.title())
 			.disposed(by: disposeBag)
 		

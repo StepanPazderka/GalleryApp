@@ -30,6 +30,7 @@
 "kAuthenticationGeneralError" = "Neznámá chyba při autorizaci uživatele";
 "kAlert" = "Upozornění";
 "kDELETEALBUM" = "Delete Album";
+"kGalleryNameCouldntBeLoaded" = "Nelze načíst jméno galerie";
 "kNameCantBeEmpty" = "Pole jméno nemůže být prázdné";
 "kEnterAlbumName" = "Enter Album name";
 "kThumbs" = "thumbs";
