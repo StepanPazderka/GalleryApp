@@ -168,6 +168,13 @@ class SidebarViewModel {
 	
 	func canAuthenticate() -> Bool {
 		var nsError: NSError?
-		return localAuthnentication.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &nsError)
+		if localAuthnentication.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &nsError) {
+			return true
+		} else {
+			if let error = nsError?.localizedDescription {
+				errorMessage.accept(error)
+			}
+			return false
+		}
 	}
 }
