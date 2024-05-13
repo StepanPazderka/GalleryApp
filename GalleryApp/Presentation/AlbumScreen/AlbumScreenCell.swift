@@ -66,6 +66,9 @@ class AlbumScreenCell: UICollectionViewCell {
         
 	var filename: String?
 	var pathResolver: PathResolver?
+	
+	var galleryImage: GalleryImage?
+	
     let disposeBag = DisposeBag()
     
     static let identifier: String = String(describing: type(of: AlbumScreenCell.self))
@@ -124,6 +127,7 @@ class AlbumScreenCell: UICollectionViewCell {
 	func setup(with galleryImage: GalleryImage, viewModel: AlbumScreenViewModel, pathResolver: PathResolver) {
         self.textLabel.text = galleryImage.title
 		self.filename = galleryImage.fileName
+		self.galleryImage = galleryImage
 		self.pathResolver = pathResolver
 		let resolvedThumbnailPath = pathResolver.resolveThumbPathFor(imageName: galleryImage.fileName)
 		self.imageView.image = UIImage(contentsOfFile: resolvedThumbnailPath)

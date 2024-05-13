@@ -293,7 +293,6 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
                                           previewProvider: nil) { [weak self] suggestedActions in
             
             guard let selectedImages = self?.getSelectedImages(for: indexPath) else { return UIMenu() }
-//			guard let selectedImages = indexPath.compactMap { self?.dataSource.sectionModels.first?.items[$0] }
             
             let inspectAction = UIAction(title: NSLocalizedString("kDETAILS", comment: ""),
                                          image: UIImage(systemName: "info.circle")) { action in
@@ -366,7 +365,13 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
 	
 	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 		if let cell = cell as? AlbumScreenCell {
-			cell.hideSelectedView()
+			if selectedImages.contains(where: { GalleryImage in
+				GalleryImage == cell.galleryImage
+			}) {
+				cell.showSelectedView()
+			} else {
+				cell.hideSelectedView()
+			}
 		}
 	}
 }
