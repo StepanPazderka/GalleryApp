@@ -25,6 +25,15 @@ class AlbumScreenViewController: UIViewController {
 	private let pathResolver: PathResolver
 	private var importProgress = MutableProgress()
 	
+	private var selectedImages: [GalleryImage] {
+		let indexPath = self.screenView.collectionView.indexPathsForSelectedItems
+		if let indexPath {
+			let images = indexPath.compactMap { self.dataSource.sectionModels.first?.items[$0.item] }
+			return images
+		}
+		return [GalleryImage]()
+	}
+	
 	private let disposeBag = DisposeBag()
 	    
     // MARK: - INIT
@@ -64,7 +73,16 @@ class AlbumScreenViewController: UIViewController {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumScreenCell.identifier, for: indexPath) as! AlbumScreenCell
 				cell.setup(with: sectionModelItem, viewModel: self.viewModel, pathResolver: self.pathResolver)
                 return cell
-            }
+            },
+			moveItem: { [weak self] dataSource, sourceIndexPath, destinationIndexPath in
+				guard let self = self else { return }
+				// Adjust your data model accordingly
+				var section = self.dataSource[0]
+				let item = section.items.remove(at: sourceIndexPath.item)
+				section.items.insert(item, at: destinationIndexPath.item)
+			}, canMoveItemAtIndexPath: { _, _ in
+				return true
+			}
         )
     }
     
@@ -231,12 +249,10 @@ class AlbumScreenViewController: UIViewController {
         }).disposed(by: disposeBag)
         
         self.screenView.deleteImageButton.rx.tap.subscribe(onNext: { [weak self] in
-			if self?.isEditing == true {
-				guard let self else { return }
-				guard let indexes = self.screenView.collectionView.indexPathsForSelectedItems else { return }
-				let selectedImages = indexes.compactMap { self.dataSource.sectionModels.first?.items[$0.item] ?? nil }
+			guard let self else { return }
+			
+			if self.isEditing == true {
 				self.viewModel.delete(selectedImages)
-				self.viewModel.isEditing.accept(false)
 			}
         }).disposed(by: disposeBag)
         
@@ -262,10 +278,6 @@ class AlbumScreenViewController: UIViewController {
 		self.screenView.viewButton.menu = UIMenu(options: .singleSelection, children: [offOption, showTitlesOption])
 	}
     
-    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        return
-    }
-    
 	func getSelectedImages(for indexPath: IndexPath) -> [GalleryImage] {
 		guard let selectedIndexes = screenView.collectionView.indexPathsForSelectedItems, !selectedIndexes.isEmpty else {
 			return [dataSource[indexPath]]
@@ -281,6 +293,7 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
                                           previewProvider: nil) { [weak self] suggestedActions in
             
             guard let selectedImages = self?.getSelectedImages(for: indexPath) else { return UIMenu() }
+//			guard let selectedImages = indexPath.compactMap { self?.dataSource.sectionModels.first?.items[$0] }
             
             let inspectAction = UIAction(title: NSLocalizedString("kDETAILS", comment: ""),
                                          image: UIImage(systemName: "info.circle")) { action in
@@ -328,6 +341,10 @@ extension AlbumScreenViewController: UICollectionViewDelegate {
             }
         }
     }
+	
+	private func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+		return true
+	}
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? AlbumScreenCell {

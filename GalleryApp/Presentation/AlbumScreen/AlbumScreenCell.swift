@@ -63,9 +63,7 @@ class AlbumScreenCell: UICollectionViewCell {
         view.alpha = 0.5
         return view
     }()
-    
-    var checkBoxTapped: UITapGestureRecognizer?
-    
+        
 	var filename: String?
 	var pathResolver: PathResolver?
     let disposeBag = DisposeBag()
@@ -133,12 +131,6 @@ class AlbumScreenCell: UICollectionViewCell {
         self.isSelected = false
         
         bindData()
-    }
-    
-    @objc func galleryImageLongPress(_ sender: UITapGestureRecognizer) {
-        UIView.animate(withDuration: 0.1, animations: {
-            self.imageView.transform = CGAffineTransform(scaleX: 1.25, y: 1.25)
-        })
     }
     
     func layoutViews() {

@@ -28,6 +28,8 @@ class AlbumScreenViewModel {
     let galleryManager: GalleryManager
     let pathResolver: PathResolver
     var importProgress = MutableProgress()
+	
+	
     let disposeBag = DisposeBag()
     
     // MARK: - Init
@@ -104,6 +106,7 @@ class AlbumScreenViewModel {
     
     func delete(_ images: [GalleryImage]) {
         self.galleryManager.delete(images: images)
+		self.isEditing.accept(false)
     }
     
     func removeFromAlbum(images: [GalleryImage]) {

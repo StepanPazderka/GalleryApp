@@ -79,7 +79,7 @@ class SidebarViewModel {
 				
 				return Observable.combineLatest(albumObservables)
 					.map { albumItems in
-						let albumButtons = SidebarSectionModel(type: .albumButtons, name: "Albums", items: albumItems.compactMap { $0 })
+						let albumButtons = SidebarSectionModel(type: .albumButtons, name: NSLocalizedString("kALBUMS", comment: ""), items: albumItems.compactMap { $0 })
 						return [self.mainButonsSection, albumButtons]
 					}
 			}
