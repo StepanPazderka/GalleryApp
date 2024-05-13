@@ -76,7 +76,6 @@ class AlbumScreenViewController: UIViewController {
             },
 			moveItem: { [weak self] dataSource, sourceIndexPath, destinationIndexPath in
 				guard let self = self else { return }
-				// Adjust your data model accordingly
 				var section = self.dataSource[0]
 				let item = section.items.remove(at: sourceIndexPath.item)
 				section.items.insert(item, at: destinationIndexPath.item)
@@ -208,12 +207,13 @@ class AlbumScreenViewController: UIViewController {
                     editButton.titleLabel?.font = .systemFont(ofSize: 18)
 					self?.screenView.deleteImageButton.isHidden = true
 					self?.screenView.addImageButton.isHidden = false
-
 					
-                    self?.screenView.collectionView.indexPathsForVisibleItems.forEach { index in
-                        let cell = self?.screenView.collectionView.cellForItem(at: index) as! AlbumScreenCell
-                        cell.hideSelectedView()
-                    }
+					self?.screenView.collectionView.indexPathsForSelectedItems?.forEach { index in
+						self?.screenView.collectionView.deselectItem(at: index, animated: true)
+						if let cell = self?.screenView.collectionView.cellForItem(at: index) as? AlbumScreenCell {
+							cell.hideSelectedView()
+						}
+					}
                 }
             }
         }).disposed(by: disposeBag)
