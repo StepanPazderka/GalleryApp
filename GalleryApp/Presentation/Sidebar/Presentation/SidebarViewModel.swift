@@ -34,9 +34,13 @@ class SidebarViewModel {
 	}
 	
 	func renameAlbum(id: UUID, withNewAlbumName: String) throws {
-		if var albumIndex = self.galleryManager.loadAlbumIndex(with: id) {
-			albumIndex.name = withNewAlbumName
-			try self.galleryManager.updateAlbumIndex(index: albumIndex)
+		do {
+			if var albumIndex = self.galleryManager.loadAlbumIndex(with: id) {
+				albumIndex.name = withNewAlbumName
+				try self.galleryManager.updateAlbumIndex(index: albumIndex)
+			}
+		} catch {
+			self.errorMessage.accept(error.localizedDescription)
 		}
 	}
 	
@@ -86,16 +90,24 @@ class SidebarViewModel {
 	}
 	
 	func lockAlbum(albumID: UUID) {
-		if var albumIndex = self.galleryManager.loadAlbumIndex(with: albumID) {
-			albumIndex.locked = true
-			try! self.galleryManager.updateAlbumIndex(index: albumIndex)
+		do {
+			if var albumIndex = self.galleryManager.loadAlbumIndex(with: albumID) {
+				albumIndex.locked = true
+				try self.galleryManager.updateAlbumIndex(index: albumIndex)
+			}
+		} catch {
+			self.errorMessage.accept(error.localizedDescription)
 		}
 	}
 	
 	func unlockAlbum(albumID: UUID) {
-		if var albumIndex = self.galleryManager.loadAlbumIndex(with: albumID) {
-			albumIndex.locked = false
-			try! self.galleryManager.updateAlbumIndex(index: albumIndex)
+		do {
+			if var albumIndex = self.galleryManager.loadAlbumIndex(with: albumID) {
+				albumIndex.locked = false
+				try self.galleryManager.updateAlbumIndex(index: albumIndex)
+			}
+		} catch {
+			self.errorMessage.accept(error.localizedDescription)
 		}
 	}
 	
@@ -107,14 +119,18 @@ class SidebarViewModel {
 				try galleryManager.createAlbum(name: name, parentAlbum: nil)
 			}
 		} catch {
-			
+			self.errorMessage.accept(error.localizedDescription)
 		}
 	}
 	
 	func removeThumbnail(albumID: UUID) {
-		if var albumIndex = self.galleryManager.loadAlbumIndex(with: albumID) {
-			albumIndex.thumbnail = nil
-			try! self.galleryManager.updateAlbumIndex(index: albumIndex)
+		do {
+			if var albumIndex = self.galleryManager.loadAlbumIndex(with: albumID) {
+				albumIndex.thumbnail = nil
+				try self.galleryManager.updateAlbumIndex(index: albumIndex)
+			}
+		} catch {
+			self.errorMessage.accept(error.localizedDescription)
 		}
 	}
 	
