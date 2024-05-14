@@ -119,7 +119,11 @@ class SidebarViewModel {
 	}
 	
 	func deleteAlbum(id: UUID) {
-		self.galleryManager.delete(album: id)
+		do {
+			try self.galleryManager.delete(album: id)
+		} catch {
+			self.errorMessage.accept(error.localizedDescription)
+		}
 	}
 	
 	func getSelectedLibraryNameAsObservable() -> Observable<String> {

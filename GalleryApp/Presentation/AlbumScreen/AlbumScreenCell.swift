@@ -86,6 +86,7 @@ class AlbumScreenCell: UICollectionViewCell {
         
         self.setupViews()
         self.layoutViews()
+		self.bindData()
     }
 	
 	required init?(coder: NSCoder) {
@@ -125,17 +126,15 @@ class AlbumScreenCell: UICollectionViewCell {
     }
     
 	func setup(with galleryImage: GalleryImage, viewModel: AlbumScreenViewModel, pathResolver: PathResolver) {
+		self.galleryImage = galleryImage
         self.textLabel.text = galleryImage.title
 		self.filename = galleryImage.fileName
-		self.galleryImage = galleryImage
 		self.pathResolver = pathResolver
 		let resolvedThumbnailPath = pathResolver.resolveThumbPathFor(imageName: galleryImage.fileName)
 		self.imageView.image = UIImage(contentsOfFile: resolvedThumbnailPath)
         self.viewModel = viewModel
         self.isSelected = false
-        
-        bindData()
-    }
+	}
     
     func layoutViews() {
         checkmarkView.snp.makeConstraints { make in

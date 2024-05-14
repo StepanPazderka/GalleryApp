@@ -29,7 +29,6 @@ class AlbumScreenViewModel {
     let pathResolver: PathResolver
     var importProgress = MutableProgress()
 	
-	
     let disposeBag = DisposeBag()
     
     // MARK: - Init

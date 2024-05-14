@@ -318,12 +318,14 @@ class GalleryManagerImpl: GalleryManager {
 		}
 	}
 	
-	func delete(album: UUID) {
-		let albumForDeletion = realm?.objects(AlbumIndexRealm.self).filter("id == %@", album.uuidString)
-		
-		if let albumForDeletion {
-			try! realm?.write {
-				realm?.delete(albumForDeletion)
+	func delete(album: UUID) throws {
+		if let album = realm?.objects(AlbumIndexRealm.self).filter("id == %@", album.uuidString) {
+			do {
+				try realm?.write {
+					realm?.delete(album)
+				}
+			} catch {
+				throw error
 			}
 		}
 	}

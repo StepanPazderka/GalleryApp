@@ -36,7 +36,7 @@ protocol GalleryManager {
     @discardableResult func updateGalleryIndex(newGalleryIndex: GalleryIndex) -> GalleryIndex
     
     // MARK: - Deletion
-    func delete(album: UUID)
+    func delete(album: UUID) throws
     func deleteGallery(named galleryName: String)
     func delete(images: [GalleryImage])
     
