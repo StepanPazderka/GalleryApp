@@ -57,9 +57,11 @@ class PhotoDetailView: UIView {
     }
     
     func layoutViews() {
-        closeButton.snp.makeConstraints { make in
+        closeButton.snp.makeConstraints { [weak self] make in
             make.leading.equalToSuperview().offset(10)
-            make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(10)
+			if let self {
+				make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(10)
+			}
             make.size.equalTo(40)
         }
         

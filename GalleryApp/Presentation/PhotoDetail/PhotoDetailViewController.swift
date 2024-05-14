@@ -112,8 +112,8 @@ class PhotoDetailViewController: UIViewController {
             .bind(to: self.screenView.collectionView.rx.items(dataSource: self.dataSource))
             .disposed(by: disposeBag)
         
-        self.viewModel.indexAsObservable.subscribe(onNext: { index in
-            self.scrollTo(index: index, animated: false)
+        self.viewModel.indexAsObservable.subscribe(onNext: { [weak self] index in
+            self?.scrollTo(index: index, animated: false)
         }).disposed(by: disposeBag)
     }
     
@@ -132,7 +132,7 @@ class PhotoDetailViewController: UIViewController {
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         for press in presses {
             guard let key = press.key else { continue }
-            if key.charactersIgnoringModifiers == UIKeyCommand.inputEscape {
+			if key.charactersIgnoringModifiers == UIKeyCommand.inputEscape {
                 self.dismiss(animated: true)
             }
             
